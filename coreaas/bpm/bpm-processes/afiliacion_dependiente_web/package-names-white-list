@@ -1,0 +1,13 @@
+com.asopagos.entidades.ccf.core
+com.asopagos.entidades.ccf.afiliaciones
+com.asopagos.enumeraciones.afiliaciones
+com.asopagos.tareashumanas.dto
+com.asopagos.entidades.transversal.core
+com.asopagos.tareashumanas.service
+com.asopagos.entidades.ccf.general
+com.asopagos.enumeraciones.comunicados
+com.asopagos.enumeraciones.core
+com.asopagos.entidades.transversal.personas
+com.asopagos.entidades.ccf.personas
+com.asopagos.entidades.ccf.comunicados
+com.asopagos.enumeraciones.personas

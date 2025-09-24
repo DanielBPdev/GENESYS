@@ -1,0 +1,1 @@
+ALTER TABLE categoria_aud ALTER COLUMN catMotivoCambioCategoria VARCHAR(60)

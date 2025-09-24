@@ -1,0 +1,2 @@
+--ALTER TABLE AccionCobro2C
+ --   ADD aocDiasGeneracionActa BIGINT;

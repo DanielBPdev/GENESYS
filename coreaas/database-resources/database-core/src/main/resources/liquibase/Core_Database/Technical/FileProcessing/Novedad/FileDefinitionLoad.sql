@@ -1,0 +1,5 @@
+--liquibase formatted sql
+
+--changeset Heinsohn:01
+--comment: Inserción de FILEDEFINITIONLOAD
+INSERT FILEDEFINITIONLOAD (ID,DECIMALSEPARATOR,NOMBRE,TENANTID,THOUSANDSSEPARATOR,EXCLUDELINES,REGISTERSREAD,SHEETNUMBERXLS,USECHARACTERS,FILEDEFINITIONTYPE_ID) VALUES (1221,'.','Solicitud de novedades de múltiples trabajadores dependientes',null,null,0,null,null,0,1221);

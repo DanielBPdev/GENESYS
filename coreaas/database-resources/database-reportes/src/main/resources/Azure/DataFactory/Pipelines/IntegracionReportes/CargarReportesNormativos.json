@@ -1,0 +1,80 @@
+{
+    "name": "CargarReportesNormativos",
+    "properties": {
+        "activities": [
+            {
+                "name": "USP_REP_CargarReportesNormativos",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "fechaReporte",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_REP_CargarReportesNormativos]",
+                    "storedProcedureParameters": {
+                        "dFecha": {
+                            "value": {
+                                "value": "@activity('fechaReporte').output.firstRow.dFechaRevision",
+                                "type": "Expression"
+                            },
+                            "type": "DateTime"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "reportes",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "fechaReporte",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderQuery": {
+                            "value": "DECLARE @sFechaRevision VARCHAR(10)\nDECLARE @dFechaRevision DATETIME\nSET @sFechaRevision = '@{Pipeline().parameters.FechaRevision}'\nIF @sFechaRevision = 'Default'\nBEGIN\n\tSET @dFechaRevision = CONVERT(DATETIMEOFFSET, GETUTCDATE()) AT TIME ZONE 'SA Pacific Standard Time'\nEND\nELSE\nBEGIN\n\tSET @dFechaRevision = @sFechaRevision\nEND\nSELECT @dFechaRevision AS dFechaRevision",
+                            "type": "Expression"
+                        },
+                        "queryTimeout": "02:00:00",
+                        "partitionOption": "None"
+                    },
+                    "dataset": {
+                        "referenceName": "DSAuditoria",
+                        "type": "DatasetReference"
+                    }
+                }
+            }
+        ],
+        "parameters": {
+            "FechaRevision": {
+                "type": "string",
+                "defaultValue": "Default"
+            }
+        },
+        "annotations": [],
+        "lastPublishTime": "2020-08-05T21:04:27Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

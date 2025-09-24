@@ -1,0 +1,1 @@
+UPDATE ValidatorParamValue SET value='CE,PA,CD,SC,PE,PT' WHERE id=2110262;

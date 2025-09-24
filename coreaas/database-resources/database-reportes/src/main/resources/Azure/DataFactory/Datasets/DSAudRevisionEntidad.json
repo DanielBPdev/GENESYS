@@ -1,0 +1,13 @@
+{
+    "name": "DSAudRevisionEntidad",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "core_aud",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "typeProperties": {
+            "tableName": "[dbo].[RevisionEntidad]"
+        }
+    }
+}

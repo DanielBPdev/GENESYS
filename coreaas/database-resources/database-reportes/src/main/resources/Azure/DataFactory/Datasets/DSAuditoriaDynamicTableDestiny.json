@@ -1,0 +1,16 @@
+{
+    "name": "DSAuditoriaDynamicTableDestiny",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "core_aud",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "typeProperties": {
+            "tableName": {
+                "value": "dbo.@{item().tabla}",
+                "type": "Expression"
+            }
+        }
+    }
+}

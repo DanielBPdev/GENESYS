@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="abaquero" id="1" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="DROP_SP_407.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- Store Procedures for User History 407 -->
+	<changeSet author="abaquero" id="2" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_ValidateHU407Registro6Duplicado.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,32 @@
+{
+    "name": "DSReportesEstadoAfiliacionPersonaCaja",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "reportes",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "structure": [
+            {
+                "name": "eacId",
+                "type": "Int64"
+            },
+            {
+                "name": "eacPersona",
+                "type": "Int64"
+            },
+            {
+                "name": "eacEstadoAfiliacion",
+                "type": "String"
+            },
+            {
+                "name": "eacFechaCambioEstado",
+                "type": "DateTime"
+            }
+        ],
+        "typeProperties": {
+            "tableName": "[dbo].[EstadoAfiliacionPersonaCaja]"
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}

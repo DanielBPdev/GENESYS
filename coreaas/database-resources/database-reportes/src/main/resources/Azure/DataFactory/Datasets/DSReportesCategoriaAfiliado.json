@@ -1,0 +1,56 @@
+{
+    "name": "DSReportesCategoriaAfiliado",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "reportes",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "structure": [
+            {
+                "name": "ctaId",
+                "type": "Int64"
+            },
+            {
+                "name": "ctaAfiliado",
+                "type": "Int64"
+            },
+            {
+                "name": "ctaTipoAfiliado",
+                "type": "String"
+            },
+            {
+                "name": "ctaClasificacion",
+                "type": "String"
+            },
+            {
+                "name": "ctaTotalIngresoMesada",
+                "type": "Double"
+            },
+            {
+                "name": "ctaEstadoAfiliacion",
+                "type": "String"
+            },
+            {
+                "name": "ctaFechaFinServicioSinAfiliacion",
+                "type": "DateTime"
+            },
+            {
+                "name": "ctaCategoria",
+                "type": "String"
+            },
+            {
+                "name": "ctaMotivoCambioCategoria",
+                "type": "String"
+            },
+            {
+                "name": "ctaFechaCambioCategoria",
+                "type": "DateTime"
+            }
+        ],
+        "typeProperties": {
+            "tableName": "[dbo].[CategoriaAfiliado]"
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}

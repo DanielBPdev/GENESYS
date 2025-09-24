@@ -1,0 +1,363 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+
+	<include file="ddl_structure/ddl_initial.sql" />
+    <include file="ddl_structure/ddl_initial_referential.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_03042018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_10042018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_10042018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_11042018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_12042018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_24042018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_27042018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_03052018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_07052018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_07052018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_08052018.sql" />    
+    <include file="ddl_structure/changeLogs/db_core_aud_09052018.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_15052018.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_16052018.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_18052018.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_21052018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_21052018.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_23052018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_22112923.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_29052018.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_31052018.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_05062018.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_08062018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_20062018.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_20062018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_22062018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_25062018.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_26062018.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_26062018.sql" />    
+    <include file="ddl_structure/changeLogs/db_core_aud_29062018.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_04072018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_10072018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_12072018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_01082018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_03082018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_06082018.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_21082018.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_23082018.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_27082018.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_18092018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_19092018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_30092018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_04102018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_08102018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_10102018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_11102018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_12102018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_16102018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_21102018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_26102018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_31102018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_06112018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_08112018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_09112018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_15112018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_16112018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_20112018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_23112018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_29112018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_05122018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_06122018.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_24012019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_13022019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_07032019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_12032019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_13032019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_18032019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_19032019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_20032019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_22032019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_14042019.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_23042019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_25042019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_08052019.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_10052019.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_15052019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_17052019.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_21052019.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_22052019.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_23052019.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_24052019.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_28052019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_04062019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_05062019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_08062019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_11062019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_09062019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_09062019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_12062019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_12062019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_20062019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_21062019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_28062019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_02072019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_03072019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_16072019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_24072019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_25072019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_30072019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_31072019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_02082019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_12082019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_13082019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_04092019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_23092019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_15102019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_21102019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_12112019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_19112019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_26112019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_04122019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_10122019.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_17122019.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_27012020.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_04032020.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_11032020.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_19032020.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_24062020.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_08072020.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_17072020.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_14072020.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_05082020.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_19082020.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_19082020.sql" />
+	<include file="ddl_structure/changeLogs/hotfix/db_core_aud_28082020.sql" />
+	<include file="ddl_structure/changeLogs/hotfix/db_core_aud_14102020.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_23022023.sql" />
+	<include file="ddl_structure/changeLogs/db_core_aud_16022021.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_24052021.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_06092021.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_26102021.sql" />
+	<include file="ddl_structure/changeLogs/hotfix/db_core_aud_26052022.sql" />
+	<include file="ddl_structure/changeLogs/db_core_aud_05102022.sql" />
+    <include file="ddl_structure/changeLogs/db_core_aud_20102022.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_020082023.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_02092023.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud1_03_2023.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_02_03_2023.sql" /> 
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_25_05_2023.sql" /> 
+    
+    <include file="ddl_structure/changeLogs/db_core_aud_14_07_2023.sql" /> 
+      <include file="ddl_structure/changeLogs/db_core_aud_14082023cj.sql" /> 
+    
+   <include file="ddl_structure/changeLogs/hotfix/db_core_080920231_AUD.sql" />
+   <include file="ddl_structure/changeLogs/hotfix/db_core_05102023_AUD.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_18072023.sql" />
+    
+    <include file="ddl_structure/changeLogs/db_core_aud_15_03_2023.sql" />
+    <!-- GLPI 64465 -->
+    <include file="ddl_structure/changeLogs/db_core_aud_GLPI_64465_staging_fallecimiento.sql" /> 
+    <include file="ddl_structure/changeLogs/db_core_aud_05052023_SolicitudNovedadPila.sql"/>
+    <include file="ddl_structure/changeLogs/db_core_aud_17052023.sql" />
+
+    
+    <include file="ddl_structure/changeLogs/db_core_aud_26072023.sql" />
+    
+    <!--Glpi 65540-->
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_2_25_05_2023.sql"/>
+    
+    <!--GAP 65394-->
+    <include file="ddl_structure/changeLogs/db_core_aud_10082023.sql"/>
+    
+    <!--GAP 66317-->
+    <include file="ddl_structure/changeLogs/db_core_aud_23082023.sql"/>
+
+    <!--Glpi 65991-->
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_13102023.sql"/>
+
+    <include file="ddl_structure/changeLogs/db_core_aud_26052023.sql"/>
+
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_24072023.sql" />
+
+    <include file="ddl_structure/changeLogs/db_core_aud_21092023.sql"/>
+
+    <!--GAP 67357-->
+    <include file="ddl_structure/changeLogs/db_core_aud_26092023.sql"/>
+
+    <include file="ddl_structure/changeLogs/hotfix/db_core_09_10_2023Cartera.sql"/>
+
+
+     <!--GAP 53849-->
+    <include file="ddl_structure/changeLogs/db_core_aud_26_10_2023.sql"/>
+    <include file="ddl_structure/changeLogs/db_core_aud_10_11_2023.sql"/>
+
+    <!--GAP 60139-->
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_14112023.sql"/>
+
+     <!--GAP 53849-->
+    <include file="ddl_structure/changeLogs/db_core_aud_07_12_2023.sql"/>
+
+     <!--GAP 71802-->
+    <include file="ddl_structure/changeLogs/db_core_aud_28122023.sql"/>
+
+    <include file="ddl_structure/changeLogs/db_core_aud_15012024.sql" />
+
+    <!--GAP 74927-->
+    <include file="ddl_structure/changeLogs/db_core_aud_12042024.sql" />
+
+    <include file="ddl_structure/changeLogs/db_core_aud_10122024.sql" />
+
+    
+	<!-- GAP 82800 -->
+	<include file="ddl_structure/changeLogs/db_core_aud_21022025.sql" />
+    <include file="ddl_structure/changeLogs/hotfix/db_core_26_03_2025.sql"/>
+    
+    <include file="ddl_structure/changeLogs/hotfix/db_core_27_03_2025.sql" />
+    
+    <!-- glpi 86571 -->
+	<changeSet author="rcastillo" id="997" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ddl_structure/changeLogs/db_coreaud_18112024.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+    <!-- Store Procedures -->
+    <include file="Procedures/SP_Procedures_Changesets.xml" />
+    <include file="Procedures/subsidio/SP_Procedures_Changesets_Subsidio.xml" />
+
+    <!-- Log de ejecución -->
+    <include file="ddl_structure/ejecucion_log.sql" />
+
+    <include file="ddl_structure/changeLogs/db_core_aud_04012024.sql" />
+
+    <include file="ddl_structure/changeLogs/db_core_aud_24092024.sql" />
+
+    <include file="ddl_structure/changeLogs/db_core_aud_20252201.sql" />
+
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_26_05_2025.sql" />
+
+    <!-- Change GLPI 64465 -->
+	<changeSet  author="Jm"  id="64465-1">
+		<sql>IF NOT EXISTS ( SELECT 1 FROM sys.schemas WHERE name = 'fall' )
+                EXEC ('CREATE SCHEMA fall')
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'HistoricoRevisionFallecimiento' AND b.name = 'fall')
+                CREATE TABLE fall.HistoricoRevisionFallecimiento (tableName VARCHAR (50), identificador VARCHAR (6),  REV BIGINT, id BIGINT, fechaConsulta DATETIME)
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'RevisionFallecimientoBuffer' AND b.name = 'fall')
+                CREATE TABLE fall.RevisionFallecimientoBuffer (tableName VARCHAR (50), identificador VARCHAR (6), REV BIGINT, id BIGINT)
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'revisionGroup' AND b.name = 'fall')
+                CREATE TABLE fall.revisionGroup (REV BIGINT)
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'MedioDePago' AND b.name = 'fall')
+                CREATE TABLE fall.MedioDePago (mdpId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'Persona' AND b.name = 'fall')
+                CREATE TABLE fall.Persona (perId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'Afiliado' AND b.name = 'fall')
+                CREATE TABLE fall.Afiliado (afiId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'GrupoFamiliar' AND b.name = 'fall')
+                CREATE TABLE fall.GrupoFamiliar (grfId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'Empresa' AND b.name = 'fall')
+                CREATE TABLE fall.Empresa (empId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'SucursalEmpresa' AND b.name = 'fall')
+                CREATE TABLE fall.SucursalEmpresa (sueId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'Empleador' AND b.name = 'fall')
+                CREATE TABLE fall.Empleador (empId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'RolAfiliado' AND b.name = 'fall')
+                CREATE TABLE fall.RolAfiliado (roaId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'AdministradorSubsidio' AND b.name = 'fall')
+                CREATE TABLE fall.AdministradorSubsidio (asuId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'AdminSubsidioGrupo' AND b.name = 'fall')
+                CREATE TABLE fall.AdminSubsidioGrupo (asgId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'Solicitud' AND b.name = 'fall')
+                CREATE TABLE fall.Solicitud (solId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'ParametrizacionNovedad' AND b.name = 'fall')
+                CREATE TABLE fall.ParametrizacionNovedad (novId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'SolicitudNovedad' AND b.name = 'fall')
+                CREATE TABLE fall.SolicitudNovedad (snoId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'SolicitudNovedadPersona' AND b.name = 'fall')
+                CREATE TABLE fall.SolicitudNovedadPersona (snpId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'NovedadDetalle' AND b.name = 'fall')
+                CREATE TABLE fall.NovedadDetalle (nopId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'AporteGeneral' AND b.name = 'fall')
+                CREATE TABLE fall.AporteGeneral (apgId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'AporteDetallado' AND b.name = 'fall')
+                CREATE TABLE fall.AporteDetallado (apdId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'SocioEmpleador' AND b.name = 'fall')
+                CREATE TABLE fall.SocioEmpleador (semId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'PersonaDetalle' AND b.name = 'fall')
+                CREATE TABLE fall.PersonaDetalle (pedId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'BeneficiarioDetalle' AND b.name = 'fall')
+                CREATE TABLE fall.BeneficiarioDetalle (bedId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'Beneficiario' AND b.name = 'fall')
+                CREATE TABLE fall.Beneficiario (benId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'BeneficioEmpleador' AND b.name = 'fall')
+                CREATE TABLE fall.BeneficioEmpleador (bemId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'CondicionInvalidez' AND b.name = 'fall')
+                CREATE TABLE fall.CondicionInvalidez (coiId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'SolicitudNovedadEmpleador' AND b.name = 'fall')
+                CREATE TABLE fall.SolicitudNovedadEmpleador (sneId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'CertificadoEscolarBeneficiario' AND b.name = 'fall')
+                CREATE TABLE fall.CertificadoEscolarBeneficiario (cebId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'CargueBloqueoCuotaMonetaria' AND b.name = 'fall')
+                CREATE TABLE fall.CargueBloqueoCuotaMonetaria (cabId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'BloqueoBeneficiarioCuotaMonetaria' AND b.name = 'fall')
+                CREATE TABLE fall.BloqueoBeneficiarioCuotaMonetaria (bbcId INT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'ItemChequeo' AND b.name = 'fall')
+                CREATE TABLE fall.ItemChequeo (ichId BIGINT, s1 VARCHAR (500))
+
+            IF NOT EXISTS ( SELECT 1 FROM sys.Tables a INNER JOIN sys.schemas b ON a.schema_id = b.schema_id WHERE a.name = 'SolicitudAfiliacionPersona' AND b.name = 'fall')
+                CREATE TABLE fall.SolicitudAfiliacionPersona (sapId BIGINT, s1 VARCHAR (500));
+		<comment>Structure Stagin fallecimiento - core_aud </comment>
+		</sql>
+	</changeSet>
+
+     <!--GLPI 75144-->
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_28122023.sql"/>
+
+
+
+     <!--GLPI_80893-->
+    <include file="ddl_structure/changeLogs/GLPI_80893_db_core_aud_27052024.sql"/>
+
+
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_27052024.sql"/>
+
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_26092024.sql"/>
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_02102024.sql"/>
+    <include file="ddl_structure/changeLogs/hotfix/db_core_aud_30102024.sql"/>
+
+    <include file="ddl_structure/changeLogs/db_core_aud_07052025.sql"/>
+
+
+</databaseChangeLog>

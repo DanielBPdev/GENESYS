@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+						http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="heinsohn" id="1" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="DROP_anibol_SP.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- Store Procedures for User History SP -->
+	<changeSet
+		author="heinsohn" id="2" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="sp_gen_consulta_anibol_invalidos.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet
+		author="heinsohn" id="4" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="sp_gen_consulta_anibol.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet
+		author="heinsohn" id="5" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="sp_gen_select_proc_anibol_arch_validos.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- Rutina de asignacion de permisos (debe estar siempre al final) -->
+	<changeSet
+		author="heinsohn" id="3" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="GRANT_anibol_SP.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+</databaseChangeLog>

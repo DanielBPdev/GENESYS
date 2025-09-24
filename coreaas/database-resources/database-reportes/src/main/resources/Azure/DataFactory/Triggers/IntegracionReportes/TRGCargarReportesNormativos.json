@@ -1,0 +1,23 @@
+{
+    "name": "TRGCargarReportesNormativos",
+    "properties": {
+        "runtimeState": "Started",
+        "pipelines": [
+            {
+                "pipelineReference": {
+                    "referenceName": "CargarReportesNormativos",
+                    "type": "PipelineReference"
+                }
+            }
+        ],
+        "type": "ScheduleTrigger",
+        "typeProperties": {
+            "recurrence": {
+                "frequency": "Day",
+                "interval": 1,
+                "startTime": "2019-03-15T13:50:00Z",
+                "timeZone": "UTC"
+            }
+        }
+    }
+}

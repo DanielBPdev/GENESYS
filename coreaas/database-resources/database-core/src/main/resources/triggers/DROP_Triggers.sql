@@ -1,0 +1,77 @@
+--Drop Triggers
+IF OBJECT_ID('TRG_AF_INS_AporteDetallado') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_AporteDetallado
+IF OBJECT_ID('TRG_AF_UPD_AporteDetallado') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_AporteDetallado
+
+IF OBJECT_ID('TRG_AF_INS_AporteGeneral') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_AporteGeneral
+IF OBJECT_ID('TRG_AF_UPD_AporteGeneral') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_AporteGeneral
+
+IF OBJECT_ID('TRG_AF_INS_Empleador') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_Empleador
+IF OBJECT_ID('TRG_AF_UPD_Empleador') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_Empleador
+
+IF OBJECT_ID('TRG_AF_UPD_Empresa') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_Empresa
+
+IF OBJECT_ID('TRG_AF_INS_Persona') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_Persona
+
+IF OBJECT_ID('TRG_AF_INS_RolAfiliado') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_RolAfiliado
+IF OBJECT_ID('TRG_AF_UPD_RolAfiliado') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_RolAfiliado
+
+IF OBJECT_ID('TRG_AF_UPD_Afiliado') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_Afiliado
+
+IF OBJECT_ID('TRG_AF_UPD_Solicitud') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_Solicitud
+
+IF OBJECT_ID('TRG_AF_INS_SolicitudAfiliacionPersona') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_SolicitudAfiliacionPersona
+IF OBJECT_ID('TRG_AF_UPD_SolicitudAfiliacionPersona') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_SolicitudAfiliacionPersona
+
+IF OBJECT_ID('TRG_AF_UPD_Beneficiario') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_Beneficiario
+IF OBJECT_ID('TRG_AF_INS_Beneficiario') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_Beneficiario
+
+IF OBJECT_ID('TRG_AF_INS_AdminSubsidioGrupo') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_AdminSubsidioGrupo
+IF OBJECT_ID('TRG_AF_UPD_AdminSubsidioGrupo') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_AdminSubsidioGrupo
+
+IF OBJECT_ID('aud.TRG_AF_INS_SolicitudLiquidacionSubsidio') IS NOT NULL
+DROP TRIGGER aud.TRG_AF_INS_SolicitudLiquidacionSubsidio
+
+IF OBJECT_ID('TRG_AF_UPD_Ubicacion') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_Ubicacion
+IF OBJECT_ID('TRG_AF_INS_Ubicacion') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_Ubicacion
+
+IF OBJECT_ID('TRG_AF_UPD_ParametrizacionEjecucionProgramada') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_ParametrizacionEjecucionProgramada
+IF OBJECT_ID('TRG_AF_INS_ParametrizacionEjecucionProgramada') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_ParametrizacionEjecucionProgramada
+
+IF OBJECT_ID('TRG_AF_INS_SolicitudNovedadPersona') IS NOT NULL
+DROP TRIGGER [dbo].[TRG_AF_INS_SolicitudNovedadPersona]
+
+IF OBJECT_ID('TRG_AF_INS_AporteGeneral') IS NOT NULL
+DROP TRIGGER TRG_AF_INS_AporteGeneral
+IF OBJECT_ID('TRG_AF_UPD_AporteGeneral') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_AporteGeneral
+
+
+IF OBJECT_ID('Trigger_AporteGeneral') IS NOT NULL
+DROP TRIGGER Trigger_AporteGeneral
+IF OBJECT_ID('Trigger_AporteDetallado') IS NOT NULL
+DROP TRIGGER Trigger_AporteDetallado
+
+IF OBJECT_ID('TRG_AF_UPD_TRG_AF_INS_HistRolAfiliado') IS NOT NULL
+DROP TRIGGER TRG_AF_UPD_TRG_AF_INS_HistRolAfiliado

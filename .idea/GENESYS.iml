@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="web" name="Web27">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario/subsidio-monetario-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario/subsidio-monetario-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web26">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/archivos-aportes-masivos/archivos-aportes-masivos-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/archivos-aportes-masivos/archivos-aportes-masivos-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web29">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/comunicados/comunicados-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/comunicados/comunicados-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web28">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/notificaciones-archivos-composite/notificaciones-archivos-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/notificaciones-archivos-composite/notificaciones-archivos-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web63">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/util-develop/jsongenerator/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/util-develop/jsongenerator/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web62">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/empleadores/empleadores-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/empleadores/empleadores-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web21">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/novedades-composite/novedades-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/novedades-composite/novedades-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web65">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/constantes-parametros/constantes-parametros-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/constantes-parametros/constantes-parametros-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web64">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/historicos/historicos-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/historicos/historicos-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web20">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/solicitudes/solicitudes-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/solicitudes/solicitudes-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web23">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario-composite/subsidio-monetario-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario-composite/subsidio-monetario-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web67">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/entidad-descuento/entidad-descuento-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/entidad-descuento/entidad-descuento-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web22">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-web-composite/afiliacion-personas-web-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-web-composite/afiliacion-personas-web-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web66">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-web/afiliacion-personas-web-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-web/afiliacion-personas-web-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web25">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/view/web-application-afiliados/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/view/web-application-afiliados/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web69">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/pila-bandeja/pila-bandeja-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/pila-bandeja/pila-bandeja-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web24">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/validaciones/validaciones-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/validaciones/validaciones-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web68">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/pagos-subsidio-monetario/pagos-subsidio-monetario-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/pagos-subsidio-monetario/pagos-subsidio-monetario-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web61">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores-composite/afiliacion-empleadores-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores-composite/afiliacion-empleadores-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web60">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores-web-composite/afiliacion-empleadores-web-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores-web-composite/afiliacion-empleadores-web-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web16">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/view/theme-project/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/view/theme-project/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web59">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/cartera-composite/cartera-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/cartera-composite/cartera-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web15">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/aportes/aportes-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/aportes/aportes-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web18">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/correspondencia/correspondencia-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/correspondencia/correspondencia-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web17">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/fovis/fovis-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/fovis/fovis-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web19">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/view/web-application/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/view/web-application/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web52">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/tareas-humanas/tareas-humanas-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/tareas-humanas/tareas-humanas-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web5">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/entidades-pagadoras-composite/entidades-pagadoras-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/entidades-pagadoras-composite/entidades-pagadoras-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web51">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/empresas/empresas-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/empresas/empresas-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web4">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/pila/pila-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/pila/pila-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web54">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/usuarios/usuarios-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/usuarios/usuarios-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web10">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/solicitud-composite/solicitud-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/solicitud-composite/solicitud-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web7">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/notificaciones/notificaciones-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/notificaciones/notificaciones-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web53">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/zenith/zenith-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/zenith/zenith-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web6">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario-parametros/subsidio-monetario-parametros-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario-parametros/subsidio-monetario-parametros-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web56">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/listas-chequeo/listas-chequeo-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/listas-chequeo/listas-chequeo-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web9">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/view/web-application-officer/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/view/web-application-officer/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web12">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/parametros-asopagos/parametros-asopagos-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/parametros-asopagos/parametros-asopagos-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web55">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/process-schedule/process-schedule-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/process-schedule/process-schedule-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web11">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/esb/cliente-fovis-esb/cliente-fovis-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/esb/cliente-fovis-esb/cliente-fovis-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web8">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-composite/afiliacion-personas-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-composite/afiliacion-personas-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web58">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/novedades-fovis-composite/novedades-fovis-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/novedades-fovis-composite/novedades-fovis-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web14">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/view/web-application-public/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/view/web-application-public/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web57">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/fovis-composite/fovis-composite-service/src/test/resources/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/fovis-composite/fovis-composite-service/src/test/resources" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web13">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/Sat/sat-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/Sat/sat-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/parametros/parametros-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/parametros/parametros-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web50">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/auditoria/auditoria-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/auditoria/auditoria-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web49">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/zenith-composite/zenith-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/zenith-composite/zenith-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web48">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/listas-chequeo-composite/listas-chequeo-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/listas-chequeo-composite/listas-chequeo-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web41">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/novedades/novedades-api/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/novedades/novedades-api/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web40">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/afiliados/afiliados-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/afiliados/afiliados-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web43">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/seven/seven-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/seven/seven-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web42">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/fovis-composite/fovis-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/fovis-composite/fovis-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web45">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/entidades-pagadoras/entidades-pagadoras-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/entidades-pagadoras/entidades-pagadoras-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web44">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas/afiliacion-personas-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas/afiliacion-personas-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web47">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/reportes/reportes-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/reportes/reportes-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web46">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/archivos/archivos-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/archivos/archivos-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web3">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/afiliaciones/afiliaciones-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/afiliaciones/afiliaciones-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web2">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/cartera/cartera-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/cartera/cartera-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web38">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/listas/listas-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/listas/listas-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web37">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/aportes-composite/aportes-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/aportes-composite/aportes-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web39">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/personas/personas-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/personas/personas-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web30">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/legalizacion-fovis-composite/legalizacion-fovis-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/legalizacion-fovis-composite/legalizacion-fovis-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web74">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/novedades/novedades-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/novedades/novedades-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web73">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/archivos-pila/archivos-pila-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/archivos-pila/archivos-pila-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web32">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/util-develop/ddl-validator/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/util-develop/ddl-validator/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web76">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/pila-composite/pila-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/pila-composite/pila-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web31">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/pagos-subsidio-monetario-composite/pagos-subsidio-monetario-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/pagos-subsidio-monetario-composite/pagos-subsidio-monetario-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web75">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/consola-estado-cargue-procesos/consola-estado-cargue-procesos-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/consola-estado-cargue-procesos/consola-estado-cargue-procesos-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web34">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/asignar-solicitudes/asignar-solicitudes-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/asignar-solicitudes/asignar-solicitudes-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web33">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/entidad-descuento-composite/entidad-descuento-composite-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/entidad-descuento-composite/entidad-descuento-composite-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web36">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/consola-ejecucion-proceso-asincrono/consola-ejecucion-proceso-asincrono-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/consola-ejecucion-proceso-asincrono/consola-ejecucion-proceso-asincrono-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web35">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/novedades-fovis/novedades-fovis-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/novedades-fovis/novedades-fovis-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web70">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/legalizacion-fovis/legalizacion-fovis-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/legalizacion-fovis/legalizacion-fovis-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web72">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/cliente-anibol/cliente-anibol-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/cliente-anibol/cliente-anibol-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web71">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores/afiliacion-empleadores-service/src/main/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores/afiliacion-empleadores-service/src/main/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/coreaas">
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/bpm/bpm-commons/asopagos-maven-plugin/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/bpm/bpm-commons/event-listeners/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/bpm/bpm-commons/workitem-handlers/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/bpm/bpm-processes/correcciones_aportes/src/test/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/commons/commons-cache/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/commons/commons-fovis-dto/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/commons/commons-log/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/commons/commons-pila-dto/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/commons/commons-server-util/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/commons/commons-service-locator/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/commons/commons-subsidio-dto/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/commons/commons-util/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/config-environment/src/main/resources/jenkinsfiles" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/anibol-esb/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/auditoria-esb/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/auditoria-esb/src/test/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/cliente-azure/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/cliente-erp-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/cliente-esb-archivos-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/cliente-fovis-esb/cliente-fovis-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/cliente-mediacion-eventos/cliente-mediacion-eventos-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/cliente-odoo-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/mediacion-eventos/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/mediador/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/mediador/src/test/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/esb/zenith-esb/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/model/model-auditoria-entities/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/model/model-core-entities/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/model/model-enumeraciones/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/model/model-fovis-entities/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/model/model-parametros-solucion/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/model/model-pila-entities/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/model/model-security-entities/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/model/model-subsidio-entities/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliacion-personas-rutines/actualizar-solicitud-afiliacion-persona-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliaciones-rutines/radicar-lista-solicitudes-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/activar-afiliado-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/actualizar-beneficiario-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/actualizar-beneficiario-simple-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/actualizar-datos-afiliado-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/actualizar-grupo-familiar-persona-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/actualizar-medio-de-pago-grupo-familiar-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/actualizar-novedad-pila-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/actualizar-rol-afiliado-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/calcular-categorias-afiliado-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/consultar-datos-afiliado-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/deshacer-gestion-cero-trabajadores-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/afiliados-rutines/inactivar-beneficiario-rol-afiliado-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/cartera-rutines/actualizar-deuda-presunta-cartera-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/empleadores-rutines/actualizar-estado-empleador-por-aportes-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/empleadores-rutines/modificar-empleador-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/empleadores-rutines/verificar-existe-empleador-asociado-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/empresas-rutines/crear-empresa-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/listas-chequeo-rutines/guardar-lista-chequeo-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-composite-rutines/procesar-activacion-beneficiario-PILA-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-rutines/actualizar-estado-solicitud-novedad-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-rutines/actualizar-solicitud-novedad-persona-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-rutines/confirmar-transaccion-novedad-pila-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-rutines/consultar-novedad-por-nombre-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-rutines/crear-intento-novedad-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-rutines/crear-solicitud-novedad-empleador-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-rutines/crear-solicitud-novedad-persona-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-rutines/crear-solicitud-novedad-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/novedades-rutines/guardar-excepcion-novedad-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/personas-rutines/actualizar-datos-persona-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/personas-rutines/consultar-datos-persona-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/personas-rutines/crear-persona-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/rutines/solicitudes-rutines/guardar-datos-temporales-persona-rutine/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/security/keycloak-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/security/keycloak-providers/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/security/keycloak-rest/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/Sat/sat-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/Sat/sat-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/Sat/sat-service/src/main/java/com/asopagos/sat" isTestSource="false" packagePrefix="co.gov.sed.sace" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores-composite/afiliacion-empleadores-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores-composite/afiliacion-empleadores-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores-web-composite/afiliacion-empleadores-web-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores-web-composite/afiliacion-empleadores-web-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores/afiliacion-empleadores-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-empleadores/afiliacion-empleadores-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-composite/afiliacion-personas-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-composite/afiliacion-personas-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-web-composite/afiliacion-personas-web-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-web-composite/afiliacion-personas-web-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-web/afiliacion-personas-web-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas-web/afiliacion-personas-web-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas/afiliacion-personas-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliacion-personas/afiliacion-personas-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliaciones/afiliaciones-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliaciones/afiliaciones-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliados/afiliados-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/afiliados/afiliados-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/aportes-composite/aportes-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/aportes-composite/aportes-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/aportes/aportes-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/aportes/aportes-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/archivos-pila/archivos-pila-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/archivos-pila/archivos-pila-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/archivos/archivos-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/archivos/archivos-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/asignar-solicitudes/asignar-solicitudes-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/asignar-solicitudes/asignar-solicitudes-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/auditoria/auditoria-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/auditoria/auditoria-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/cartera-composite/cartera-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/cartera-composite/cartera-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/cartera/cartera-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/cartera/cartera-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/cliente-anibol/cliente-anibol-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/cliente-anibol/cliente-anibol-api/src/test/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/cliente-anibol/cliente-anibol-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/comunicados/comunicados-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/comunicados/comunicados-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/consola-ejecucion-proceso-asincrono/consola-ejecucion-proceso-asincrono-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/consola-ejecucion-proceso-asincrono/consola-ejecucion-proceso-asincrono-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/consola-estado-cargue-procesos/consola-estado-cargue-procesos-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/consola-estado-cargue-procesos/consola-estado-cargue-procesos-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/constantes-parametros/constantes-parametros-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/constantes-parametros/constantes-parametros-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/correspondencia/correspondencia-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/correspondencia/correspondencia-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/empleadores/empleadores-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/empleadores/empleadores-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/empresas/empresas-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/empresas/empresas-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/entidad-descuento-composite/entidad-descuento-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/entidad-descuento-composite/entidad-descuento-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/entidad-descuento/entidad-descuento-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/entidad-descuento/entidad-descuento-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/entidades-pagadoras-composite/entidades-pagadoras-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/entidades-pagadoras-composite/entidades-pagadoras-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/entidades-pagadoras/entidades-pagadoras-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/entidades-pagadoras/entidades-pagadoras-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/fovis-composite/fovis-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/fovis-composite/fovis-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/fovis/fovis-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/fovis/fovis-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/historicos/historicos-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/historicos/historicos-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/legalizacion-fovis-composite/legalizacion-fovis-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/legalizacion-fovis-composite/legalizacion-fovis-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/legalizacion-fovis/legalizacion-fovis-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/legalizacion-fovis/legalizacion-fovis-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/listas-chequeo-composite/listas-chequeo-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/listas-chequeo-composite/listas-chequeo-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/listas-chequeo/listas-chequeo-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/listas-chequeo/listas-chequeo-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/listas/listas-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/listas/listas-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/notificaciones-archivos-composite/notificaciones-archivos-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/notificaciones-archivos-composite/notificaciones-archivos-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/notificaciones/notificaciones-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/notificaciones/notificaciones-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/novedades-composite/novedades-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/novedades-composite/novedades-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/novedades-fovis-composite/novedades-fovis-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/novedades-fovis-composite/novedades-fovis-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/novedades-fovis/novedades-fovis-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/novedades-fovis/novedades-fovis-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/novedades/novedades-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/novedades/novedades-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pagos-subsidio-monetario-composite/pagos-subsidio-monetario-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pagos-subsidio-monetario-composite/pagos-subsidio-monetario-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pagos-subsidio-monetario/pagos-subsidio-monetario-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pagos-subsidio-monetario/pagos-subsidio-monetario-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/parametros-asopagos/parametros-asopagos-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/parametros-asopagos/parametros-asopagos-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/parametros/parametros-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/parametros/parametros-service/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/parametros/parametros-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/personas/personas-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/personas/personas-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pila-bandeja/pila-bandeja-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pila-bandeja/pila-bandeja-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pila-composite/pila-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pila-composite/pila-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pila/pila-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/pila/pila-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/process-schedule/process-schedule-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/process-schedule/process-schedule-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/reportes/reportes-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/reportes/reportes-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/seven/seven-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/solicitud-composite/solicitud-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/solicitud-composite/solicitud-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/solicitudes/solicitudes-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/solicitudes/solicitudes-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario-composite/subsidio-monetario-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario-composite/subsidio-monetario-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario-parametros/subsidio-monetario-parametros-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario-parametros/subsidio-monetario-parametros-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario/subsidio-monetario-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/subsidio-monetario/subsidio-monetario-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/tareas-humanas/tareas-humanas-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/tareas-humanas/tareas-humanas-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/usuarios/usuarios-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/usuarios/usuarios-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/validaciones/validaciones-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/validaciones/validaciones-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/zenith-composite/zenith-composite-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/zenith-composite/zenith-composite-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/zenith/zenith-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/zenith/zenith-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/util-develop/code-generators/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/util-develop/jsongenerator/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/util-develop/jsongenerator/src/test/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/util-develop/set-grupos-roles/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/util-develop/sqlgenerator/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/utilities/services-maven-plugin/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/utilities/services-processor/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/utilities/token-bpm-plugin/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/utilities/utilities-formulador/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/validaciones-fovis/validaciones-fovis-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/coreaas/services/validaciones-fovis/validaciones-fovis-service/src/main/java" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

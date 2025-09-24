@@ -1,0 +1,347 @@
+{
+	"info": {
+		"_postman_id": "6a3daba3-327b-4df0-b440-4295ff8158d6",
+		"name": "DFApi-Install",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Autenticación para obtener Token",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{v_clientIdDFApi}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{v_clientSecretDFApi}}",
+							"type": "text"
+						},
+						{
+							"key": "resource",
+							"value": "https://management.core.windows.net",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com/{{v_tenantId}}/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"path": [
+						"{{v_tenantId}}",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LinkedService pila_GoogleCloudStorage",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{v_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"pila_GoogleCloudStorage\",\r\n    \"type\": \"Microsoft.DataFactory/factories/linkedservices\",\r\n    \"properties\": {\r\n        \"annotations\": [],\r\n        \"type\": \"GoogleCloudStorage\",\r\n        \"typeProperties\": {\r\n            \"serviceUrl\": \"https://storage.googleapis.com\",\r\n            \"accessKeyId\": \"{{v_accessKeyIdGoogleStorage}}\",\r\n            \"secretAccessKey\": \"{{v_secretAccessKeyGoogleStorage}}\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://management.azure.com/subscriptions/{{v_subscriptionId}}/resourceGroups/{{v_resourceGroup}}/providers/Microsoft.DataFactory/factories/{{v_dataFactoryName}}/linkedservices/pila_GoogleCloudStorage?api-version=2018-06-01",
+					"protocol": "https",
+					"host": [
+						"management",
+						"azure",
+						"com"
+					],
+					"path": [
+						"subscriptions",
+						"{{v_subscriptionId}}",
+						"resourceGroups",
+						"{{v_resourceGroup}}",
+						"providers",
+						"Microsoft.DataFactory",
+						"factories",
+						"{{v_dataFactoryName}}",
+						"linkedservices",
+						"pila_GoogleCloudStorage"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2018-06-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dataset DSPreliminarArchivoPila",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{v_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"DSPreliminarArchivoPila\",\r\n    \"properties\": {\r\n        \"linkedServiceName\": {\r\n            \"referenceName\": \"pila\",\r\n            \"type\": \"LinkedServiceReference\"\r\n        },\r\n        \"annotations\": [],\r\n        \"type\": \"AzureSqlTable\",\r\n        \"schema\": [\r\n            {\r\n                \"name\": \"papId\",\r\n                \"type\": \"bigint\",\r\n                \"precision\": 19\r\n            },\r\n            {\r\n                \"name\": \"papIndicePlanilla\",\r\n                \"type\": \"bigint\",\r\n                \"precision\": 19\r\n            },\r\n            {\r\n                \"name\": \"papTipoArchivo\",\r\n                \"type\": \"varchar\"\r\n            },\r\n            {\r\n                \"name\": \"papTextoRegistro\",\r\n                \"type\": \"varchar\"\r\n            }\r\n        ],\r\n        \"typeProperties\": {\r\n            \"schema\": \"staging\",\r\n            \"table\": \"PreliminarArchivoPila\"\r\n        }\r\n    },\r\n    \"type\": \"Microsoft.DataFactory/factories/datasets\"\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://management.azure.com/subscriptions/{{v_subscriptionId}}/resourceGroups/{{v_resourceGroup}}/providers/Microsoft.DataFactory/factories/{{v_dataFactoryName}}/datasets/DSPreliminarArchivoPila?api-version=2018-06-01",
+					"protocol": "https",
+					"host": [
+						"management",
+						"azure",
+						"com"
+					],
+					"path": [
+						"subscriptions",
+						"{{v_subscriptionId}}",
+						"resourceGroups",
+						"{{v_resourceGroup}}",
+						"providers",
+						"Microsoft.DataFactory",
+						"factories",
+						"{{v_dataFactoryName}}",
+						"datasets",
+						"DSPreliminarArchivoPila"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2018-06-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dataset DSArchivoPlanillaPILA",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{v_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"DSArchivoPlanillaPILA\",\r\n    \"properties\": {\r\n        \"linkedServiceName\": {\r\n            \"referenceName\": \"pila_GoogleCloudStorage\",\r\n            \"type\": \"LinkedServiceReference\"\r\n        },\r\n        \"annotations\": [],\r\n        \"type\": \"DelimitedText\",\r\n        \"typeProperties\": {\r\n            \"location\": {\r\n                \"type\": \"GoogleCloudStorageLocation\",\r\n                \"bucketName\": \"{{v_bucketGoogleStorage}}\",\r\n                \"folderPath\": \"{{v_folderPathGoogleStorage}}\",\r\n                \"fileName\": {\r\n                    \"value\": \"@{item().archivo}\",\r\n                    \"type\": \"Expression\"\r\n                }\r\n            },\r\n            \"columnDelimiter\": \"|\",\r\n            \"encodingName\": \"UTF-8\",\r\n            \"escapeChar\": \"\",\r\n            \"quoteChar\": \"\"\r\n        },\r\n        \"schema\": [\r\n            {\r\n                \"type\": \"String\"\r\n            }\r\n        ]\r\n    },\r\n    \"type\": \"Microsoft.DataFactory/factories/datasets\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://management.azure.com/subscriptions/{{v_subscriptionId}}/resourceGroups/{{v_resourceGroup}}/providers/Microsoft.DataFactory/factories/{{v_dataFactoryName}}/datasets/DSArchivoPlanillaPILA?api-version=2018-06-01",
+					"protocol": "https",
+					"host": [
+						"management",
+						"azure",
+						"com"
+					],
+					"path": [
+						"subscriptions",
+						"{{v_subscriptionId}}",
+						"resourceGroups",
+						"{{v_resourceGroup}}",
+						"providers",
+						"Microsoft.DataFactory",
+						"factories",
+						"{{v_dataFactoryName}}",
+						"datasets",
+						"DSArchivoPlanillaPILA"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2018-06-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pipeline PersistirPlanillasBloque4",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{v_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"PersistirPlanillasBloque4\",\r\n    \"properties\": {\r\n        \"activities\": [\r\n            {\r\n                \"name\": \"ForEach1\",\r\n                \"type\": \"ForEach\",\r\n                \"dependsOn\": [],\r\n                \"userProperties\": [],\r\n                \"typeProperties\": {\r\n                    \"items\": {\r\n                        \"value\": \"@pipeline().parameters.Files\",\r\n                        \"type\": \"Expression\"\r\n                    },\r\n                    \"activities\": [\r\n                        {\r\n                            \"name\": \"Copy data1\",\r\n                            \"type\": \"Copy\",\r\n                            \"dependsOn\": [\r\n                                {\r\n                                    \"activity\": \"Eliminar Preliminar\",\r\n                                    \"dependencyConditions\": [\r\n                                        \"Succeeded\"\r\n                                    ]\r\n                                }\r\n                            ],\r\n                            \"policy\": {\r\n                                \"timeout\": \"7.00:00:00\",\r\n                                \"retry\": 0,\r\n                                \"retryIntervalInSeconds\": 30,\r\n                                \"secureOutput\": false,\r\n                                \"secureInput\": false\r\n                            },\r\n                            \"userProperties\": [],\r\n                            \"typeProperties\": {\r\n                                \"source\": {\r\n                                    \"type\": \"DelimitedTextSource\",\r\n                                    \"additionalColumns\": [\r\n                                        {\r\n                                            \"name\": \"idPlanilla\",\r\n                                            \"value\": {\r\n                                                \"value\": \"@{item().idPlanilla}\",\r\n                                                \"type\": \"Expression\"\r\n                                            }\r\n                                        },\r\n                                        {\r\n                                            \"name\": \"tipo\",\r\n                                            \"value\": {\r\n                                                \"value\": \"@{item().tipo}\",\r\n                                                \"type\": \"Expression\"\r\n                                            }\r\n                                        }\r\n                                    ],\r\n                                    \"storeSettings\": {\r\n                                        \"type\": \"GoogleCloudStorageReadSettings\",\r\n                                        \"recursive\": true,\r\n                                        \"enablePartitionDiscovery\": false\r\n                                    },\r\n                                    \"formatSettings\": {\r\n                                        \"type\": \"DelimitedTextReadSettings\"\r\n                                    }\r\n                                },\r\n                                \"sink\": {\r\n                                    \"type\": \"AzureSqlSink\"\r\n                                },\r\n                                \"enableStaging\": false,\r\n                                \"translator\": {\r\n                                    \"type\": \"TabularTranslator\",\r\n                                    \"mappings\": [\r\n                                        {\r\n                                            \"source\": {\r\n                                                \"name\": \"idPlanilla\",\r\n                                                \"type\": \"String\"\r\n                                            },\r\n                                            \"sink\": {\r\n                                                \"name\": \"papIndicePlanilla\",\r\n                                                \"type\": \"Int64\",\r\n                                                \"physicalType\": \"bigint\"\r\n                                            }\r\n                                        },\r\n                                        {\r\n                                            \"source\": {\r\n                                                \"name\": \"tipo\",\r\n                                                \"type\": \"String\"\r\n                                            },\r\n                                            \"sink\": {\r\n                                                \"name\": \"papTipoArchivo\",\r\n                                                \"type\": \"String\",\r\n                                                \"physicalType\": \"varchar\"\r\n                                            }\r\n                                        },\r\n                                        {\r\n                                            \"source\": {\r\n                                                \"type\": \"String\",\r\n                                                \"physicalType\": \"String\",\r\n                                                \"ordinal\": 1\r\n                                            },\r\n                                            \"sink\": {\r\n                                                \"name\": \"papTextoRegistro\",\r\n                                                \"type\": \"String\",\r\n                                                \"physicalType\": \"varchar\"\r\n                                            }\r\n                                        }\r\n                                    ],\r\n                                    \"typeConversion\": true,\r\n                                    \"typeConversionSettings\": {\r\n                                        \"allowDataTruncation\": true,\r\n                                        \"treatBooleanAsNumber\": false\r\n                                    }\r\n                                }\r\n                            },\r\n                            \"inputs\": [\r\n                                {\r\n                                    \"referenceName\": \"DSArchivoPlanillaPILA\",\r\n                                    \"type\": \"DatasetReference\"\r\n                                }\r\n                            ],\r\n                            \"outputs\": [\r\n                                {\r\n                                    \"referenceName\": \"DSPreliminarArchivoPila\",\r\n                                    \"type\": \"DatasetReference\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        {\r\n                            \"name\": \"Eliminar Preliminar\",\r\n                            \"type\": \"SqlServerStoredProcedure\",\r\n                            \"dependsOn\": [],\r\n                            \"policy\": {\r\n                                \"timeout\": \"7.00:00:00\",\r\n                                \"retry\": 0,\r\n                                \"retryIntervalInSeconds\": 30,\r\n                                \"secureOutput\": false,\r\n                                \"secureInput\": false\r\n                            },\r\n                            \"userProperties\": [],\r\n                            \"typeProperties\": {\r\n                                \"storedProcedureName\": \"[dbo].[USP_EliminarPreliminarArchivoPila]\",\r\n                                \"storedProcedureParameters\": {\r\n                                    \"IndicePlanilla\": {\r\n                                        \"value\": {\r\n                                            \"value\": \"@{item().idPlanilla}\",\r\n                                            \"type\": \"Expression\"\r\n                                        },\r\n                                        \"type\": \"Int64\"\r\n                                    }\r\n                                }\r\n                            },\r\n                            \"linkedServiceName\": {\r\n                                \"referenceName\": \"pila\",\r\n                                \"type\": \"LinkedServiceReference\"\r\n                            }\r\n                        },\r\n                        {\r\n                            \"name\": \"Ejecutar Persistencia\",\r\n                            \"type\": \"SqlServerStoredProcedure\",\r\n                            \"dependsOn\": [\r\n                                {\r\n                                    \"activity\": \"Copy data1\",\r\n                                    \"dependencyConditions\": [\r\n                                        \"Succeeded\"\r\n                                    ]\r\n                                }\r\n                            ],\r\n                            \"policy\": {\r\n                                \"timeout\": \"7.00:00:00\",\r\n                                \"retry\": 0,\r\n                                \"retryIntervalInSeconds\": 30,\r\n                                \"secureOutput\": false,\r\n                                \"secureInput\": false\r\n                            },\r\n                            \"userProperties\": [],\r\n                            \"typeProperties\": {\r\n                                \"storedProcedureName\": \"[dbo].[USP_ExecutePILA1Persistencia]\",\r\n                                \"storedProcedureParameters\": {\r\n                                    \"IndicePlanilla\": {\r\n                                        \"value\": \"@{item().idPlanilla}\",\r\n                                        \"type\": \"Int64\"\r\n                                    }\r\n                                }\r\n                            },\r\n                            \"linkedServiceName\": {\r\n                                \"referenceName\": \"pila\",\r\n                                \"type\": \"LinkedServiceReference\"\r\n                            }\r\n                        }\r\n                    ]\r\n                }\r\n            }\r\n        ],\r\n        \"parameters\": {\r\n            \"Files\": {\r\n                \"type\": \"object\",\r\n                \"defaultValue\": [\r\n                    {\r\n                        \"archivo\": \"2020-04-15_1_7749012829_NI_892280021_CCF16_13_I_2020-01.TXT\",\r\n                        \"idPlanilla\": 333333,\r\n                        \"tipo\": \"A\"\r\n                    },\r\n                    {\r\n                        \"archivo\": \"2020-04-15_1_7749012829_NI_892280021_CCF16_13_A_2020-01.TXT\",\r\n                        \"idPlanilla\": 444444,\r\n                        \"tipo\": \"I\"\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        \"annotations\": [],\r\n        \"lastPublishTime\": \"2021-03-10T02:16:09Z\"\r\n    },\r\n    \"type\": \"Microsoft.DataFactory/factories/pipelines\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://management.azure.com/subscriptions/{{v_subscriptionId}}/resourceGroups/{{v_resourceGroup}}/providers/Microsoft.DataFactory/factories/{{v_dataFactoryName}}/pipelines/PersistirPlanillasBloque4?api-version=2018-06-01",
+					"protocol": "https",
+					"host": [
+						"management",
+						"azure",
+						"com"
+					],
+					"path": [
+						"subscriptions",
+						"{{v_subscriptionId}}",
+						"resourceGroups",
+						"{{v_resourceGroup}}",
+						"providers",
+						"Microsoft.DataFactory",
+						"factories",
+						"{{v_dataFactoryName}}",
+						"pipelines",
+						"PersistirPlanillasBloque4"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2018-06-01"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "v_subscriptionId",
+			"value": ""
+		},
+		{
+			"key": "v_tenantId",
+			"value": ""
+		},
+		{
+			"key": "v_clientIdDFApi",
+			"value": ""
+		},
+		{
+			"key": "v_clientSecretDFApi",
+			"value": ""
+		},
+		{
+			"key": "v_accessKeyIdGoogleStorage",
+			"value": ""
+		},
+		{
+			"key": "v_secretAccessKeyGoogleStorage",
+			"value": ""
+		},
+		{
+			"key": "v_dataFactoryName",
+			"value": ""
+		},
+		{
+			"key": "v_token",
+			"value": ""
+		},
+		{
+			"key": "v_resourceGroup",
+			"value": ""
+		},
+		{
+			"key": "v_bucketGoogleStorage",
+			"value": ""
+		},
+		{
+			"key": "v_folderPathGoogleStorage",
+			"value": ""
+		}
+	]
+}

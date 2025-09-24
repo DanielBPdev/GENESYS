@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="heinsohn" id="1" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="Core_DROP_SP_ReportesNormativos.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- Changeset correspondientes a los SP de reportes normativos en CORE creados por Xphera -->
+	<changeSet author="ggiraldo" id="2" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/SP_EmpresasAportantes.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	
+	<changeSet author="ggiraldo" id="3" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/SP_reporteCuotaMonetariaNumeroPersonasCargo.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="4" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/SP_reporteCuotaMonetariaNumeroTotalCuotas.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="5" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/SP_reporteInactivosAfiliados.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="6" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/SP_reporteMaestroAfiliados.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="7" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/SP_reporteNovedadesAfiliacionAportante.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="8" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/SP_reporteNovedadesAfiliadosSubsidios.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="9" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/SP_reportePostulacionesYAsignacionesFOVIS.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="olgavega" id="10" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/ReporteDetalladoTrabajadoresSectorAgropecuario.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="olgavega" id="11" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/ASP_ReporteNovedades.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+
+<!--
+	<changeSet author="ggiraldo" id="200" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="Core_PermisosUsuarioXphera.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+-->
+
+</databaseChangeLog>

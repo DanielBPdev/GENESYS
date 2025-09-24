@@ -1,0 +1,16 @@
+{
+    "name": "DSReportesDboDynamicTableDestiny",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "reportes",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "typeProperties": {
+            "tableName": {
+                "value": "dbo.@{item().tabla}",
+                "type": "Expression"
+            }
+        }
+    }
+}

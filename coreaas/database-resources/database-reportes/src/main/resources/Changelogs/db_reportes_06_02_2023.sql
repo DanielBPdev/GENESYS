@@ -1,0 +1,2 @@
+if not exists(select * from ParametrizacionReportesNormativos where prnNumero = 35 ) insert into ParametrizacionReportesNormativos(prnNumero, prnNombre, prnNFrecuencia,prnFormatos ) values (35, 'Ejecución Fondo del Subsidio Familiar de Vivienda FOVIS', 'Mensual', 'xlsx,txt,xml,csv')
+if not exists(select * from ParametrizacionReportesNormativos where prnNumero = 33 ) insert into ParametrizacionReportesNormativos(prnNumero, prnNombre, prnNFrecuencia,prnFormatos ) values (33, 'Cierre Cartera de aportes', 'Mensual', 'xlsx,txt')

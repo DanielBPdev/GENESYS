@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.asopagos.coreaas.bpm</groupId>
+		<artifactId>bpm</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.asopagos.coreaas.bpm</groupId>
+	<artifactId>bpm-commons</artifactId>
+	<packaging>pom</packaging>
+	<name>bpm-commons</name>
+	<description>Paren project for BPM utilities</description>
+
+	<modules>
+		<module>asopagos-maven-plugin</module>
+		<module>event-listeners</module>
+		<module>workitem-handlers</module>
+	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jbpm</groupId>
+			<artifactId>jbpm-kie-services</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.commons</groupId>
+			<artifactId>commons-log</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+</project>

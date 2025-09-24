@@ -1,0 +1,14 @@
+--liquibase formatted sql
+
+--changeSET Heinsohn:01
+--comment: Inserción de ParametrizacionMetodoAsignacion
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual = '1'),'AFILIACION_EMPRESAS_WEB','NUMERO_SOLICITUDES',NULL,'back_afiliacion');
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual = '1'),'AFILIACION_DEPENDIENTE_WEB','PREDEFINIDO','tese1tintegracion@heinsohn.com','back_afiliacion_personas');
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual = '1'),'AFILIACION_INDEPENDIENTE_WEB','PREDEFINIDO','tese1tintegracion@heinsohn.com','back_afiliacion_personas');
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual <> '1'),'AFILIACION_EMPRESAS_PRESENCIAL','CONSECUTIVO_TURNOS','eamaya@heinsohn.com.co','back_afiliacion');
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual <> '1'),'AFILIACION_PERSONAS_PRESENCIAL','PREDEFINIDO','tese1tintegracion@heinsohn.com','back_afiliacion_personas');
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual <> '1'),'NOVEDADES_EMPRESAS_PRESENCIAL','NUMERO_SOLICITUDES',NULL,'back_novedades_empleador');
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual = '1'),'NOVEDADES_EMPRESAS_WEB','NUMERO_SOLICITUDES',NULL,'back_novedades_empleador');
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual <> '1'),'NOVEDADES_PERSONAS_PRESENCIAL','NUMERO_SOLICITUDES',NULL,'back_novedades_personas');
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual = '1'),'NOVEDADES_DEPENDIENTE_WEB','NUMERO_SOLICITUDES',NULL,'back_novedades_personas');
+INSERT ParametrizacionMetodoAsignacion (pmaSedeCajaCompensacion,pmaProceso,pmaMetodoAsignacion,pmaUsuario,pmaGrupo) VALUES ((select sccfId from SedeCajaCompensacion where sccfvirtual = '1'),'NOVEDADES_PERSONAS_WEB','NUMERO_SOLICITUDES',NULL,'back_novedades_personas');

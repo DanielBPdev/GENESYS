@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<!-- Elimina todos los SP de las consultas -->
+	<changeSet author="ggiraldo" id="1" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="DROP_SP_Odoo.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- Crea los SP de las consultas -->
+	<changeSet author="ggiraldo" id="2" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Terceros.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="3" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Afiliaciones_Empresas.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="4" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Afiliaciones_Personas.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="5" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Novedades_Empresas_Personas.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="6" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Aportes_Recaudos_Pila.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="7" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Aportes_Recaudo_Manual.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="8" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Devolucion_Aporte.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="9" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Correcciones_Aporte.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="10" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Prescripcion_Aportes.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="11" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Gestion_Convenios_Pagos_Cartera_Aportes.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="12" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Liquidacion_Pago_Especifico_Subsidio_Monetario.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="13" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Cobro_Cuotas_Subsidio_Monetario.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="14" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Anulacion_Subsidio_Liquidado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="15" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Prescripcion_Subsidio_Monetario.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="16" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Asignacion_Fovis.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="17" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Legalizacion_Desembolso_Fovis.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="ggiraldo" id="18" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ProcedimientosConsultas/Sp_Consulta_Novedades_Fovis_Presencial.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	
+</databaseChangeLog>

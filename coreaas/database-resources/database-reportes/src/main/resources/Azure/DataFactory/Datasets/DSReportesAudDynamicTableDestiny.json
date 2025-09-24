@@ -1,0 +1,16 @@
+{
+    "name": "DSReportesAudDynamicTableDestiny",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "reportes",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "typeProperties": {
+            "tableName": {
+                "value": "aud.@{item().tablaAud}",
+                "type": "Expression"
+            }
+        }
+    }
+}

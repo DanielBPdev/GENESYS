@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.asopagos.coreaas.bpm</groupId>
+		<artifactId>bpm-processes</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	<build>
+		<plugins>
+			<!-- <plugin>
+				<groupId>org.kie</groupId>
+				<artifactId>kie-maven-plugin</artifactId>
+				<extensions>true</extensions>
+			</plugin> -->
+			<plugin>
+				<groupId>com.asopagos.coreaas.maven.plugin</groupId>
+				<artifactId>asopagos-maven-plugin</artifactId>
+				<version>${project.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>com.asopagos.coreaas.utilities.services</groupId>
+				<artifactId>token-bpm-plugin</artifactId>
+				<version>${project.version}</version>
+				<configuration>
+					<urlKeycloak>${url.keycloak}</urlKeycloak>
+					<realm>${realm.bpm}</realm>
+					<user>${user.bpm}</user>
+					<password>${password.bpm}</password>
+					<clientId>${clientid.bpm}</clientId>
+					<secret>${secret.bpm}</secret>
+					<urlBpm>${url.bpm}</urlBpm>
+					<processDeployArtifact>${project.artifactId}</processDeployArtifact>
+					<processDeployGroupId>${project.groupId}</processDeployGroupId>
+					<processVersion>${project.version}</processVersion>
+					<goal>deploy</goal>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>deploy</phase>
+						<goals>
+							<goal>bpm-deploy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<groupId>com.asopagos.coreaas.bpm.devolucion_aportes</groupId>
+	<artifactId>devolucion_aportes</artifactId>
+	<name>devolucion_aportes</name>
+	<description>Este proyecto define el proceso de devolución de aportes</description>
+	<!-- <packaging>kjar</packaging> -->
+	<dependencies>
+		<dependency>
+			<groupId>com.asopagos.coreaas.commons</groupId>
+			<artifactId>commons-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.bpm.proceso_eventos</groupId>
+			<artifactId>proceso_eventos</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+</project>

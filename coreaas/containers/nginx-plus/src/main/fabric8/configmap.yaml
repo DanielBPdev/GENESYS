@@ -1,0 +1,996 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-plus
+  namespace: default
+data:
+  backend_service_discovery.conf: |
+    resolver kube-dns.kube-system.svc.cluster.local valid=5s;
+
+    upstream afiliacion-empleadores {
+        zone afiliacion-empleadores 64k;
+        server afiliacion-empleadores-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream afiliacion-empleadores-composite {
+        zone afiliacion-empleadores-composite 64k;
+        server afiliacion-empleadores-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream afiliacion-empleadores-web-composite {
+        zone afiliacion-empleadores-web-composite 64k;
+        server afiliacion-empleadores-web-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream afiliaciones {
+        zone afiliaciones 64k;
+        server afiliaciones-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream afiliacion-personas {
+        zone afiliacion-personas 64k;
+        server afiliacion-personas-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream afiliacion-personas-composite {
+        zone afiliacion-personas-composite 64k;
+        server afiliacion-personas-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream afiliacion-personas-web {
+        zone afiliacion-personas-web 64k;
+        server afiliacion-personas-web-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream afiliacion-personas-web-composite {
+        zone afiliacion-personas-web-composite 64k;
+        server afiliacion-personas-web-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream afiliados {
+        zone afiliados 64k;
+        server afiliados-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream aportes {
+        zone aportes 64k;
+        server aportes-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream aportes-composite {
+        zone aportes-composite 64k;
+        server aportes-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream archivos {
+        zone archivos 64k;
+        server archivos-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream archivos-pila {
+        zone archivos-pila 64k;
+        server archivos-pila-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream asignar-solicitudes {
+        zone asignar-solicitudes 64k;
+        server asignar-solicitudes-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream auditoria {
+        zone auditoria 64k;
+        server auditoria-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream cartera {
+        zone cartera 64k;
+        server cartera-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream cartera-composite {
+        zone cartera-composite 64k;
+        server cartera-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream comunicados {
+        zone comunicados 64k;
+        server comunicados-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream consola-ejecucion-proceso-asincrono {
+        zone consola-ejecucion-proceso-asincrono 64k;
+        server consola-ejecucion-proceso-asincrono-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream consola-estado-cargue-procesos {
+        zone consola-estado-cargue-procesos 64k;
+        server consola-estado-cargue-procesos-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream constantes-parametros {
+        zone constantes-parametros 64k;
+        server constantes-parametros-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream parametros {
+        zone parametros 64k;
+        server parametros-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream correspondencia {
+        zone correspondencia 64k;
+        server correspondencia-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream empleadores {
+        zone empleadores 64k;
+        server empleadores-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream empresas {
+        zone empresas 64k;
+        server empresas-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream entidad-descuento {
+        zone entidad-descuento 64k;
+        server entidad-descuento-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream entidad-descuento-composite {
+        zone entidad-descuento-composite 64k;
+        server entidad-descuento-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream entidades-pagadoras {
+        zone entidades-pagadoras 64k;
+        server entidades-pagadoras-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream entidades-pagadoras-composite {
+        zone entidades-pagadoras-composite 64k;
+        server entidades-pagadoras-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream fovis {
+        zone fovis 64k;
+        server fovis-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream fovis-composite {
+        zone fovis-composite 64k;
+        server fovis-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream historicos {
+        zone historicos 64k;
+        server historicos-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream legalizacion-fovis {
+        zone legalizacion-fovis 64k;
+        server legalizacion-fovis-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream legalizacion-fovis-composite {
+        zone legalizacion-fovis-composite 64k;
+        server legalizacion-fovis-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream listas {
+        zone listas 64k;
+        server listas-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream listas-chequeo {
+        zone listas-chequeo 64k;
+        server listas-chequeo-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream listas-chequeo-composite {
+        zone listas-chequeo-composite 64k;
+        server listas-chequeo-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream notificaciones {
+        zone notificaciones 64k;
+        server notificaciones-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream notificaciones-archivos-composite {
+        zone notificaciones-archivos-composite 64k;
+        server notificaciones-archivos-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream novedades {
+        zone novedades 64k;
+        server novedades-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream novedades-composite {
+        zone novedades-composite 64k;
+        server novedades-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream novedades-fovis {
+        zone novedades-fovis 64k;
+        server novedades-fovis-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream novedades-fovis-composite {
+        zone novedades-fovis-composite 64k;
+        server novedades-fovis-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream pagos-subsidio-monetario {
+        zone pagos-subsidio-monetario 64k;
+        server pagos-subsidio-monetario-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream pagos-subsidio-monetario-composite {
+        zone pagos-subsidio-monetario-composite 64k;
+        server pagos-subsidio-monetario-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream personas {
+        zone personas 64k;
+        server personas-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream pila {
+        zone pila 64k;
+        server pila-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream pila-bandeja {
+        zone pila-bandeja 64k;
+        server pila-bandeja-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream pila-composite {
+        zone pila-composite 64k;
+        server pila-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream process-schedule {
+        zone process-schedule 64k;
+        server process-schedule-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream solicitud-composite {
+        zone solicitud-composite 64k;
+        server solicitud-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream solicitudes {
+        zone solicitudes 64k;
+        server solicitudes-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream subsidio-monetario {
+        zone subsidio-monetario 64k;
+        server subsidio-monetario-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream subsidio-monetario-composite {
+        zone subsidio-monetario-composite 64k;
+        server subsidio-monetario-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream tareas-humanas {
+        zone tareas-humanas 64k;
+        server tareas-humanas-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream usuarios {
+        zone usuarios 64k;
+        server usuarios-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream validaciones {
+        zone validaciones 64k;
+        server validaciones-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream validaciones-fovis {
+        zone validaciones-fovis 64k;
+        server validaciones-fovis-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream reportes {
+        zone reportes 64k;
+        server reportes-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream subsidio-monetario-parametros {
+        zone subsidio-monetario-parametros 64k;
+        server subsidio-monetario-parametros-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream cliente-anibol {
+        zone cliente-anibol 64k;
+        server cliente-anibol-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream zenith {
+        zone zenith 64k;
+        server zenith-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream zenith-composite {
+        zone zenith-composite 64k;
+        server zenith-composite-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream cliente-zenith {
+        zone cliente-zenith 64k;
+        server cliente-zenith-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream cliente-seven {
+        zone cliente-seven 64k;
+        server cliente-seven-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream cliente-azure {
+        zone cliente-azure 64k;
+        server cliente-azure-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream cliente-odoo-service {
+        zone cliente-odoo-service 64k;
+        server cliente-odoo-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+    upstream sat {
+        zone sat 64k;
+        server sat-service.default.svc.cluster.local service=_http._tcp resolve;
+    }
+
+    server {
+        listen 443 ssl;
+        server_name  nginxcomfacauca.asopagos.com;
+        ssl_certificate     /etc/ssl/asp.crt;
+        ssl_certificate_key /etc/ssl/asp.key;
+        status_zone asopagos-services;
+        client_max_body_size 400M;
+
+        location /AfiliacionEmpleadoresService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://afiliacion-empleadores;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AfiliacionEmpleadoresService;
+        }
+        location /AfiliacionEmpleadoresCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://afiliacion-empleadores-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AfiliacionEmpleadoresCompositeService;
+        }
+        location /AfiliacionEmpleadoresWebCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://afiliacion-empleadores-web-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AfiliacionEmpleadoresWebCompositeService;
+        }
+        location /AfiliacionesService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://afiliaciones;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AfiliacionesService;
+        }
+        location /AfiliacionPersonasService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://afiliacion-personas;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AfiliacionPersonasService;
+        }
+        location /AfiliacionPersonasWebService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://afiliacion-personas-web;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AfiliacionPersonasWebService;
+        }
+        location /AfiliacionPersonasCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://afiliacion-personas-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AfiliacionPersonasCompositeService;
+        }
+        location /AfiliacionPersonasWebCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://afiliacion-personas-web-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AfiliacionPersonasWebCompositeService;
+        }
+        location /AfiliadosService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://afiliados;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AfiliadosService;
+        }
+        location /AportesService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://aportes;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AportesService;
+        }
+        location /AportesCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://aportes-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AportesCompositeService;
+        }
+        location /ArchivosService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://archivos;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ArchivosService;
+        }
+        location /ArchivosPilaService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://archivos-pila;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ArchivosPilaService;
+        }
+        location /AsignarSolicitudesService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://asignar-solicitudes;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AsignarSolicitudesService;
+        }
+        location /AuditoriaService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://auditoria;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/AuditoriaService;
+        }
+        location /CarteraService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://cartera;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/CarteraService;
+        }
+        location /CarteraCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://cartera-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/CarteraCompositeService;
+        }
+        location /ComunicadosService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://comunicados;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ComunicadosService;
+        }
+        location /ConsolaEjecucionProcesoAsincronoService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://consola-ejecucion-proceso-asincrono;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ConsolaEjecucionProcesoAsincronoService;
+        }
+        location /ConsolaEstadoCargueProcesosService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://consola-estado-cargue-procesos;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ConsolaEstadoCargueProcesosService;
+        }
+        location /ConstantesParametrosService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://constantes-parametros;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ConstantesParametrosService;
+        }
+        location /ParametrosService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://parametros;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ParametrosService;
+        }
+        location /CorrespondenciaService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://correspondencia;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/CorrespondenciaService;
+        }
+        location /EmpleadoresService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://empleadores;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/EmpleadoresService;
+        }
+        location /EmpresasService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://empresas;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/EmpresasService;
+        }
+        location /EntidadDescuentoService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://entidad-descuento;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/EntidadDescuentoService;
+        }
+        location /EntidadDescuentoCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://entidad-descuento-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/EntidadDescuentoCompositeService;
+        }
+        location /EntidadesPagadorasService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://entidades-pagadoras;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/EntidadesPagadorasService;
+        }
+        location /EntidadesPagadorasCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://entidades-pagadoras-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/EntidadesPagadorasCompositeService;
+        }
+        location /FovisService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://fovis;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/FovisService;
+        }
+        location /FovisCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://fovis-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/FovisCompositeService;
+        }
+        location /HistoricosService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://historicos;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/HistoricosService;
+        }
+        location /LegalizacionFovisService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://legalizacion-fovis;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/LegalizacionFovisService;
+        }
+        location /LegalizacionFovisCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://legalizacion-fovis-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/LegalizacionFovisCompositeService;
+        }
+        location /ListasService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://listas;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ListasService;
+        }
+        location /ListasChequeoService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://listas-chequeo;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ListasChequeoService;
+        }
+        location /ListasChequeoCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://listas-chequeo-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ListasChequeoCompositeService;
+        }
+        location /NotificacionesService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://notificaciones;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/NotificacionesService;
+        }
+        location /NotificacionesArchivosCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://notificaciones-archivos-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/NotificacionesArchivosCompositeService;
+        }
+        location /NovedadesService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://novedades;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/NovedadesService;
+        }
+        location /NovedadesCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://novedades-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/NovedadesCompositeService;
+        }
+        location /NovedadesFovisService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://novedades-fovis;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/NovedadesFovisService;
+        }
+        location /NovedadesFovisCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://novedades-fovis-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/NovedadesFovisCompositeService;
+        }
+        location /PagosSubsidioMonetarioService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://pagos-subsidio-monetario;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/PagosSubsidioMonetarioService;
+        }
+        location /PagosSubsidioMonetarioCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://pagos-subsidio-monetario-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/PagosSubsidioMonetarioCompositeService;
+        }
+        location /PersonasService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://personas;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/PersonasService;
+        }
+        location /PilaService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://pila;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/PilaService;
+        }
+        location /PilaBandejaService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://pila-bandeja;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/PilaBandejaService;
+        }
+        location /PilaCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://pila-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/PilaCompositeService;
+        }
+        location /ProcessScheduleService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://process-schedule;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ProcessScheduleService;
+        }
+        location /SolicitudCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://solicitud-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/SolicitudCompositeService;
+        }
+        location /SolicitudesService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://solicitudes;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/SolicitudesService;
+        }
+        location /SubsidioMonetarioService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://subsidio-monetario;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/SubsidioMonetarioService;
+        }
+        location /SubsidioMonetarioCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://subsidio-monetario-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/SubsidioMonetarioCompositeService;
+        }
+        location /TareasHumanasService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://tareas-humanas;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/TareasHumanasService;
+        }
+        location /UsuariosService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://usuarios;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/UsuariosService;
+        }
+        location /ValidacionesService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://validaciones;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ValidacionesService;
+        }
+        location /ValidacionesFovisService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://validaciones-fovis;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ValidacionesFovisService;
+        }
+        location /ReportesService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://reportes;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ReportesService;
+        }
+
+        location /SubsidioMonetarioParametrosService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://subsidio-monetario-parametros;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/SubsidioMonetarioParametrosService;
+        }
+        location /ClienteAnibolService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://cliente-anibol;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/health;
+        }
+        location /ZenithService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://zenith;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ZenithService;
+        }
+        location /ZenithCompositeService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://zenith-composite;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ZenithCompositeService;
+        }
+        location /ClienteZenithService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://cliente-zenith;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/health;
+        }
+        location /ClienteSevenService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://cliente-seven;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/health;
+        }
+        location /ClienteAzureService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://cliente-azure;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/health;
+        }
+        location /ClienteOdooService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://cliente-odoo-service;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/ClienteOdooService/rest/externalAPI/clienteOdoo/hola-mundo;
+
+        }
+        location /SatService {
+            auth_jwt "Root";
+            auth_jwt_key_file /etc/nginx/secret.json;
+            proxy_pass http://sat;
+            proxy_connect_timeout       600;
+            proxy_send_timeout          600;
+            proxy_read_timeout          600;
+            send_timeout                600;
+            health_check uri=/SatService;
+        }
+    }
+
+    server {
+        listen 8443 ssl;
+        server_name  nginxpluspruebas.asopagos.com;
+        ssl_certificate     /etc/ssl/asp.crt;
+        ssl_certificate_key /etc/ssl/asp.key;
+        location /api/ {
+            api write=on;
+        }
+
+        location = /dashboard.html {
+            root   /usr/share/nginx/html;
+        }
+
+        # Redirect requests made to the old dashboard
+        location = / {
+            return 301 /dashboard.html;
+        }
+
+        location = /status.html {
+            return 301 /dashboard.html;
+        }
+    }

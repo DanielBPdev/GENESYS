@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: ${project.artifactId}
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector: null
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        date: ${timestamp}
+      creationTimestamp: null
+      labels:
+        name: ${project.artifactId}
+      name: ${project.artifactId}
+    spec:
+      selector:
+      - matchLabels:
+          group: ${project.groupId}
+          project: ${project.artifactId}
+          provider: fabric
+      containers:
+      - env:
+        - name: APP_USER
+          value: user
+        - name: APP_PASS
+          value: changeme
+        - name: MGMT_USER
+          value: admin
+        - name: MGMT_PASS
+          value: admin
+        image: ${docker.registry.name}/${project.artifactId}
+        imagePullPolicy: Always
+        name: ${project.artifactId}
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: tz-config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /usr/share/zoneinfo/America/Bogota
+          type: ""
+        name: tz-config
+status: {}

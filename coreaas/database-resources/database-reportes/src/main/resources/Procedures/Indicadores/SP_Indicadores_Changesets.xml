@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="heinsohn" id="1" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="DROP_SP_Indicadores.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="2" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_INSERT_DimPeriodo.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="3" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_INSERT_DimSede.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="21" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactCondicionEmpleador.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="22" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactCondicionSolicitudesEmpleador.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="23" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactCondicionPersona.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="24" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactCondicionSolicitudesPersona.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="25" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactCondicionBeneficiario.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="26" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_UPDATE_ValorMetaPeriodoCanalKPI.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="27" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactCondicionAportante.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="28" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactArchivoPILA.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="29" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactCondicionCotizante.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="30" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactNovedadPersona.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="31" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_MERGE_FactNovedadEmpleador.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet> 
+	<changeSet author="arocha" id="101" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactCondicionSolicitanteCarteraV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="102" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactGestionCarteraV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="103" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_INSERT_DimCicloAsignacionV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="104" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactPostulacionFOVISV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="105" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactAsignacionFOVISV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="106" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactLegalizacionDesembolsoFOVISV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="107" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactNovedadFOVISV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="108" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactAfiliacionEmpleadorV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="109" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactSolicitudAfiliacionEmpleadorV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="110" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactSolicitudAfiliacionPersonaV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="111" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactAfiliacionPersonaV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="112" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactAfiliadoV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="113" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactSolicitudNovedadEmpleadorV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="arocha" id="114" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="V2/USP_REP_MERGE_FactSolicitudNovedadPersonaV2.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+</databaseChangeLog>

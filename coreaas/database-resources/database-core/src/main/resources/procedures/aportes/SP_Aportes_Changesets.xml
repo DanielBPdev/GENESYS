@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+						http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="heinsohn" id="1" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="DROP_SP.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- Store Procedures for User History SP -->
+	<changeSet
+		author="heinsohn" id="2" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_ActualizarAporte.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="heinsohn" id="3" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_CalculoMasivoCategorias.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="heinsohn" id="4" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_CopiarAportesDesdeTemporalPila.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="heinsohn" id="5" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_CopiarPilaAportesStaging.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="heinsohn" id="6" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_GET_CategoriaAfiliado.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="heinsohn" id="7" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_GET_CategoriaBeneficiario.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="heinsohn" id="8" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_GET_BandejaTransitoriaGestion.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="heinsohn" id="9" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_CopiarAportesDesdeTemporalPilaCorrecciones.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- Agregados para el proceso de creación de los objetos en la correción de novedades desde
+	pila. -->
+	<changeSet
+		author="Robinson Castillo" id="10" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="fechaNovedadPila.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="Robinson Castillo" id="11" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ASP_GET_COTIZANTE_REINTEGRO.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="Robinson Castillo" id="12" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ASP_GET_COTIZANTE_FECHA_INGRESO.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="Robinson Castillo" id="13" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ASP_NovedadesRegistradasPersonaIntING.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="Robinson Castillo" id="14" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_GET_CategoriasHeredadas.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="asopagos" id="15" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_CalcularCategoriaAportesPila.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="Eprocess" id="16" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_APORTES_FUTUROS.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="rcastillo" id="17" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_CalcularCategoriaNuevaAfiliacion.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet
+		author="rcastillo" id="18" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_CopiarAportesDesdeTemporalPilaPlanillasN.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet
+		author="alex" id="19" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_DesafiliacionEmpleador_Trabajadores_Masiva.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="alex" id="20" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_CalcularCategoriaBeneficiario.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="alex" id="21" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_EJECUTAR_REGISTRO_APORTES_CAMBIO_CAJA_MULTIAFILIACION.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="alex" id="22" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_Consultar_tiempos_multiafiliacion.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+
+	<changeSet author="rcastillo" id="23" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="ASP_ExecuteValidateNovPila.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="ACamelo" id="24" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_CalcularIngresosFovis.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="ACamelo" id="25" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_CalcularCategoriaBeneficiarioInsert.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="ACamelo" id="26" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_CorreccionDiariaCategorias.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	
+	<!-- Rutina de asignacion de permisos (debe estar siempre al final) -->
+	<changeSet
+		author="heinsohn" id="500" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="GRANT_Aportes_SP.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+</databaseChangeLog>

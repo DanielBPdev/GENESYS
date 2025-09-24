@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="Robinson" id="1" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="DROP_SP_Masivos.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="Robinson" id="2" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_Execute_pila2FaseDos.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+    <changeSet author="Robinson" id="3" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_Execute_pila2FaseInicial.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+
+    <changeSet author="Robinson" id="4" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_Execute_pilaProcesarAporte.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+
+    <changeSet author="Robinson" id="5" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_Execute_Validacion_Inicial.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+
+    <changeSet author="Robinson" id="6" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_ExecutePILA2Fase2RegistrarRelacionarAportes.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+
+    <changeSet author="Robinson" id="7" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_ExecuteRegistrarRelacionarAportesRegistro.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+
+    <changeSet author="Robinson" id="8" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="crearPersonas.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+    <changeSet author="Robinson" id="9" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_SimularAportesDevolucionMasivos.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	    <changeSet author="Robinson" id="10" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_SimularAportesDevolucionMasivosSolicitud.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+    <changeSet author="Robinson" id="11" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_ConsultarAportesDevolucionMasivosDetalle.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+    <changeSet author="Robinson" id="12" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="ASP_ConsultarAportesDevolucionMasivos.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+	
+</databaseChangeLog>

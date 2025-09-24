@@ -1,0 +1,4 @@
+ALTER TABLE PostulacionProveedor
+ADD CONSTRAINT FK_Postulacion_Proveedores
+FOREIGN KEY (prpSolicitudLegalizacionFovis)
+REFERENCES dbo.SolicitudLegalizacionDesembolso(sldId)

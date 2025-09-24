@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.asopagos.coreaas.database</groupId>
+		<artifactId>database-resources</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>database-auditoria-asopagos</artifactId>
+	<name>Database asopagos auditoria artifacts</name>
+	<description>Contains artifacts to generate data structures of Genesys's ASOPAGOS_AUD database</description>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+					<changeLogFile>${project.build.resources[0].directory}/master.xml</changeLogFile>
+					<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>integracion</id>
+			<properties>
+				<liquibase.url>jdbc:sqlserver://${dbserver.integracion}:1433;databaseName=asopagos_aud;integratedSecurity=false;</liquibase.url>
+				<liquibase.password>${settings.servers.dbIntegracion.password}</liquibase.password>
+				<liquibase.contexts>integracion</liquibase.contexts>
+			</properties>
+		</profile>
+		<profile>
+			<id>pruebas</id>
+			<properties>
+				<liquibase.url>jdbc:sqlserver://${dbserver.pruebas}:1433;databaseName=asopagos_aud;integratedSecurity=false;</liquibase.url>
+				<liquibase.password>${settings.servers.dbPruebas.password}</liquibase.password>
+				<liquibase.contexts>pruebas</liquibase.contexts>
+			</properties>
+		</profile>
+		<profile>
+			<id>pruebas-asopagos</id>
+			<properties>
+				<liquibase.url>jdbc:sqlserver://${dbserver.pruebas-asopagos}:1433;databaseName=${database.asopagos}_aud;integratedSecurity=false;</liquibase.url>
+				<liquibase.password>${settings.servers.dbPruebasAsopagos.password}</liquibase.password>
+				<liquibase.contexts>pruebas-asopagos</liquibase.contexts>
+			</properties>
+		</profile>
+		<profile>
+			<id>developer</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<liquibase.url>jdbc:sqlserver://${dbserver.pruebas}:1433;databaseName=asopagos_${user.name}_aud;integratedSecurity=false;</liquibase.url>
+				<liquibase.username>asopagos_${user.name}</liquibase.username>
+				<liquibase.password>${user.name}</liquibase.password>
+				<liquibase.contexts>integracion</liquibase.contexts>
+			</properties>
+		</profile>
+		<profile>
+			<id>subsidio</id>
+			<properties>
+				<liquibase.url>jdbc:sqlserver://${dbserver.subsidio}:1433;databaseName=asopagos_aud;integratedSecurity=false;</liquibase.url>
+				<liquibase.password>${settings.servers.dbIntegracion.password}</liquibase.password>
+				<liquibase.contexts>asopagosSubsidio</liquibase.contexts>
+			</properties>
+		</profile>
+		<profile>
+			<id>cloud-integracion</id>
+			<properties>
+				<liquibase.url>jdbc:sqlserver://${dbserver.cloud-integracion}:1433;databaseName=asopagos_aud;integratedSecurity=false;</liquibase.url>
+				<liquibase.username>sqladmin</liquibase.username>
+				<liquibase.password>Zaqwsx1234$</liquibase.password>
+				<liquibase.contexts>cloud-integracion</liquibase.contexts>
+			</properties>
+		</profile>
+
+	</profiles>
+
+</project>

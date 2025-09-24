@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="heinsohn" id="1" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="DROP_Reportes_SP.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- Store Procedures for User History SP -->	
+	
+	<changeSet author="heinsohn" id="2" runAlways="true"
+		runOnChange="true" context="!cloud-integracion">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="OnPremises/USP_GET_EmpresasAportantes.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="3" runAlways="true"
+		runOnChange="true" context="cloud-integracion">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="Azure/USP_GET_EmpresasAportantes.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	
+	<changeSet author="heinsohn" id="4" runAlways="true"
+		runOnChange="true" context="!cloud-integracion">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="OnPremises/USP_GET_UbicacionContactoAportantes.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="5" runAlways="true"
+		runOnChange="true" context="cloud-integracion">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="Azure/USP_GET_UbicacionContactoAportantes.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	
+	<changeSet author="heinsohn" id="6" runAlways="true"
+		runOnChange="true" context="!cloud-integracion">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="OnPremises/USP_GET_AsignacionEntregaReintegroFOVIS.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="7" runAlways="true"
+		runOnChange="true" context="cloud-integracion">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="Azure/USP_GET_AsignacionEntregaReintegroFOVIS.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	
+	<changeSet author="heinsohn" id="8" runAlways="true"
+		runOnChange="true" context="cloud-integracion">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="Azure/USP_GET_InconsistenciasUGPP.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="9" runAlways="true"
+		runOnChange="true" context="cloud-integracion">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="Azure/USP_GET_NovedadesEstadoAfiliacion.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="10" runAlways="true"
+		runOnChange="true" context="cloud-integracion">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="Azure/USP_GET_RegistroUnicoEmpleadores.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="11" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_CambioCategoriaAfiliado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="12" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_NuevaCategoriaAfiliado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="13" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_INS_EstadoAfiliacionEmpleadorCaja.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="14" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_INS_EstadoAfiliacionPersonaCaja.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="15" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_INS_EstadoAfiliacionPersonaEmpresa.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="16" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_INS_EstadoAfiliacionPersonaIndependiente.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="17" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_INS_EstadoAfiliacionPersonaPensionado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="heinsohn" id="18" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_SET_CalcularCategoriasAporteFuturo.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="asopagosti" id="19" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_REPGIASS181.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="asopagosti" id="20" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_REPGIASS182.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="asopagosti" id="21" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_REPGIASS183.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="asopagosti" id="22" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_REPGIASS184.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="asopagosti" id="23" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_REPGIASS185.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="asopagosti" id="24" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_REPGIASS186.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="asopagosti" id="25" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_REPGIASS187.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="asopagosti" id="26" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="USP_REP_REPGIASS188.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	
+	<!-- Rutina de asignacion de permisos (debe estar siempre al final) -->
+	<changeSet author="heinsohn" id="500" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="GRANT_Reportes_SP.sql"
+			relativeToChangelogFile="true" splitStatements="false" stripComments="false" />
+	</changeSet>
+
+</databaseChangeLog>

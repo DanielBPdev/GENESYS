@@ -1,0 +1,4955 @@
+"users" : [ {
+    "id" : "db5596a9-53a4-4506-9846-2eafdbb4d9d5",
+    "createdTimestamp" : 1513611401225,
+    "username" : "admin",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "admin",
+    "lastName" : "admin",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "F7uz4C7YLlMZa+7uf9squpjFK35KP/XMnVypBJn6WNzVQRGDGNpuQyzhVg0ZhvMSD2JMtsZMlOSe8w4kE3uXtQ==",
+      "salt" : "Z76oQru2uXQAgHOwRYtO0g==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513611601000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_caja", "/AdminCCF", "/OfiSegCCF" ]
+  }, {
+    "id" : "6dd64274-5681-4265-b561-bdde2f5c3eb5",
+    "createdTimestamp" : 1513783098784,
+    "username" : "adriana.jaramillo@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "segundoNombre" : [ "ADRIANA" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "GÓMEZ" ],
+      "dependencia" : [ "2" ],
+      "PREG_1" : [ "VrS+MDsSHTBis9DuQRJ/KA3XG/h1j8ZmLf1v1reca51HlC1puNrA3rnnfkIxeCxXAD8HSrZgJH0=" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "telefono" : [ "4074000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "PREG_5" : [ "VrS+MDsSHTBis9DuQRJ/KA3XG/h1j8ZmLf1v1reca51HlC1puNrA3oFhAV0bF36qEDngc0mTe/w=" ],
+      "email" : [ "ADRIANA.JARAMILLO@ASOPAGOS.COM" ],
+      "PREG_3" : [ "VrS+MDsSHTBis9DuQRJ/KA3XG/h1j8ZmLf1v1reca51HlC1puNrA3tH3EZ0DU+Zm/3/81nxggfI=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "dinn8yQr09mPdCq1Q2yUcR/WcMPCPcTgiMVIYiTTOu7qH0Aq2hPqESZGqmRDulmzkfVEMHzEWfAz11KfrRl0Ig==",
+      "salt" : "QhJorIXd4yggsQMnzxMmRw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513783101000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "XHZsVUdSRJR75BH9WuFB8jjTeUgisreY1EB49CSef2zaKAIuzGlJaaOBWQRs9dWasnNmansThvvbg9axjezkFA==",
+      "salt" : "dWzqiAVSYf0MNzo0/7oa3A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513783328000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "a54e2a39-9bcc-450d-aa7c-1b4bd786b8b0",
+    "createdTimestamp" : 1513891430740,
+    "username" : "adriari23@hotmail.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "PREG_1" : [ "OImHIxm7/U9pzF4iRvV7D/PkvheVqBnHSCDqz+TLTMM+eiUe2oFwOg==" ],
+      "segundoNombre" : [ "ADRI" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "sede" : [ "1" ],
+      "telefono" : [ "4074000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "PREG_5" : [ "OImHIxm7/U9pzF4iRvV7D/PkvheVqBnHSCDqz+TLTMMuXROOqbyM3A==" ],
+      "dependencia" : [ "2" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ],
+      "PREG_3" : [ "OImHIxm7/U9pzF4iRvV7D/PkvheVqBnHSCDqz+TLTMNS6rJOzTb5DA==" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "ajQJNDk5nFYq/TdtLJbaP6zPuVOUENEfYc9tm+oxsuneRckVaAs2Q+4MBG9sBUHIfin9WXtheQ+KCkgitLJlig==",
+      "salt" : "ERMBGXYt43Cjb54rh7SxIQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513891499000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "+U6xy9QCPGOBxjilAEbOVyXN0bBk57zgirzopYmkPi4bWUNaJNsleLOqL7ulxGumBmVgSus/meg7ZuBg0gDEEg==",
+      "salt" : "EegD3QBxSvILDndbbacxKg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513891433000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "545e1bcf-eddd-4470-9c58-0af3687d734b",
+    "createdTimestamp" : 1514402071497,
+    "username" : "angzuluaga@heinsohn.com.co",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "Angela",
+    "lastName" : "Paola",
+    "email" : "angzuluaga@heinsohn.com.co",
+    "attributes" : {
+      "sede" : [ "1" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "2tIgCMS9kKMEpudZTbUF883HoBvsrubC8nPoqsoI+AeJ7bF1b21MxB/jZJSVXd47BxjQ0OF4byEe93HUrOCZFw==",
+      "salt" : "10mJM/WS9cMLkANMHvjkBw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514402102000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/funcionario_caja", "/SupAfiEmp", "/BacAfiPer", "/FroAfiPer", "/SupCar", "/AnaCarApo", "/BacAfiEmp", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "8689278d-7a57-4d1d-8b4a-4ed38867ea01",
+    "createdTimestamp" : 1510848943384,
+    "username" : "bpmsadmin",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "bpmsAdmin",
+    "lastName" : "bpmsAdmin",
+    "attributes" : {
+      "locale" : [ "es" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "dHllUB1Jz1Q+FPihs5uyf+Fva9sX8v5vL583srHgTUhJcDWwetsxQFITdAdNrEBnszGpY/ZqWPfbTKsRATneNQ==",
+      "salt" : "F2xgq0HFg3ztS4ancA8MjQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1510849021000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "rest-all", "admin", "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ ]
+  }, {
+    "id" : "3f5387cd-4110-414b-a2e5-a0523caf5b5b",
+    "createdTimestamp" : 1515555113565,
+    "username" : "carne_diplomatico_c20098987",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "AD",
+    "lastName" : "AD",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "CARNE_DIPLOMATICO" ],
+      "numIdentificacion" : [ "C20098987" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "JKCdnqaAB9dr0KEODQWWyhYeXDP97rtV7FlOSld9Snel5MgQyoUdCN+myDcyuAWlqRQLBFHSgkesO6XCd7tT9w==",
+      "salt" : "hCMbOqjaVFE/FSjlbBo8RA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515555113000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "fe05a70f-0fc7-4ae6-8afc-bf3b10e3f252",
+    "createdTimestamp" : 1516287894243,
+    "username" : "cc_10134324",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "Prueba",
+    "lastName" : "",
+    "email" : "example@prueba.com",
+    "attributes" : {
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "10134324" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "+fR+o5DbstyyMDTz8Yrhp4sDNvhhc0zVLlcYYYiI7fv/rORZgEZAgsWv+6QZDXaeR7ZwvNCCEGqGiimMlRl96A==",
+      "salt" : "zTM8ZKuXroVqrNjd1whFdA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516288074000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "7d390899-ed9d-480a-af6b-7121051f8cd5",
+    "createdTimestamp" : 1514412623106,
+    "username" : "cc_1016",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "usuario",
+    "lastName" : "pruebas",
+    "email" : "example@aexample.com",
+    "attributes" : {
+      "numIdentificacion" : [ "1016" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "fepTgejfJS1skbq/GJyeSmXyEELqTgAhrN9+1cJYMcGrJdywrRiCfM1E0NVn0/esxSt1bKWY2wTC8c/oasXh1Q==",
+      "salt" : "X1PEBslUYjshZQEsIJu/Bg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514412769000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "meicR6ncS19LyxhIXdYBtN/dPPpRWKI3ISapXZgJAYRRA5qL78mcH6Mut8Dz9CW/4VpGPqJ5PCJUXrCvi5j3Tw==",
+      "salt" : "YNrmFMacn9tykJbvHQyMvg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514413166000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "d02f011e-8fb0-405e-9359-aebbacc3e0a6",
+    "createdTimestamp" : 1514995682636,
+    "username" : "cc_1017",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "usuario",
+    "lastName" : "pruebas1",
+    "email" : "example1@aexample.com",
+    "attributes" : {
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "1017" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "soHIHZ/upAwzXlkkLpN1u1M4hAFs1pHw1yrxEx/8aZiXYfQFQ0zZzj+KNL0FoKLBkuyviU+oSSoKvn1tyHE+5A==",
+      "salt" : "bSaaF8WJ55ug1ay25tADAg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514995729000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "91a14c46-5135-4ff7-9976-6113b0289934",
+    "createdTimestamp" : 1515528266591,
+    "username" : "cc_1018",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "pruebas2",
+    "lastName" : "usuario",
+    "email" : "example2@aexample.com",
+    "attributes" : {
+      "numIdentificacion" : [ "1018" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "pp3kmB5lHI2vkrfvWn5uOxSwaOjsZRvm24mm19YNDUBGMk0xIhrFLDT2vHBCk6S6NF1ZKDWlcqGN3E1G6u2Ttg==",
+      "salt" : "QxPvY6hAku9D/d9bRZ24Ag==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515528328000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "9fed7726-3e55-4280-8434-bc53137e7bbc",
+    "createdTimestamp" : 1515601120124,
+    "username" : "cc_1019",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "usuario3",
+    "lastName" : "pruebas3",
+    "email" : "example3@aexample.com",
+    "attributes" : {
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "1019" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "eXdTlSgYXVs5u+dLuZ19FESayLbmMoFKrudkfX5YmYusI6aKCViNABlAglWUkkSqWYkc3+7A7eD2b4nz68FxnQ==",
+      "salt" : "DXHzOSdKGwXAeX6buyTHRw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515601198000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "4092092a-ef55-4c6b-970e-e81bbbcf792d",
+    "createdTimestamp" : 1515601265584,
+    "username" : "cc_1020",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "usuario4",
+    "lastName" : "pruebas4",
+    "email" : "example4@aexample.com",
+    "attributes" : {
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "1020" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "Ot+2/iyukVkKChU8r6ryGAzBFb4+Mva3V7CTM5jba3XrF6xcZUGjOKqzPoGjUnUqvkC1DbUVVHp2zdEWbo6v5A==",
+      "salt" : "HBihxuFN/eF1i7SrZLw2qQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515601313000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "b2dfa039-16cc-4b8d-9ffb-37c2fc372750",
+    "createdTimestamp" : 1516290359263,
+    "username" : "cc_1048",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "attributes" : {
+      "numidentificacion" : [ "1048" ],
+      "tipoIdentificacion" : [ "CC" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "ACihOhKnsG/8WSq1YpZ9V/B3rVAKY10+XWPvrNJv0o1THFffUZe6DjSncASIgTAYc/KcmDW0G7R1P/WW8jrubA==",
+      "salt" : "V390peoKQM6u2dW7uMd8Ww==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516290372000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "d744c354-fa04-4ec2-ba9d-14e5b7d2e6df",
+    "createdTimestamp" : 1515610725102,
+    "username" : "cc_24625127",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "pruebas5",
+    "lastName" : "usuario5",
+    "email" : "example5@aexample.com",
+    "attributes" : {
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "24625127" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "oOdRiF9KPGeoi5pVC6dzi7t+XFs7wW4dU3g0xwrShgtxJQlTlY6aAP5IVPkPr7YjVRMEkshdaoHaovrzzA4jxg==",
+      "salt" : "gif1UkqNwFRx9SesLDlTaQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515610841000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "c3dabf08-34dd-4bfc-b903-74961f30fb9d",
+    "createdTimestamp" : 1516290138995,
+    "username" : "cc_30391659",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "attributes" : {
+      "numIdentificacion" : [ "30391659" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "t38NU+4VUo97sEwnhFO64PdcwQ0thb8WRIg44GkIAst3lY1KYEdWTRhm3Lc6C+iWdz2hHL5guk8JveIf9NIEfw==",
+      "salt" : "OYlYW3Hw1MpCtIrTr9Rx4g==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516290203000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "KhI1qLY2ZCshVJrjrRxgCWh0brQVQVzkfZM4Vz3qCsJly7RtVouo1gSx51/W5mRyqe4dTLjNbq7HHCWxfecN+w==",
+      "salt" : "4MdUoXtX10B51JC20txozg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516716072000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "c4e7e143-cfb7-40b3-bc3e-5b5bc5e09d85",
+    "createdTimestamp" : 1516797317184,
+    "username" : "cc_901202100",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "pruebas7",
+    "email" : "example7@aexample.com",
+    "attributes" : {
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "901202100" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "LA6jafXU3f1n+llqk1PE9cbrXSFOmQM5WD+3zGNOiymvP9bkWKJ07yNt+GmMesOqhD7LY/ZtrH7gMY9SXSUcgw==",
+      "salt" : "yzSKSMayKzp0toDbrYZp7A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516797379000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "67952d7b-eeb5-4f1b-b6e2-cd61c8296ccf",
+    "createdTimestamp" : 1516716164009,
+    "username" : "cc_909122",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "pruebas6",
+    "lastName" : "pruebas6",
+    "email" : "example6@aexample.com",
+    "attributes" : {
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "909122" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "XeZjb5taKiqlTswCK5MM7b98dqLCy8VdJNEy130DyGMjihOiW8FiM9lSuA6fYsBOlvoCeg3a2FnuLez3VC60OA==",
+      "salt" : "2D8NE5yDqGq+n7uXGBQ/cg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516716217000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "35dbcd4e-8c9e-4c7b-9b00-e340fa3b1d1d",
+    "createdTimestamp" : 1516290264467,
+    "username" : "cc_990911",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "attributes" : {
+      "numidentificacion" : [ "990911" ],
+      "tipoIdentificacion" : [ "CC" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "dFHx85Eo2m8n3DBKfgHBN5uRjgh6amZMkD6e6XBq79xY+Uci/agAN2mTIKRGUyhIyGnyeQ+iD7rLQXiD2PU7dQ==",
+      "salt" : "XYYJ8D/WFye6g5xTNOqY0g==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516290311000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/afiliado_persona" ]
+  }, {
+    "id" : "c0d16ee2-ad36-4591-bc64-42f8be36b3c9",
+    "createdTimestamp" : 1516753994964,
+    "username" : "cedula_ciudadania_10000227",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JUAN",
+    "lastName" : "ARJONA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "10000227" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "TK3Bf//tnxeYW0C8x4zeoBsMSzsJKnFt1o0pLvgkp4HHaxsJSP2mpt/dcjUFBdAKTAbMa7+/CLiNURU256095w==",
+      "salt" : "b6OGFqbo9htug8skHZn6Xg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516753995000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "8bb4cfc3-b8c1-4cc6-992a-2d0d1b61d0e3",
+    "createdTimestamp" : 1516119965075,
+    "username" : "cedula_ciudadania_1023333179",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADOLFO",
+    "lastName" : "PRIMO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "1023333179" ],
+      "email" : [ "ADRIANA.JARAMILLO@ASOPAGOS.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "Lyo+oL57iwrKvlLCU1O0LB+0e70ow3+gX8p3L0s5uByOFSbjyliL+kWqYpmbFFRi+SCVOCkzqg39l7shrDXF6Q==",
+      "salt" : "URlqF0sVC75eApoYncHRvw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516119965000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "10c772ce-3280-4723-ae80-61815efbc525",
+    "createdTimestamp" : 1516745905328,
+    "username" : "cedula_ciudadania_1023456999",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JOSE",
+    "lastName" : "CANSECO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "1023456999" ],
+      "email" : [ "DEISY.HERNANDEZ@ASOPAGOS.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "coIUgeZTnwWbEQ9vr6mUhXHeUleJUjcoHxs8+O0DXIG+998RIh8sVp/YXNeI5ghHsOqJWyMcwXEls/KtgP9Xzg==",
+      "salt" : "CJV3J3wZyAyLPZFDacFGlQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516745905000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "7ce05566-cf3f-40ee-81e5-1edf5caa3701",
+    "createdTimestamp" : 1514383719980,
+    "username" : "cedula_ciudadania_1110904876",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ISABELLA",
+    "lastName" : "HINCAPIE",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "1110904876" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "Nl2mIcbihyV+Kr1UgIlwLEv2mPBT6qHkcyfK+/tI5Jz283evWVsTIk221v882fjZHFbGP8TpOAbxQA7X462axA==",
+      "salt" : "LXO9DKOJ6BhL9xL5CJ0tdQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514383720000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "1a786dcf-d7d2-4d58-a410-d376da24b61e",
+    "createdTimestamp" : 1513963768954,
+    "username" : "cedula_ciudadania_123456789",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "PACO",
+    "lastName" : "PERILLA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "123456789" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "HL2ujwxIT7r3qrqwfQNli8OSEXH2sBb0SsMln7YnWbV7Fd+A0dtnmCR9HH3PWOTuFVKSpjh2hPITMZ9imUDxVA==",
+      "salt" : "2hiSAs2jjx86nPVM6mZrbA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513963769000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "7c6adbc2-edcd-4b34-8a7f-3ea3588d5fd1",
+    "createdTimestamp" : 1516391109233,
+    "username" : "cedula_ciudadania_24316598",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ASD",
+    "lastName" : "ASD",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "24316598" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "8FqEZd46rbC1YvBQH+AzTtUEE4O5ZdDHI2xpmw68ldvE5cI2xuQo6cvfjVFVMfF5irB22NbrTxRzIcuBVJPJNQ==",
+      "salt" : "nIzEmN3BCthF0H15x0wfcA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516391109000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "39a3d9d0-f91d-4b30-8b75-2880851d0888",
+    "createdTimestamp" : 1515441869574,
+    "username" : "cedula_ciudadania_245235423",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "QWEQWEQ",
+    "lastName" : "QWERTY",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "245235423" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "/E9jSvc6X/xM/zqwGXwMLYbHAK564fAVIg9RtL8EEALLmwIcpC67Dt7IVMr1PRdG1b5tZFAkrGwv3ISYQPL+Iw==",
+      "salt" : "XWUeF213r6BchpDilrn6VQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515441869000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "ad69ab84-3594-42c8-8ecc-e2d60a70cb08",
+    "createdTimestamp" : 1515441576747,
+    "username" : "cedula_ciudadania_324234234",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "SDFSDF",
+    "lastName" : "SDFSDF",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "324234234" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "QjMl8PYbi0n5giQVjtfWr6KwmMITZrpxH6eSQW56EO7RueX2p089mQgpCaZWV3iw19KK3zBQhj94AHReCgfpkQ==",
+      "salt" : "75fZZPa6c0LDiE/kLsugsQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515441577000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "5b6a0f0a-c829-43a8-8d8b-ef0aa7225929",
+    "createdTimestamp" : 1513799737868,
+    "username" : "cedula_ciudadania_34567",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "TAKA",
+    "lastName" : "TAKA",
+    "attributes" : {
+      "PREG_2" : [ "LT6S7aofT/1hFFi0iGsJY9XLTX9qqcCkPWgE7STTROomb01sdcLLVg==" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "numIdentificacion" : [ "34567" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "PREG_6" : [ "LT6S7aofT/1hFFi0iGsJY9XLTX9qqcCkPWgE7STTROqWXChU80rA/w==" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ],
+      "PREG_3" : [ "LT6S7aofT/1hFFi0iGsJY9XLTX9qqcCkPWgE7STTROr9AhRO+p/gaw==" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "G4CzQbNQeIK7ob4sD6TInh1E0gKN2ZN3Qd2kuD/NfCnBghH4EVogKnFHqyswtoe5SDA3kcAemaohXGkjOJrUUg==",
+      "salt" : "ShVpxCOAPqHAnK96CszTHg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513799738000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "K7WhBiQbcLNcNE8Q7Sx/j19OVK7wNXZdwqQO+5cpBckecpYJYPy4njfJqlBg1OQR0/xR0Arb+QCmDPl9wRE2LQ==",
+      "salt" : "85g/cX1EDJLwO+soz80z5A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515556399000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "6811814b-7a13-470c-b0a2-ce35c5ea8757",
+    "createdTimestamp" : 1516282369522,
+    "username" : "cedula_ciudadania_56788765",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "DANIEL",
+    "lastName" : "USECHE",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "56788765" ],
+      "email" : [ "BNM@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "jMRlsEsM7NGzG8We0edlAUesK4+cs93sNLkJs9akZ+cSOBd7EQleSufn/DUqDF4e6ntFjWOR0zCDhFfyJAHAdA==",
+      "salt" : "/4s3RHhC7Nw3EHf9HqOMsg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516282369000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "88c48a5d-7620-479a-8928-91a54c1ad359",
+    "createdTimestamp" : 1516055530114,
+    "username" : "cedula_ciudadania_56789000",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "56789000" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "htlOAJNCTrioU7vg6+Wa37SGZz/hJCV+rK0E3s+mQn2u7npMJ/UE4cCgzCOzj+t0CBU9+QLTTV3BbjeoFWoXrg==",
+      "salt" : "bNUg82sSIDIfKf6rj3dHHA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516055530000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "0974b826-f6c4-4d79-93d7-8dc67ab7522f",
+    "createdTimestamp" : 1515442203397,
+    "username" : "cedula_ciudadania_7216421",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "DASDA",
+    "lastName" : "DASSDA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "numIdentificacion" : [ "7216421" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "emwEQkSRgxzwXbR/RDHJGLxwRL17c9NR21bzLTUIyMFarW8sSyeCWsq6pZIpb4NY1QPzV38C+jsLLUrDdY6OlA==",
+      "salt" : "z5Ly6VMB4jK/XhojnQuRTA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515442203000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "5a4e34a6-abae-4c76-ad4d-f55e5234d45e",
+    "createdTimestamp" : 1515552966709,
+    "username" : "cedula_ciudadania_79876545",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ASD",
+    "lastName" : "ASD",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "79876545" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "dAE2zWk/EEgcIvszVRTxf6l5Xrh2GymRJChEcMedYCgpBzzLShQM60PXuIz6nn0vpEGnajt1HHC2iaNNUrOc1A==",
+      "salt" : "agEy2bBxze1u5jsZJTur0A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515552967000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "a38acf5f-2ee3-4e9d-bdc9-b54c77f98c42",
+    "createdTimestamp" : 1513967561815,
+    "username" : "cedula_ciudadania_80000000",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "LUISA",
+    "lastName" : "PUENTE",
+    "attributes" : {
+      "PREG_1" : [ "LT6S7aofT/1hFFi0iGsJY31ffQzT5tYPZp4KEfoIC4jrsYnYy7fhoySRz2KvV9VnpXB5pT9w794=" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "numIdentificacion" : [ "80000000" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "PREG_5" : [ "LT6S7aofT/1hFFi0iGsJY31ffQzT5tYPZp4KEfoIC4jrsYnYy7fhoySRz2KvV9VnpXB5pT9w794=" ],
+      "email" : [ "PRETORIANO353@GMAIL.COM" ],
+      "PREG_3" : [ "LT6S7aofT/1hFFi0iGsJY31ffQzT5tYPZp4KEfoIC4jrsYnYy7fhowpyNlIjf6hiVNRWPtif5VY=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "AYmne5LS2gK1vArmVoUns7UH4a67Dhu6RhfXOwnakF62beL3RFTViA2GPzPgRYhP2pQgIn9T410xwVWXybwVZA==",
+      "salt" : "9JjALxWBRngIrJzEPK009g==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513967562000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "d197RjRtypd9D5pKQuT1nSs6Ls+hWzkPTUPE3k2sDlmPjQPrnkl/7glCfbp0Q40CcVqkk3ZyjzzhMEfAgPQ7HA==",
+      "salt" : "okO/t49oiVE19KGXIT3PIA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516763132000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "0b414ff7-8aa7-475a-9ea2-ed499074e6b1",
+    "createdTimestamp" : 1515537604931,
+    "username" : "cedula_ciudadania_98728088",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "OFEN",
+    "lastName" : "BACH",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "98728088" ],
+      "tipoIdentificacion" : [ "CEDULA_CIUDADANIA" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "J6wUe3AFz4b5x6RraKDyHJKVkEind+OlCBi3byDdfBKVEj93LBwRlw9SusNp4wbh1rdC0aEjrb57hkl/Yw5+bg==",
+      "salt" : "ObIGU1SVATRRsZfcxFY4fQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515537605000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "3425964a-4b26-4236-a5fc-1f907eedd4d4",
+    "createdTimestamp" : 1516769069192,
+    "username" : "cedula_extranjeria_12345",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "AASA",
+    "lastName" : "DD",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "CEDULA_EXTRANJERIA" ],
+      "numIdentificacion" : [ "12345" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "w3cXbyQb5uScYT86QeP69DK9otGHOoXkovxzp135WqFmpNQ+q/SCkFSVYc11V5F5IK+GZDmEk6OIGKJ2RZW3Bw==",
+      "salt" : "ePlbmS3/JWh2RUlbNya8Ww==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516769069000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "ac5546f6-6b0e-4b88-95f1-0255ab8833c7",
+    "createdTimestamp" : 1516658865220,
+    "username" : "cindy.bonilla@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "CINDY",
+    "lastName" : "BONILLA",
+    "attributes" : {
+      "segundoNombre" : [ "MARISELA" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "GRILLO" ],
+      "dependencia" : [ "3" ],
+      "PREG_1" : [ "ssHnjYQOasvRMQ88WS63gmRnFJNTMaf1Yb95ZPXOoEwjOJpnUboQV/5lcpPho2ewmPfys0GY+B0=" ],
+      "fechaFinContrato" : [ "1546232400000" ],
+      "PREG_6" : [ "ssHnjYQOasvRMQ88WS63gmRnFJNTMaf1Yb95ZPXOoEwjOJpnUboQV75Z6JTg39AKppu/sHZNCjg=" ],
+      "telefono" : [ "3242442" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "email" : [ "CINDY.BONILLA@ASOPAGOS.COM" ],
+      "PREG_3" : [ "ssHnjYQOasvRMQ88WS63gmRnFJNTMaf1Yb95ZPXOoEwjOJpnUboQV7zsGNyi6Jgv7226SDWoH2g=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "qX3gl7NuOjgYrO0e0hJK3E8pu0gWxZHHcNwDAvbpv37eL1X2rVk7MW1Vkn/cAU1QM0gPK/IMAR7GnETKQCDRXA==",
+      "salt" : "692o/a9TiBNM1Nfycjl7gA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516658868000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "bN2xN7zBL5EZjRabDyqmXzW95QsA1sLMtUxMwbU/8EDiaYi1L10krW62tk9wqZZL5vLuTQ5ljhiHExC9iiDNvw==",
+      "salt" : "wKsx6qGhaEUcBPTs9AH5Ng==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516659045000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "GLqSO1zfesH7Gox30IyZPrj62wCJojiRhLyeQYywZw8xarpWmAhcauksICU+0Dd/YPblRD/apZG+wa3mqw9drw==",
+      "salt" : "3SniEDU3lAUD8nlwgY3/mQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516658978000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/UExEmNoCuWe", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/Aud", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/UExEmCuWe", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/UExPeCuWe", "/UExPeNoCuWe", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "7a3c5502-6f48-44b3-aa2f-93611669e93d",
+    "createdTimestamp" : 1513970608580,
+    "username" : "deiher.dahs@gmail.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "DEISY",
+    "lastName" : "HERNANDEZ",
+    "attributes" : {
+      "PREG_2" : [ "Q+CkuPuH5cQgMqIptowj4Zd5ixMqmfHXQqxuxE5r669EuyRGffGB7A==" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "fechaFinContrato" : [ "1546318800000" ],
+      "sede" : [ "1" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "telefono" : [ "4074000" ],
+      "PREG_6" : [ "Q+CkuPuH5cQgMqIptowj4Zd5ixMqmfHXQqxuxE5r668J1JxN7zyG4g==" ],
+      "dependencia" : [ "1" ],
+      "email" : [ "DEIHER.DAHS@GMAIL.COM" ],
+      "PREG_4" : [ "Q+CkuPuH5cQgMqIptowj4Zd5ixMqmfHXQqxuxE5r66/rTSl07q8zHQ==" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "sCs/6HkW2jB4UL2cGkwJWydrh1P+SQPBjURyTSoP7hIfA7Np3u4qwrN9RPapOKt6+LVmZ60xX7gpujbWvZX5Tw==",
+      "salt" : "xCKwTyaaj6mp8qlC3eW9HA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513970609000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "Wag2itkDnpNkSL/xZYFZYTOTkqtb3+ypKWgRP/SfwAopWK1c9EIHbPLhlNoamZ3dtOurtzqo5Ts2+SfviGSxmQ==",
+      "salt" : "JkzQtRSRdeYuOzitBwlF5Q==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513970767000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_caja", "/AnaPagSub", "/AnaSubMon", "/AnaAnuSub" ]
+  }, {
+    "id" : "e4f65316-7950-451f-993d-1a07b4c2d4ec",
+    "createdTimestamp" : 1513782657912,
+    "username" : "deisy.hernandez@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "HERNÁNDEZ",
+    "attributes" : {
+      "segundoNombre" : [ "DEISY" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "SOTELO" ],
+      "dependencia" : [ "2" ],
+      "PREG_2" : [ "BcIEQK1/ImnDCElexzPJQMhCGQN3sNhEX/dNRZkCM3S2ZbVKfggvE5hAhL+7FOLVSDKXPZChwGE=" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "PREG_6" : [ "BcIEQK1/ImnDCElexzPJQMhCGQN3sNhEX/dNRZkCM3S2ZbVKfggvE2HUT3FsB/FOUs+A7a8VeDI=" ],
+      "telefono" : [ "4074000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "email" : [ "DEISY.HERNANDEZ@ASOPAGOS.COM" ],
+      "PREG_4" : [ "BcIEQK1/ImnDCElexzPJQMhCGQN3sNhEX/dNRZkCM3S2ZbVKfggvE79p7XkZhEXJ5kBrb0TxLCA=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "GDntCdmjrQdV8UtphCeUNOOo7GJ4ohGk1Ogu4RMofSWXe4o3ODc5rLVW0em6AJQyfAisbLk4M4/+pxh86VaQvA==",
+      "salt" : "yT//ixcHTyHmSgOxSMaL2A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782660000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "6Puujx1uHVJBrzugiHDdYoc/A4N9N0pudZClIJJbKqcvOciPeEYvv3iNz+B076sCO6ZHGKoVblHC1rbmYh0+0Q==",
+      "salt" : "9AYRqM5oLqEHrbx79UXZdg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782732000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "66db58fa-c08e-41e0-b550-b1a61c5c761f",
+    "createdTimestamp" : 1513782419348,
+    "username" : "diego.morales@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "MORALES",
+    "attributes" : {
+      "segundoNombre" : [ "DIEGO" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "AMAYA" ],
+      "dependencia" : [ "2" ],
+      "PREG_1" : [ "rwPvfL1XisVZcYcttnG/YWH2Y3gcoFKDs2DWrGlXIg15X5YeuekGsONOlLx6cVI2WgKQs8EyAcg=" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "telefono" : [ "4074000" ],
+      "PREG_6" : [ "rwPvfL1XisVZcYcttnG/YWH2Y3gcoFKDs2DWrGlXIg15X5YeuekGsHOnb9qSKLDLMD3FIEODrWo=" ],
+      "PREG_4" : [ "rwPvfL1XisVZcYcttnG/YWH2Y3gcoFKDs2DWrGlXIg15X5YeuekGsDHHkNHTvZmZrf/qwRlus7E=" ],
+      "email" : [ "DIEGO.MORALES@ASOPAGOS.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "J3G/SmMneJgAWZTCcAbSkTTJFXiyydBLcZaFKnxL5PaEVXFJCwmgko18jBYcrvdwLKi88S8sX+6U2c0qO2BW8Q==",
+      "salt" : "N6cP8Pomlr9EcqjYdJB0/w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782522000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "ntdI+bUMxhYRevN+8StEwUax85yR/fArNsli1xOfL/9Ts2J6mHfISkmjO0/QjCdJJK6iuFGF04Q+TUrRvgvZJg==",
+      "salt" : "Xnw0IKfMtB3y5/omwMoIBA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782422000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "de794139-2f6f-431d-a0ac-d31ed1fcddec",
+    "createdTimestamp" : 1513784305263,
+    "username" : "juan.oviedo@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "OVIEDO",
+    "attributes" : {
+      "segundoNombre" : [ "JUAN" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "RODRÍGUEZ" ],
+      "dependencia" : [ "2" ],
+      "PREG_1" : [ "Pc8y5OuL1x29NrWePcUb++pT6vq00nJxwqRHzFe5dWc85pokgeLG3JU4rlQjWwzQcPStLDXSOKM=" ],
+      "fechaFinContrato" : [ "2871694800000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "telefono" : [ "4070000" ],
+      "PREG_6" : [ "Pc8y5OuL1x29NrWePcUb++pT6vq00nJxwqRHzFe5dWc85pokgeLG3ByeUnY4uRp7iQcV/OSV/q8=" ],
+      "email" : [ "JUAN.OVIEDO@ASOPAGOS.COM" ],
+      "PREG_3" : [ "Pc8y5OuL1x29NrWePcUb++pT6vq00nJxwqRHzFe5dWc85pokgeLG3AvgLLeDr7hPJ7+GG+PEAx0=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "RR5qSgNZ8hkF9MyPDugnWJVWafnbCzXrBPKS6a1Pm9QTZQbJxnTwd9NyeSQ63QK52nuUaUdmf3OFSVFf0wth0Q==",
+      "salt" : "9MVN6xhZ3rQgs6T9yviV3A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513784307000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "WsIkzJvoZ+dlZfCdzvj07rVaSkqkbHK1pTF3NodMBXnTW7cLjuOu38uWpBnIdB0di9l6KVtadDz2HX7gbRsGew==",
+      "salt" : "S4/RPz57FEn9nGIjjMCW7A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513784473000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "4d8d8b65-2604-4b79-a5c9-315b1a617955",
+    "createdTimestamp" : 1513782825384,
+    "username" : "juan.ramirez@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "RAMÍREZ",
+    "attributes" : {
+      "segundoNombre" : [ "JUAN" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "RAMÍREZ" ],
+      "dependencia" : [ "2" ],
+      "PREG_1" : [ "uvgKaYrMilIBzptsaaO+j56Z4lkWZc4Vjai3r2Pu9kW8RutVkdaeUQvWzq/WsEuuF+C1O943F+4=" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "telefono" : [ "4074000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "PREG_6" : [ "uvgKaYrMilIBzptsaaO+j56Z4lkWZc4Vjai3r2Pu9kW8RutVkdaeUVZ3vC07JkysOai/C5SRENA=" ],
+      "email" : [ "JUAN.RAMIREZ@ASOPAGOS.COM" ],
+      "PREG_3" : [ "uvgKaYrMilIBzptsaaO+j56Z4lkWZc4Vjai3r2Pu9kW8RutVkdaeUXUgbWSonAEtTVgdb5tJZW8=" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "fLwog1KKJyiIAhwMI67ejEANQpxB8MF4Zt3OIoL+LHtBL7SNMtEzDMsZIMTgldVVd8GBUV3dN3DGxWFroTKFPw==",
+      "salt" : "jbJDslF3q6D3LnvUUKUfhw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513797867000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "jFzBXkozFrguuKUlw/hnkopIVsvTZBCPMAG2x2qrzxBzdFPePXyG7UuCx4NdR2aDWTnbDQDdndmZyNJ6vRE4Kg==",
+      "salt" : "rcddz489mpUTyg5j8nW/EA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782828000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "0040db02-b797-48eb-8f24-dd2fc7009b3a",
+    "createdTimestamp" : 1515505993161,
+    "username" : "juan.romero@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JUAN",
+    "lastName" : "ROMERO",
+    "attributes" : {
+      "segundoNombre" : [ "GABRIEL" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "CANO" ],
+      "dependencia" : [ "1" ],
+      "PREG_1" : [ "LxyXGNk2gSdt0poWkKmcXrb6PI7yiSJqQHksotw2TDH6bDPWHweY0cA2W2OUVNfYRmVA6KBmGSM=" ],
+      "fechaFinContrato" : [ "1573707600000" ],
+      "telefono" : [ "4070000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "PREG_5" : [ "LxyXGNk2gSdt0poWkKmcXrb6PI7yiSJqQHksotw2TDH6bDPWHweY0Q/KlFWbFi+t" ],
+      "email" : [ "JUAN.ROMERO@ASOPAGOS.COM" ],
+      "PREG_3" : [ "LxyXGNk2gSdt0poWkKmcXrb6PI7yiSJqQHksotw2TDH6bDPWHweY0RrYt8VqzTTU49yp3MKrAHU=" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "zB4ppXLXNuvnyRCQK32vtgRLjsK4nLPXFgWSpnZvf/80ldHWiLztmPEhJGnCdZF/4z5fKNAyptVLxpcNygPYyA==",
+      "salt" : "aHIrSwLGCqcnyILX6rlrow==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515604226000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "vQ00hs7BkKaG9dOMh6T1zM9Pkw8j/JGbcA4foAnL+lr0TFo7Kn+ePXfoeyxNiI91WKN1FRSGsdYhXFfPHBVyyw==",
+      "salt" : "hZpAo/a/jltAfYh/Esyl6g==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515505996000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "3UXL2UttVYfTT/U3Kk1HMi9iZLootR9WzgINWgHNfyIODfvzeYHOO29lZC8kQNe+ZGjzhIWOVzLhVVotSEmHug==",
+      "salt" : "9uMq4VTDsZA8P2JoaTbC0A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515602150000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/UExEmNoCuWe", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/Aud", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/UExEmCuWe", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/UExPeCuWe", "/UExPeNoCuWe", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "65af2875-1e29-43da-a891-f98662010758",
+    "createdTimestamp" : 1513782340949,
+    "username" : "lina.alba@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "ALBA",
+    "attributes" : {
+      "segundoNombre" : [ "LINA" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "TINJACÁ" ],
+      "dependencia" : [ "2" ],
+      "PREG_2" : [ "1mhfAPqrSdami3sAZEe2aHYr8mXR29ALIdGF2YYs7ARdf/boE+alNA==" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "telefono" : [ "4074000" ],
+      "PREG_6" : [ "1mhfAPqrSdami3sAZEe2aHYr8mXR29ALIdGF2YYs7ATuH8SmRvMqlQ==" ],
+      "email" : [ "LINA.ALBA@ASOPAGOS.COM" ],
+      "PREG_3" : [ "1mhfAPqrSdami3sAZEe2aHYr8mXR29ALIdGF2YYs7ATqmQcuPWVPIA==" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "0CXDYod+Jn1hesDK+WoBIEX1h3pn+6nJAZclorzRkLJC8GrMidw3t5631+BIfLDcsN+kIVbIZwph+uAQMWum5A==",
+      "salt" : "wwWfoAiFq5crXZCLi5Zhgw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782344000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "JXL+zusX44Tuy3QkJEPOlmbcezuo9rgeSQs3e+ULN8FpNtS/omyMd0gHPiF1J44cX6md7Oh7MDeHMfo63w/eMQ==",
+      "salt" : "+NeKKObMfsEFkvv3+ZuH2w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513784238000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "cba09bbf-6c26-41dc-885d-54a0db01943e",
+    "createdTimestamp" : 1513802549087,
+    "username" : "mauricio.florez@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "FLOREZ",
+    "attributes" : {
+      "PREG_1" : [ "Nio47k+K2p+fl8lUb0OSLuJOwoyS301CyZDLHt0qca82WsK+r7Zp+tT0MxSb2rhEkfJ7pA8wid8=" ],
+      "segundoNombre" : [ "MAURICIO" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "sede" : [ "1" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "PREG_6" : [ "Nio47k+K2p+fl8lUb0OSLuJOwoyS301CyZDLHt0qca82WsK+r7Zp+qQrziGDQtI8xENyjtn6j6Y=" ],
+      "telefono" : [ "4074000" ],
+      "dependencia" : [ "2" ],
+      "email" : [ "MAURICIO.FLOREZ@ASOPAGOS.COM" ],
+      "PREG_3" : [ "Nio47k+K2p+fl8lUb0OSLuJOwoyS301CyZDLHt0qca82WsK+r7Zp+n3vws080A2xGP8uNoP3d/U=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "kigXxgY+efui7LCIT5ynJ48wZtHQUAr9DKQGuD1ROBHB9YGBuuv1Xba8u7Wo5IExloVC5R462CqbCV/iI9nk4A==",
+      "salt" : "XjgjoCFOar3zaZsNQsQRjA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515602204000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "FYd6WpVlM8d3AUPc/iYKPDDrVsGdhGL6JURxHpYCOGJcLOaIEyJHjTjmSovMHujFRDZY25L29ZRoFfmM67SYNA==",
+      "salt" : "Q8yiQ0OsuiVp+SAb/6fphg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515612889000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "o3IpWhthSNRd3mXij6cEB8N4IY22NRc3YvQyBt/Nbxd92yMXTAijYHr2u9PJBZQRVlJnjemYzL38PLl4Es5hpA==",
+      "salt" : "W+0pHyv6jEa9g8upfV6x5g==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513802551000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "242578dc-f3c1-448a-bf48-2c6c53e524bf",
+    "createdTimestamp" : 1515789758139,
+    "username" : "mfuquene@heinsohn.com.co",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "HBT",
+    "lastName" : "HBT",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "fechaFinContrato" : [ "1605070800000" ],
+      "sede" : [ "1" ],
+      "telefono" : [ "3000000" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "dependencia" : [ "1" ],
+      "email" : [ "MFUQUENE@HEINSOHN.COM.CO" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "mhxq6Tq7xxGSiul7eAU4P3LvAtxsSIdN0zb0gJCGCK5gzEjlgTd3FQcagmmevEl5NAB0D6CuGjvHP7EP7Aq39Q==",
+      "salt" : "DIwKZgWHlSXu9F0Gxbzkfw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515789758000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_caja", "/FroAfiPer", "/FronAfiEm" ]
+  }, {
+    "id" : "f59b7359-6621-4d6d-9245-aa59427f41e7",
+    "createdTimestamp" : 1514403468214,
+    "username" : "nit_1021545451",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JOSE",
+    "lastName" : "DELGADO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "numIdentificacion" : [ "1021545451" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1518886799000" ],
+      "email" : [ "ANGZULUAGA@HEINSOHN.COM.CO" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "lrPGDbAZut5ijiBuR/8xBvLoZoqSxPUiWqOQUemGOozPdMPfK5sbRUB1n8CgbptkSj3sAe7oKB+SLiLdCHGsmg==",
+      "salt" : "GFsqOAcfu2HE9EMLyH39Fw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514403468000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/usuarios_retirados", "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "0e67ad31-98d9-4ac9-9b77-dae2e35a70e7",
+    "createdTimestamp" : 1514385085928,
+    "username" : "nit_1021673998",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "PEPITO",
+    "lastName" : "PAREDES",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "numIdentificacion" : [ "1021673998" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1519491599000" ],
+      "email" : [ "DEISY.HERNANDEZ@ASOPAGOS.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "cfqlLTiKRVkUEWcoYOJUq7qMu7VmOlmb4MQhqSTqZXUee8vMfKgBkvj/s+ET24LOO94KQBeGMTJSE+OUanNdkg==",
+      "salt" : "VPHX8dFIuC+OFJtwIjy5Gg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514385086000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/usuarios_retirados", "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "529d5ab2-d6b8-4659-9a23-43460d5f4696",
+    "createdTimestamp" : 1513868855021,
+    "username" : "nit_123450002",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "REPRESENTANTE",
+    "lastName" : "MANUALDOS",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "123450002" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "SDF@ERTY.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "bq8GdNL3bLO/dLNaY/7zjbxtQ+xJvXd009GWdX2yQsolXq5sHlA9pcjsXcKhNBnSS5xcZxAWdTrTavuBAkJGCQ==",
+      "salt" : "JQgNo5xEiC6Y6k3PTcR0Mg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513868855000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "7aca087d-5580-4af3-9581-0e0ab114e8cf",
+    "createdTimestamp" : 1516749424594,
+    "username" : "nit_3274383928",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ABELARDO",
+    "lastName" : "MACIAS",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "3274383928" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "SDCVGR4@EWRFR4.CO" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "Kh7lEn9dF/dcM7Ko4BOFuBguV2AgfFoo2laMg7rEYdaydwdyhbJmNStmosV3sJ9EGNftPbmZkr3PAzYbqtob+g==",
+      "salt" : "mrFP6G/k+oVcdysCiVDxNA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516749424000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "a3558d64-cc12-4c07-af0b-3d71645703be",
+    "createdTimestamp" : 1516754464123,
+    "username" : "nit_454523457",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ROSALBA",
+    "lastName" : "ROSA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "454523457" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "WhLt+oSTVJkwswyQA/Dok1wmazxPKBHwthnoW9lmxjeBPehyQh6WbmHf/kizFJmKkz7LuVh+V+HJz+qKZgWFsg==",
+      "salt" : "6MxEsTknCgg029Q/E7BfOg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516754464000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "00a05d89-49b8-44e8-8d7c-6f039281f4b6",
+    "createdTimestamp" : 1516297913220,
+    "username" : "nit_455688543",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JUAN",
+    "lastName" : "JUANO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "455688543" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "FMkXKH9TpPQg3ubEipA+SWbwfAsrZof9me0wBNb8IXLMdNTfsrou21v6R9wgZx3TjUnlBdvotbUml1kh43g09A==",
+      "salt" : "q+NbgC280FPRWXTVEg97ug==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516297913000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "5575a9b0-a7f9-462f-8ef3-7265ccd7dd3f",
+    "createdTimestamp" : 1515594452689,
+    "username" : "nit_666666666",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "N",
+    "lastName" : "N",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "666666666" ],
+      "email" : [ "N@N.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "qeCaEEXk6vyTHjufuVNaZt5opMmGoBiJAW4LkkvGJLKg9RaqKGtowLit1c9XFYqdcc4w0oOj3CyV9sueFo053Q==",
+      "salt" : "5W1IX7w5VUd5zM42D24rPw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515594452000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "a10a6d6e-afed-49dc-a559-6fb2c3fb47e1",
+    "createdTimestamp" : 1516626727838,
+    "username" : "nit_8001094909",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "LINA",
+    "lastName" : "TORRES",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "8001094909" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "DAYANZAM@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "sELZ7PS0liXNgu9XLirJqKT7+D/rB2I3UyOPOpBqoRLMQZNtTZpif6nHIfS21iAaLhUh0zrwcwdcCtCBCt2OIA==",
+      "salt" : "B/ah76jJpcubJMj91febtw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516626728000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "da45f68b-cc79-488a-a2c9-d4031537fc22",
+    "createdTimestamp" : 1515168438851,
+    "username" : "nit_800672339",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "SANTIAGO",
+    "lastName" : "DORADO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "800672339" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "Myj8XAEdK6i5a7xww2IyWjM7k4k6VHwF0NrGHw9iwoOLpdIZBNpqY7BAc/pT4Ztj07oR4SGIauuEM90DUEunHw==",
+      "salt" : "8bX5wZX+WCgczBvrhyD3FA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515168439000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "b02d4f67-8608-4b15-85b3-5eea5adfd6e9",
+    "createdTimestamp" : 1513961002658,
+    "username" : "nit_830333123",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "WERTGH",
+    "lastName" : "ERTYU",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "830333123" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "M0Og/XEopas3+0VTuaGPMrza1EEE7Hkrq939bJ7OyqvVdXgOwpk7eWr/DeWwncpFrFt3nkjFj9Sm7O/p8GXURQ==",
+      "salt" : "i0OHo6fcRF7f5oMUxZ4KyQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513961003000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "582158ff-b3fc-4b4d-9b2f-6b35fb1fbac5",
+    "createdTimestamp" : 1515158231237,
+    "username" : "nit_860345333",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "TANIA",
+    "lastName" : "CARDONA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "860345333" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "gkzxoUQNefs3UqEAxvkR/+iiOv7Nd1aoV+ndcDqkgempBF9+G/10bYysQDj9abVWfZ1XcraAJrxma/OyHBwBSg==",
+      "salt" : "kc8hIpLKMhSNKajcGP4Pqg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515158231000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "654a9630-43df-410c-a243-aae6e7473613",
+    "createdTimestamp" : 1513890961436,
+    "username" : "nit_860376808",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "RITA",
+    "lastName" : "PIMENTEL",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "860376808" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "xoKrkz2P7mtVsdSR1ZvZ7SADHhi4FZrXgtIUlUUoCQDpP/Qeim/ugJH+j7Tgt0a7iEbuRktesZDC1Ql+U9kawA==",
+      "salt" : "duDaKLVn1MHZjShqfiYYEA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513890961000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "72aebb9d-ab0f-43f1-8511-3223e9dec4a9",
+    "createdTimestamp" : 1516223049915,
+    "username" : "nit_860456222",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "860456222" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "h+0JLUfUeT9VOcKarKjCSDoPAMUDVQaxt4O3SeTPfq8Gre8DAf18gX4vvAW8VAnkngc84xAgFOOAtY5PrFcWAA==",
+      "salt" : "sQBnKqouS/gTdCoa1DvXNA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516223050000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "556ddc81-46eb-4675-a9ac-0c31f4725909",
+    "createdTimestamp" : 1514478680190,
+    "username" : "nit_860765431",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ANASTACIO",
+    "lastName" : "BELTRAN",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "860765431" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "gQgqB/msqbowrnym7xK+qoTsI0f+bboFVn1oJ29PXav9muCYRZuPLnQKC4eKCcVo9o5Jxs7vs19fA5hNhH1TmA==",
+      "salt" : "8/8UJeJYs7vGLmRoZUXxbQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514478680000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "bfe7818b-3912-49dc-a679-068fd016ca30",
+    "createdTimestamp" : 1514409579863,
+    "username" : "nit_870000312",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "WERTGH",
+    "lastName" : "ERTYU",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "numIdentificacion" : [ "870000312" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1518800399000" ],
+      "email" : [ "ADRIARI23@HOTMIAL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "B1Wt2Wyb0wwtD4+RZbMWq2lVy7aXXnGBnb2A1oh5ypFr+hBNYLK1UE8RNYmrFex26XqxZ8U4tdETXJFQc0HG7Q==",
+      "salt" : "S+42b3ZsP11NWDwbuAFunw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514409580000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/usuarios_retirados", "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "82b9ed58-1ec0-4a86-8eb9-718270b71465",
+    "createdTimestamp" : 1516120865505,
+    "username" : "nit_870000432",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "870000432" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "OHSIp9OKEVPVGWEWbDbGZ5fJmFq0XY2UHvm5xwfop74fNW8dcwPTSI9oAF1uQTDMUGr5MVqSFfiysq4Aj670mA==",
+      "salt" : "4DYEHrWN+ly0EuYp6kht7w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516120865000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "2772abb9-898b-4029-b6d5-78a78b54bde3",
+    "createdTimestamp" : 1514917883997,
+    "username" : "nit_870000666",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ANA",
+    "lastName" : "PINILLA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "numIdentificacion" : [ "870000666" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1517849999000" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "xVWJuJJu5hHnIoUKBViETGX8DkYR+Fb8SfDyj9pDlSEirHQlvtYHCSV5ZE66+gNdXjd4jnwbC3dFgRd01fN3bQ==",
+      "salt" : "EKSPH7xMz/jbLHUWBz/5BQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514917884000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/usuarios_retirados", "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "62142a30-0a16-4862-8e1c-ece603275620",
+    "createdTimestamp" : 1514496764297,
+    "username" : "nit_870333133",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "LUCIANO",
+    "lastName" : "GALLARDO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "870333133" ],
+      "email" : [ "ADRIARI23@HOTMIAL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "UycOTIR/nSKp8ORaG7og9P6/ANwcd0JqpxStrTVZ9ZMrX8GIOk8TgQ5b5w8U2LFpZvF6FjYAg1WgYCuDvCkEVA==",
+      "salt" : "DeSy70Bxbji0mi5Vs0I7lw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514496764000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "1daab272-4e72-49fd-bc17-63da9eb76070",
+    "createdTimestamp" : 1513967506035,
+    "username" : "nit_870432333",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "WERTGH",
+    "lastName" : "ERTYU",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "numIdentificacion" : [ "870432333" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1516622399000" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "HDiSP+XF6CAz6UBj4bW+ymlRnPZ8pCIlxhQBNJQhoydBswpwzypzhPNlbqDXoxriKUF9bh/d0CJbo3aa7wM6ug==",
+      "salt" : "6RyufGjVaLms5N4QJnQaig==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513967506000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "0dbc5ad2-7057-4bef-951d-54e6c876fc97",
+    "createdTimestamp" : 1516390441021,
+    "username" : "nit_870600600",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARICELA",
+    "lastName" : "BERNAL",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "870600600" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "qtCP8gf7Ri1HvojzQTJwll01TVVE74I59fh00RgsNmI9IrC+CxA0lZWyarE5Pf6IWkDDWdlDXWCHH5FLgiqMzg==",
+      "salt" : "jxn7amtYDdFdL36ZbHGnHQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516390441000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "d9a6e905-6b08-4abf-9ea9-1b1ef41e48e7",
+    "createdTimestamp" : 1513883963304,
+    "username" : "nit_870999888",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "870999888" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "h/UCAjL1RQriAvQW8fzwZVd0CuJ6acuDTyMfGe4rg6PmJ+nc8nGdAVVjPv00e7OK3fvVMiU3NbIci3EM8RLhYQ==",
+      "salt" : "LRQ2yhc0tY3svIu/rJlCgQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513883963000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "71b4d1b4-2559-40aa-b7e3-0073abd4e99c",
+    "createdTimestamp" : 1513784621816,
+    "username" : "nit_8766526283",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JERONIMO",
+    "lastName" : "BURGOS",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "8766526283" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "e1m3zmCfbEjDm8pppDW2HkgJQssHl8+RD5NtiRU4TTrtRqT3VjZ8LrllZ7+tSBSHj9oQXlU2tPpGlSOx+ew9GA==",
+      "salt" : "asZkRP04n0TOwmxGV9WoUg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513784622000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "d8e339a8-9942-41cc-8c30-4a219066af01",
+    "createdTimestamp" : 1514384141036,
+    "username" : "nit_8766526284",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ESTEFANIA",
+    "lastName" : "VILLEGAS",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "8766526284" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "vAIyDzukO9QdfAbSKoDHvpsZCo2vBTzl6huykzLZ2D2DJGTPBRhALH+q4KKCEi76WRKh4YW3EPi6oI+EcmOS1w==",
+      "salt" : "kwREdgxp3TE63J6UF7kDSA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514384141000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "b4d7a141-4166-4c1e-9a3b-a550841a0081",
+    "createdTimestamp" : 1514383890264,
+    "username" : "nit_8766526285",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "GUILLERMO",
+    "lastName" : "FERNANDEZ",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "8766526285" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "eLtDIfT/6uC/4ZkEUK9MYZ1FH4/Sz8TmmyzjrVAASPOOObX4i0j+BGVQscFZn8ag3A6T32Xam6ytTC7rRs6BJg==",
+      "salt" : "lULA5+64bThiqcJyK0hjLw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514383890000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "354dae9e-d33a-4769-bf5a-911a9d61a5f0",
+    "createdTimestamp" : 1515593779273,
+    "username" : "nit_8766526289",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JUAN",
+    "lastName" : "ROMERO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "8766526289" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "ZklQI4KnxJsRX/TlTudoWJvWgl27Cnm3iH7gADzQQUtrq0Z2OVFazPYM58t6EmgKbZvRXEOUh2OwkJu/Xik1Jg==",
+      "salt" : "BZwzelnkNXYBAZiO2ZMtvw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515593779000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "0194defc-04a9-4d16-924a-1455fc2dbee6",
+    "createdTimestamp" : 1515610659115,
+    "username" : "nit_8766526290",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ALBERTO",
+    "lastName" : "MICAN",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "8766526290" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "MXiv1IcaznDI454WI0Jj6XB9GTHxmK1NuPNNUpM0N5YmA4Hvfj2pbbAZnhEw8Fnwul5tC0AWUvNEbxsY6cIbzg==",
+      "salt" : "inh07IVsWmnZBZjJnXF09g==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515610659000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "b3cd9076-287d-44a3-9f2e-8f2ed7fa6796",
+    "createdTimestamp" : 1515617807873,
+    "username" : "nit_8766526291",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARU",
+    "lastName" : "GARTA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "8766526291" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "ywQmc22MdK0/d2wQRNJzwn9VvQlrL6xqGXJ29YB+UaXkAi7+1qhhC9ijEeC7yFgt74HXuI6AtZNXgnDzTch/EA==",
+      "salt" : "cNuoDKLdSQEGYNEY2wEKxQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515617808000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "20166a97-1805-4a58-8abc-ceca901d707c",
+    "createdTimestamp" : 1515796125431,
+    "username" : "nit_8766526293",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "RODRIGO",
+    "lastName" : "MIRANDA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "8766526293" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "lBE9pW0O230nZXhgsFgvF9FAdKtw116zzzjZAJrcRklksGxebaMr4KeRD3GQ8O+3KalGT1ZcBmydcJ+NAsLpqA==",
+      "salt" : "W8/NCteZDWGx2bY8yTDyzw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515796125000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "1c61b83d-1c2b-451f-b570-d31ccabb60f7",
+    "createdTimestamp" : 1515764662334,
+    "username" : "nit_8766526363",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MIGUEL",
+    "lastName" : "SUAREZ",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "8766526363" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "0CydXn/Dtkwgh0fVZJ9okTEA83qaXFFjNjLl01DcbEZOpXeSc4slWLVUDKnOvbjp9Dh554AabinqEJ6yXpkGHg==",
+      "salt" : "NwD8xyLr5O7JCxDlE4WAdw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515764662000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "fa80a917-5478-4483-97cb-374d78357fbc",
+    "createdTimestamp" : 1516028310101,
+    "username" : "nit_8766526364",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARIA",
+    "lastName" : "MUÑOZ",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "8766526364" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "8UKEoPtLjKrgwInqWcn/coHWLCVMwIunMuVaeTp8ov/oObytcR3eeeGouX0he01JPKi5bkJJ0D4yyEx51ijK1g==",
+      "salt" : "D9LE4G7tn976WdeyZibZag==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516028310000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "cead9adf-e2ae-43dd-8f67-ec0b0a78be24",
+    "createdTimestamp" : 1516718516968,
+    "username" : "nit_8766526365",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "XIMENA",
+    "lastName" : "PALACIOS",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "8766526365" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "25Cjcsk2g0E9NYxg8o7bm+jazksFwlNOT4W1ddyoxEiD6dMSFUrPj+6eGGnhnVNBR7i0j0zoKQBHuMWN4qXg1g==",
+      "salt" : "joG0YA9M6b81VjimguX/qQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516718517000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "9591bf11-ff90-4f5d-ade9-2c96d8763cc2",
+    "createdTimestamp" : 1516722094745,
+    "username" : "nit_8766526366",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MIGUEL",
+    "lastName" : "ARAZOLA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "8766526366" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "CNqWY3acVdzPtEj4KsYQtjgwOgMhYuNt3+dcLcqkFGFEbjQlWpZ/fwi7WX/tylANCSk6oB5SLWlvk/raG5gYfA==",
+      "salt" : "KqKo8KJsIULu2qQ02AIU6Q==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516722095000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "30778ee5-bb68-4300-b106-7ba79850ef88",
+    "createdTimestamp" : 1516732403605,
+    "username" : "nit_8766526367",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JOSE",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "8766526367" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "KBxdVrk1QIzJms34YGjO+trCJuEcjgOjCY3dPWQVHClUvYYTfkz/qwoKwf9pY+EBdFMIz1RTxpfTnMUsc3r/Tg==",
+      "salt" : "Zdp9yc5ZeNs2oj3ko/kxgA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516732403000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "d7d4de74-97aa-4e57-a1af-0fc681d8c9d0",
+    "createdTimestamp" : 1515770379167,
+    "username" : "nit_8766526372",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JUANITA",
+    "lastName" : "CREMER",
+    "attributes" : {
+      "PREG_2" : [ "RIVWWDLuJNqUw1yQePu47T2Wx78qv6nqtrweIdLTwKw=" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "numIdentificacion" : [ "8766526372" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "PREG_6" : [ "RIVWWDLuJNqUw1yQePu47T2Wx78qv6nqsmx/H3MRo68=" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ],
+      "PREG_4" : [ "RIVWWDLuJNqUw1yQePu47T2Wx78qv6nqLSEtAP9wY5A=" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "4Cr4b7GsWrKR7uNBzzZcCt3Fp+Aq6Yv70mUDv33zEV1nEcXJrwmuoeoOHIymw7lX0+Iq8Yp6EtAujwtsNgyPZA==",
+      "salt" : "vGcV1oNQZUcBFuq10B6mKw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515797617000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "kL/WlQiCp5mytY2tCuUtHbXcFrt5/904BV9MD/1ChGgtWt53/CGEeva/T5aEwbEFElknNVqkPQi9sFGJH9RfQA==",
+      "salt" : "BsRYCwHAkoz6m5So/mQcfQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515770379000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "ea2b2685-43dc-4faa-874c-36f228d2e417",
+    "createdTimestamp" : 1516812849456,
+    "username" : "nit_8766526373",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "RICAR",
+    "lastName" : "DO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "8766526373" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "c7gI0Q6nVPvoTmDv488YNksdMBsm/tyySAT0Kkfm/qRALuSEbXfr9AIXEHcmhdyjLXQ9cO8ZwM2OYAxbVCayRw==",
+      "salt" : "DTgH35Rp8O76exnorYUQow==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516812849000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "fdb7db0e-7ee9-438c-8fcb-14258fc0d3de",
+    "createdTimestamp" : 1516652268773,
+    "username" : "nit_876765654",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "PINKY",
+    "lastName" : "CEREBRO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "876765654" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PINKYYCEREBRO@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "eIWZ+jPLm5ys9m2cJ6aC8Jo1RTPKKD3BuOM0lGU5Lo+af9VsQUFat7t2DLAPn9LBK4ExdW845JvZ46/zVU07zw==",
+      "salt" : "+ZAwr9CPdmjLqePKY5Q0kQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516652269000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "a2abff16-9c69-47eb-9856-9973d6a2e440",
+    "createdTimestamp" : 1514488402886,
+    "username" : "nit_890002324",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "OCTAVIO",
+    "lastName" : "SANCHEZ",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "890002324" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMIAL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "SFKTmggeNNNFH8lqR9RcEyb3fnosaID8Ksc5g91M/7WWWWXT5xOC3y0npUHxSZ5FjrvzAeBfZJ2qCdxv4W1Tbg==",
+      "salt" : "a/l877kUHHwKBX18vrIcBQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514488403000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "2fb9a31f-5001-458c-ab49-d9e2a1ce46c0",
+    "createdTimestamp" : 1516282598663,
+    "username" : "nit_890003213",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "890003213" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "2p0EdIq/mA/hjWn0Kj8MdWdFXsNSsKV2keZPK249MBq8wsGE3M6Tn07dQe27Lo0xle4fdGLDeBXHfnIQWh597A==",
+      "salt" : "5ibtI2rujZb3Kahe3DP3Pw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516282598000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "bd85a719-1119-4970-a023-17e9e02b8b98",
+    "createdTimestamp" : 1516308790395,
+    "username" : "nit_890003450",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "890003450" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "mxEsp4dWRrsPHWAljB2qF+mIsYxtHhX25d6J0scsrwRRb3/0a7jobBMn0w+/7ZTwS0SIVAjsnC/Y76PcwV8WYw==",
+      "salt" : "eXpv77yG0A/JmdP0rmLGNA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516308790000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "72e88eb8-22c1-4e64-9197-74985047a365",
+    "createdTimestamp" : 1514384309341,
+    "username" : "nit_890333147",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "CAMILA",
+    "lastName" : "PARKERT",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "890333147" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "qKFzuE/1TnoLEXlsxDoqN7n7qKqKRg519ra58XjVwz7vAk3cVm91/3fJwMGSXm8ta5zv4i0tBh+CD+LGxRm+hQ==",
+      "salt" : "wX9FOzs3+eB8EBZ2kKlNDA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514384309000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "f0dc26bc-53e0-42fe-ae21-152828b994fa",
+    "createdTimestamp" : 1516401111079,
+    "username" : "nit_890333234",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARICELA",
+    "lastName" : "BERNAL",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "890333234" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "+QV5IPfRfMph2iFcGEW3gnI1Cema09Tk/rVgfB1glqc7FajvPyn7GCsjmUv4edT1wpeWF3XsQlnbR2lCyWJiPQ==",
+      "salt" : "/67kE491gCh6FqdKr58URA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516401111000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "e0e99f73-2d37-47b3-827a-1d664a479bfd",
+    "createdTimestamp" : 1513953098712,
+    "username" : "nit_890333654",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "RAFAEL",
+    "lastName" : "PRIMO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "890333654" ],
+      "email" : [ "ADRIARI23@HOTMIAL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "BpW/+Tiqi6++3MkJZVYWegPETt9WJmJe6e29GYiYOX46nFjrV3F9p11wyEx+C6hxync5FrKnPrUUUaEl3WuZOg==",
+      "salt" : "XZ4G6v5SCY7cAGd6Xyv5qA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513953098000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "0eea16f2-f0cf-4728-b83d-13db04dc0fd4",
+    "createdTimestamp" : 1516118867384,
+    "username" : "nit_890333999",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "VALERIA",
+    "lastName" : "PADILLA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "890333999" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "9yqaL8YP8g25HABvVsvYoM9BgdObhRHxg49HWmaJ/pmOHpMzOe5VOkj5xdrAQshNCfsgo821z0BHXwFVAlXaEQ==",
+      "salt" : "GZwdzoiup+Z24CdjzsXhfw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516118867000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "d2a3417d-f035-430d-be39-0fdef7123749",
+    "createdTimestamp" : 1516380956011,
+    "username" : "nit_890345654",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARICELA",
+    "lastName" : "BERNAL",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "890345654" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "UfBnvqHtC5WwhUP+3frDwZLFqYErElGEdsGvl25uUsVkRHnDkV8dFfBwb7shB+ck8tKsLsp2VA3mxMRkk06Kfw==",
+      "salt" : "Sx70IsCkYIdezvxi8e8zEw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516380956000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "6d5f7646-0d59-4b76-95c8-501c9232be99",
+    "createdTimestamp" : 1516373631688,
+    "username" : "nit_890345666",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARICELA",
+    "lastName" : "BERNAL",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "890345666" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "uFvxFiuzqMSG8sgxp69SAksgd4+dShdzTUrgYe3qPcLv/mOKTA/YLDYlG01bRq5vTgxRvNDU1Fj6BULra8bhaw==",
+      "salt" : "dwEFzyRH2glp5SJsYWS2Fg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516373632000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "92e88660-f18c-4ecf-b99c-3914cbc5fbc5",
+    "createdTimestamp" : 1516219826003,
+    "username" : "nit_890567333",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "RAFAEL",
+    "lastName" : "PRIMO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "890567333" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "qLOZ8Sh387tMd9n+oWZkRC5TM3Uq6ul8MIUkciAF+9reZbqIOKTytAfA1yRt+8X7IgJgb9lTRHbOjWDZmHxdBg==",
+      "salt" : "OB3im9fTfQSNp2JQp8zIAw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516219826000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "e30bbaaf-8f45-4423-8712-5cc11c2664cd",
+    "createdTimestamp" : 1516222061079,
+    "username" : "nit_890678888",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "890678888" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "TOh7FKixK9rkn61lRbSL8p2AEwI4au82D44N1s3HIhHRKhAIR4IqaPNuERWINDQn7amMLWe6sTfrOiDi8d9HMg==",
+      "salt" : "doWhV3NiRRrn468MzYdHKw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516222061000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "36c89891-998f-446d-b9cb-65b0eb6cd76b",
+    "createdTimestamp" : 1516031398132,
+    "username" : "nit_890900432",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "VALERIA",
+    "lastName" : "PADILLA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "890900432" ],
+      "email" : [ "ADRIANA.JARAMILLO@ASOPAGOS.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "mtJ+4z956yemOZ8LO60WA8bVg/TsLw/NENmtCgWH0V+SO6lX0bUXMLYv2FIaAjLNN0P/mNkupYr6ZuvTb3+pHA==",
+      "salt" : "Y7/fHMnzNGTYWtRpcVnhBg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516031398000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "a0c86466-f388-4841-8509-a1eb8ce9857d",
+    "createdTimestamp" : 1516045272666,
+    "username" : "nit_892898342",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "JHON",
+    "lastName" : "BUSH",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "892898342" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ASCVDFSSDDF@WDFT54.CO" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "YGLOaa3eZVL+33Pei7FmXvMPmezaOPUNgiJO1TwUfo3OlpTj6HVJsqjKgqwvfR2vEn1QVafjuhPpqRd0etKeNw==",
+      "salt" : "d0n/CtBxWjafhmLaKvi+yg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516045273000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "cc46fffa-e89c-4c5f-8953-1f33d5114d44",
+    "createdTimestamp" : 1513886395758,
+    "username" : "nit_899888333",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "899888333" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1516535999000" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "prP6/sLNuAhpzjiUJPLqQd4pHzhldHYq1lBKEecxhskNNnStESs6TekHpdXtaKPTBeaDhV1ZCzLyCf7HB2Ijxw==",
+      "salt" : "zbgQEl7hTAoUgf0QTOPW6Q==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513886396000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "f5a6e738-b955-4bce-a618-561e314e7aac",
+    "createdTimestamp" : 1513873165029,
+    "username" : "nit_900002319",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900002319" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "r6jdo1Goi8AfpiXurODKqfImbY7u6tOyx/XMZC255Uq+2W02MlM9JkxCL/QWovIh7n7DcM42L3i03QMao3ALjA==",
+      "salt" : "6r/IAWEiXuLi1mLsoj0yeg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513873165000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "8f028b2a-4d52-4e43-aabf-0ede13b9e5fb",
+    "createdTimestamp" : 1513870252401,
+    "username" : "nit_900002321",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900002321" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMIAL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "+QyGqXspcOiXyd+jDY88yeu3zLbFTU3iplSEQEWHuW8tiiszdVBjFLJH7nq/dXML+MMV7zsznWDdErHXtAQ6hg==",
+      "salt" : "5T+b0OjVXm4FS45bh+v0mg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513870252000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "8caa92dd-b06e-4163-b794-92fd5d1fe25e",
+    "createdTimestamp" : 1513864708249,
+    "username" : "nit_900002323",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "PREG_1" : [ "UWHOsMbFubdtnBILaIFerOw/HNVKydKcjTf//hqI/7HHPP5Q8iP0TA==" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900002323" ],
+      "PREG_6" : [ "UWHOsMbFubdtnBILaIFerOw/HNVKydKcYgixduOHOf4=" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ],
+      "PREG_3" : [ "UWHOsMbFubdtnBILaIFerOw/HNVKydKc/78RpckoXeM=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "VqIBLimYl551p32EZtDRB1SyNUQPr++hSl6GvLi+4B0oKRwwGNJgiGc9tU/sd4NRz3dWebKRrmtHwsdd1tsNWg==",
+      "salt" : "GYytrcNFUvAcfn2T9B/CCQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513864708000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "sx9aolfw7JCG2WmHYzE90s+YghHkwA81SG7jj6vv1GDGf6Ot8jH870mTN29sejjFlZwBQyrTUyx9+Qi8CHIXbg==",
+      "salt" : "YEJm7/ifYG9pSQzzFdBefw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513871289000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "686a0c00-28f5-44d2-b38c-e573e25568f4",
+    "createdTimestamp" : 1513786698479,
+    "username" : "nit_900002327",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "LOLY",
+    "lastName" : "PIMENTEL",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900002327" ],
+      "email" : [ "ADRIARI23@HOTMIAL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "GwU8rh1P7dz9DVgTE0Xl0KoJZTnbN3vusX8R8S94HxQua/uNDn5LQmhxCHPhH+vDE9rzWn22Og6rVLd1EGHuXg==",
+      "salt" : "zdnvmQACzB8Sbi7PXVLUPQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513786698000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "3e40c66f-589e-4fe4-afcd-5af548300bf3",
+    "createdTimestamp" : 1513784267363,
+    "username" : "nit_900002331",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900002331" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "o01TpLE0dlRphRZH2g7WxVm879seiDzpsG3YYFxhB1T+2N5K7TdnpR2O21EyAMRmFbsiarxFJZeRFoDxPED8/w==",
+      "salt" : "wWooahy7dILw659qqjDu1w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513784267000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "7ec06204-f341-4e9c-bb6e-e9749c0ede61",
+    "createdTimestamp" : 1516030800152,
+    "username" : "nit_900025113",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "TAKA",
+    "lastName" : "TAKA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900025113" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "vr9EJxXgw5lYr9TF+6s8damYJmnFeOvwz4asUnherIQhgpVgdjIFo4F04BlnQTi8Z3BcMUc4Zn8HSU3H4gs65g==",
+      "salt" : "YyGNuhhUoTncfitIL77w+w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516030800000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "f16f3a10-f398-454d-9d75-6874f125958a",
+    "createdTimestamp" : 1514463515918,
+    "username" : "nit_900025298",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "TAKA",
+    "lastName" : "TAKA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900025298" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "H8vKGneEngVOFmniNpaU1okc/x2Hex3JZkHtUOpDMB/UYRMdmj/Xqbaiva1V0eNV/JLxr0wIzgP18rDRJ7PeKg==",
+      "salt" : "o5GdLpeHQRGopsRmmlOdkw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514463516000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "lcbicNezmkqtki+wvcSbFAM0vLBXUKdTkMHYfmRpdZLauCpEI+Ya+ATjz2V2wZm/FnRxvLkxIp6kZPuPdQvAgA==",
+      "salt" : "qko3JL8iaUNrdX7JQBrEcg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516681693000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "9407d88d-e116-4fab-80e3-cef4f5cd0d94",
+    "createdTimestamp" : 1516030137564,
+    "username" : "nit_900025336",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "COTIZANTE",
+    "lastName" : "COTIZANTE",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900025336" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "UjyvdnYhSR3I2K1yFBwgGO669pqWuLP6JN/EFCiC3FlKmTWOxu0HbNGpeJzLD1sOi6qeKYYmByBHd/8T7rJIIQ==",
+      "salt" : "aqIlMjhn6O9HF22otG3nLA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516030137000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "3f847265-c155-4755-9104-77084957fbb8",
+    "createdTimestamp" : 1516042141548,
+    "username" : "nit_900025390",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ARNULFO",
+    "lastName" : "CONTRERAS",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900025390" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "LIN.ALBA@ASOPAGOS.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "44Jv6xobNxarrIOiZRFO1jMXEJpOGVxf9a5FC1Wt9fTwzELwlzcjR29deie7o4aA1vwjHb+K1v1gQVsbSo3H+w==",
+      "salt" : "0p8bK+3Qup9vPlNxl8vm+A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516042141000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "63ebdc24-64b3-4e98-b6e0-f35281f882ac",
+    "createdTimestamp" : 1516035207885,
+    "username" : "nit_900025392",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "TAKA",
+    "lastName" : "TAKA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900025392" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "uHIPhTuI7/5eAbfhHr9d9WUJGfSztPGMCVonYA2dte6RqudhfHTsWxhk1PI7zucqJc0CUy1Pe6Zx56p0b2rpeQ==",
+      "salt" : "rauap+EW4qYg1CkGnPo8Cg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516035208000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "d47855bd-0e8a-45cd-9cad-f7fb23f6a77e",
+    "createdTimestamp" : 1513885123278,
+    "username" : "nit_9000293281",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "LUIS",
+    "lastName" : "ARAGON",
+    "attributes" : {
+      "PREG_1" : [ "UWHOsMbFubdT0oIXX4IJ+B9K/VVuPFdXUx7mjh+dZZhmRTplcr+qVQ==" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "9000293281" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "PREG_6" : [ "UWHOsMbFubdT0oIXX4IJ+B9K/VVuPFdX7fhIwWapJ3g=" ],
+      "email" : [ "PRETORIANO353@GMAIL.COM" ],
+      "PREG_3" : [ "UWHOsMbFubdT0oIXX4IJ+B9K/VVuPFdXiTcY6tnI6Qc=" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "u18tu+pCpc8hAXJewzv9siJigebfNNEwb3K1GeOmq5FcraY3ONwtFqa6z+ekYtUpCqzbcm9Gb6pIdicCO3UQGg==",
+      "salt" : "iEghDHL0ynENG3CV/CeqGA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514478207000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "sQUhggvDYlS1g1owsNKYs1SHKtD4xQvYo/Zg3tjev2r1VSMtdB7k1bI3uLSHb3mCg628h3bh1G0KYN9Se4yrEA==",
+      "salt" : "V6sPvmumG6WlzJeydd3TjA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513885123000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "a3129154-4b76-4cf0-9678-2fd0959ea664",
+    "createdTimestamp" : 1513799374283,
+    "username" : "nit_900088333",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900088333" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1516467599000" ],
+      "email" : [ "ADRIARI23@HOTMIAL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "xwxIYak0o3NMgK5FGEvo2dwk7mzR+1UQcd9EH0u1E3Z+jkyHdp+C5n4rAI4lI7x7NZ88RWXIzv43/LEfa4tZrw==",
+      "salt" : "WWVDoecl4VffU8vLDdefuw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513799374000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "c608e593-3fbe-4362-a406-95e52c3363a7",
+    "createdTimestamp" : 1514929755586,
+    "username" : "nit_900123432",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "CAMILO",
+    "lastName" : "SEXTO",
+    "attributes" : {
+      "PREG_2" : [ "M1MQU3g+4qSll4tmgbKtqY8kQu9Lsl7CTD/ZSr8IFn4=" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "numIdentificacion" : [ "900123432" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "PREG_6" : [ "M1MQU3g+4qSll4tmgbKtqY8kQu9Lsl7C1TZe0z2HRMY=" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ],
+      "PREG_3" : [ "M1MQU3g+4qSll4tmgbKtqY8kQu9Lsl7C+XMcfAA2Ltg=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "UYU6TSxbENiyR4M1qOydQYmDtM3nacbco5+XGNLQtP4IfKzVoVQh+79+FLKzZrC2nQFDO8acAsDtj4+2PvOfAQ==",
+      "salt" : "qSC/fApOUD5BEggsgGsn1g==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514929755000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "PStIMIW6JoeCnUKyWyaXRJSSsonsuQjqpWKOkSx9wGUqSlj6OkaCYX4OXYZgfBdt8nZ94MMLz+soo7F4CsMJCw==",
+      "salt" : "fuLKwBbu3mNPaLrI9bLKYw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515587870000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "59d6d4ce-a554-45b1-b608-bf65e4e7fd34",
+    "createdTimestamp" : 1516045621891,
+    "username" : "nit_900345000",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "VALERIA",
+    "lastName" : "PADILLA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900345000" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIANA.JARAMILLO@ASOPAGOS.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "/oLqAvI3ZhoPa41u05zV5ibln/ObjfCop96xIqV57Jk35JMIl+pBYdw1Da66w4Y5QqMJii3rEP6gEblik9vo7w==",
+      "salt" : "lJSzBo2VRyiO+ph8gNLvQg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516045622000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "a85e33bb-6265-4da2-8ff1-a39e03111b6a",
+    "createdTimestamp" : 1514903151302,
+    "username" : "nit_900345222",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "CAMILO",
+    "lastName" : "SEXTO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "numIdentificacion" : [ "900345222" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1517590799000" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "uIjmubfLJwequwe2IxbJIoy9jGCAtjANQ2Zqic+n3Fn6fH/YJPUtT0lA5NetcvnQ8D2EILuElfuHy/52EkofKw==",
+      "salt" : "nkIVrK02MDEiWgVcVJF8Ag==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514903151000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/usuarios_retirados", "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "d301e3ea-677b-427b-abe2-8461ced8f757",
+    "createdTimestamp" : 1514918930992,
+    "username" : "nit_900345343",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ENRIQUE",
+    "lastName" : "PERDOMO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900345343" ],
+      "email" : [ "DDFDFWFDEF@WR.CO" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "A50Vk5Drvo+Tui7RighfRLCflrfTE9MnfmEiscSN8XAPt6asJzhxhzEaOaJHHW0dcouetgaLwbe5tmriWR2WHw==",
+      "salt" : "e5sB6JFBEVmtbgY4KcGhag==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514918931000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "6ae58344-5903-4b11-9b93-901626ca7973",
+    "createdTimestamp" : 1514407449299,
+    "username" : "nit_9003453445",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARIA",
+    "lastName" : "CRUZ",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "9003453445" ],
+      "email" : [ "PATRICIA.MEDINA@GMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "8eTe5bPRrycDRirqPoyJ1Rwuim3BsMDHDUcgKb++3wVz/XqaSvBfyR0kZ3RTN8ioHW5Uy0Ec00fVb9YMWFp8IQ==",
+      "salt" : "AaG7qJmZQl+jfqcFBjPKbw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514407449000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "a36d55d3-8095-41c0-afb2-1a9b170cd86e",
+    "createdTimestamp" : 1513951671586,
+    "username" : "nit_900345678",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "RAFAEL",
+    "lastName" : "PRIMO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900345678" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "fZoANJ1T95kSu2SrN7oLi6MPTHKVdBLxiFS9kli/0mutNIkSv0MF5aWAXvnSHG2ULlZxThGOf13X0VOiWkt5GA==",
+      "salt" : "aqWIzg40I5Zd63Jk6p/ONw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513951671000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "b0afabab-26ed-480a-9c46-fdedefc03b95",
+    "createdTimestamp" : 1513957600895,
+    "username" : "nit_900456765",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "POMPILIO",
+    "lastName" : "MOLINA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900456765" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "hKjOEVqSFDJ9TGzQSnypI23ITNJyuXC929rvSi75J1VvVOHU8eVrXb9FBWfjS59m0b5Q1Ty1eqWFkytf5VQL9g==",
+      "salt" : "tuQx5OckTrz4tur+f3fi3w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513957601000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "0b3c7a2f-4863-4e23-90dd-3575fafa3613",
+    "createdTimestamp" : 1516029139746,
+    "username" : "nit_900480333",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "VALERIA",
+    "lastName" : "PADILLA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900480333" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "Ggw8VbQutJdcEXIYa+W2m/9PS46YF7CAu5k4quD+NCbuEaLxrFsJpU2hy9l5mesgm6Lq2bTCKSQD3PbGAuxbqQ==",
+      "salt" : "VFGUIztLgYJs9VRXp9e1EA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516029140000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "17311139-ad27-40e0-aa4d-7ec47c96bfde",
+    "createdTimestamp" : 1513892477179,
+    "username" : "nit_900567654",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "VALE",
+    "lastName" : "PADI",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900567654" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "IBE6FkrNdU4G26xRK1ytJe0kcqAZLyMn2IpbToIwgWTGhNEYb3jI/RvCt88vqSIEH9vj85lIQVV6T6/XRp5/5w==",
+      "salt" : "H1Cybp2citTkBh84vvM+Lw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513892477000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "630d370e-54c7-49f4-907d-d00fddbb0f95",
+    "createdTimestamp" : 1513875434752,
+    "username" : "nit_900654123",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "WERTGH",
+    "lastName" : "ERTYU",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900654123" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "BE2tgY5B2q9qIJSWSxOkaHGgHkNPdM1EK0n2TZGDRlLEDa+hQPocp2z8p9+Q1owIl1AD4+5o5E8NEnl8Pba4OQ==",
+      "salt" : "L2ZYoDo+dKZjPTLsqSS/iw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513875434000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "745dbfe5-ee2f-4fcd-a5f2-d14290eaaf21",
+    "createdTimestamp" : 1516377907573,
+    "username" : "nit_900669669",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARICELA",
+    "lastName" : "BERNAL",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900669669" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "I2VJnknKVlCqJsFk6CWomZ7TSQUUJafxTgi18B1IL2uH5ItWEBQz3WWWVIUJ5mINHAoCN5Pi08GiQ0a8ahADDA==",
+      "salt" : "zpaT/FdLsFgehr5w6fhIxw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516377907000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "dfa60ac2-bca0-41a7-90f0-f1d1b019b756",
+    "createdTimestamp" : 1516753560874,
+    "username" : "nit_900747388",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "CLAUDIA",
+    "lastName" : "MARTINEZ",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900747388" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "TIl7hKnoeqGG34XAQVLgx+TCe/8Jc0EPOUenLW4D9PvmabBZQ88fjEL5YhpNvAi7cirsmjQpAYfe5KtPC+xfwA==",
+      "salt" : "mmHr1Z3Awx8HeXilmKgPBA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516753561000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "74677e74-533f-428c-a42c-7d54d9ccd09b",
+    "createdTimestamp" : 1514386045779,
+    "username" : "nit_900789333",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "CAMILA",
+    "lastName" : "PARKERT",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900789333" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "2sNNEvzMUTuHY9f+ys0arPucwCXEq+ArUVLay99oKuAS6XZHDa6NBwwBdrzVr7zBu3hUWlYOfBOQ0LGfWLmcwg==",
+      "salt" : "h6cST1wUKseQzTbemNk/Sg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514386046000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "1f0394b0-f34d-4ba3-947b-af79f1e8c5ec",
+    "createdTimestamp" : 1515598279068,
+    "username" : "nit_900800012",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "PEDRO",
+    "lastName" : "PACANCHIQUE",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900800012" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1518757199000" ],
+      "email" : [ "SEBASTIANFV66@GMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "k699HKjMJH6J+RD7ccJXDDU7q2aVoMxHqu5ceKCeDdA+UNn5ja7K5pUZWZTzmqGUHDd/7NUd040/ZDzBwnki4Q==",
+      "salt" : "rW3nxDMLIQEBcsEy5bS+tA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515598279000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/usuarios_retirados", "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "9795b572-5fb9-4fa5-86bb-1aca8085ef18",
+    "createdTimestamp" : 1514993312498,
+    "username" : "nit_900876678",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "CAMILO",
+    "lastName" : "SEXTO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900876678" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "5QqLiil9jBxpbS+LZpPW9y5wMJdKv4pD99K0hFSJRdGfYuAvucumjMYFCUrkNQI5kzu4qDRwwwnAD6cIYR46JQ==",
+      "salt" : "7M9bGri1KE6evAR/2ns8Ug==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514993313000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "7e2052b1-c091-41eb-81c3-079ba48498aa",
+    "createdTimestamp" : 1513884833954,
+    "username" : "nit_900890333",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "ADRIANA",
+    "lastName" : "JARAMILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "900890333" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "ikqAj0uhvpMBCE17DZi9jcucfdM9mISFIpmwTl2Re1zKUJ8lzkUXKz40Xod+gIB+aOljDuqixZcacUw8NYCZqQ==",
+      "salt" : "HXw0HIZzSotxoXKqO+XkSA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513884834000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "c47e2b37-da1a-4710-a5fa-cb3eac682f71",
+    "createdTimestamp" : 1515176678441,
+    "username" : "nit_900890666",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "SANTIAGO",
+    "lastName" : "DORADO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "900890666" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "RXakrc0G4dhOCt6YtwQWESVdynekfRG2m2QKhSSBSaaZJefGi0vTH0SPOBhmBVqVmeDZ9D7rFC5Fd2C6uDDrvw==",
+      "salt" : "9o0Yw/mw5jL8FtaEIv4AhQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515176678000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "0194ddcc-978b-4b16-8203-7d59a720b1cb",
+    "createdTimestamp" : 1515091805413,
+    "username" : "nit_900987333",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "CAMILO",
+    "lastName" : "SEXTO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "numIdentificacion" : [ "900987333" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1517763599000" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "3JHEtAOaEDdhOENCMrXTolO+8oMatCXwkXx83PVjbIWXQ/GCaKLBi4AKIVfcrfNmKXfi+2VFYHM9SKxQ5Tcjpw==",
+      "salt" : "QimCzBQYflMxugwbQKHW0w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515091805000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/usuarios_retirados", "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "4de8d43a-950c-4d07-a1af-d0aa7bd4a88c",
+    "createdTimestamp" : 1516742557202,
+    "username" : "nit_9009919202",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "LIEBARDO",
+    "lastName" : "CORTEZ",
+    "attributes" : {
+      "PREG_1" : [ "XAYFG0mm4ZOJY54lbEx9zkR1IGR/OJVC0uuc03Hjko/5rgy13mSSyQ==" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "numIdentificacion" : [ "9009919202" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "PREG_6" : [ "XAYFG0mm4ZOJY54lbEx9zkR1IGR/OJVCB754APE8D88=" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "email" : [ "DEISY.HERNANDEZ@ASOPAGOS.COM" ],
+      "PREG_3" : [ "XAYFG0mm4ZOJY54lbEx9zkR1IGR/OJVCpUngkuUm9o0=" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "wnOfTFyXCv1S8sD/aN8Ez2U7NdUIJU3ZSx6yjtZzdlCefJ18rSVxn+fGIGaX8dCq1GE+WRfcwL3nYSv+sliqeg==",
+      "salt" : "nokKGsdElE3v9lsDibZBRg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516742728000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "Yn/nhy0FAQ5851Da5sDtywnv0Qd/CSJV9sTM07d54mMvVx4t2AE/tW6qUfHSZnNO76Mdp45UzJs7/hu/RRF0Fg==",
+      "salt" : "BcrKZ6AfZD4B2iQ5RZTneg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516742557000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "210cd8e8-b132-40ec-92bd-e96d02256ebe",
+    "createdTimestamp" : 1516802035570,
+    "username" : "nit_901000000",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "PINCHER",
+    "lastName" : "RATON",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "901000000" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "lm/UEf80ln8/AgBFthLtgTV3yvCafihFSY4DeQarjWI88d2S166V9PGT/n0Bb9xL8+qVerDOatgtDNpwGyj0Fg==",
+      "salt" : "IPNxlcI7rKq+vNw+48VLwQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516802035000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "1d7c3b53-443a-4d9f-9ea8-69b2d5af5e27",
+    "createdTimestamp" : 1516043805582,
+    "username" : "nit_902533253",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MILENA",
+    "lastName" : "TRUJILLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "902533253" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "qNUAgLv5RhqbgGiYi8g8lPI/OnXbH1gGQFhrpl20BZhA+5fzVEJtkyTnN5dRZR0dC+nxNAJ3UYhE+TKqM2LxyQ==",
+      "salt" : "wg/Da8z005NUK3YJ6IQQ6w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516043805000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "2725573f-a1d1-4f64-bd1f-c916fc23481e",
+    "createdTimestamp" : 1516826400568,
+    "username" : "nit_949608525",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "SERG",
+    "lastName" : "IO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "949608525" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "PRUEBAS.ASOPAGOS@OUTLOOK.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "d7i2xvtGurAzQ98ENMVnmQlDlneMZ2gGlpBkKOsJjE6ETPTqnBdjXZESXKUHvMnq1oxii4OHA4Kux3ywrm/PbA==",
+      "salt" : "PRA3amd8iLrXGdTp84acbA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516826400000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "fa812ee5-d870-46e3-9022-eb4ed8082d03",
+    "createdTimestamp" : 1514400581581,
+    "username" : "nit_970333666",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARIPAZ",
+    "lastName" : "FIALLO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "970333666" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "fechaInactivacion" : [ "1517072399000" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "gBfojCgeRq8ZU55hzK3T90rJDJt543gOeXb+0vhKPxUaqkSTRbZV7sMguyLJ9R6HYXTgG8Vm+XCoGDkPvIyuNg==",
+      "salt" : "/k6XLitchOb0zwDiIRm3zg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514400581000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/usuarios_retirados", "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "52b6619d-2917-4cbf-a77f-72f2ed61e6b2",
+    "createdTimestamp" : 1516400627667,
+    "username" : "nit_980333888",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "MARICELA",
+    "lastName" : "BERNAL",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "980333888" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "LKAM4RX7GQ4ZiHwBgQET+kACT4g+bkdpu8kjR+ajvVn16dXG8G6JG29f9vrIxyo97ySLhcJmTWWqCAjmozYwOA==",
+      "salt" : "XbL/K5uvjky7gzReXQQQ2g==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516400627000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "c6a75b1d-1ddb-47f9-9378-e5a239b9a865",
+    "createdTimestamp" : 1513970023892,
+    "username" : "nit_9876546545",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "HIJITO",
+    "lastName" : "ASDA",
+    "attributes" : {
+      "tipoIdentificacion" : [ "NIT" ],
+      "numIdentificacion" : [ "9876546545" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "lhvyk/7iYcH0+rtAmvjdD8d5GsyHBg1ImjeT8YoWr4hqo8+Z3EK1ajQ+1jCmG8VqRX/zCZzTaSP2FN81aF+fmQ==",
+      "salt" : "0HTD/RqDh40usnWSmZPVDA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515598569000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "JLJFRWoHv5QpiZX24of7miXUYfVi28/9e7jCH5H2HNsZ4i/+9/yhzocDDceub0L7NwkmAlqwDpmh+80frsm4lg==",
+      "salt" : "Zm7EJGbubyWq8n9OaBKc+w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513970024000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "3wfJ3jd2VvvkkD6octAxHTGTpipJTdMkqGfP0BnJvYT67XaHJeo6qgingaPJjPjgrji/2a0hkxFWFKQ61JqcvQ==",
+      "salt" : "uB/+zt0ojjCNLQ2RQ/3Q7A==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515537875000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "frZE1aDghAP90XhO6fA9i2QN6uCtS2o+AFl+77dBa5HZijvxjWh1aPVC9/9jExxTqkuJePt/6gc4NhTUZ26JKQ==",
+      "salt" : "rwQM7rfAt22u69PnDc8KDg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515587441000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "1hTBZFwMvvJF0chMKmP9P2BHt1upDexk0lihNmn2ifJQRTi5+20lZ3gKc9L1qRJoxBApN+RBnZeGmNqsZHPg/g==",
+      "salt" : "nJSnDHfKXDs2FvmqM9XxmA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515598649000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/usuarios_retirados", "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "2b290197-95a3-44ff-9f55-2941d03aa187",
+    "createdTimestamp" : 1516367182206,
+    "username" : "nit_9879843215",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "TAKA",
+    "lastName" : "TAKA",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "9879843215" ],
+      "tipoIdentificacion" : [ "NIT" ],
+      "email" : [ "COMUNICADOS.GENESYS@OUTLOOK.ES" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "XWlkaVn1JXVERQyyxrlBPimxldOJ14odbviewg5UVPf68EiJakUg4c5QNS6mwyg4Ivl+xDFAO4w7+xdWjK0DhQ==",
+      "salt" : "BWl8BlmAzukVeJY6J4+2qg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516367182000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "862f7cf8-4d52-466e-8b2c-4648cfde337a",
+    "createdTimestamp" : 1513801775407,
+    "username" : "olga.vega@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "VEGA",
+    "attributes" : {
+      "PREG_1" : [ "MJs3btvvSsgy1daEnlxRubWrJ94wiZ4CFbZGeZlYA9p0csfJGvs+5Q==" ],
+      "segundoNombre" : [ "OLGA" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "sede" : [ "1" ],
+      "telefono" : [ "4074000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "PREG_5" : [ "MJs3btvvSsgy1daEnlxRubWrJ94wiZ4CFbZGeZlYA9qpX6faxUljhA==" ],
+      "dependencia" : [ "2" ],
+      "email" : [ "OLGA.VEGA@ASOPAGOS.COM" ],
+      "PREG_3" : [ "MJs3btvvSsgy1daEnlxRubWrJ94wiZ4CFbZGeZlYA9rxhkmmYRQwUw==" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "r+LPpYUmw7SEhq62PknXpiEQyV1uUWpOXsO/iJHw9b6OKz10zM+F44y2ev9+CcOTHDpjeCyMrEjyOYlbFIrKJw==",
+      "salt" : "nLZ0a5z8zwNQDqUmeNQBfQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513802409000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "3Wnwd1mSoh+ZT5tHA8icMQlS44XfOj0P+KgeLLJDt9KyvRwdTXFEkAs2kgAihlxQR17Gt1xCGm3Dp/uFKsJ42w==",
+      "salt" : "7oTZwY5pwQ/u3tpKk6BlhQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513801778000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "6e540906-53a6-4a49-aa70-934bf36b2dd3",
+    "createdTimestamp" : 1513783448657,
+    "username" : "patricia.medina@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "MEDINA",
+    "attributes" : {
+      "segundoNombre" : [ "PATRICIA" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "BERMÚDEZ" ],
+      "dependencia" : [ "2" ],
+      "PREG_2" : [ "JxpBgsDBSHsCCQrS/wX16v6YLcR9VRRCmrndSdJ1sYX65aPoZWg+qUcvWFupa9mS9xOSTJsiHSg=" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "telefono" : [ "4074000" ],
+      "PREG_6" : [ "JxpBgsDBSHsCCQrS/wX16v6YLcR9VRRCmrndSdJ1sYX65aPoZWg+qUeyY7SD8SeCxE/23noCJwk=" ],
+      "PREG_4" : [ "JxpBgsDBSHsCCQrS/wX16v6YLcR9VRRCmrndSdJ1sYX65aPoZWg+qaq1kJCegpip4RpPLuahW4E=" ],
+      "email" : [ "PATRICIA.MEDINA@ASOPAGOS.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "FvNiQTeQ9DccmUIn3xkfM4I9FsZnz7Iijc3gRV+l74SYO/WESjGEEZlQLi2/VKoAiZqcHQxHhidowulve9TYAw==",
+      "salt" : "UWJSO9Q2uH9mCM3ze8q7+w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513783450000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "LmGj+y6Ncen0jTop4uJ+ac83V15uX7GKi7gyd6f/Pa7spyNJA32B3lkrFuGIr7T7zXB8T5VAtU1h7evfL9p7Gw==",
+      "salt" : "NNbXQjS08I1P76BnQ2nM1Q==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513783542000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "f96b675a-a304-416a-8da8-edb717f14e6f",
+    "createdTimestamp" : 1513965832021,
+    "username" : "pretoriano353@gmail.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "OVIEDO",
+    "attributes" : {
+      "segundoNombre" : [ "JUANCO" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "RODRÍGUEZ" ],
+      "dependencia" : [ "2" ],
+      "PREG_1" : [ "QXSA98cRMOXRjAb7k1OufTdg6AhlPm9sprODQRGXjYlVa+wJWaUMZiBiGhu1Ap28" ],
+      "fechaFinContrato" : [ "2871694800000" ],
+      "PREG_6" : [ "QXSA98cRMOXRjAb7k1OufTdg6AhlPm9sprODQRGXjYk70l1j1H1fOg==" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "telefono" : [ "4074000" ],
+      "email" : [ "PRETORIANO353@GMAIL.COM" ],
+      "PREG_3" : [ "QXSA98cRMOXRjAb7k1OufTdg6AhlPm9sprODQRGXjYkRVUKlXA8D3A==" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "D4Wl3WgKHi4EHCvMN3x5FM+/Q7h7+I9N5p4hVa5Nv4IdZEoC1p4LlcbnutE94UrohtGbwVb5BuTltN/fD/RxzQ==",
+      "salt" : "jaST5dJm+9PH7Lv8K630Dw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513965835000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "Ii3icSSPHsk1eXvdPQwgbhHZ88WkZB/+Y4+pPVkgY2NoaI6owzo9I+HSFWFaA7KfvNlg+F9COp7envWcH1JpxQ==",
+      "salt" : "StCA4Bt/qmRzWYiLoUP+HA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513965914000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "4ee22ddc-d6ed-4e84-8810-1add1248979d",
+    "createdTimestamp" : 1514392152703,
+    "username" : "pruebas",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "2txrLWR1JnDVz+WVzlvh2P3gD2AUGuFHgVBHdXB0+RJCx5gYvCqcLEIFV/933Q2semR5znYfFIhLM9ZBOZeDcw==",
+      "salt" : "g6p70+Dv3oYI1vwdIKaE+w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1514392336000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_caja", "/AdminCCF", "/OfiSegCCF" ]
+  }, {
+    "id" : "fafb4804-a07f-49e2-8638-6bad1d6ec38e",
+    "createdTimestamp" : 1515169898777,
+    "username" : "registro_civil_1016789456",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "DANTE",
+    "lastName" : "VALLEJO",
+    "attributes" : {
+      "debeCrearPreguntas" : [ "true" ],
+      "debeAceptarTerminos" : [ "true" ],
+      "numIdentificacion" : [ "1016789456" ],
+      "tipoIdentificacion" : [ "REGISTRO_CIVIL" ],
+      "email" : [ "ADRIARI23@HOTMAIL.COM" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "HvS+pQEbYbSg1Bz9db1a5DdUMeLxWsk/C49ff7/iKGd83qM5cYkszmjewQGqeE4U7jYG9sCwecvS58s9NaQ/7Q==",
+      "salt" : "dOXrPH4Tkf5pDyczx54OEQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1515169899000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/funcionario_empleador", "/administrador_empleador" ]
+  }, {
+    "id" : "f991c9ce-9f6e-43bc-af5e-4a1b6d9ea7ee",
+    "createdTimestamp" : 1513783222862,
+    "username" : "sandra.sierra@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "SIERRA",
+    "attributes" : {
+      "PREG_2" : [ "lEEoT8bjcFThNQIFwyF2cVHFfnLZ1stDM1qwkd0QJWSUDjkyR0Vjs3CHOd7nKXtQNgkQps6yWw4=" ],
+      "segundoNombre" : [ "SANDRA" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "sede" : [ "1" ],
+      "telefono" : [ "4074000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "dependencia" : [ "2" ],
+      "PREG_5" : [ "lEEoT8bjcFThNQIFwyF2cVHFfnLZ1stDM1qwkd0QJWSUDjkyR0Vjs7iLj0oV89fA" ],
+      "email" : [ "SANDRA.SIERRA@ASOPAGOS.COM" ],
+      "PREG_4" : [ "lEEoT8bjcFThNQIFwyF2cVHFfnLZ1stDM1qwkd0QJWSUDjkyR0Vjs0EqwoM66qmdPJX/tX8OGf0=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "zTSepaOlDznoEWhLoFBTPYB6sO2uLDXmzsnvj0t7i+rTZK9oBirR1czghWZ8yji13UPRsVN3c8CVBCqhtN8Z2A==",
+      "salt" : "Z6wO7yNXE0uZKVIIOcJ7jA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513783225000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "LOicEbvXeqZKVncDBH8ca9DEtwJ2wIFfEcUBOfP8JejUPVnPoyIzysrKyVIBCoGh8wWCap0+cO+i3FpotEE/ag==",
+      "salt" : "HVhOC8G2tPTx+PPBLWC8tQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513783472000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "a0fe2e09-c0e2-4368-951d-909c7f78c895",
+    "createdTimestamp" : 1513782500038,
+    "username" : "sebastian.fajardo@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "FAJARDO",
+    "attributes" : {
+      "PREG_2" : [ "/m6d3zQ+3KZiTyXpXd44KvllsIXv6N/qHYfx2SSASOgZeeJANWgG4IcE5s1QQqURT83KbB8L+Wc=" ],
+      "segundoNombre" : [ "SEBASTIAN" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "sede" : [ "1" ],
+      "telefono" : [ "4074000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "dependencia" : [ "2" ],
+      "PREG_5" : [ "/m6d3zQ+3KZiTyXpXd44KvllsIXv6N/qHYfx2SSASOgZeeJANWgG4O+sf/uMFdIfQjmgXsgiZZw=" ],
+      "email" : [ "SEBASTIAN.FAJARDO@ASOPAGOS.COM" ],
+      "PREG_4" : [ "/m6d3zQ+3KZiTyXpXd44KvllsIXv6N/qHYfx2SSASOgZeeJANWgG4BEri2R816um6KKiL/zzGIk=" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "YL6cCB3MOcuBTQSpYR5ylERmF87OVHRceoevBERMQRGSYaclIWdfq8C9G/QVM2WkyaPWoqpxkzIWf9jZ8IBP5A==",
+      "salt" : "1/KdT50I0EdFxi0n9qj5Pw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782534000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "VzdeOII3ABZfmKECJhmw9MkRBMMxczAxrQppRdp6TM4ia5VAG40JPntG8sYmLMs57JL9sdh6XVahJ+p1SJBRhw==",
+      "salt" : "y/+Q24NlNiqdTpxewJAhjg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782502000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "442281d5-9cc5-4089-8e41-a5d9c8a1044b",
+    "createdTimestamp" : 1513782591889,
+    "username" : "sergio.rojas@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "ROJAS",
+    "attributes" : {
+      "segundoNombre" : [ "SERGIO" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "sede" : [ "1" ],
+      "segundoApellido" : [ "TRIANA" ],
+      "dependencia" : [ "2" ],
+      "PREG_1" : [ "w3DQFcy3+0eC1hb0Ca29Nm5NHd4HNFjUgRfkxhh7NE5DTgKI0lGVL7Evk6UEbF2VXKStsufc7xM=" ],
+      "fechaFinContrato" : [ "2556075600000" ],
+      "PREG_6" : [ "w3DQFcy3+0eC1hb0Ca29Nm5NHd4HNFjUgRfkxhh7NE5DTgKI0lGVL8FdNqobvYSehe6jqGV8zFw=" ],
+      "telefono" : [ "4074000" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "email" : [ "SERGIO.ROJAS@ASOPAGOS.COM" ],
+      "PREG_4" : [ "w3DQFcy3+0eC1hb0Ca29Nm5NHd4HNFjUgRfkxhh7NE5DTgKI0lGVL24WseHAwNm0sikR8OYAiH0=" ]
+    },
+    "credentials" : [ {
+      "type" : "password-history",
+      "hashedSaltedValue" : "97TIiu5B+yUaj0bmOIPDRrGP7dzS12aRoYtFbxmsNPyE0wOgu2NG4TfgT/ckACWW3xr4nWr8tFNx4ch6JwjYwQ==",
+      "salt" : "oSnTbrGZ2dzqymju9B171w==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782594000
+    }, {
+      "type" : "password",
+      "hashedSaltedValue" : "EbeAm0Q4CjP6TU1LSGnvYBd/JLjGTBhTXVFh4DHTT3cK/J0o2Itesb3bT87cLZXqw8wvDVueb8Hj49acCBuqTA==",
+      "salt" : "rns94DrtlpJOBj8fSxnrfA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1513782631000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  }, {
+    "id" : "bbad0998-8e20-4260-bf59-2f07abd297aa",
+    "createdTimestamp" : 1513714669510,
+    "username" : "service-account-clientes_web",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "email" : "service-account-clientes_web@placeholder.org",
+    "serviceAccountClientId" : "clientes_web",
+    "credentials" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "rest-all", "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "clientes_web" : [ "usuario_web" ],
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ ]
+  }, {
+    "id" : "b4aa82ac-20f9-4f8c-ae9d-7f32ea0edc27",
+    "createdTimestamp" : 1513716487881,
+    "username" : "service-account-realm-management",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "email" : "service-account-realm-management@placeholder.org",
+    "serviceAccountClientId" : "realm-management",
+    "credentials" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "realm-management" : [ "view-identity-providers", "manage-events", "manage-users", "manage-identity-providers", "manage-authorization", "view-realm", "view-events", "manage-realm", "realm-admin" ],
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "groups" : [ ]
+  }, {
+    "id" : "bae45663-8340-4aa1-b784-d9da410a1b33",
+    "createdTimestamp" : 1516801999532,
+    "username" : "sheril.pulecio@asopagos.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "FUNCIONAL",
+    "lastName" : "PULECCIO",
+    "attributes" : {
+      "PREG_2" : [ "o0X2FvpwrdSRb2ssEoghvoEhOxV7AE35yYUEcmhk+jPaTSjvcAPDO1exfsdj4wGOHVM9DqegH4I=" ],
+      "segundoNombre" : [ "VANESSA" ],
+      "debeCrearPreguntas" : [ "false" ],
+      "fechaFinContrato" : [ "1559970000000" ],
+      "sede" : [ "1" ],
+      "telefono" : [ "2236328" ],
+      "debeAceptarTerminos" : [ "false" ],
+      "PREG_5" : [ "o0X2FvpwrdSRb2ssEoghvoEhOxV7AE35yYUEcmhk+jPaTSjvcAPDO3PEXi8BSLPu1RDoLHK85C8=" ],
+      "dependencia" : [ "3" ],
+      "email" : [ "SHERIL.PULECIO@ASOPAGOS.COM" ],
+      "PREG_4" : [ "o0X2FvpwrdSRb2ssEoghvoEhOxV7AE35yYUEcmhk+jPaTSjvcAPDOzPqyBFaqa9rYyjqXH4Cbvc=" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "+MGprhVP3stlQNW88NdsWqqUCwiWO93LRRqzOzuSg/8c53ymMks3XqxHTgHonFNHBZh5gY7o7aRUXSS755rBpA==",
+      "salt" : "ZxvTlPMOigGA1BHCsGzcJg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516802825000
+    }, {
+      "type" : "password-history",
+      "hashedSaltedValue" : "qX/sv1mPWZA+HYNMFbfnoyD0PwwcMIG5WqJ63GuncmMyLplX0hJTJ3Wb0RvHUCGKCJq/HSOv3CzSwkPFXkCoaA==",
+      "salt" : "zODbdO6ZghQIgPIYsvnbmA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1516802002000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ "/SupAfiPer", "/AuxApo", "/ResFacCCF", "/AnaPagSub", "/FroLegDesFov", "/AnaApo", "/AnaNovEmp", "/BacNoveFov", "/FroAfiPer", "/AnEsAfEm", "/CooSubFov", "/BacAfiPer", "/SupCar", "/AnaFov", "/FroNovFov", "/AnaSubMon", "/BacLegDesFov", "/BacPosFov", "/SupAfiEmp", "/consultas_masivas", "/AdminCCF", "/ResAfEmp", "/BacNoveEmp", "/CajVen", "/ResSer", "/funcionario_caja", "/CooConInFov", "/AnEsJuFov", "/SupSubMon", "/FroPosFov", "/BacActPer", "/SupApo", "/AuxRegRecDoc", "/SupNovPer", "/OfiSegCCF", "/AdminEmp", "/BacAfiEmp", "/BacNovPer", "/InsFov", "/FroNovPer", "/SupNoveEmp", "/AnaCarApo", "/AnEsCoFov", "/AnaPreMon", "/AnEsAfPer", "/AnaCon", "/FronNovEm", "/AnaNovPer", "/BacActEmp", "/AdmEntPag", "/AnaAnuSub", "/UsuConAso", "/FronAfiEm", "/BacGesPreMor" ]
+  } ],
+  

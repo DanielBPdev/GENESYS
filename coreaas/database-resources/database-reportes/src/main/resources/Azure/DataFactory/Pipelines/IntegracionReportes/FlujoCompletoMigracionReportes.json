@@ -1,0 +1,60 @@
+{
+    "name": "FlujoCompletoMigracionReportes",
+    "properties": {
+        "activities": [
+            {
+                "name": "CargaIncrementalMasivaReportes",
+                "type": "ExecutePipeline",
+                "dependsOn": [],
+                "userProperties": [],
+                "typeProperties": {
+                    "pipeline": {
+                        "referenceName": "CargaIncrementalMasivaReportes",
+                        "type": "PipelineReference"
+                    },
+                    "waitOnCompletion": true,
+                    "parameters": {
+                        "FechaRevision": {
+                            "value": "@pipeline().parameters.FechaRevision",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "CargarReportesNormativos",
+                "type": "ExecutePipeline",
+                "dependsOn": [
+                    {
+                        "activity": "CargaIncrementalMasivaReportes",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "pipeline": {
+                        "referenceName": "CargarReportesNormativos",
+                        "type": "PipelineReference"
+                    },
+                    "waitOnCompletion": true,
+                    "parameters": {
+                        "FechaRevision": {
+                            "value": "@pipeline().parameters.FechaRevision",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            }
+        ],
+        "parameters": {
+            "FechaRevision": {
+                "type": "String"
+            }
+        },
+        "annotations": [],
+        "lastPublishTime": "2020-08-05T21:03:10Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

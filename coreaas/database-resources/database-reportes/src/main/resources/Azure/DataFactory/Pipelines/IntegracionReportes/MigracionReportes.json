@@ -1,0 +1,50 @@
+{
+    "name": "MigracionReportes",
+    "properties": {
+        "description": "Migracion de reportes entre dos fechas",
+        "activities": [
+            {
+                "name": "ForEach1",
+                "type": "ForEach",
+                "dependsOn": [],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@pipeline().parameters.listaFechas",
+                        "type": "Expression"
+                    },
+                    "isSequential": true,
+                    "activities": [
+                        {
+                            "name": "FlujoCompletoMigracionReportes",
+                            "type": "ExecutePipeline",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "pipeline": {
+                                    "referenceName": "FlujoCompletoMigracionReportes",
+                                    "type": "PipelineReference"
+                                },
+                                "waitOnCompletion": true,
+                                "parameters": {
+                                    "FechaRevision": {
+                                        "value": "@{item()}",
+                                        "type": "Expression"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "parameters": {
+            "listaFechas": {
+                "type": "object"
+            }
+        },
+        "annotations": [],
+        "lastPublishTime": "2020-08-06T20:32:02Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

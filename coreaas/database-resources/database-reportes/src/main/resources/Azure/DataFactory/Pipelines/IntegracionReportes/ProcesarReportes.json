@@ -1,0 +1,873 @@
+{
+    "name": "ProcesarReportes",
+    "properties": {
+        "activities": [
+            {
+                "name": "ObtenerMarcaProcesamientoREPLookup",
+                "type": "Lookup",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": "SELECT CAST(CASE WHEN EXISTS(SELECT 1 FROM MarcaProcesamiento) THEN 'true' ELSE 'false' END AS BIT) EnEjecucion"
+                    },
+                    "dataset": {
+                        "referenceName": "DSReportes",
+                        "type": "DatasetReference"
+                    }
+                }
+            },
+            {
+                "name": "IFEstaDisponible",
+                "type": "IfCondition",
+                "dependsOn": [
+                    {
+                        "activity": "ObtenerMarcaProcesamientoREPLookup",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "typeProperties": {
+                    "expression": {
+                        "value": "@not(activity('ObtenerMarcaProcesamientoREPLookup').output.firstRow.EnEjecucion)",
+                        "type": "Expression"
+                    },
+                    "ifTrueActivities": [
+                        {
+                            "name": "FactCondicionEmpleador",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "DimSede",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactCondicionEmpleador]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactCondicionSolicitudesEmpleador",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactCondicionEmpleador",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactCondicionSolicitudesEmpleador]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "DimPeriodo",
+                            "type": "SqlServerStoredProcedure",
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_INSERT_DimPeriodo]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "DimSede",
+                            "type": "SqlServerStoredProcedure",
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_INSERT_DimSede]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "DELETE_WaterMarkedRows",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactCondicionCotizante",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactArchivoPILA",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactNovedadPersona",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactGestionCarteraV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactLegalizacionDesembolsoFOVISV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactNovedadFOVISV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactSolicitudAfiliacionEmpleadorV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactAfiliadoV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactSolicitudNovedadEmpleadorV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactSolicitudNovedadPersonaV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_DELETE_WaterMarkedRows]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactCondicionPersona",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "DimSede",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactCondicionPersona]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactCondicionBeneficiario",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactCondicionPersona",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactCondicionBeneficiario]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactCondicionSolicitudesPersona",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactCondicionBeneficiario",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactCondicionSolicitudesPersona]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "ValorMetaPeriodoCanalKPI",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_UPDATE_ValorMetaPeriodoCanalKPI]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "EstadoArchivoPILA_maxId",
+                            "type": "Lookup",
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "source": {
+                                    "type": "SqlSource",
+                                    "sqlReaderQuery": "DECLARE @maxId BIGINT\nDECLARE @periodoDesde DATETIME\n\nSET @periodoDesde = DATEADD(dd,1,EOMONTH(DATEADD(mm,-3,dbo.GetLocalDate())))\n\nUPDATE dbo.EstadoArchivoPILA SET eppEnColaProceso = 0 WHERE eppEnColaProceso = 1\n\nDELETE FROM dbo.EstadoArchivoPILA\nWHERE eppIndicePlanilla IN \n(\n\tSELECT pplIndicePlanilla \n\tFROM dbo.PlanillaPILA\n\tWHERE pplFechaRecibo >= DATEADD(mm,-2,dbo.GetLocalDate())\n)\n\nSELECT @maxId = MAX(eppId) FROM dbo.EstadoArchivoPILA\nSELECT ISNULL(@maxId,0) maxId"
+                                },
+                                "dataset": {
+                                    "referenceName": "DSReportes",
+                                    "type": "DatasetReference"
+                                }
+                            }
+                        },
+                        {
+                            "name": "EstadoArchivoPILA_copy",
+                            "type": "Copy",
+                            "dependsOn": [
+                                {
+                                    "activity": "EstadoArchivoPILA_maxId",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "source": {
+                                    "type": "SqlSource",
+                                    "sqlReaderQuery": {
+                                        "value": "WITH cte AS \n(\n\tSELECT pip.pipId, pip.pipEstadoArchivo, pip.pipIdPlanilla, CONVERT(DATE, CAST(pf1.pf1FechaRecaudo AS Varchar(8)), 112) AS pplFechaRecaudo\n\tFROM dbo.PilaIndicePlanilla pip\n\tINNER JOIN dbo.PilaArchivoIRegistro1 pi1 ON pip.pipId = pi1.pi1IndicePlanilla\n\tINNER JOIN PilaIndicePlanilla pipA ON (\n\t\tpip.pipIdPlanilla = pipA.pipIdPlanilla \n\t\tAND ISNULL(pipA.pipEstadoArchivo, '') <> 'ANULADO'\n\t\tAND pip.pipTipoArchivo != pipA.pipTipoArchivo\n\t)\n\tINNER JOIN PilaArchivoARegistro1 pa1 ON pa1.pa1IndicePlanilla = pipA.pipId\n\tINNER JOIN PilaArchivoIRegistro3 pi3 ON pi1.pi1IndicePlanilla = pi3.pi3IndicePlanilla\n\tLEFT JOIN (\n\t\t\t\tSELECT MAX(pf6Id) pf6Id, CASE WHEN ISNUMERIC(pf6IdAportante) = 0 THEN pf6IdAportante ELSE CAST(pf6IdAportante AS BIGINT)\n\t\t\t\t\tEND pf6IdAportante,pf6NumeroPlanilla,pf6PeriodoPago\n\t\t\t\tFROM dbo.PilaArchivoFRegistro6\n\t\t\t\tWHERE pf6EstadoConciliacion = 'REGISTRO_6_CONCILIADO'\n\t\t\t\tGROUP BY pf6IndicePlanillaOF, pf6IdAportante,pf6NumeroPlanilla,pf6PeriodoPago\n\t\t\t\t) pf6 ON pf6.pf6IdAportante = pi1.pi1IdAportante AND pf6.pf6NumeroPlanilla = pi1.pi1NumPlanilla AND pf6.pf6PeriodoPago = CONVERT(VARCHAR(6),CONVERT(DATETIME,pi1.pi1PeriodoAporte+'-01'),112)\n\tLEFT JOIN dbo.PilaArchivoFRegistro6 pf6_1 ON pf6.pf6Id = pf6_1.pf6Id\n\tLEFT JOIN dbo.PilaArchivoFRegistro5 pf5 ON pf6_1.pf6PilaArchivoFRegistro5 = pf5.pf5Id\n\tLEFT JOIN dbo.PilaArchivoFRegistro1 pf1 ON pf6_1.pf6IndicePlanillaOF = pf1.pf1IndicePlanillaOF\n\n\tUNION ALL\n\n\tSELECT pip.pipId, pip.pipEstadoArchivo , pip.pipIdPlanilla, CONVERT(DATE, CAST(pf1.pf1FechaRecaudo AS Varchar(8)), 112) AS pplFechaRecaudo\n\tFROM dbo.PilaIndicePlanilla pip\n\tINNER JOIN dbo.PilaArchivoIPRegistro1 ip1 ON pip.pipId = ip1.ip1IndicePlanilla\n\tINNER JOIN PilaIndicePlanilla pipA ON pip.pipIdPlanilla = pipA.pipIdPlanilla\n\tINNER JOIN PilaArchivoAPRegistro1 ap1 ON ap1.ap1IndicePlanilla = pipA.pipId\n\tINNER JOIN PilaArchivoIPRegistro3 ip3 ON ip1.ip1IndicePlanilla = ip3.ip3IndicePlanilla\n\tLEFT JOIN (\n\t\t\t\tSELECT MAX(pf6Id) pf6Id, CASE WHEN ISNUMERIC(pf6IdAportante) = 0 THEN pf6IdAportante ELSE CAST(pf6IdAportante AS BIGINT)\n\t\t\t\t\tEND pf6IdAportante,pf6NumeroPlanilla,pf6PeriodoPago\n\t\t\t\tFROM dbo.PilaArchivoFRegistro6\n\t\t\t\tWHERE pf6EstadoConciliacion = 'REGISTRO_6_CONCILIADO'\n\t\t\t\tGROUP BY pf6IndicePlanillaOF, pf6IdAportante,pf6NumeroPlanilla,pf6PeriodoPago\n\t\t\t\t) pf6 ON pf6.pf6IdAportante = ip1.ip1IdPagador \n\t\t\t\t\tAND pf6.pf6NumeroPlanilla = ip1.ip1NumPlanilla \n\t\t\t\t\tAND pf6.pf6PeriodoPago = CONVERT(VARCHAR(6),CONVERT(DATETIME,ip1.ip1PeriodoAporte+'-01'),112)\n\tLEFT JOIN dbo.PilaArchivoFRegistro6 pf6_1 ON pf6.pf6Id = pf6_1.pf6Id\n\tLEFT JOIN dbo.PilaArchivoFRegistro5 pf5 ON pf6_1.pf6PilaArchivoFRegistro5 = pf5.pf5Id\n\tLEFT JOIN dbo.PilaArchivoFRegistro1 pf1 ON pf6_1.pf6IndicePlanillaOF = pf1.pf1IndicePlanillaOF\n)\n\nSELECT pipId AS eppIndicePlanilla, pipIdPlanilla AS eppIdPlanilla, pipEstadoArchivo AS eppEstadoArchivo, pplFechaRecaudo AS eppFechaRecaudo, CAST('true' AS BIT) eppEnColaProceso\nFROM cte\nWHERE pipId > @{activity('EstadoArchivoPILA_maxId').output.firstRow.maxId} ",
+                                        "type": "Expression"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "SqlSink",
+                                    "writeBatchSize": 10000
+                                },
+                                "enableStaging": false,
+                                "parallelCopies": 16,
+                                "dataIntegrationUnits": 32
+                            },
+                            "inputs": [
+                                {
+                                    "referenceName": "DSPila",
+                                    "type": "DatasetReference"
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "DSReportesEstadoArchivoPILA",
+                                    "type": "DatasetReference"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "FactCondicionAportante",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "EstadoArchivoPILA_copy",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactCondicionAportante]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactArchivoPILA",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactCondicionAportante",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactArchivoPILA]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactCondicionCotizante",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactCondicionAportante",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactCondicionCotizante]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactNovedadEmpleador",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactCondicionSolicitudesEmpleador",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactNovedadEmpleador]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactNovedadPersona",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactNovedadEmpleador",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "FactCondicionSolicitudesPersona",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactNovedadPersona]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactCondicionSolicitanteCarteraV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactCondicionSolicitanteCarteraV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactGestionCarteraV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactCondicionSolicitanteCarteraV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactGestionCarteraV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "DimCicloAsignacionV2",
+                            "type": "SqlServerStoredProcedure",
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_INSERT_DimCicloAsignacionV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactPostulacionFOVISV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "DimCicloAsignacionV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "DimSede",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactPostulacionFOVISV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactAsignacionFOVISV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactPostulacionFOVISV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactAsignacionFOVISV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactLegalizacionDesembolsoFOVISV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactAsignacionFOVISV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactLegalizacionDesembolsoFOVISV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactNovedadFOVISV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactAsignacionFOVISV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactNovedadFOVISV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactAfiliacionEmpleadorV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "DimSede",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactAfiliacionEmpleadorV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactSolicitudAfiliacionEmpleadorV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactAfiliacionEmpleadorV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactSolicitudAfiliacionEmpleadorV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactSolicitudAfiliacionPersonaV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "DimSede",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactSolicitudAfiliacionPersonaV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactAfiliacionPersonaV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactSolicitudAfiliacionPersonaV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactAfiliacionPersonaV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactAfiliadoV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "FactAfiliacionPersonaV2",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactAfiliadoV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactSolicitudNovedadEmpleadorV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "DimSede",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactSolicitudNovedadEmpleadorV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "FactSolicitudNovedadPersonaV2",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "DimSede",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "activity": "DimPeriodo",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_MERGE_FactSolicitudNovedadPersonaV2]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

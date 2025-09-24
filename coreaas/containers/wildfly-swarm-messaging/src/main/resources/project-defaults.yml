@@ -1,0 +1,86 @@
+org.apache.activemq.SERIALIZABLE_PACKAGES: java.lang,javax.security,java.util,org.apache.activemq,org.fusesource.hawtbuf,com.thoughtworks.xstream.mapper,com.asopagos
+
+swarm:
+  datasources:
+    data-sources:
+      asopagosDS:
+        driver-name: sqlserver
+        connection-url: jdbc:sqlserver://50.23.29.218:1433;DatabaseName=core
+        user-name: core_jroa
+        password: jroa
+      asopagosAudDS:
+        driver-name: sqlserver
+        connection-url: jdbc:sqlserver://50.23.29.218:1433;DatabaseName=core_aud
+        user-name: core_jroa
+        password: jroa
+
+  deployment:
+    org.apache.activemq:activemq-rar.rar:
+
+  resource-adapters:
+    resource-adapters:
+      activemq-rar:
+        # This is not the physical jar name, but the maven coordinates (without version!)
+        archive: activemq-rar.rar
+        transaction-support: LocalTransaction
+        config-properties:
+          ServerUrl:
+            value: failover:tcp://localhost:61616
+          UserName:
+            value: admin
+          Password:
+            value: admin
+          UseInboundSession:
+            value: false
+
+        connection-definitions:
+            ConnectionFactory:
+                jndi-name: ConnectionFactory
+                class-name: org.apache.activemq.ra.ActiveMQManagedConnectionFactory
+                enabled: true
+                min-pool-size: 1
+                max-pool-size: 20
+                pool-prefill: false
+                same-rm-override: false
+                use-java-context: true
+
+        admin-objects:
+            MailsQueue:
+                class-name: org.apache.activemq.command.ActiveMQQueue
+                jndi-name: jms/queue/MailsQueue
+                use-java-context: true
+                config-properties:
+                  PhysicalName: 
+                    value: MailsQueue
+
+
+  ejb3:
+    default-resource-adapter-name: activemq-rar.rar
+    default-mdb-instance-pool: mdb-strict-max-pool
+
+  ee:
+    annotation-property-replacement: true
+    default-bindings:
+      jms-connection-factory: java:/ConnectionFactory
+
+  messaging-activemq:
+    servers:
+      default:
+        active: false
+        connection-factories:
+          InVmConnectionFactory:
+            block-on-acknowledge: true
+            entries:
+            - "java:/ArtemisConnectionFactory"
+
+  jca:
+    archive-validation:
+      enabled: false
+
+#  logging: TRACE
+  logging:
+    loggers:
+      org.jboss:
+        level: INFO
+      org.wildfly:
+        level: INFO

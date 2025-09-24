@@ -1,0 +1,1 @@
+INSERT [ProcessorDefinition] ([id], [fieldDefinitionId], [fieldDefinitionLoadId], [lineDefinitionId], [lineDefinitionLoadId], [processorOrder], [processorCatalog_id]) VALUES (1, 81, NULL, 7, NULL, 1, 1)

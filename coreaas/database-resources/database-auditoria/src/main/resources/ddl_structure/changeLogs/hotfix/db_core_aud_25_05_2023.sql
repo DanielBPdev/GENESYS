@@ -1,0 +1,2 @@
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'GrupoFamiliar_aud' 
+AND TABLE_SCHEMA = 'dbo' and COLUMN_NAME = 'grfTarjetaMultiservicio') alter table dbo.GrupoFamiliar_aud add grfTarjetaMultiservicio bit null

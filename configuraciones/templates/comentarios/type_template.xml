@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="typecomment_context" deleted="false" description="Comment for created types" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.typecomment" name="typecomment">/**
+ * &lt;b&gt;Descripcion:&lt;/b&gt; Clase que &lt;br/&gt;
+ * &lt;b&gt;Módulo:&lt;/b&gt; Asopagos - HU &lt;br/&gt;
+ *
+ * @author  &lt;a href="mailto:${user}@heinsohn.com.co"&gt; ${user}&lt;/a&gt;
+ * ${tags}
+ */
+</template></templates>

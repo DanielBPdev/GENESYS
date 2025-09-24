@@ -1,0 +1,36 @@
+{
+    "name": "DSReportesEstadoAfiliacionPersonaIndependiente",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "reportes",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "structure": [
+            {
+                "name": "eaiId",
+                "type": "Int64"
+            },
+            {
+                "name": "eaiPersona",
+                "type": "Int64"
+            },
+            {
+                "name": "eaiEstadoAfiliacion",
+                "type": "String"
+            },
+            {
+                "name": "eaiFechaCambioEstado",
+                "type": "DateTime"
+            },
+            {
+                "name": "eaiClaseIndependiente",
+                "type": "String"
+            }
+        ],
+        "typeProperties": {
+            "tableName": "[dbo].[EstadoAfiliacionPersonaIndependiente]"
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}

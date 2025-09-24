@@ -1,0 +1,20 @@
+IF EXISTS (
+    SELECT COLUMN_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_NAME = 'DevolucionAporte_aud'
+    AND COLUMN_NAME = 'dapMotivoPeticion'
+)
+BEGIN
+    ALTER TABLE DevolucionAporte_aud ALTER COLUMN dapMotivoPeticion VARCHAR(60);
+END
+
+
+IF EXISTS (
+    SELECT COLUMN_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_NAME = 'aporteGeneral_aud'
+    AND COLUMN_NAME = 'apgOrigenAporte'
+)
+BEGIN
+    ALTER TABLE aporteGeneral_aud ALTER COLUMN apgOrigenAporte VARCHAR(60);
+END

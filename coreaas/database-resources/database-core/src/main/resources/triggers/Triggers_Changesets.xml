@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="dsuesca" id="1" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="DROP_Triggers.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>	
+
+	<changeSet author="dsuesca" id="2" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_AporteDetallado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="3" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_AporteDetallado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="dsuesca" id="4" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_AporteGeneral.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="5" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_AporteGeneral.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="dsuesca" id="6" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_Empleador.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="7" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_Empleador.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="dsuesca" id="8" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_Empresa.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="dsuesca" id="9" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_Persona.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>	
+
+	<changeSet author="dsuesca" id="10" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_RolAfiliado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="11" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_RolAfiliado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="12" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_Afiliado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="13" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_Solicitud.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="14" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_SolicitudAfiliacionPersona.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="15" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_SolicitudAfiliacionPersona.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="16" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_Beneficiario.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="17" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_Beneficiario.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="18" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_AdminSubsidioGrupo.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="19" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_AdminSubsidioGrupo.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="20" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_SolicitudLiquidacionSubsidio.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="dsuesca" id="21" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_Ubicacion.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="dsuesca" id="22" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_Ubicacion.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="flopez" id="23" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_ParametrizacionEjecucionProgramada.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+	<changeSet author="flopez" id="24" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_UPD_ParametrizacionEjecucionProgramada.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="flopez" id="25" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_SolicitudNovedadPersona.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="eprocess" id="26" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_FOR_INS_AporteDetallado.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- <changeSet author="eprocess" id="27" runAlways="false"
+		runOnChange="false" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_FOR_INS_AporteGeneral.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet> -->
+
+	<changeSet author="rcastillo" id="28" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TGR_AF_INS_EstadoAfiliacionEmpleadorCaja.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="rcastillo" id="29" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="Disable_TRG_AF_INS_SolicitudAfiliacionPersona.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="jariza" id="30" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TRG_AF_INS_RegistroConfirmacionAbonos.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<changeSet author="rcastillo" id="31" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="TGR_SPI_INS_SolicitudNovedadPila.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+</databaseChangeLog>

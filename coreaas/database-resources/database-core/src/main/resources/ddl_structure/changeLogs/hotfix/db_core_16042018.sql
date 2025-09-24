@@ -1,0 +1,14 @@
+--liquibase formatted sql
+
+--changeset clmarin:01
+--comment: Cambio de longitud campo sldEstadoSolicitud y Actualizacion de sus campos
+DELETE FROM PrioridadDestinatario WHERE prdDestinatarioComunicado IN (SELECt dcoId FROM DestinatarioComunicado WHERE dcoProceso ='CONVENIO_PAGO');
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='CONVENIO_PAGO' AND des.dcoEtiquetaPlantilla='CRR_STC_CNV_PAG'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='RESPONSABLE_DE_APORTES'), 1);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='CONVENIO_PAGO' AND des.dcoEtiquetaPlantilla='CRR_STC_CNV_PAG'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='REPRESENTANTE_LEGAL'), 2);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='CONVENIO_PAGO' AND des.dcoEtiquetaPlantilla='CRR_STC_CNV_PAG'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='RESPONSABLE_DE_SUBSIDIOS'), 3);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='CONVENIO_PAGO' AND des.dcoEtiquetaPlantilla='CRR_STC_CNV_PAG'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='REPRESENTANTE_LEGAL_SUPLENTE'), 4);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='CONVENIO_PAGO' AND des.dcoEtiquetaPlantilla='CRR_STC_CNV_PAG'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='RESPONSABLE_DE_LAS_AFILIACIONES'), 5);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='CONVENIO_PAGO' AND des.dcoEtiquetaPlantilla='CRR_STC_CNV_PAG'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='OFICINA_PRINCIPAL'), 0);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='CONVENIO_PAGO' AND des.dcoEtiquetaPlantilla='CRR_STC_CNV_PAG'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='ENVIO_DE_CORRESPONDENCIA'), 0);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='CONVENIO_PAGO' AND des.dcoEtiquetaPlantilla='CRR_STC_CNV_PAG'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='NOTIFICACION_JUDICIAL'), 0);
+

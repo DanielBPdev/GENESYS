@@ -1,0 +1,1 @@
+update PlantillaComunicado set pcoPie = '' where pcoEtiqueta = 'ACRDS_TRMS_CDNES_WEB'

@@ -1,0 +1,20 @@
+--liquibase formatted sql
+
+--changeset jvelandia:01
+--comment:Se eliminan registros de la tabla PlantillaComunicado y Variablecomunicado
+DELETE FROM VariableComunicado WHERE EXISTS (SELECT * FROM PlantillaComunicado WHERE Variablecomunicado.vcoPlantillaComunicado=PlantillaComunicado.pcoId AND PlantillaComunicado.pcoEtiqueta='HU_PROCESO_212_486');
+DELETE FROM PlantillaComunicado WHERE pcoEtiqueta='HU_PROCESO_212_486';
+
+--changeset jvelandia:02
+--comment:Insercion de registros de la tabla PlantillaComunicado y Variablecomunicado
+INSERT PlantillaComunicado (pcoAsunto,pcoCuerpo,pcoEncabezado,pcoMensaje,pcoNombre,pcoPie,pcoEtiqueta) VALUES('Encabezado_114 Solicitud de Devolución de Aportes','Cuerpo','Encabezado','Mensaje','Encabezado_114 Solicitud de Devolución de Aportes','Pie','HU_PROCESO_213_486');
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${tipoIdentificacion}','1','Tipo identificación','Tipo identificación','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${numeroIdentificacion}','2','Número Identificación','Número Identificación','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${dv}','2.1','Dv','Cuando el valor del campo "Tipo identificación" es igual a "NIT"','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${razonSocial/Nombre}','3','Razón social / Nombre','Nombre completo compuesto por los campos Primer nombre,Segundo nombre,Primer apellido,Segundo apellido.Presentados en pantalla concatenados. Si es un empresa "Razón social" de ser persona','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${tipoSolicitante}','4','Tipo solicitante','Presenta el valor del campo "Tipo de solicitante" asociado a ','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${numeroDeSolicitud}','5','Número de solicitud','Campo corresponde al número asignado automáticamente ','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${tipoDeSolicitud}','6','Tipo de solicitud','Tipo de solicitud','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${fechaYHoraDeSolicitud}','7','Fecha y hora de solicitud','Corresponde al campo "Fecha y hora de radicación"','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${estadoDeLaSolicitud}','8','Estado de la Solicitud','Estado de la Solicitud','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));
+INSERT VariableComunicado (vcoClave,vcoOrden,vcoNombre,vcoDescripcion,vcoTipoVariableComunicado,vcoPlantillaComunicado) VALUES ('${estadoDeAfiliacion}','9','Estado de afiliación','Presenta el valor del estado de afiliación del tipo de solicitante con respecto a la CCF (Estado del Solicitante)','VARIABLE',(SELECT pcoId FROM PlantillaComunicado where pcoEtiqueta = 'HU_PROCESO_213_486'));

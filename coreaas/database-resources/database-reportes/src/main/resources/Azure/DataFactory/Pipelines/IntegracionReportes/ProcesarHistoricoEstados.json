@@ -1,0 +1,166 @@
+{
+    "name": "ProcesarHistoricoEstados",
+    "properties": {
+        "activities": [
+            {
+                "name": "USP_REP_INSERT_EstadoAfiliacionEmpleadorCaja",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_REP_INSERT_EstadoAfiliacionEmpleadorCaja_By_RevisionAuditoria]",
+                    "storedProcedureParameters": {
+                        "rarId": {
+                            "value": {
+                                "value": "@pipeline().parameters.RevisionAuditoria",
+                                "type": "Expression"
+                            },
+                            "type": "Int64"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "reportes",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "USP_REP_INSERT_EstadoAfiliacionPersonaCaja",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_REP_INSERT_EstadoAfiliacionPersonaCaja_By_RevisionAuditoria]",
+                    "storedProcedureParameters": {
+                        "rarId": {
+                            "value": {
+                                "value": "@pipeline().parameters.RevisionAuditoria",
+                                "type": "Expression"
+                            },
+                            "type": "Int64"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "reportes",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "USP_REP_INSERT_EstadoAfiliacionPersonaIndependiente",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_REP_INSERT_EstadoAfiliacionPersonaIndependiente_By_RevisionAuditoria]",
+                    "storedProcedureParameters": {
+                        "rarId": {
+                            "value": {
+                                "value": "@pipeline().parameters.RevisionAuditoria",
+                                "type": "Expression"
+                            },
+                            "type": "Int64"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "reportes",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "USP_REP_INSERT_EstadoAfiliacionPersonaPensionado",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_REP_INSERT_EstadoAfiliacionPersonaPensionado_By_RevisionAuditoria]",
+                    "storedProcedureParameters": {
+                        "rarId": {
+                            "value": {
+                                "value": "@pipeline().parameters.RevisionAuditoria",
+                                "type": "Expression"
+                            },
+                            "type": "Int64"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "reportes",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "USP_REP_INSERT_EstadoAfiliacionPersonaEmpresa",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_REP_INSERT_EstadoAfiliacionPersonaEmpresa_By_RevisionAuditoria]",
+                    "storedProcedureParameters": {
+                        "rarId": {
+                            "value": {
+                                "value": "@pipeline().parameters.RevisionAuditoria",
+                                "type": "Expression"
+                            },
+                            "type": "Int64"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "reportes",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "USP_REP_INSERT_EstadoAfiliacionBeneficiario",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_REP_INSERT_EstadoAfiliacionBeneficiario_By_RevisionAuditoria]",
+                    "storedProcedureParameters": {
+                        "rarId": {
+                            "value": {
+                                "value": "@pipeline().parameters.RevisionAuditoria",
+                                "type": "Expression"
+                            },
+                            "type": "Int64"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "reportes",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "parameters": {
+            "RevisionAuditoria": {
+                "type": "Int",
+                "defaultValue": 0
+            }
+        },
+        "folder": {
+            "name": "IntegracionReporting"
+        }
+    }
+}

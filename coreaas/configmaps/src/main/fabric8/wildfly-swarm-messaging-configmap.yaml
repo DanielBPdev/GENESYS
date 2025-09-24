@@ -1,0 +1,159 @@
+metadata:
+  name: wildfly-swarm-messaging
+data:
+  wildfly-swarm-messaging.yaml: | 
+    servicelocator.type: KUBERNETES
+    gestor-cache: SERVICIO
+    org.apache.activemq.SERIALIZABLE_PACKAGES: java.lang,javax.security,java.util,org.apache.activemq,org.fusesource.hawtbuf,com.thoughtworks.xstream.mapper,com.asopagos
+    property.mdb.mails.queue.name: MailsQueue
+    org.apache.coyote.http11.Http11Protocol.MAX_HEADER_SIZE: 32768
+    com.arjuna.ats.arjuna.allowMultipleLastResources: true
+    jboss.as.management.blocking.timeout: 900
+    property.mdb.mails.maxsessions: 3
+    swarm:
+      undertow:
+        servers:
+          default-server:
+            http-listeners:
+              default:
+                max-post-size: 104857600
+      transactions:
+        socket-binding: txn-recovery-environment
+        status-socket-binding: txn-status-manager
+        default-timeout: 7200
+      datasources:
+        data-sources:
+          asopagosDS:
+            driver-name: sqlserver
+            connection-url: ${url.core}
+            user-name: ${user.core}
+            password: ${password.core}
+            min-pool-size: 5
+            max-pool-size: 30
+            pool-prefill: false
+            pool-use-strict-min: false
+            flush-strategy: EntirePool
+            use-fast-fail: false
+            check-valid-connection-sql: select 1
+            background-validation: true        
+            validate-on-match: false
+            background-validation-millis: 80000
+            valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLValidConnectionChecker
+            exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLExceptionSorter
+            set-tx-query-timeout: false
+            blocking-timeout-wait-millis: 10000
+            idle-timeout-minutes: 2
+            query-timeout: 0
+            use-try-lock: 0
+            allocation-retry: 3
+            allocation-retry-wait-millis: 4000
+            use-ccm: true
+          asopagosAudDS:
+            driver-name: sqlserver
+            connection-url: ${url.aud}
+            user-name: ${user.aud}
+            password: ${password.aud}
+            min-pool-size: 5
+            max-pool-size: 10
+            pool-prefill: false
+            pool-use-strict-min: false
+            flush-strategy: EntirePool
+            use-fast-fail: false
+            check-valid-connection-sql: select 1
+            background-validation: true        
+            validate-on-match: false
+            background-validation-millis: 80000
+            valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLValidConnectionChecker
+            exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLExceptionSorter
+            set-tx-query-timeout: false
+            blocking-timeout-wait-millis: 10000
+            idle-timeout-minutes: 2
+            query-timeout: 0
+            use-try-lock: 0
+            allocation-retry: 3
+            allocation-retry-wait-millis: 4000
+            use-ccm: true
+
+      deployment:
+        org.apache.activemq:activemq-rar.rar:
+
+      resource-adapters:
+        resource-adapters:
+          activemq-rar:
+            # This is not the physical jar name, but the maven coordinates (without version!)
+            archive: activemq-rar.rar
+            transaction-support: LocalTransaction
+            config-properties:
+              ServerUrl:
+                value: failover:tcp://activemq:61616
+              UserName:
+                value: admin
+              Password:
+                value: admin
+              UseInboundSession:
+                value: false
+
+            connection-definitions:
+                ConnectionFactory:
+                    jndi-name: ConnectionFactory
+                    class-name: org.apache.activemq.ra.ActiveMQManagedConnectionFactory
+                    enabled: true
+                    min-pool-size: 1
+                    max-pool-size: 100
+                    pool-prefill: false
+                    same-rm-override: false
+                    use-java-context: true
+                    tracking: false
+                    
+
+            admin-objects:
+                MailsQueue:
+                    class-name: org.apache.activemq.command.ActiveMQQueue
+                    jndi-name: jms/queue/MailsQueue
+                    use-java-context: true
+                    config-properties:
+                      PhysicalName: 
+                        value: MailsQueue
+                GestorDocumentalExternoQueue:
+                    class-name: org.apache.activemq.command.ActiveMQQueue
+                    jndi-name: jms/queue/GestorDocumentalExternoQueue
+                    use-java-context: true
+                    config-properties:
+                      PhysicalName: 
+                        value: GestorDocumentalExternoQueue                        
+                ReplicacionParametrosAsopagosTopic:
+                    class-name: org.apache.activemq.command.ActiveMQTopic
+                    jndi-name: topic/ReplicacionParametrosAsopagosTopic
+                    use-java-context: true
+                    config-properties:
+                      PhysicalName: 
+                        value: ReplicacionParametrosAsopagosTopic
+
+
+      ejb3:
+        default-resource-adapter-name: activemq-rar.rar
+        default-mdb-instance-pool: mdb-strict-max-pool
+
+      ee:
+        annotation-property-replacement: true
+        default-bindings:
+          jms-connection-factory: java:/ConnectionFactory
+
+      messaging-activemq:
+        servers:
+          default:
+            active: false
+            connection-factories:
+              InVmConnectionFactory:
+                block-on-acknowledge: true
+                entries:
+                - "java:/ArtemisConnectionFactory"
+
+      jca:
+        archive-validation:
+          enabled: false
+
+      logging:
+        loggers:
+          com.asopagos:
+            level: DEBUG

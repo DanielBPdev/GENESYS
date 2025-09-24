@@ -1,0 +1,189 @@
+{
+    "name": "SimularAuditoriaCore",
+    "properties": {
+        "activities": [
+            {
+                "name": "ListaTablasAuditoriaLookup",
+                "type": "Lookup",
+                "dependsOn": [
+                    {
+                        "activity": "DynamicLoadForEachR",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": "\tDECLARE @tablasAud AS TABLE (tabla VARCHAR(100), columnas NVARCHAR(MAX))\n\tDECLARE @tabla AS VARCHAR(100)\n\tDECLARE @tabla_aud AS VARCHAR(100)\n\tDECLARE @columns NVARCHAR(MAX)\n\tDECLARE @sql NVARCHAR(MAX)\n\tDECLARE @start BIGINT \n\tDECLARE @fin BIGINT\n\tDECLARE @cuenta BIGINT\n\n\tINSERT INTO @TablasAud (tabla) \n\tSELECT TABLE_NAME tabla\n\tFROM INFORMATION_SCHEMA.TABLES\n\tWHERE TABLE_NAME LIKE '%_aud'\n\tAND TABLE_SCHEMA = 'dbo'\n\n\tDECLARE @TablasAudCursor AS CURSOR\n\tSET @TablasAudCursor = CURSOR FAST_FORWARD FOR\n\t\tSELECT tabla FROM @TablasAud\n\tOPEN @TablasAudCursor\n\tFETCH NEXT FROM @TablasAudCursor INTO @tabla\n\n\tWHILE @@FETCH_STATUS = 0\n\tBEGIN\n\t\tSET @columns = NULL\n\t\tSET @sql = '\n\t\tSELECT @cuenta = COUNT(1)\n\t\tFROM dbo.' + @tabla\n\t\t\n\t\tEXEC sp_executesql @sql, \n\t\tN'@cuenta AS INT OUTPUT', @cuenta = @cuenta OUTPUT\n\n\t\tIF @Cuenta > 0\n\t\tBEGIN\n\t\t\tSELECT @columns = COALESCE(@columns + ',','') + COLUMN_NAME\n\t\t\tFROM INFORMATION_SCHEMA.COLUMNS\n\t\t\tWHERE TABLE_NAME = @tabla\n\t\t\tAND TABLE_SCHEMA = 'dbo'\n\n\t\t\tSET @columns = @columns\n\n\t\t\tUPDATE @TablasAud SET columnas = @columns WHERE tabla = @tabla\n\t\tEND\n\t\tELSE\n\t\tBEGIN\n\t\t\tDELETE FROM @TablasAud WHERE tabla = @tabla\n\t\tEND\n\n\t\n\t\tFETCH NEXT FROM @TablasAudCursor INTO\t@tabla\n\tEND\n\tCLOSE @TablasAudCursor;\n\tDEALLOCATE @TablasAudCursor;\n\n\tSELECT tabla, columnas\n\tFROM @tablasAud"
+                    },
+                    "dataset": {
+                        "referenceName": "DSAuditoria",
+                        "type": "DatasetReference"
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "DynamicLoadForEach",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "ListaTablasAuditoriaLookup",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('ListaTablasAuditoriaLookup').output.value",
+                        "type": "Expression"
+                    },
+                    "isSequential": false,
+                    "activities": [
+                        {
+                            "name": "CopyAuditR",
+                            "type": "Copy",
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "source": {
+                                    "type": "SqlSource",
+                                    "sqlReaderQuery": {
+                                        "value": "SELECT @{item().columnas} FROM @{item().tabla}",
+                                        "type": "Expression"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "SqlSink",
+                                    "writeBatchSize": 10000
+                                },
+                                "enableStaging": false,
+                                "cloudDataMovementUnits": 0
+                            },
+                            "userProperties": [
+                                {
+                                    "name": "Source",
+                                    "value": "INFORMATION_SCHEMA.TABLES"
+                                },
+                                {
+                                    "name": "Destination",
+                                    "value": "aud.@{item().tabla}"
+                                }
+                            ],
+                            "inputs": [
+                                {
+                                    "referenceName": "DSAuditoria",
+                                    "type": "DatasetReference"
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "DSCoreAudDynamicTableDestiny",
+                                    "type": "DatasetReference"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "ListaTablasAuditoriaRLookup",
+                "type": "Lookup",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": "\tDECLARE @tablasAud AS TABLE (tabla VARCHAR(100), columnas NVARCHAR(MAX))\n\tDECLARE @tabla AS VARCHAR(100)\n\tDECLARE @tabla_aud AS VARCHAR(100)\n\tDECLARE @columns NVARCHAR(MAX)\n\tDECLARE @sql NVARCHAR(MAX)\n\tDECLARE @start BIGINT \n\tDECLARE @fin BIGINT\n\tDECLARE @cuenta BIGINT\n\n\tINSERT INTO @TablasAud (tabla) \n\tSELECT TABLE_NAME tabla\n\tFROM INFORMATION_SCHEMA.TABLES\n\tWHERE TABLE_NAME LIKE 'Revision%'\n\tAND TABLE_SCHEMA = 'dbo'\n\tORDER BY TABLE_NAME\n\n\tDECLARE @TablasAudCursor AS CURSOR\n\tSET @TablasAudCursor = CURSOR FAST_FORWARD FOR\n\t\tSELECT tabla FROM @TablasAud\n\tOPEN @TablasAudCursor\n\tFETCH NEXT FROM @TablasAudCursor INTO @tabla\n\n\tWHILE @@FETCH_STATUS = 0\n\tBEGIN\n\t\tSET @columns = NULL\n\t\tSET @sql = '\n\t\tSELECT @cuenta = COUNT(1)\n\t\tFROM dbo.' + @tabla\n\t\t\n\t\tEXEC sp_executesql @sql, \n\t\tN'@cuenta AS INT OUTPUT', @cuenta = @cuenta OUTPUT\n\n\t\tIF @Cuenta > 0\n\t\tBEGIN\n\t\t\tSELECT @columns = COALESCE(@columns + ',','') + COLUMN_NAME\n\t\t\tFROM INFORMATION_SCHEMA.COLUMNS\n\t\t\tWHERE TABLE_NAME = @tabla\n\t\t\tAND TABLE_SCHEMA = 'dbo'\n\n\t\t\tSET @columns = @columns\n\n\t\t\tUPDATE @TablasAud SET columnas = @columns WHERE tabla = @tabla\n\t\tEND\n\t\tELSE\n\t\tBEGIN\n\t\t\tDELETE FROM @TablasAud WHERE tabla = @tabla\n\t\tEND\n\n\t\n\t\tFETCH NEXT FROM @TablasAudCursor INTO\t@tabla\n\tEND\n\tCLOSE @TablasAudCursor;\n\tDEALLOCATE @TablasAudCursor;\n\n\tSELECT tabla, columnas\n\tFROM @tablasAud"
+                    },
+                    "dataset": {
+                        "referenceName": "DSAuditoria",
+                        "type": "DatasetReference"
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "DynamicLoadForEachR",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "ListaTablasAuditoriaRLookup",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('ListaTablasAuditoriaRLookup').output.value",
+                        "type": "Expression"
+                    },
+                    "isSequential": false,
+                    "activities": [
+                        {
+                            "name": "CopyAudit",
+                            "type": "Copy",
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "source": {
+                                    "type": "SqlSource",
+                                    "sqlReaderQuery": {
+                                        "value": "SELECT @{item().columnas} FROM @{item().tabla}",
+                                        "type": "Expression"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "SqlSink",
+                                    "writeBatchSize": 10000
+                                },
+                                "enableStaging": false,
+                                "cloudDataMovementUnits": 0
+                            },
+                            "userProperties": [
+                                {
+                                    "name": "Source",
+                                    "value": "INFORMATION_SCHEMA.TABLES"
+                                },
+                                {
+                                    "name": "Destination",
+                                    "value": "aud.@{item().tabla}"
+                                }
+                            ],
+                            "inputs": [
+                                {
+                                    "referenceName": "DSAuditoria",
+                                    "type": "DatasetReference"
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "DSCoreAudDynamicTableDestiny",
+                                    "type": "DatasetReference"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,22 @@
+SET IDENTITY_INSERT [TipoVia] ON 
+
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (1, N'Autopista')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (2, N'Avenida')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (3, N'Avenida calle')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (4, N'Avenida carrera')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (5, N'Bulevar')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (6, N'Calle')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (7, N'Carrera')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (8, N'Carretera')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (9, N'Circular')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (10, N'Circunvalar')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (11, N'Comuna')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (12, N'Diagonal')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (13, N'Pasaje')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (14, N'Paseo')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (15, N'Peatonal')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (16, N'Transversal')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (17, N'Troncal')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (18, N'Variante')
+INSERT [TipoVia] ([tviId], [tviNombreVia]) VALUES (19, N'Vía')
+SET IDENTITY_INSERT [TipoVia] OFF

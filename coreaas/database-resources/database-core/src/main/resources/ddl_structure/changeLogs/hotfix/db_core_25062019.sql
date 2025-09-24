@@ -1,0 +1,10 @@
+--liquibase formatted sql
+
+--changeset mamonroy:01
+--comment: Ajustes para el envío del comunicado al administrador ANIBOL
+DELETE VariableComunicado from VariableComunicado JOIN PlantillaComunicado on vcoPlantillaComunicado = pcoId WHERE pcoEtiqueta = 'COM_PAG_SUB_INC_ARC_CON';
+INSERT INTO VariableComunicado (vcoClave, vcoDescripcion, vcoNombre, vcoPlantillaComunicado, vcoNombreConstante, vcoTipoVariableComunicado, vcoOrden) VALUES ('${nombreArchivo}','Nombre del archivo','Nombre del archivo',(SELECT pcoId FROM PlantillaComunicado WHERE pcoEtiqueta = 'COM_PAG_SUB_INC_ARC_CON'),NULL,'VARIABLE',0);
+INSERT INTO VariableComunicado (vcoClave, vcoDescripcion, vcoNombre, vcoPlantillaComunicado, vcoNombreConstante, vcoTipoVariableComunicado, vcoOrden) VALUES ('${fechaHoraCargue}','Fecha de cargue del archivo','Fecha de cargue del archivo',(SELECT pcoId FROM PlantillaComunicado WHERE pcoEtiqueta = 'COM_PAG_SUB_INC_ARC_CON'),NULL,'VARIABLE',0);
+INSERT INTO VariableComunicado (vcoClave, vcoDescripcion, vcoNombre, vcoPlantillaComunicado, vcoNombreConstante, vcoTipoVariableComunicado, vcoOrden) VALUES ('${nombreCcf}','Nombre de la caja de Compensación','Nombre CCF',(SELECT pcoId FROM PlantillaComunicado WHERE pcoEtiqueta = 'COM_PAG_SUB_INC_ARC_CON'),'NOMBRE_CCF','CONSTANTE',NULL);
+INSERT INTO VariableComunicado (vcoClave, vcoDescripcion, vcoNombre, vcoPlantillaComunicado, vcoNombreConstante, vcoTipoVariableComunicado, vcoOrden) VALUES ('${reporteInconsistencias}','Tabla con el detalle de las inconsistencias encontradas','Tabla con el detalle de las inconsistencias encontradas',(SELECT pcoId FROM PlantillaComunicado WHERE pcoEtiqueta = 'COM_PAG_SUB_INC_ARC_CON'),NULL,'REPORTE_VARIABLE',0);
+UPDATE plantillaComunicado SET pcoCuerpo = '<p>${reporteInconsistencias}</p>' WHERE pcoEtiqueta = 'COM_PAG_SUB_INC_ARC_CON';

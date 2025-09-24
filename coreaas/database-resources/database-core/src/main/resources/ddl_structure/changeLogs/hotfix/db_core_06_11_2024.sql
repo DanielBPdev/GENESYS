@@ -1,0 +1,2 @@
+INSERT [VariableComunicado] ([vcoClave], [vcoDescripcion], [vcoNombre], [vcoPlantillaComunicado], [vcoNombreConstante], [vcoTipoVariableComunicado], [vcoOrden]) VALUES 
+			(N'${nombresYApellidosDelJefeDelHogar}', N'Nombre completo Jefe de hogar (Concatenado)', 'Nombres y Apellidos del jefe del hogar', (select pcoId from PlantillaComunicado where pcoEtiqueta = 'CRT_ASIG_FOVIS'), NULL, N'VARIABLE', NULL)

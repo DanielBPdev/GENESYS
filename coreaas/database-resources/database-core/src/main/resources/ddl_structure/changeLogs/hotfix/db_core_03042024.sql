@@ -1,0 +1,23 @@
+--Se realiza alter a la tablas debido a que se estan desborando los datos al hacer un insert del puntaje
+ALTER TABLE CalificacionPostulacion ALTER COLUMN [cafPuntaje] NUMERIC(20,6)
+ALTER TABLE CalificacionPostulacion ALTER COLUMN [cafValorB1] NUMERIC(20,6)
+ALTER TABLE CalificacionPostulacion ALTER COLUMN [cafValorB2] NUMERIC(20,6)
+ALTER TABLE CalificacionPostulacion ALTER COLUMN [cafValorB3] NUMERIC(20,6)
+ALTER TABLE CalificacionPostulacion ALTER COLUMN [cafValorB4] NUMERIC(20,6)
+ALTER TABLE CalificacionPostulacion ALTER COLUMN [cafValorB5] NUMERIC(20,6)
+ALTER TABLE CalificacionPostulacion ALTER COLUMN [cafValorB6] NUMERIC(20,6)
+ALTER TABLE CalificacionPostulacion ALTER COLUMN [cafValorParte7] NUMERIC(20,6)
+ALTER TABLE CalificacionPostulacion ALTER COLUMN [cafValorParte8] NUMERIC(20,6)
+
+ALTER TABLE aud.CalificacionPostulacion_aud ALTER COLUMN [cafPuntaje] NUMERIC(20,6)
+ALTER TABLE aud.CalificacionPostulacion_aud ALTER COLUMN [cafValorB1] NUMERIC(20,6)
+ALTER TABLE aud.CalificacionPostulacion_aud ALTER COLUMN [cafValorB2] NUMERIC(20,6)
+ALTER TABLE aud.CalificacionPostulacion_aud ALTER COLUMN [cafValorB3] NUMERIC(20,6)
+ALTER TABLE aud.CalificacionPostulacion_aud ALTER COLUMN [cafValorB4] NUMERIC(20,6)
+ALTER TABLE aud.CalificacionPostulacion_aud ALTER COLUMN [cafValorB5] NUMERIC(20,6)
+ALTER TABLE aud.CalificacionPostulacion_aud ALTER COLUMN [cafValorB6] NUMERIC(20,6)
+ALTER TABLE aud.CalificacionPostulacion_aud ALTER COLUMN [cafValorParte7] NUMERIC(20,6)
+ALTER TABLE aud.CalificacionPostulacion_aud ALTER COLUMN [cafValorParte8] NUMERIC(20,6)
+
+ALTER TABLE PostulacionFovis ALTER COLUMN pofPuntaje NUMERIC(20,6)
+ALTER TABLE aud.PostulacionFovis_aud ALTER COLUMN pofPuntaje NUMERIC(20,6)

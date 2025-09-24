@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ${project.artifactId}
+  name: ${project.artifactId}
+spec:
+  progressDeadlineSeconds: 2147483647
+  replicas: 1
+  revisionHistoryLimit: 2147483647
+  selector:
+    matchLabels:
+      app: ${project.artifactId}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        date: ${timestamp}
+      creationTimestamp: null
+      labels:
+        app: ${project.artifactId}
+      name: ${project.artifactId}
+    spec:
+      containers:
+      - image: ${docker.registry.name}/${project.artifactId}
+        imagePullPolicy: IfNotPresent
+        name: ${project.artifactId}
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: tz-config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /usr/share/zoneinfo/America/Bogota
+          type: ""
+        name: tz-config
+status: {}

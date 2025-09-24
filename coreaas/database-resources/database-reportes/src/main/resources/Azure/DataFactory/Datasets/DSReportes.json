@@ -1,0 +1,16 @@
+{
+    "name": "DSReportes",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "reportes",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "typeProperties": {
+            "tableName": {
+                "value": "INFORMATION_SCHEMA.TABLES",
+                "type": "Expression"
+            }
+		}
+    }
+}

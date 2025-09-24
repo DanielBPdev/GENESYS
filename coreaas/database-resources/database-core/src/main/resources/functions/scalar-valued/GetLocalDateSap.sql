@@ -1,0 +1,9 @@
+CREATE OR ALTER FUNCTION [sap].[GetLocalDate]
+()
+RETURNS DATETIME
+AS
+BEGIN
+	DECLARE @LocalTime DATETIME
+	SELECT @LocalTime = CONVERT(DATETIMEOFFSET, getutcdate()) AT TIME ZONE 'SA Pacific Standard Time'
+	RETURN @LocalTime
+END

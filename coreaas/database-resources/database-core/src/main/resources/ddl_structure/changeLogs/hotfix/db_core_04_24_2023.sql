@@ -1,0 +1,3 @@
+update PlantillaComunicado
+set pcoEncabezado = '<table style="width: 100%;"><tbody><tr style="width: 100%;"><th style="width: 20%; text-align: left;">&nbsp;${logoDeLaCcf}</th><th style="width: 60%;text-align:center"><strong>SOLICITUD DE AFILIACI&Oacute;N DE ${tipoAfiliado} A LA CAJA DE COMPENSACI&Oacute;N FAMILIAR</strong>&nbsp;</th><th style="width: 30%;text-align: right;display: flex;">Número de solicitud<br></br>${numeroRadicacion}&nbsp;<br></br>${fechaRadicacion}&nbsp;</th></tr></tbody></table>'
+where pcoEtiqueta like 'ACRDS_TRMS_CDNES_PERS_WEB'

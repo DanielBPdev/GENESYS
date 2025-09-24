@@ -1,0 +1,383 @@
+{
+    "name": "SincronizarAuditoria",
+    "properties": {
+        "activities": [
+            {
+                "name": "ListaTablasAuditoriaLookup",
+                "type": "Lookup",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderStoredProcedureName": "[dbo].[USP_AUD_UTIL_TableList]",
+                        "storedProcedureParameters": {
+                            "iRevFin": {
+                                "type": "Int64",
+                                "value": {
+                                    "value": "@pipeline().parameters.REVFIN",
+                                    "type": "Expression"
+                                }
+                            },
+                            "iRevIni": {
+                                "type": "Int64",
+                                "value": {
+                                    "value": "@pipeline().parameters.REVINI",
+                                    "type": "Expression"
+                                }
+                            }
+                        }
+                    },
+                    "dataset": {
+                        "referenceName": "DSCore",
+                        "type": "DatasetReference"
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "INSERT_MarcaProcesamiento",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_AUD_INSERT_MarcaProcesamiento]"
+                },
+                "linkedServiceName": {
+                    "referenceName": "core_aud",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "DynamicLoadForEach",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "ListaTablasAuditoriaLookup",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "INSERT_MarcaProcesamiento",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('ListaTablasAuditoriaLookup').output.value",
+                        "type": "Expression"
+                    },
+                    "isSequential": false,
+                    "activities": [
+                        {
+                            "name": "CopyAudit",
+                            "type": "Copy",
+                            "dependsOn": [
+                                {
+                                    "activity": "DELETE_AudTableREV",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "typeProperties": {
+                                "source": {
+                                    "type": "SqlSource",
+                                    "sqlReaderQuery": {
+                                        "value": "\n\tSELECT @{item().columnas} \n\tFROM aud.@{item().tabla} \n\tWHERE REV >= '@{pipeline().parameters.REVINI}' AND  REV <= '@{pipeline().parameters.REVFIN}'",
+                                        "type": "Expression"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "SqlSink",
+                                    "writeBatchSize": 10000
+                                },
+                                "enableStaging": false,
+                                "parallelCopies": 8,
+                                "dataIntegrationUnits": 16
+                            },
+                            "inputs": [
+                                {
+                                    "referenceName": "DSCore",
+                                    "type": "DatasetReference"
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "DSAuditoriaDynamicTableDestiny",
+                                    "type": "DatasetReference"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "DELETE_AudTableREV",
+                            "type": "SqlServerStoredProcedure",
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_AUD_DELETE_AudTableREV]",
+                                "storedProcedureParameters": {
+                                    "iREVFin": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.REVFIN",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Int32"
+                                    },
+                                    "iREVIni": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.REVINI",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Int32"
+                                    },
+                                    "sTabla": {
+                                        "value": {
+                                            "value": "@item().tabla",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    }
+                                }
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "core_aud",
+                                "type": "LinkedServiceReference"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "DELETE_BufferAuditoria",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "CopyRevision",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "CopyRevisionEntidad",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_AUD_DELETE_BufferAuditoria]",
+                    "storedProcedureParameters": {
+                        "iRevFin": {
+                            "value": {
+                                "value": "@pipeline().parameters.REVFIN",
+                                "type": "Expression"
+                            },
+                            "type": "Int64"
+                        },
+                        "iRevIni": {
+                            "value": {
+                                "value": "@pipeline().parameters.REVINI",
+                                "type": "Expression"
+                            },
+                            "type": "Int64"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "core",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "DELETE_MarcaProcesamiento",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "DELETE_BufferAuditoria",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_AUD_DELETE_MarcaProcesamiento]"
+                },
+                "linkedServiceName": {
+                    "referenceName": "core_aud",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "CopyRevision",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "DELETE_Revision",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": {
+                            "value": "SELECT *\nFROM aud.Revision\nWHERE revId >= '@{pipeline().parameters.REVINI}' AND  revId <= '@{pipeline().parameters.REVFIN}'",
+                            "type": "Expression"
+                        }
+                    },
+                    "sink": {
+                        "type": "SqlSink",
+                        "writeBatchSize": 10000
+                    },
+                    "enableStaging": false,
+                    "parallelCopies": 8,
+                    "dataIntegrationUnits": 16
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DSCore",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "DSAudRevision",
+                        "type": "DatasetReference"
+                    }
+                ]
+            },
+            {
+                "name": "CopyRevisionEntidad",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "DELETE_Revision",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": {
+                            "value": "SELECT *\nFROM aud.RevisionEntidad\nWHERE reeRevision >= '@{pipeline().parameters.REVINI}' AND  reeRevision <= '@{pipeline().parameters.REVFIN}'",
+                            "type": "Expression"
+                        }
+                    },
+                    "sink": {
+                        "type": "SqlSink",
+                        "writeBatchSize": 10000
+                    },
+                    "enableStaging": false,
+                    "parallelCopies": 8,
+                    "dataIntegrationUnits": 16
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DSCore",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "DSAudRevisionEntidad",
+                        "type": "DatasetReference"
+                    }
+                ]
+            },
+            {
+                "name": "DELETE_Revision",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "DynamicLoadForEach",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[dbo].[USP_AUD_DELETE_Revision]",
+                    "storedProcedureParameters": {
+                        "iREVFin": {
+                            "value": {
+                                "value": "@pipeline().parameters.REVFIN",
+                                "type": "Expression"
+                            },
+                            "type": "Int32"
+                        },
+                        "iREVIni": {
+                            "value": {
+                                "value": "@pipeline().parameters.REVINI",
+                                "type": "Expression"
+                            },
+                            "type": "Int32"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "core_aud",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "parameters": {
+            "REVINI": {
+                "type": "Int"
+            },
+            "REVFIN": {
+                "type": "Int"
+            }
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

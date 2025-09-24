@@ -1,0 +1,35 @@
+{
+    "name": "DSReportesDatoTemporalSolicitud",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "reportes",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "structure": [
+            {
+                "name": "dtsId",
+                "type": "Int64"
+            },
+            {
+                "name": "dtsSolicitud",
+                "type": "Int64"
+            },
+            {
+                "name": "dtsJsonPayload",
+                "type": "String"
+            },
+            {
+                "name": "dtsTipoIdentificacion",
+                "type": "String"
+            },
+            {
+                "name": "dtsNumeroIdentificacion",
+                "type": "String"
+            }
+        ],
+        "typeProperties": {
+            "tableName": "[dbo].[DatoTemporalSolicitud]"
+        }
+    }
+}

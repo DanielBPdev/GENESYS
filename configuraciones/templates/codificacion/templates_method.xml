@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="java-members" deleted="false" description="private method" enabled="true" id="org.eclipse.jdt.ui.templates.private_method_asopagos" name="private_method_asopagos">private ${return_type} ${name}(${}) {
+	log.debug("${return_type} ${name}(${}) :: STAR");
+	${cursor}
+	log.debug("${return_type} ${name}(${}) :: END");
+}</template><template autoinsert="false" context="java-members" deleted="false" description="private static method" enabled="true" id="org.eclipse.jdt.ui.templates.private_static_method_asopagos" name="private_static_method_asopagos">private static ${return_type} ${name}(${}) {
+	log.debug("${return_type} ${name}(${}) :: STAR");
+	${cursor}
+	log.debug("${return_type} ${name}(${}) :: END");
+}</template><template autoinsert="false" context="java-members" deleted="false" description="protected method" enabled="true" id="org.eclipse.jdt.ui.templates.protected_method_asopagos" name="protected_method_asopagos">protected ${return_type} ${name}(${}) {
+	log.debug("${return_type} ${name}(${}) :: STAR");
+	${cursor}
+	log.debug("${return_type} ${name}(${}) :: END");
+}</template><template autoinsert="false" context="java-members" deleted="false" description="public method" enabled="true" id="org.eclipse.jdt.ui.templates.public_method_asopagos" name="public_method_asopagos">public ${return_type} ${name}(${}) {
+	log.debug("${return_type} ${name}(${}) :: STAR");
+	${cursor}
+	log.debug("${return_type} ${name}(${}) :: END");
+}</template><template autoinsert="false" context="java-members" deleted="false" description="public static method" enabled="true" id="org.eclipse.jdt.ui.templates.public_static_method_asopagos" name="public_static_method_asopagos">public static ${return_type} ${name}(${}) {
+	log.debug("${return_type} ${name}(${}) :: STAR");
+	${cursor}
+	log.debug("${return_type} ${name}(${}) :: END");
+}</template>
+<template autoinsert="false" context="java-members" deleted="false" description="private method" enabled="true" id="org.eclipse.jdt.ui.templates.private_method" name="private_method">private ${return_type} ${name}(${}) {
+	${cursor}
+}</template><template autoinsert="false" context="java-members" deleted="false" description="private static method" enabled="true" id="org.eclipse.jdt.ui.templates.private_static_method" name="private_static_method">private static ${return_type} ${name}(${}) {
+	${cursor}
+}</template><template autoinsert="false" context="java-members" deleted="false" description="protected method" enabled="true" id="org.eclipse.jdt.ui.templates.protected_method" name="protected_method">protected ${return_type} ${name}(${}) {
+	${cursor}
+}</template><template autoinsert="false" context="java-members" deleted="false" description="public method" enabled="true" id="org.eclipse.jdt.ui.templates.public_method" name="public_method">public ${return_type} ${name}(${}) {
+	${cursor}
+}</template><template autoinsert="false" context="java-members" deleted="false" description="public static method" enabled="true" id="org.eclipse.jdt.ui.templates.public_static_method" name="public_static_method">public static ${return_type} ${name}(${}) {
+	${cursor}
+}</template>
+</templates>

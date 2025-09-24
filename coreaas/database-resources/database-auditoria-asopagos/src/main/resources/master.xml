@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+	<!-- Inicio creación Inicial -->
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_aud_ddl_initial_28122017.sql" />
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_aud_21022018.sql" />
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_aud_08032018.sql" />
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_aud_14032018.sql" />
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_aud_26112019.sql" />
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_aud_17052023.sql" />
+
+	<!-- glpi 87702 -->
+	<changeSet author="kvides" id="01" runAlways="true"
+		runOnChange="true" >
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_aud_20012025.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- Fin creación Inicial -->
+	
+	<!-- Change logs -->
+
+ 	<!-- Change logs -->
+
+	<!-- Log de ejecución -->
+	<include file="Changelogs/ejecucion_log.sql" />
+
+</databaseChangeLog>

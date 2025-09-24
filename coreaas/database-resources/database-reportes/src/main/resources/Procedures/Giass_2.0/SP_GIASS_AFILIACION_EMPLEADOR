@@ -1,0 +1,142 @@
+-- =============================================
+-- Author:      Juan Carlos Avila Meza
+-- Create Date: 18/06/2024
+-- Description: Reporte Giass Afiliacion Empleador
+-- =============================================
+CREATE OR ALTER     PROCEDURE [dbo].[SP_GIASS_AFILIACION_EMPLEADOR]
+AS
+BEGIN
+    SET NOCOUNT ON
+
+if not exists ( select * from INFORMATION_SCHEMA.TABLES t where t.TABLE_NAME = 'ReporteAfiliacionEmpleadoresGiass')
+BEGIN
+-- drop table ReporteAfiliacionEmpleadoresGiass
+create table dbo.ReporteAfiliacionEmpleadoresGiass(
+ccf_id nvarchar(10),
+tipo_identificacion_id char(2),
+numero_identificacion nvarchar(20),
+fecha_inicio date,
+fecha_terminacion date,
+tipo_aportante_id char(2),
+numero_trabajadores char(2),
+valor_total_nomina nvarchar(20),
+estado_afiliacion_id char(2),
+causal_estado_afiliacion_id char(2),
+tipo_identificacion_representante_legal_id char(2),
+numero_identificacion_representante_legal nvarchar(20), 
+correo_electronico_representante_legal nvarchar(max),
+telefono_representante_legal nvarchar(20),
+fecha_inicio_representante_legal nvarchar(10),
+fecha_terminacion_representante_legal nvarchar(10),
+departamento_id nvarchar(6),
+municipio_id nvarchar(6),
+centro_poblado_id nvarchar(6),
+direccion nvarchar(200),
+area_geografica_id nvarchar(6),
+tipo_cargue char(2),
+fecha_novedad date
+)
+
+END 
+	ELSE
+BEGIN
+	PRINT 'el objeto ReporteAfiliacionEmpleadoresGiass ya existe'
+END
+
+drop table if exists #GIASS_AFILIACION_EMPLEADOR
+
+SELECT DISTINCT 
+isnull(	(SELECT cnsValor FROM Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO'),'') AS ccf_id,
+CASE 
+WHEN  pe.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN '1'
+WHEN  pe.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN '2'
+WHEN  pe.perTipoIdentificacion = 'REGISTRO_CIVIL'	 THEN '3'
+WHEN  pe.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN '4'
+WHEN  pe.perTipoIdentificacion = 'PASAPORTE' THEN '6'
+WHEN  pe.perTipoIdentificacion = 'NIT' THEN '7'
+WHEN  pe.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN '8'
+WHEN  pe.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN '9'
+WHEN  pe.perTipoIdentificacion = 'PERM_PROT_TEMPORAL' THEN 15 END AS [tipo_identificacion_id],
+pe.perNumeroIdentificacion [numero_identificacion],
+isnull(cast(cast(epl.empFechaCambioEstadoAfiliacion as date) as nvarchar(11)),'') [fecha_inicio],
+CAST(epl.empFechaRetiro AS varchar(11))  [fecha_terminacion],
+--isnull((select top 1 
+--		CASE WHEN per.perTipoIdentificacion = 'NIT' AND apg.apgTipoSolicitante = 'EMPLEADOR' THEN '1'
+--			 WHEN per.perTipoIdentificacion = 'NIT' AND apg.apgTipoSolicitante IS NULL THEN '1'
+--			 WHEN per.perTipoIdentificacion = 'CEDULA_CIUDADANIA' AND apg.apgTipoSolicitante = 'EMPLEADOR' THEN '1' 
+--			 WHEN per.perTipoIdentificacion = 'CEDULA_CIUDADANIA' AND apg.apgTipoSolicitante = 'INDEPENDIENTE' THEN '2'
+--			 WHEN per.perTipoIdentificacion = 'CEDULA_CIUDADANIA' AND apg.apgTipoSolicitante IS NULL THEN '1'
+--			 ELSE '' 	 END
+--		from Persona per inner join Empresa epr on per.perId = epr.empPersona left join AporteGeneral2 apg on apg.apgEmpresa = epr.empId
+--		where per.perId = pe.perId ) ,'')  
+1 as [tipo_aportante_id],
+isnull((SELECT COUNT(*) FROM ROLAFILIADO where roaEstadoAfiliado = 'ACTIVO' AND  roaEmpleador = epl.empId),0) [numero_trabajadores], -- Vericar contra rolAfiliado el total de trabajadores activos
+isnull(epl.empValorTotalUltimaNomina,0) [valor_total_nomina],
+CASE WHEN isnull(epl.empEstadoEmpleador,'') = 'ACTIVO' THEN 1
+	WHEN isnull(epl.empEstadoEmpleador,'') = 'INACTIVO' THEN 2 END [estado_afiliacion_id],
+case 
+WHEN (isnull(epl.empEstadoEmpleador,'') = 'INACTIVO') and (isnull(epl.empMotivoDesafiliacion,'') = 'EXPULSION_POR_MOROSIDAD') THEN '2'
+WHEN (isnull(epl.empEstadoEmpleador,'') = 'INACTIVO') and (isnull(epl.empMotivoDesafiliacion,'') = 'RETIRO_VOLUNTARIO') THEN '1'
+WHEN (isnull(epl.empEstadoEmpleador,'') = 'INACTIVO') and (isnull(epl.empMotivoDesafiliacion,'') = 'EXPULSION_POR_USO_INDEBIDO_DE_SERVICIOS') THEN '3'
+WHEN (isnull(epl.empEstadoEmpleador,'') = 'INACTIVO') and (isnull(epl.empMotivoDesafiliacion,'') = 'EXPULSION_POR_INFORMACION_INCORRECTA') THEN '3'
+WHEN (isnull(epl.empEstadoEmpleador,'') = 'INACTIVO') and (isnull(epl.empMotivoDesafiliacion,'') = 'CESE_EN_PROCESO_LIQUIDACION_LIQUIDADO_FALLECIDO') THEN '4'
+WHEN (isnull(epl.empEstadoEmpleador,'') = 'INACTIVO') and (isnull(epl.empMotivoDesafiliacion,'') = 'CESE_EN_PROCESO_LIQUIDACION_LIQUIDADO_FALLECIDO') THEN '4'
+WHEN (isnull(epl.empEstadoEmpleador,'') = 'INACTIVO') and (isnull(epl.empMotivoDesafiliacion,'') = 'CERO_TRABAJADORES_SOLICITUD_EMPLEADOR') THEN '5'
+WHEN (isnull(epl.empEstadoEmpleador,'') = 'INACTIVO') and (isnull(epl.empMotivoDesafiliacion,'') = 'CERO_TRABAJADORES_NOVEDAD_INTERNA') THEN '5'
+ELSE '' END [causal_estado_afiliacion_id]
+,CASE 
+WHEN  rl.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN '1' --ok
+WHEN  rl.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN '2' --ok
+WHEN  rl.perTipoIdentificacion = 'REGISTRO_CIVIL'	 THEN '3' --ok
+WHEN  rl.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN '4' --ok
+WHEN  rl.perTipoIdentificacion = 'PASAPORTE' THEN '6' --ok
+WHEN  rl.perTipoIdentificacion = 'NIT' THEN '7' --ok
+WHEN  rl.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN '8' --ok
+WHEN  rl.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN '9' --ok
+WHEN  rl.perTipoIdentificacion = 'PERM_PROT_TEMPORAL' THEN '15' END AS  [tipo_identificacion_representante_legal_id]
+,rl.perNumeroIdentificacion [numero_identificacion_representante_legal]
+,isnull(lower(ubrl.ubiEmail),'') [correo_electronico_representante_legal]
+,isnull(ubrl.ubiTelefonoCelular,'') [telefono_representante_legal]
+,isnull(null,'') [fecha_inicio_representante_legal]
+,isnull(null,'') [fecha_terminacion_representante_legal]
+,isnull((select distinct top 1 dpto.depCodigo from SucursalEmpresa sce inner join Ubicacion ubi on (sce.sueUbicacion = ubi.ubiId) and sce.sueSucursalPrincipal = 1  inner join Municipio mun on mun.munId = ubi.ubiMunicipio inner join Departamento dpto on dpto.depId = mun.munDepartamento where sce.sueEmpresa = epr.empId),'') [departamento_id]
+,isnull((select mun.munCodigo from UbicacionEmpresa ubie inner join Ubicacion ubi on (ubie.ubeUbicacion = ubi.ubiId) and (ubie.ubeTipoUbicacion = 'UBICACION_PRINCIPAL') inner join Municipio mun on mun.munId = ubi.ubiMunicipio where ubie.ubeEmpresa = epr.empId),'') [municipio_id]
+,isnull(null,'') [centro_poblado_id]
+,ISNULL(( select ubi.ubiDireccionFisica from UbicacionEmpresa ube inner join Ubicacion ubi on (ubi.ubiId = ube.ubeUbicacion) and (ube.ubeTipoUbicacion = 'UBICACION_PRINCIPAL') where ube.ubeEmpresa = epr.empId),'') [direccion]
+,isnull(null,'') [area_geografica_id]
+,case 
+when getdate() < '2024-07-31' then 2
+when getdate() > '2024-07-31' then 1 end [tipo_cargue] --ok
+,(SELECT top 1 isnull(cast(cast(s.solFechaCreacion as date) as nvarchar(11)),'') FROM SolicitudAfiliaciEmpleador sae inner join Solicitud s on s.solId = sae.saeSolicitudGlobal where sae.saeEmpleador = epl.empId order by 1 desc) [fecha_novedad]
+INTO #GIASS_AFILIACION_EMPLEADOR
+from Persona pe 
+inner join Empresa epr on pe.perId = epr.empPersona
+inner join Empleador epl on epl.empEmpresa = epr.empId
+inner join Persona rl on rl.perId = epr.empRepresentanteLegal
+inner join Ubicacion ubrl on ubrl.ubiId = epr.empUbicacionRepresentanteLegal
+--where pe.perNumeroIdentificacion = '10121088'
+
+INSERT INTO ReporteAfiliacionEmpleadoresGiass
+select 
+	ccf_id,tipo_identificacion_id,numero_identificacion,fecha_inicio,fecha_terminacion,tipo_aportante_id,numero_trabajadores,valor_total_nomina,estado_afiliacion_id,
+	causal_estado_afiliacion_id,tipo_identificacion_representante_legal_id,numero_identificacion_representante_legal,correo_electronico_representante_legal,
+	telefono_representante_legal,fecha_inicio_representante_legal,fecha_terminacion_representante_legal,departamento_id,municipio_id,centro_poblado_id,direccion,
+	area_geografica_id,tipo_cargue,fecha_novedad 
+from #GIASS_AFILIACION_EMPLEADOR
+except
+select 
+	ccf_id,tipo_identificacion_id,numero_identificacion,fecha_inicio,fecha_terminacion,tipo_aportante_id,numero_trabajadores,valor_total_nomina,estado_afiliacion_id,
+	causal_estado_afiliacion_id,tipo_identificacion_representante_legal_id,numero_identificacion_representante_legal,correo_electronico_representante_legal,
+	telefono_representante_legal,fecha_inicio_representante_legal,fecha_terminacion_representante_legal,departamento_id,municipio_id,centro_poblado_id,direccion,
+	area_geografica_id,tipo_cargue,fecha_novedad
+from ReporteAfiliacionEmpleadoresGiass
+
+-- se visualiza el reporte
+select ccf_id,tipo_identificacion_id,numero_identificacion,fecha_inicio,fecha_terminacion,tipo_aportante_id,numero_trabajadores,valor_total_nomina,estado_afiliacion_id,
+causal_estado_afiliacion_id,tipo_identificacion_representante_legal_id,numero_identificacion_representante_legal,correo_electronico_representante_legal,
+telefono_representante_legal,fecha_inicio_representante_legal,fecha_terminacion_representante_legal,departamento_id,municipio_id,centro_poblado_id,direccion,
+area_geografica_id,tipo_cargue,fecha_novedad
+from ReporteAfiliacionEmpleadoresGiass
+
+
+END

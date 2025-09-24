@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+	<!-- Inicio creación Inicial -->
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_ddl_initial_27122017.sql" relativeToChangelogFile="true"/>
+	<!-- Fin creación Inicial -->
+	
+	<include file="liquibase/Technical/db_asopagos_check_constraint_eliminacion.sql" relativeToChangelogFile="true" />
+	<!-- Change logs -->
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_27122017.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_21022018.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_08032018.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/Changelogs/Liquibase_Release_000/db_asopagos_14032018.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/Changelogs/Liquibase_Release_002/db_asopagos_08022019.sql" relativeToChangelogFile="true"/>	
+ 	<!-- Change logs -->
+	<include file="liquibase/ddl/db_asopagos_08042019.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/ddl/db_asopagos_27042019.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/ddl/db_asopagos_22052019.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/ddl/db_asopagos_06062019.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/ddl/db_asopagos_03072019.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/Changelogs/Liquibase_Release_002/db_asopagos_04062019.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/Changelogs/Liquibase_Release_002/db_asopagos_02082019.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/Changelogs/Liquibase_Release_002/db_asopagos_22082019.sql" relativeToChangelogFile="true"/>
+	<include file="liquibase/ddl/db_asopagos_26112019.sql" relativeToChangelogFile="true"/>
+ 	
+ 	<include file="liquibase/Technical/db_asopagos_check_constraint_creacion.sql" relativeToChangelogFile="true"/>
+
+	<!-- Log de ejecución -->
+	<include file="liquibase/Changelogs/ejecucion_log.sql" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

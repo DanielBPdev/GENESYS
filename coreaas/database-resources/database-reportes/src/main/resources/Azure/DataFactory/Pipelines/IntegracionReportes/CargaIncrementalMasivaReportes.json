@@ -1,0 +1,234 @@
+{
+    "name": "CargaIncrementalMasivaReportes",
+    "properties": {
+        "activities": [
+            {
+                "name": "ObtenerMarcaProcesamientoAUDLookup",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": "SELECT CAST(CASE WHEN EXISTS(SELECT 1 FROM MarcaProcesamiento) THEN 'true' ELSE 'false' END AS BIT) EnEjecucion"
+                    },
+                    "dataset": {
+                        "referenceName": "DSAuditoria",
+                        "type": "DatasetReference"
+                    }
+                }
+            },
+            {
+                "name": "ObtenerMarcaProcesamientoREPLookup",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": "SELECT CAST(CASE WHEN EXISTS(SELECT 1 FROM MarcaProcesamiento) THEN 'true' ELSE 'false' END AS BIT) EnEjecucion"
+                    },
+                    "dataset": {
+                        "referenceName": "DSReportes",
+                        "type": "DatasetReference"
+                    }
+                }
+            },
+            {
+                "name": "IFEstaDisponible",
+                "type": "IfCondition",
+                "dependsOn": [
+                    {
+                        "activity": "ObtenerMarcaProcesamientoAUDLookup",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "ObtenerMarcaProcesamientoREPLookup",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "expression": {
+                        "value": "@and(not(activity('ObtenerMarcaProcesamientoAUDLookup').output.firstRow.EnEjecucion),not(activity('ObtenerMarcaProcesamientoREPLookup').output.firstRow.EnEjecucion))",
+                        "type": "Expression"
+                    },
+                    "ifTrueActivities": [
+                        {
+                            "name": "SincronizarAuditoriaReportes",
+                            "type": "ExecutePipeline",
+                            "dependsOn": [
+                                {
+                                    "activity": "CargaInicialCoreReportes",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "pipeline": {
+                                    "referenceName": "SincronizarAuditoriaReportes",
+                                    "type": "PipelineReference"
+                                },
+                                "waitOnCompletion": true,
+                                "parameters": {
+                                    "FechaRevision": {
+                                        "value": "@pipeline().parameters.FechaRevision",
+                                        "type": "Expression"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "INSERT_MarcaProcesamiento",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_INSERT_MarcaProcesamiento]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "DELETE_MarcaProcesamiento",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "SincronizarAuditoriaReportes",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[USP_REP_DELETE_MarcaProcesamiento]"
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "reportes",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "CargaInicialCoreReportes",
+                            "type": "ExecutePipeline",
+                            "dependsOn": [
+                                {
+                                    "activity": "INSERT_MarcaProcesamiento",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "pipeline": {
+                                    "referenceName": "CargaInicialCoreReportes",
+                                    "type": "PipelineReference"
+                                },
+                                "waitOnCompletion": true
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "ObtMarcaProcesamientoPila",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": "SELECT CAST(CASE WHEN EXISTS(SELECT 1 FROM MarcaProcesamiento) THEN 'true' ELSE 'false' END AS BIT) EnEjecucion"
+                    },
+                    "dataset": {
+                        "referenceName": "DSPila",
+                        "type": "DatasetReference"
+                    }
+                }
+            },
+            {
+                "name": "IFEstaDisponiblePila",
+                "type": "IfCondition",
+                "dependsOn": [
+                    {
+                        "activity": "ObtMarcaProcesamientoPila",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "expression": {
+                        "value": "@not(activity('ObtMarcaProcesamientoPila').output.firstRow.EnEjecucion)",
+                        "type": "Expression"
+                    },
+                    "ifTrueActivities": [
+                        {
+                            "name": "CargaIncrementalPila",
+                            "type": "ExecutePipeline",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "pipeline": {
+                                    "referenceName": "CargaIncrementalPila",
+                                    "type": "PipelineReference"
+                                },
+                                "waitOnCompletion": true,
+                                "parameters": {
+                                    "FechaRevision": {
+                                        "value": "@pipeline().parameters.FechaRevision",
+                                        "type": "Expression"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "parameters": {
+            "FechaRevision": {
+                "type": "String",
+                "defaultValue": "Default"
+            }
+        },
+        "annotations": []
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

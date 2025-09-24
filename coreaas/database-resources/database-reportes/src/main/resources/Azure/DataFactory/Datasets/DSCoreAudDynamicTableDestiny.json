@@ -1,0 +1,16 @@
+{
+    "name": "DSCoreAudDynamicTableDestiny",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "core",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "typeProperties": {
+            "tableName": {
+                "value": "aud.@{item().tabla}",
+                "type": "Expression"
+            }
+        }
+    }
+}

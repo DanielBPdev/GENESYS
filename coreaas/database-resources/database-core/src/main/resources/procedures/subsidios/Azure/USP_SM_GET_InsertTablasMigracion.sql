@@ -1,0 +1,243 @@
+-- =============================================
+-- Author:		Diego Suesca
+-- Create date: 2019/09/11
+-- Description:
+-- =============================================
+CREATE PROCEDURE [dbo].[USP_SM_GET_InsertTablasMigracion]	
+with execute as owner
+AS
+BEGIN TRY
+	CREATE TABLE #TempSolicitud
+	(
+	solId bigint,
+	solCanalRecepcion varchar(21) NULL,
+	solFechaRadicacion datetime2(7) NULL,
+	solInstanciaProceso varchar(255) NULL,
+	solNumeroRadicacion varchar(20) NULL,
+	solUsuarioRadicacion varchar(255) NULL,
+	solCajaCorrespondencia bigint NULL,
+	solTipoTransaccion varchar(100) NULL,
+	solCiudadUsuarioRadicacion varchar(255) NULL,
+	solEstadoDocumentacion varchar(50) NULL,
+	solMetodoEnvio varchar(20) NULL,
+	solClasificacion varchar(48) NULL,
+	solTipoRadicacion varchar(20) NULL,
+	solFechaCreacion datetime2(7) NULL,
+	solDestinatario varchar(255) NULL,
+	solSedeDestinatario varchar(2) NULL,
+	solObservacion varchar(500) NULL,
+	solCargaAfiliacionMultipleEmpleador bigint NULL,
+	solResultadoProceso varchar(30) NULL,
+	solDiferenciasCargueActualizacion bigint NULL,
+	solAnulada bit NULL,
+	solShardName varchar(2000)
+		)
+
+	INSERT #TempSolicitud (solId,solCanalRecepcion,solFechaRadicacion,solInstanciaProceso,solNumeroRadicacion,solUsuarioRadicacion,solCajaCorrespondencia,solTipoTransaccion,solCiudadUsuarioRadicacion,solEstadoDocumentacion,solMetodoEnvio,solClasificacion,solTipoRadicacion,solFechaCreacion,solDestinatario,solSedeDestinatario,solObservacion,solCargaAfiliacionMultipleEmpleador,solResultadoProceso,solDiferenciasCargueActualizacion,solAnulada,solShardName)
+	EXEC sp_execute_remote SubsidioReferenceData,
+	N'SELECT solId,solCanalRecepcion,solFechaRadicacion,solInstanciaProceso,solNumeroRadicacion,solUsuarioRadicacion,solCajaCorrespondencia,solTipoTransaccion,solCiudadUsuarioRadicacion,solEstadoDocumentacion,solMetodoEnvio,solClasificacion,solTipoRadicacion,solFechaCreacion,solDestinatario,solSedeDestinatario,solObservacion,solCargaAfiliacionMultipleEmpleador,solResultadoProceso,solDiferenciasCargueActualizacion,solAnulada
+	  FROM mgr.Solicitud'
+
+	SET IDENTITY_INSERT dbo.Solicitud ON;
+	INSERT Solicitud (solId,solCanalRecepcion,solFechaRadicacion,solInstanciaProceso,solNumeroRadicacion,solUsuarioRadicacion,solCajaCorrespondencia,solTipoTransaccion,solCiudadUsuarioRadicacion,solEstadoDocumentacion,solMetodoEnvio,solClasificacion,solTipoRadicacion,solFechaCreacion,solDestinatario,solSedeDestinatario,solObservacion,solCargaAfiliacionMultipleEmpleador,solResultadoProceso,solDiferenciasCargueActualizacion,solAnulada)
+	SELECT solId,solCanalRecepcion,solFechaRadicacion,solInstanciaProceso,solNumeroRadicacion,solUsuarioRadicacion,solCajaCorrespondencia,solTipoTransaccion,solCiudadUsuarioRadicacion,solEstadoDocumentacion,solMetodoEnvio,solClasificacion,solTipoRadicacion,solFechaCreacion,solDestinatario,solSedeDestinatario,solObservacion,solCargaAfiliacionMultipleEmpleador,solResultadoProceso,solDiferenciasCargueActualizacion,solAnulada
+	FROM #TempSolicitud
+	SET IDENTITY_INSERT dbo.Solicitud OFF;
+
+	CREATE TABLE #TempSolicitudLiquidacionSubsidio
+	(
+	slsId bigint ,
+	slsSolicitudGlobal bigint ,
+	slsFechaCorteAporte datetime NULL,
+	slsFechaInicio datetime NULL,
+	slsFechaFin datetime NULL,
+	slsTipoLiquidacion varchar(33) ,
+	slsTipoLiquidacionEspecifica varchar(32) NULL,
+	slsEstadoLiquidacion varchar(25) ,
+	slsTipoEjecucionProceso varchar(10) ,
+	slsFechaEjecucionProgramada datetime NULL,
+	slsUsuarioEvaluacionPrimerNivel varchar(50) NULL,
+	slsObservacionesPrimerNivel varchar(250) NULL,
+	slsUsuarioEvaluacionSegundoNivel varchar(50) NULL,
+	slsObservacionesSegundoNivel varchar(250) NULL,
+	slsRazonRechazoLiquidacion varchar(250) NULL,
+	slsObservacionesProceso varchar(250) NULL,
+	slsFechaEvaluacionPrimerNivel datetime NULL,
+	slsFechaEvaluacionSegundoNivel datetime NULL,
+	slsCodigoReclamo varchar(50) NULL,
+	slsComentarioReclamo varchar(250) NULL,
+	slsFechaDispersion datetime NULL,
+	slsConsideracionAporteDesembolso bit NULL,
+	slsTipoDesembolso varchar(40) NULL,
+	slsShardName varchar(2000)
+		)
+
+	INSERT #TempSolicitudLiquidacionSubsidio (slsId,slsSolicitudGlobal,slsFechaCorteAporte,slsFechaInicio,slsFechaFin,slsTipoLiquidacion,slsTipoLiquidacionEspecifica,slsEstadoLiquidacion,slsTipoEjecucionProceso,slsFechaEjecucionProgramada,slsUsuarioEvaluacionPrimerNivel,slsObservacionesPrimerNivel,slsUsuarioEvaluacionSegundoNivel,slsObservacionesSegundoNivel,slsRazonRechazoLiquidacion,slsObservacionesProceso,slsFechaEvaluacionPrimerNivel,slsFechaEvaluacionSegundoNivel,slsCodigoReclamo,slsComentarioReclamo,slsFechaDispersion,slsConsideracionAporteDesembolso,slsTipoDesembolso,slsShardName)
+	EXEC sp_execute_remote SubsidioReferenceData,
+	N'SELECT slsId,slsSolicitudGlobal,slsFechaCorteAporte,slsFechaInicio,slsFechaFin,slsTipoLiquidacion,slsTipoLiquidacionEspecifica,slsEstadoLiquidacion,slsTipoEjecucionProceso,slsFechaEjecucionProgramada,slsUsuarioEvaluacionPrimerNivel,slsObservacionesPrimerNivel,slsUsuarioEvaluacionSegundoNivel,slsObservacionesSegundoNivel,slsRazonRechazoLiquidacion,slsObservacionesProceso,slsFechaEvaluacionPrimerNivel,slsFechaEvaluacionSegundoNivel,slsCodigoReclamo,slsComentarioReclamo,slsFechaDispersion,slsConsideracionAporteDesembolso,slsTipoDesembolso
+	  FROM mgr.SolicitudLiquidacionSubsidio'
+
+	SET IDENTITY_INSERT dbo.SolicitudLiquidacionSubsidio ON;
+	INSERT SolicitudLiquidacionSubsidio (slsId,slsSolicitudGlobal,slsFechaCorteAporte,slsFechaInicio,slsFechaFin,slsTipoLiquidacion,slsTipoLiquidacionEspecifica,slsEstadoLiquidacion,slsTipoEjecucionProceso,slsFechaEjecucionProgramada,slsUsuarioEvaluacionPrimerNivel,slsObservacionesPrimerNivel,slsUsuarioEvaluacionSegundoNivel,slsObservacionesSegundoNivel,slsRazonRechazoLiquidacion,slsObservacionesProceso,slsFechaEvaluacionPrimerNivel,slsFechaEvaluacionSegundoNivel,slsCodigoReclamo,slsComentarioReclamo,slsFechaDispersion,slsConsideracionAporteDesembolso,slsTipoDesembolso)
+	SELECT slsId,slsSolicitudGlobal,slsFechaCorteAporte,slsFechaInicio,slsFechaFin,slsTipoLiquidacion,slsTipoLiquidacionEspecifica,slsEstadoLiquidacion,slsTipoEjecucionProceso,slsFechaEjecucionProgramada,slsUsuarioEvaluacionPrimerNivel,slsObservacionesPrimerNivel,slsUsuarioEvaluacionSegundoNivel,slsObservacionesSegundoNivel,slsRazonRechazoLiquidacion,slsObservacionesProceso,slsFechaEvaluacionPrimerNivel,slsFechaEvaluacionSegundoNivel,slsCodigoReclamo,slsComentarioReclamo,slsFechaDispersion,slsConsideracionAporteDesembolso,slsTipoDesembolso
+	FROM #TempSolicitudLiquidacionSubsidio
+	SET IDENTITY_INSERT dbo.SolicitudLiquidacionSubsidio OFF;
+
+	CREATE TABLE #TempEtiqueta
+	(
+	eprId bigint,
+	eprAsignada bit NULL,
+	eprCodigo varchar(12) NULL,
+	eprTipoEtiqueta varchar(50) NULL,
+	eprProcedenciaEtiqueta varchar(20) NULL,
+	eprShardName varchar(2000)
+	)
+
+	INSERT #TempEtiqueta (eprId,eprAsignada,eprCodigo,eprTipoEtiqueta,eprProcedenciaEtiqueta,eprShardName)
+	EXEC sp_execute_remote SubsidioReferenceData,
+	N'SELECT eprId,eprAsignada,eprCodigo,eprTipoEtiqueta,eprProcedenciaEtiqueta
+	  FROM mgr.EtiquetaCorrespondenciaRadicado'
+
+	SET IDENTITY_INSERT dbo.EtiquetaCorrespondenciaRadicado ON;
+	INSERT EtiquetaCorrespondenciaRadicado (eprId,eprAsignada,eprCodigo,eprTipoEtiqueta,eprProcedenciaEtiqueta)
+	SELECT eprId,eprAsignada,eprCodigo,eprTipoEtiqueta,eprProcedenciaEtiqueta
+	FROM #TempEtiqueta
+	SET IDENTITY_INSERT dbo.EtiquetaCorrespondenciaRadicado OFF;
+
+	CREATE TABLE #TempCuenta (
+	casId bigint ,
+	casFechaHoraCreacionRegistro datetime ,
+	casUsuarioCreacionRegistro varchar(200) ,
+	casTipoTransaccionSubsidio varchar(40) ,
+	casEstadoTransaccionSubsidio varchar(25) NULL,
+	casEstadoLiquidacionSubsidio varchar(25) NULL,
+	casOrigenTransaccion varchar(30) ,
+	casMedioDePagoTransaccion varchar(13) ,
+	casNumeroTarjetaAdmonSubsidio varchar(50) NULL,
+	casCodigoBanco varchar(8) NULL,
+	casNombreBanco varchar(255) NULL,
+	casTipoCuentaAdmonSubsidio varchar(30) NULL,
+	casNumeroCuentaAdmonSubsidio varchar(30) NULL,
+	casTipoIdentificacionTitularCuentaAdmonSubsidio varchar(20) NULL,
+	casNumeroIdentificacionTitularCuentaAdmonSubsidio varchar(20) NULL,
+	casNombreTitularCuentaAdmonSubsidio varchar(200) NULL,
+	casFechaHoraTransaccion datetime ,
+	casUsuarioTransaccion varchar(200) ,
+	casValorOriginalTransaccion numeric(19,5) ,
+	casValorRealTransaccion numeric(19,5) ,
+	casIdTransaccionOriginal bigint NULL,
+	casIdRemisionDatosTerceroPagador varchar(200) NULL,
+	casIdTransaccionTerceroPagador varchar(200) NULL,
+	casNombreTerceroPagado varchar(200) NULL,
+	casIdCuentaAdmonSubsidioRelacionado bigint NULL,
+	casFechaHoraUltimaModificacion datetime NULL,
+	casUsuarioUltimaModificacion varchar(200) NULL,
+	casAdministradorSubsidio bigint ,
+	casSitioDePago bigint NULL,
+	casSitioDeCobro bigint NULL,
+	casMedioDePago bigint ,
+	casSolicitudLiquidacionSubsidio bigint NULL,
+	casCondicionPersonaAdmin bigint NULL,
+	casEmpleador bigint NULL,
+	casAfiliadoPrincipal bigint NULL,
+	casBeneficiarioDetalle bigint NULL,
+	casGrupoFamiliar bigint NULL,
+	casShardName VARCHAR(2000)
+	);
+
+
+	INSERT #TempCuenta (casId,casFechaHoraCreacionRegistro,casUsuarioCreacionRegistro,casTipoTransaccionSubsidio,casEstadoTransaccionSubsidio,casEstadoLiquidacionSubsidio,casOrigenTransaccion,casMedioDePagoTransaccion,casNumeroTarjetaAdmonSubsidio,casCodigoBanco,casNombreBanco,casTipoCuentaAdmonSubsidio,casNumeroCuentaAdmonSubsidio,casTipoIdentificacionTitularCuentaAdmonSubsidio,casNumeroIdentificacionTitularCuentaAdmonSubsidio,casNombreTitularCuentaAdmonSubsidio,casFechaHoraTransaccion,casUsuarioTransaccion,casValorOriginalTransaccion,casValorRealTransaccion,casIdTransaccionOriginal,casIdRemisionDatosTerceroPagador,casIdTransaccionTerceroPagador,casNombreTerceroPagado,casIdCuentaAdmonSubsidioRelacionado,casFechaHoraUltimaModificacion,casUsuarioUltimaModificacion,casAdministradorSubsidio,casSitioDePago,casSitioDeCobro,casMedioDePago,casSolicitudLiquidacionSubsidio,casCondicionPersonaAdmin,casEmpleador,casAfiliadoPrincipal,casBeneficiarioDetalle,casGrupoFamiliar,casShardName)
+	EXEC sp_execute_remote SubsidioReferenceData,
+	N'SELECT casId,casFechaHoraCreacionRegistro,casUsuarioCreacionRegistro,casTipoTransaccionSubsidio,casEstadoTransaccionSubsidio,casEstadoLiquidacionSubsidio,casOrigenTransaccion,casMedioDePagoTransaccion,casNumeroTarjetaAdmonSubsidio,casCodigoBanco,casNombreBanco,casTipoCuentaAdmonSubsidio,casNumeroCuentaAdmonSubsidio,casTipoIdentificacionTitularCuentaAdmonSubsidio,casNumeroIdentificacionTitularCuentaAdmonSubsidio,casNombreTitularCuentaAdmonSubsidio,casFechaHoraTransaccion,casUsuarioTransaccion,casValorOriginalTransaccion,casValorRealTransaccion,casIdTransaccionOriginal,casIdRemisionDatosTerceroPagador,casIdTransaccionTerceroPagador,casNombreTerceroPagado,casIdCuentaAdmonSubsidioRelacionado,casFechaHoraUltimaModificacion,casUsuarioUltimaModificacion,casAdministradorSubsidio,casSitioDePago,casSitioDeCobro,casMedioDePago,casSolicitudLiquidacionSubsidio,casCondicionPersonaAdmin,casEmpleador,casAfiliadoPrincipal,casBeneficiarioDetalle,casGrupoFamiliar
+	  FROM mgr.CuentaAdministradorSubsidio'
+
+	SET IDENTITY_INSERT dbo.CuentaAdministradorSubsidio ON;
+	INSERT CuentaAdministradorSubsidio (casId,casFechaHoraCreacionRegistro,casUsuarioCreacionRegistro,casTipoTransaccionSubsidio,casEstadoTransaccionSubsidio,casEstadoLiquidacionSubsidio,casOrigenTransaccion,casMedioDePagoTransaccion,casNumeroTarjetaAdmonSubsidio,casCodigoBanco,casNombreBanco,casTipoCuentaAdmonSubsidio,casNumeroCuentaAdmonSubsidio,casTipoIdentificacionTitularCuentaAdmonSubsidio,casNumeroIdentificacionTitularCuentaAdmonSubsidio,casNombreTitularCuentaAdmonSubsidio,casFechaHoraTransaccion,casUsuarioTransaccion,casValorOriginalTransaccion,casValorRealTransaccion,casIdTransaccionOriginal,casIdRemisionDatosTerceroPagador,casIdTransaccionTerceroPagador,casNombreTerceroPagado,casIdCuentaAdmonSubsidioRelacionado,casFechaHoraUltimaModificacion,casUsuarioUltimaModificacion,casAdministradorSubsidio,casSitioDePago,casSitioDeCobro,casMedioDePago,casSolicitudLiquidacionSubsidio,casCondicionPersonaAdmin,casEmpleador,casAfiliadoPrincipal,casBeneficiarioDetalle,casGrupoFamiliar)
+	SELECT casId,casFechaHoraCreacionRegistro,casUsuarioCreacionRegistro,casTipoTransaccionSubsidio,casEstadoTransaccionSubsidio,casEstadoLiquidacionSubsidio,casOrigenTransaccion,casMedioDePagoTransaccion,casNumeroTarjetaAdmonSubsidio,casCodigoBanco,casNombreBanco,casTipoCuentaAdmonSubsidio,casNumeroCuentaAdmonSubsidio,casTipoIdentificacionTitularCuentaAdmonSubsidio,casNumeroIdentificacionTitularCuentaAdmonSubsidio,casNombreTitularCuentaAdmonSubsidio,casFechaHoraTransaccion,casUsuarioTransaccion,casValorOriginalTransaccion,casValorRealTransaccion,casIdTransaccionOriginal,casIdRemisionDatosTerceroPagador,casIdTransaccionTerceroPagador,casNombreTerceroPagado,casIdCuentaAdmonSubsidioRelacionado,casFechaHoraUltimaModificacion,casUsuarioUltimaModificacion,casAdministradorSubsidio,casSitioDePago,casSitioDeCobro,casMedioDePago,casSolicitudLiquidacionSubsidio,casCondicionPersonaAdmin,casEmpleador,casAfiliadoPrincipal,casBeneficiarioDetalle,casGrupoFamiliar
+	FROM #TempCuenta
+	SET IDENTITY_INSERT dbo.CuentaAdministradorSubsidio OFF;
+
+	CREATE TABLE #tempDetalle(
+	dsaId bigint ,
+	dsaUsuarioCreador varchar(200) ,
+	dsaFechaHoraCreacion datetime ,
+	dsaEstado varchar(20) ,
+	dsaMotivoAnulacion varchar(40) NULL,
+	dsaDetalleAnulacion varchar(250) NULL,
+	dsaOrigenRegistroSubsidio varchar(30) ,
+	dsaTipoliquidacionSubsidio varchar(60) ,
+	dsaTipoCuotaSubsidio varchar(80) ,
+	dsaValorSubsidioMonetario numeric(19,5) ,
+	dsaValorDescuento numeric(19,5) ,
+	dsaValorOriginalAbonado numeric(19,5) ,
+	dsaValorTotal numeric(19,5) ,
+	dsaFechaTransaccionRetiro date NULL,
+	dsaUsuarioTransaccionRetiro varchar(200) NULL,
+	dsaFechaTransaccionAnulacion date NULL,
+	dsaUsuarioTransaccionAnulacion varchar(200) NULL,
+	dsaFechaHoraUltimaModificacion datetime NULL,
+	dsaUsuarioUltimaModificacion varchar(200) NULL,
+	dsaSolicitudLiquidacionSubsidio bigint ,
+	dsaEmpleador bigint ,
+	dsaAfiliadoPrincipal bigint ,
+	dsaGrupoFamiliar bigint ,
+	dsaAdministradorSubsidio bigint NULL,
+	dsaIdRegistroOriginalRelacionado bigint NULL,
+	dsaCuentaAdministradorSubsidio bigint ,
+	dsaBeneficiarioDetalle bigint ,
+	dsaPeriodoLiquidado date ,
+	dsaResultadoValidacionLiquidacion bigint ,
+	dsaCondicionPersonaBeneficiario bigint NULL,
+	dsaCondicionPersonaAfiliado bigint NULL,
+	dsaCondicionPersonaEmpleador bigint NULL,
+	dsaDetalleSolicitudAnulacionSubsidioCobrado bigint NULL,
+	dsaShardName VARCHAR(2000)
+	)
+
+	INSERT #tempDetalle (dsaId,dsaUsuarioCreador,dsaFechaHoraCreacion,dsaEstado,dsaMotivoAnulacion,dsaDetalleAnulacion,dsaOrigenRegistroSubsidio,dsaTipoliquidacionSubsidio,dsaTipoCuotaSubsidio,dsaValorSubsidioMonetario,dsaValorDescuento,dsaValorOriginalAbonado,dsaValorTotal,dsaFechaTransaccionRetiro,dsaUsuarioTransaccionRetiro,dsaFechaTransaccionAnulacion,dsaUsuarioTransaccionAnulacion,dsaFechaHoraUltimaModificacion,dsaUsuarioUltimaModificacion,dsaSolicitudLiquidacionSubsidio,dsaEmpleador,dsaAfiliadoPrincipal,dsaGrupoFamiliar,dsaAdministradorSubsidio,dsaIdRegistroOriginalRelacionado,dsaCuentaAdministradorSubsidio,dsaBeneficiarioDetalle,dsaPeriodoLiquidado,dsaResultadoValidacionLiquidacion,dsaCondicionPersonaBeneficiario,dsaCondicionPersonaAfiliado,dsaCondicionPersonaEmpleador,dsaDetalleSolicitudAnulacionSubsidioCobrado,dsaShardName)
+	EXEC sp_execute_remote SubsidioReferenceData,
+	N'SELECT dsaId,dsaUsuarioCreador,dsaFechaHoraCreacion,dsaEstado,dsaMotivoAnulacion,dsaDetalleAnulacion,dsaOrigenRegistroSubsidio,dsaTipoliquidacionSubsidio,dsaTipoCuotaSubsidio,dsaValorSubsidioMonetario,dsaValorDescuento,dsaValorOriginalAbonado,dsaValorTotal,dsaFechaTransaccionRetiro,dsaUsuarioTransaccionRetiro,dsaFechaTransaccionAnulacion,dsaUsuarioTransaccionAnulacion,dsaFechaHoraUltimaModificacion,dsaUsuarioUltimaModificacion,dsaSolicitudLiquidacionSubsidio,dsaEmpleador,dsaAfiliadoPrincipal,dsaGrupoFamiliar,dsaAdministradorSubsidio,dsaIdRegistroOriginalRelacionado,dsaCuentaAdministradorSubsidio,dsaBeneficiarioDetalle,dsaPeriodoLiquidado,dsaResultadoValidacionLiquidacion,dsaCondicionPersonaBeneficiario,dsaCondicionPersonaAfiliado,dsaCondicionPersonaEmpleador,dsaDetalleSolicitudAnulacionSubsidioCobrado
+	  FROM mgr.DetalleSubsidioAsignado'
+
+	SET IDENTITY_INSERT dbo.DetalleSubsidioAsignado ON;
+	INSERT DetalleSubsidioAsignado (dsaId,dsaUsuarioCreador,dsaFechaHoraCreacion,dsaEstado,dsaMotivoAnulacion,dsaDetalleAnulacion,dsaOrigenRegistroSubsidio,dsaTipoliquidacionSubsidio,dsaTipoCuotaSubsidio,dsaValorSubsidioMonetario,dsaValorDescuento,dsaValorOriginalAbonado,dsaValorTotal,dsaFechaTransaccionRetiro,dsaUsuarioTransaccionRetiro,dsaFechaTransaccionAnulacion,dsaUsuarioTransaccionAnulacion,dsaFechaHoraUltimaModificacion,dsaUsuarioUltimaModificacion,dsaSolicitudLiquidacionSubsidio,dsaEmpleador,dsaAfiliadoPrincipal,dsaGrupoFamiliar,dsaAdministradorSubsidio,dsaIdRegistroOriginalRelacionado,dsaCuentaAdministradorSubsidio,dsaBeneficiarioDetalle,dsaPeriodoLiquidado,dsaResultadoValidacionLiquidacion,dsaCondicionPersonaBeneficiario,dsaCondicionPersonaAfiliado,dsaCondicionPersonaEmpleador,dsaDetalleSolicitudAnulacionSubsidioCobrado)
+	SELECT dsaId,dsaUsuarioCreador,dsaFechaHoraCreacion,dsaEstado,dsaMotivoAnulacion,dsaDetalleAnulacion,dsaOrigenRegistroSubsidio,dsaTipoliquidacionSubsidio,dsaTipoCuotaSubsidio,dsaValorSubsidioMonetario,dsaValorDescuento,dsaValorOriginalAbonado,dsaValorTotal,dsaFechaTransaccionRetiro,dsaUsuarioTransaccionRetiro,dsaFechaTransaccionAnulacion,dsaUsuarioTransaccionAnulacion,dsaFechaHoraUltimaModificacion,dsaUsuarioUltimaModificacion,dsaSolicitudLiquidacionSubsidio,dsaEmpleador,dsaAfiliadoPrincipal,dsaGrupoFamiliar,dsaAdministradorSubsidio,dsaIdRegistroOriginalRelacionado,dsaCuentaAdministradorSubsidio,dsaBeneficiarioDetalle,dsaPeriodoLiquidado,dsaResultadoValidacionLiquidacion,dsaCondicionPersonaBeneficiario,dsaCondicionPersonaAfiliado,dsaCondicionPersonaEmpleador,dsaDetalleSolicitudAnulacionSubsidioCobrado
+	FROM #tempDetalle
+	SET IDENTITY_INSERT dbo.DetalleSubsidioAsignado OFF;
+
+
+	CREATE TABLE #tempDescuento(
+	desId bigint ,
+	desDetalleSubsidioAsignado bigint,
+	desEntidadDescuento bigint,
+	desMontoDescontado numeric(19,5) ,
+	desNombreEntidadDescuento varchar(250),
+	desShardName varchar(2000)
+	)
+
+	INSERT #tempDescuento (desId,desDetalleSubsidioAsignado,desEntidadDescuento,desMontoDescontado,desNombreEntidadDescuento,desShardName)
+	EXEC sp_execute_remote SubsidioReferenceData,
+	N'SELECT desId,desDetalleSubsidioAsignado,desEntidadDescuento,desMontoDescontado,desNombreEntidadDescuento
+	  FROM mgr.DescuentosSubsidioAsignado'
+
+	SET IDENTITY_INSERT dbo.DescuentosSubsidioAsignado ON;
+	INSERT DescuentosSubsidioAsignado (desId,desDetalleSubsidioAsignado,desEntidadDescuento,desMontoDescontado,desNombreEntidadDescuento)
+	SELECT desId,desDetalleSubsidioAsignado,desEntidadDescuento,desMontoDescontado,desNombreEntidadDescuento
+	FROM #tempDescuento
+	SET IDENTITY_INSERT dbo.DescuentosSubsidioAsignado OFF;
+
+ 	INSERT PeriodoLiquidacionSubsidio (pelSolicitudLiquidacionSubsidio,pelPeriodo,pelTipoPeriodo)
+	SELECT DISTINCT
+	t.dsaSolicitudLiquidacionSubsidio,
+	pri.priId,
+	'REGULAR'
+	FROM
+	#tempDetalle t
+	JOIN Periodo pri ON pri.priPeriodo=t.dsaPeriodoLiquidado
+
+END TRY
+BEGIN CATCH
+	INSERT RegistroLog (relFecha,relParametrosEjecucion,relErrorMessage)
+	VALUES (dbo.GetLocalDate(),'[USP_SM_GET_InsertTablasMigracion] ' ,ERROR_MESSAGE());
+END CATCH
+

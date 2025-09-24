@@ -1,0 +1,29 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: Docker@2
+  displayName: buildAndPush
+  inputs:
+    containerRegistry: RegistryGenesysPruebas
+    repository: 'genesys-registry/frontreportesnormativos'
+    Dockerfile: '$(System.DefaultWorkingDirectory)/_frontend_genesys/dockerfile'
+    tags: '$(Build.Buildnumber)'
+
+steps:
+- task: KubernetesManifest@0
+  displayName: deploy
+  inputs:
+    kubernetesServiceConnection: comfacauca
+    namespace: default
+    manifests: '$(System.DefaultWorkingDirectory)/_frontend_genesys/manifests/deployment-development.yml'
+    containers: 'gcr.io/genesys-registry/frontreportesnormativos:$(Build.Buildnumber)'
+

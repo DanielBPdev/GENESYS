@@ -1,0 +1,6 @@
+INSERT [FileDefinitionType] ([id], [description], [name]) VALUES (1, N'Estructura de los registros está dada para el convenio de la caja de compensación Confa y Colpensiones.', N'Estructura Solicitud de Alta')
+INSERT [FileDefinitionType] ([id], [description], [name]) VALUES (2, N'Generacion de reporte de consulta para verificar la supervivencia de una persona ', N'Generar reporte de consulta supervivenvia')
+INSERT [FileDefinitionType] ([id], [description], [name]) VALUES (1234, N'Archivo con los resultados del proceso de pignoración', N'Estructura del archivo de salida de descuentos')
+INSERT [FileDefinitionType] ([id], [description], [name]) VALUES (1235, N'Archivo con los resultados del proceso de liquidación', N'Estructura del archivo de salida de la liquidación')
+INSERT [FileDefinitionType] ([id], [description], [name]) VALUES (1236, N'Archivo con los resultados del proceso de liquidación', N'Estructura del archivo de salida de la liquidación')
+INSERT [FileDefinitionType] ([id], [description], [name]) VALUES (1237, N'Archivo con las consignaciones o pagos judiciales a bancos', N'Estructura del archivo de salida de dispersión a bancos')

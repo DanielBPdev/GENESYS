@@ -1,0 +1,26 @@
+--liquibase formatted sql
+
+--changeset Heinsohn:01
+--comment: Inserción de FieldDefinitionLoad
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1244,NULL,NULL,NULL,'Tipo de identificación del trabajador',0,0,1,1244,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1245,NULL,NULL,NULL,'Número de identificación del trabajador',0,0,1,1245,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1246,NULL,NULL,NULL,'Primer nombre',0,0,1,1246,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1247,NULL,NULL,NULL,'Segundo nombre',0,0,1,1247,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1248,NULL,NULL,NULL,'Primer apellido',0,0,1,1248,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1249,NULL,NULL,NULL,'Segundo apellido',0,0,1,1249,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1250,NULL,NULL,NULL,'Departamento',0,0,0,1250,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1251,NULL,NULL,NULL,'Municipio',0,0,0,1251,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1252,NULL,NULL,NULL,'Dirección de residencia',0,0,0,1252,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1253,NULL,NULL,NULL,'Teléfono fijo',0,0,0,1253,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1254,NULL,NULL,NULL,'Teléfono celular',0,0,0,1254,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1255,NULL,NULL,NULL,'Correo electrónico',0,0,0,1255,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1256,NULL,NULL,NULL,'Reside en sector rural',0,0,0,1256,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1257,NULL,NULL,NULL,'Clase de trabajador',0,0,0,1257,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1258,NULL,NULL,NULL,'Fecha de inicio de labores con empleador',0,0,0,1258,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1259,NULL,NULL,NULL,'Valor salario mensual',0,0,0,1259,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1260,NULL,NULL,NULL,'Cambio de nivel educativo',0,0,0,1260,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1261,NULL,NULL,NULL,'Condición casa propia',0,0,0,1261,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1262,NULL,NULL,NULL,'Código postal',0,0,0,1262,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1263,NULL,NULL,NULL,'Cambio de tipo de salario',0,0,0,1263,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1264,NULL,NULL,NULL,'Cargo u oficio desempeñado',0,0,0,1264,1222);
+INSERT FieldDefinitionLoad (id,finalPosition,formatDate,initialPosition,label,identifierLine,removeFormat,required,fieldLoadCatalog_id,lineDefinition_id) VALUES (1265,NULL,NULL,NULL,'Tipo de contrato',0,0,0,1265,1222);

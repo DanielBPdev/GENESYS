@@ -1,0 +1,68 @@
+{
+    "name": "CondicionalSincronizarAuditoria",
+    "properties": {
+        "activities": [
+            {
+                "name": "ObtenerRangoRevisionesCoreLookup",
+                "type": "Lookup",
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": "SELECT MIN(revId) REVINI, MAX(revId) REVFIN, COUNT(1) REVCOUNT\nFROM aud.Revision"
+                    },
+                    "dataset": {
+                        "referenceName": "DSCore",
+                        "type": "DatasetReference"
+                    }
+                }
+            },
+            {
+                "name": "IFExistenRevisiones",
+                "type": "IfCondition",
+                "dependsOn": [
+                    {
+                        "activity": "ObtenerRangoRevisionesCoreLookup",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "typeProperties": {
+                    "expression": {
+                        "value": "@not(equals(activity('ObtenerRangoRevisionesCoreLookup').output.firstRow.REVCOUNT,0))",
+                        "type": "Expression"
+                    },
+                    "ifTrueActivities": [
+                        {
+                            "name": "SincronizarAuditoria",
+                            "type": "ExecutePipeline",
+                            "typeProperties": {
+                                "pipeline": {
+                                    "referenceName": "SincronizarAuditoria",
+                                    "type": "PipelineReference"
+                                },
+                                "waitOnCompletion": true,
+                                "parameters": {
+                                    "REVINI": {
+                                        "value": "@activity('ObtenerRangoRevisionesCoreLookup').output.firstRow.REVINI",
+                                        "type": "Expression"
+                                    },
+                                    "REVFIN": {
+                                        "value": "@activity('ObtenerRangoRevisionesCoreLookup').output.firstRow.REVFIN",
+                                        "type": "Expression"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

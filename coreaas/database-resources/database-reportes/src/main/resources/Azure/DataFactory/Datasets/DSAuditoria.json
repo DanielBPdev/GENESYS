@@ -1,0 +1,16 @@
+{
+    "name": "DSAuditoria",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "core_aud",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "typeProperties": {
+            "tableName": {
+                "value": "INFORMATION_SCHEMA.TABLES",
+                "type": "Expression"
+            }
+		}
+    }
+}

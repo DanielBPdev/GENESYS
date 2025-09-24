@@ -1,0 +1,395 @@
+-- =============================================
+-- Author:      Juan Pablo Ospina Duque
+-- Create Date: 05/09/2024
+-- =============================================
+CREATE OR ALTER   PROCEDURE  [dbo].[SP_GIASS_PAGO_CUOTA_MONETARIA]
+AS
+BEGIN
+
+if not exists ( select * from INFORMATION_SCHEMA.TABLES t where t.TABLE_NAME = 'ReportePagosCuotaMonetariaGiass')
+BEGIN
+-- drop table ReportePagosCuotaMonetariaGiass
+create table dbo.ReportePagosCuotaMonetariaGiass(
+ccf_id nvarchar(10),
+tipo_identificacion_empleador_id char(2),
+numero_identificacion_empleador nvarchar(20),
+tipo_identificacion_trabajador_id char(2),
+numero_identificacion_trabajador nvarchar(20),
+tipo_identificacion_beneficiario_id char(2),
+numero_identificacion_beneficiario nvarchar(20),
+tipo_cuota_id char(2),
+fecha_pago date,
+anio_periodo char(4),
+mes_periodo char(2),
+valor_pago nvarchar(15),
+es_condicion_discapacidad char(2),
+es_condicion_sector_agropecuario char(2),
+es_recobro char(2),
+tipo_identificacion_endosatario_id char(2),
+numero_identificacion_endosatario nvarchar(20),
+tipo_cargue char(2),
+fecha_novedad date
+)
+
+END 
+	ELSE
+BEGIN
+	PRINT 'el objeto ReporteAfiliacionEmpleadoresGiass ya existe'
+END
+
+
+
+--drop table if exists #tmpUltimaLiquidacion
+--select max(p.priPeriodo)
+----into #tmpUltimaLiquidacion
+--from SolicitudLiquidacionSubsidio sls inner join PeriodoLiquidacion pl on sls.slsId = pl.pelSolicitudLiquidacionSubsidio
+--inner join Periodo p on pl.pelPeriodo = p.priId
+--where sls.slsTipoLiquidacion = 'MASIVA' 
+--and SLS.slsEstadoLiquidacion = 'CERRADA'
+----and cast(p.priPeriodo as date) between  cast(DATEADD(MONTH , -1,DATEADD(DAY, -DAY(getdate()) + 1, getdate())) as date) and  cast(DATEADD(MONTH , -1,DATEADD(DAY, -DAY(getdate()) + 1, getdate())) as date)
+--order by p.priPeriodo DESC
+
+--select cast(p.priPeriodo as date),  cast(DATEADD(MONTH , - 1,DATEADD(DAY, -DAY(getdate()) + 1, getdate())) as date),  cast(DATEADD(MONTH , -1,DATEADD(DAY, -DAY(getdate()) + 1, getdate())) as date)
+--from Periodo p
+
+
+
+
+
+
+--drop table if exists #tmpSubsidio
+--create table #tmpSubsidio(
+--[ccf_id] nvarchar(10),
+--[tipo_identificacion_empleador_id] int,
+--[numero_identificacion_empleador] nvarchar(20),
+--[tipo_identificacion_trabajador_id] int,
+--[numero_identificacion_trabajador] nvarchar(20),
+--[tipo_identificacion_beneficiario_id] int,
+--[numero_identificacion_beneficiario] nvarchar(20),
+--[tipo_cuota_id] int,
+--[fecha_pago] date,
+--[anio_periodo] int,
+--[mes_periodo] int,
+--[valor_pago] float,
+--[es_condicion_discapacidad] bit,
+--[es_condicion_sector_agropecuario] bit,
+--[es_recobro] bit,
+--[tipo_identificacion_endosatario_id] int,
+--[numero_identificacion_endosatario] nvarchar(20),
+--[tipo_cargue] int,
+--[fecha_novedad] date,
+--[$ShardName] nvarchar(max)
+--)
+
+
+
+----/////////////////DERECHO NO ASIGNADO /////////////////SUBSIDIO
+--INSERT INTO #tmpSubsidio ([ccf_id] ,[tipo_identificacion_empleador_id] ,[numero_identificacion_empleador] ,[tipo_identificacion_trabajador_id] ,
+--[numero_identificacion_trabajador] ,[tipo_identificacion_beneficiario_id] ,[numero_identificacion_beneficiario] ,[tipo_cuota_id] ,
+--[fecha_pago] ,[anio_periodo] ,[mes_periodo] ,[valor_pago] ,[es_condicion_discapacidad] ,[es_condicion_sector_agropecuario] ,[es_recobro] ,
+--[tipo_identificacion_endosatario_id] ,[numero_identificacion_endosatario],[tipo_cargue] ,[fecha_novedad] ,[$ShardName])
+
+--execute sp_execute_remote SubsidioReferenceData,
+--N'
+
+--drop table if exists #TmpSolicitud
+--SELECT sllNumeroRadicacion, sllFechaInicio,sllTipoLiquidacion into #TmpSolicitud FROM SolicitudLiquidacion
+---- where sllFechaInicio >= dateadd(month,-18,dbo.GetLocalDate())
+
+--drop table if exists #TmpCCF
+--create table #TmpCCF(caja nvarchar(20), origen nvarchar(max))
+--insert into #TmpCCF (caja,origen)
+--execute sp_execute_remote CoreReferenceData, N''SELECT cnsValor FROM Constante WHERE cnsNombre = ''''CAJA_COMPENSACION_CODIGO'''' ''
+
+
+--Select   
+--	 (select top 1 caja from #TmpCCF)   [ccf_id],
+--	 CASE pe.cpeTipoIdentificacion
+--		WHEN   ''CEDULA_CIUDADANIA'' THEN 1
+--		WHEN  ''REGISTRO_CIVIL'' THEN 3
+--		WHEN  ''TARJETA_IDENTIDAD'' THEN 2
+--		WHEN  ''CEDULA_EXTRANJERIA'' THEN 4
+--		WHEN  ''PASAPORTE'' THEN 6
+--		WHEN  ''NIT'' THEN 7
+--		WHEN  ''CARNE_DIPLOMATICO'' THEN 8
+--		WHEN  ''PERM_ESP_PERMANENCIA'' THEN 9
+--		WHEN  ''CERTIFICADO_CABILDO'' THEN 10
+--		WHEN  ''TARJETA_MOVILIDAD_FRONTERIZA'' THEN 12
+--		WHEN  ''VISA'' THEN 13
+--		WHEN  ''NUMERO_UNICO_IDENTIFICACION_PERSONAL'' THEN 14 
+--		WHEN ''PERM_PROT_TEMPORAL'' THEN 15
+--		ELSE ''''    END AS [tipo_identificacion_empleador_id],
+--		pe.cpeNumeroIdentificacion as [numero_identificacion_empleador],
+--	 CASE pt.cpeTipoIdentificacion
+--		WHEN   ''CEDULA_CIUDADANIA'' THEN 1
+--		WHEN  ''REGISTRO_CIVIL'' THEN 3
+--		WHEN  ''TARJETA_IDENTIDAD'' THEN 2
+--		WHEN  ''CEDULA_EXTRANJERIA'' THEN 4
+--		WHEN  ''PASAPORTE'' THEN 6
+--		WHEN  ''NIT'' THEN 7
+--		WHEN  ''CARNE_DIPLOMATICO'' THEN 8
+--		WHEN  ''PERM_ESP_PERMANENCIA'' THEN 9
+--		WHEN  ''CERTIFICADO_CABILDO'' THEN 10
+--		WHEN  ''TARJETA_MOVILIDAD_FRONTERIZA'' THEN 12
+--		WHEN  ''VISA'' THEN 13
+--		WHEN  ''NUMERO_UNICO_IDENTIFICACION_PERSONAL'' THEN 14 
+--		WHEN ''PERM_PROT_TEMPORAL'' THEN 15
+--		ELSE '''' END AS [tipo_identificacion_trabajador_id],
+--		pt.cpeNumeroIdentificacion as [numero_identificacion_trabajador],
+--	 CASE pb.cpeTipoIdentificacion
+--		WHEN   ''CEDULA_CIUDADANIA'' THEN 1
+--		WHEN  ''REGISTRO_CIVIL'' THEN 3
+--		WHEN  ''TARJETA_IDENTIDAD'' THEN 2
+--		WHEN  ''CEDULA_EXTRANJERIA'' THEN 4
+--		WHEN  ''PASAPORTE'' THEN 6
+--		WHEN  ''NIT'' THEN 7
+--		WHEN  ''CARNE_DIPLOMATICO'' THEN 8
+--		WHEN  ''PERM_ESP_PERMANENCIA'' THEN 9
+--		WHEN  ''CERTIFICADO_CABILDO'' THEN 10
+--		WHEN  ''TARJETA_MOVILIDAD_FRONTERIZA'' THEN 12
+--		WHEN  ''VISA'' THEN 13
+--		WHEN  ''NUMERO_UNICO_IDENTIFICACION_PERSONAL'' THEN 14 
+--		WHEN ''PERM_PROT_TEMPORAL'' THEN 15
+--		ELSE '''' END AS [tipo_identificacion_beneficiario_id],
+--		pb.cpeNumeroIdentificacion as [numero_identificacion_beneficiario],
+--		6 as tipo_cuota_id,
+--		cast(NULL as date) AS fecha_pago,
+--		YEAR(ce.cemPeriodo) as [anio_periodo],
+--		MONTH(ce.cemPeriodo) as [mes_periodo] ,
+--		CAST(0 AS NUMERIC(19,2)) as [valor_pago],
+--		isnull(rv.rvlEsDiscapacidad,0) [es_condicion_discapacidad],
+--		isnull(rv.rvlEsAgrario,0) as [es_condicion_sector_agropecuario],
+--	case sl.slltipoliquidacion
+--		when ''AJUSTES_DE_CUOTA'' then 1
+--		else 0 end as [es_recobro], 
+--	NULL AS [tipo_identificacion_endosatario_id],
+--	NULL AS [numero_identificacion_endosatario],
+--	2 AS [tipo_cargue],
+--	CAST(sl.sllFechaInicio AS DATE) as [fecha_novedad]	
+--from ResultadoValidacionLiquidacion rv
+--	inner join #TmpSolicitud AS sl on rv.rvlNumeroRadicado = sllNumeroRadicacion
+--	left join staging.CondicionEmpleador ce on rv.rvlCondicionEmpleador = ce.cemid
+--	left join staging.CondicionPersona pe on ce.cemCondicionPersona = pe.cpeid
+--	left join staging.CondicionTrabajador ct  on ct.ctrid = rv.rvlCondicionTrabajador and ce.cemPeriodo = ct.ctrPeriodo
+--	left join staging.CondicionPersona pt on pt.cpeid = ct.ctrCondicionPersona
+--	left join staging.CondicionBeneficiario cb on cb.cbeid = rv.rvlcondicionbeneficiario and ce.cemPeriodo = cb.cbePeriodo
+--	left join staging.CondicionPersona pb on pb.cpeid = cb.cbeCondicionPersona
+--where rvlestadoDerechoLiquidacion != ''DERECHO_NO_APROBADO''
+
+--'
+	
+
+
+
+-- ###################################################
+-- # se llena los datos del Empleador
+-- ###################################################
+drop table if exists #datos_empresa
+select
+	p.perId [id_persona],epr.empId [id_empresa],epl.empId [id_empleador], p.perDigitoVerificacion [epr_DigitoVerificacion],p.perTipoIdentificacion [epr_TipoIdentificacion],p.perNumeroIdentificacion [epr_NumeroIdentificacion],p.perRazonSocial [epr_RazonSocial]
+	,epr.empNombreComercial [epr_NombreComercial],epr.empFechaConstitucion [epr_FechaConstitucion]
+	,epl.empEstadoEmpleador,epl.empNumeroTotalTrabajadores
+into #datos_empresa
+from Persona p
+Inner join Empresa epr on p.perId = epr.empPersona
+inner join Empleador epl on epl.empEmpresa = epr.empId
+where epl.empEstadoEmpleador = 'ACTIVO' 
+
+
+-- ###################################################
+-- # se llena los datos del trabajador
+-- ###################################################
+drop table if exists #datos_trabajador
+select 
+	p.perId [id_trabajador],max(ra.roaId) [roaId],a.afiId,p.perTipoIdentificacion [tra_TipoIdentificacion],p.perNumeroIdentificacion [tra_NumeroIdentificacion],p.perRazonSocial [tra_RazonSocial],ra.roaEstadoAfiliado,ra.roaEmpleador
+into #datos_trabajador
+from Persona p 
+inner join Afiliado a on p.perId = a.afiPersona
+inner join RolAfiliado ra on ra.roaAfiliado = a.afiId
+where  ra.roaEstadoAfiliado = 'ACTIVO' 
+group by p.perId, a.afiId,p.perTipoIdentificacion,p.perNumeroIdentificacion,p.perRazonSocial,ra.roaEstadoAfiliado,ra.roaEmpleador
+
+
+
+
+-- ###################################################
+-- # se llena los datos del beneficiario
+-- ###################################################
+drop table if exists #datos_beneficiairo
+select 
+	pb.perId, pb.perTipoIdentificacion, pb.perNumeroIdentificacion, pb.perRazonSocial
+	,a.afiId,b.benEstadoBeneficiarioAfiliado,ci.coiInvalidez
+into #datos_beneficiairo
+from Persona p 
+inner join Afiliado a on p.perId = a.afiPersona
+inner join GrupoFamiliar gf on gf.grfAfiliado = a.afiId
+inner join Beneficiario b on  b.benGrupoFamiliar = gf.grfId
+inner join Persona pb on pb.perId = b.benPersona
+left join condicioninvalidez ci on ci.coipersona = pb.perid
+
+
+
+
+-- ###################################################
+-- # se llena los datos del administrador de subsidio
+-- ###################################################
+drop table if exists #datos_administradorsubsidio
+select max(p.priPeriodo) [periodo]
+,dsaId,casfechahoraultimamodificacion,dsaEstado,dsaOrigenRegistroSubsidio,dsaTipoliquidacionSubsidio,dsaTipoCuotaSubsidio,dsaValorTotal,dsaFechaTransaccionRetiro
+,dsaSolicitudLiquidacionSubsidio,dsaEmpleador,dsaAfiliadoPrincipal,dsaGrupoFamiliar,dsaAdministradorSubsidio,dsaCuentaAdministradorSubsidio,dsaBeneficiarioDetalle,dsaPeriodoLiquidado,dsaResultadoValidacionLiquidacion,dsaCondicionPersonaBeneficiario,dsaCondicionPersonaAfiliado,dsaCondicionPersonaEmpleador,casId,casTipoTransaccionSubsidio
+,casEstadoTransaccionSubsidio,casEstadoLiquidacionSubsidio,casOrigenTransaccion,casMedioDePagoTransaccion,casAdministradorSubsidio, casSolicitudLiquidacionSubsidio,casEmpleador,casAfiliadoPrincipal,casBeneficiarioDetalle
+,casGrupoFamiliar,asuId,asuPersona,slsId,slsSolicitudGlobal,	slsTipoLiquidacion,	slsEstadoLiquidacion,slsFechaInicio,perId
+into #datos_administradorsubsidio
+from detallesubsidioasignado dsa
+inner join cuentaadministradorsubsidio cas on dsa.dsaCuentaAdministradorSubsidio = cas.casId
+inner join administradorsubsidio ads on ads.asuId = dsa.dsaAdministradorSubsidio
+inner join SolicitudLiquidacionSubsidio sls on sls.slsId = dsa.dsaSolicitudLiquidacionSubsidio
+inner join PeriodoLiquidacion pl on sls.slsId = pl.pelSolicitudLiquidacionSubsidio
+inner join Periodo p on p.priId = pl.pelPeriodo
+inner join Persona pas on pas.perId = ads.asuPersona
+where sls.slsTipoLiquidacion = 'MASIVA' and SLS.slsEstadoLiquidacion = 'CERRADA' 
+and p.priPeriodo = ( select max(p.priPeriodo) 
+					 from SolicitudLiquidacionSubsidio sls 
+						inner join PeriodoLiquidacion pl on sls.slsId = pl.pelSolicitudLiquidacionSubsidio
+						inner join Periodo p on pl.pelPeriodo = p.priId
+					 where sls.slsTipoLiquidacion = 'MASIVA' and SLS.slsEstadoLiquidacion = 'CERRADA') 
+--and	  pas.perNumeroIdentificacion in('24317665','70104055') 
+group by
+dsaId,casfechahoraultimamodificacion,dsaEstado,dsaOrigenRegistroSubsidio,dsaTipoliquidacionSubsidio,dsaTipoCuotaSubsidio,dsaValorTotal,dsaFechaTransaccionRetiro
+,dsaSolicitudLiquidacionSubsidio,dsaEmpleador,dsaAfiliadoPrincipal,dsaGrupoFamiliar,dsaAdministradorSubsidio,dsaCuentaAdministradorSubsidio,dsaBeneficiarioDetalle
+,dsaPeriodoLiquidado,dsaResultadoValidacionLiquidacion,dsaCondicionPersonaBeneficiario,dsaCondicionPersonaAfiliado,dsaCondicionPersonaEmpleador,casId,casTipoTransaccionSubsidio
+,casEstadoTransaccionSubsidio,casEstadoLiquidacionSubsidio,casOrigenTransaccion,casMedioDePagoTransaccion,casAdministradorSubsidio, casSolicitudLiquidacionSubsidio,casEmpleador
+,casAfiliadoPrincipal,casBeneficiarioDetalle,casGrupoFamiliar,asuId,asuPersona,slsId,slsSolicitudGlobal,slsTipoLiquidacion,	slsEstadoLiquidacion,slsFechaInicio,perId
+
+
+
+
+
+-- #####################################
+-- # Inicia la cración del reporte
+-- #####################################
+drop table if exists #tmpCuotaSubsidio
+select distinct 
+		(SELECT cnsValor FROM Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO') [ccf_id],
+		 CASE de.epr_TipoIdentificacion
+				WHEN   'CEDULA_CIUDADANIA' THEN 1
+				WHEN  'REGISTRO_CIVIL' THEN 3
+				WHEN  'TARJETA_IDENTIDAD' THEN 2
+				WHEN  'CEDULA_EXTRANJERIA' THEN 4
+				WHEN  'PASAPORTE' THEN 6
+				WHEN  'NIT' THEN 7
+				WHEN  'CARNE_DIPLOMATICO' THEN 8
+				WHEN  'PERM_ESP_PERMANENCIA' THEN 9
+				WHEN  'CERTIFICADO_CABILDO' THEN 10
+				WHEN  'TARJETA_MOVILIDAD_FRONTERIZA' THEN 12
+				WHEN  'VISA' THEN 13
+				WHEN  'NUMERO_UNICO_IDENTIFICACION_PERSONAL' THEN 14 
+				WHEN  'PERM_PROT_TEMPORAL' THEN 15 END  [tipo_identificacion_empleador_id],
+		de.epr_NumeroIdentificacion [numero_identificacion_empleador],
+		 CASE dt.tra_TipoIdentificacion
+				WHEN   'CEDULA_CIUDADANIA' THEN 1
+				WHEN  'REGISTRO_CIVIL' THEN 3
+				WHEN  'TARJETA_IDENTIDAD' THEN 2
+				WHEN  'CEDULA_EXTRANJERIA' THEN 4
+				WHEN  'PASAPORTE' THEN 6
+				WHEN  'NIT' THEN 7
+				WHEN  'CARNE_DIPLOMATICO' THEN 8
+				WHEN  'PERM_ESP_PERMANENCIA' THEN 9
+				WHEN  'CERTIFICADO_CABILDO' THEN 10
+				WHEN  'TARJETA_MOVILIDAD_FRONTERIZA' THEN 12
+				WHEN  'VISA' THEN 13
+				WHEN  'NUMERO_UNICO_IDENTIFICACION_PERSONAL' THEN 14 
+				WHEN 'PERM_PROT_TEMPORAL' THEN 15 END [tipo_identificacion_trabajador_id],
+		dt.tra_NumeroIdentificacion [numero_identificacion_trabajador],
+		 CASE db.perTipoIdentificacion
+				WHEN   'CEDULA_CIUDADANIA' THEN 1
+				WHEN  'REGISTRO_CIVIL' THEN 3
+				WHEN  'TARJETA_IDENTIDAD' THEN 2
+				WHEN  'CEDULA_EXTRANJERIA' THEN 4
+				WHEN  'PASAPORTE' THEN 6
+				WHEN  'NIT' THEN 7
+				WHEN  'CARNE_DIPLOMATICO' THEN 8
+				WHEN  'PERM_ESP_PERMANENCIA' THEN 9
+				WHEN  'CERTIFICADO_CABILDO' THEN 10
+				WHEN  'TARJETA_MOVILIDAD_FRONTERIZA' THEN 12
+				WHEN  'VISA' THEN 13
+				WHEN  'NUMERO_UNICO_IDENTIFICACION_PERSONAL' THEN 14 
+				WHEN  'PERM_PROT_TEMPORAL' THEN 15 END [tipo_identificacion_beneficiario_id],
+			db.pernumeroidentificacion as [numero_identificacion_beneficiario],
+		CASE das.dsaTipoCuotaSubsidio
+				WHEN 'REGULAR' THEN 1
+				WHEN 'DISCAPACIDAD' THEN 2
+				WHEN 'AGRICOLA' THEN 3
+				WHEN 'DISCAPACIDAD_AGRICOLA' THEN 4
+				WHEN 'AUXILIO_EXTRAORDINARIO_MUERTE_AFILIADO' THEN 5
+				WHEN 'AUXILIO_EXTRAORDINARIO_MUERTE_AFILIADO_AGRICOLA' THEN 7
+				WHEN 'AUXILIO_EXTRAORDINARIO_MUERTE_BENEFICIARIO_DISCAPACITADO' THEN 8
+				WHEN 'AUXILIO_EXTRAORDINARIO_MUERTE_BENEFICIARIO_DISCAPACITADO_AGRICOLA' THEN 9
+				WHEN 'AUXILIO_EXTRAORDINARIO_MUERTE_BENEFICIARIO' THEN 5
+				WHEN 'AUXILIO_EXTRAORDINARIO_MUERTE_BENEFICIARIO_AGRICOLA' THEN 7 END [tipo_cuota_id],
+		CASE das.casestadoTransaccionSubsidio	WHEN 'COBRADO' THEN cast(das.casfechahoraultimamodificacion AS DATE) ELSE NULL END  [fecha_pago],
+		YEAR(das.dsaPeriodoliquidado) [anio_periodo],
+		MONTH(das.dsaPeriodoliquidado) [mes_periodo],
+		CAST(das.dsaValorTotal AS NUMERIC(16,2)) [valor_pago],
+		ISNULL(db.coiinvalidez,0) [es_condicion_discapacidad],
+		CASE das.dsaTipoCuotaSubsidio
+		when 'AGRICOLA' THEN 1
+		ELSE 0 END [es_condicion_sector_agropecuario],
+		CASE das.slstipoLiquidacion
+		when 'AJUSTES_DE_CUOTA' then 1
+		else 0 end [es_recobro],
+		CASE pas.pertipoidentificacion
+				WHEN   'CEDULA_CIUDADANIA' THEN 1
+				WHEN  'REGISTRO_CIVIL' THEN 3
+				WHEN  'TARJETA_IDENTIDAD' THEN 2
+				WHEN  'CEDULA_EXTRANJERIA' THEN 4
+				WHEN  'PASAPORTE' THEN 6
+				WHEN  'NIT' THEN 7
+				WHEN  'CARNE_DIPLOMATICO' THEN 8
+				WHEN  'PERM_ESP_PERMANENCIA' THEN 9
+				WHEN  'CERTIFICADO_CABILDO' THEN 10
+				WHEN  'TARJETA_MOVILIDAD_FRONTERIZA' THEN 12
+				WHEN  'VISA' THEN 13
+				WHEN  'NUMERO_UNICO_IDENTIFICACION_PERSONAL' THEN 14 
+				WHEN  'PERM_PROT_TEMPORAL' THEN 15 END  [tipo_identificacion_endosatario_id],
+		pas.pernumeroidentificacion [numero_identificacion_endosatario],
+		case when getdate() < '2024-07-31' then 1 else 2 end [tipo_cargue],
+		CAST(das.slsFechaInicio AS DATE) [fecha_novedad]
+INTO #tmpCuotaSubsidio
+FROM #datos_empresa de
+		inner join #datos_trabajador dt on de.id_empleador = dt.roaEmpleador
+		inner join #datos_beneficiairo db on db.afiId = dt.afiId
+		inner join #datos_administradorsubsidio das on (das.dsaAfiliadoPrincipal = dt.afiId) and (das.dsaEmpleador = de.id_empleador)
+		inner join Persona pas on das.perId =  pas.perId 
+WHERE 
+das.casestadoTransaccionSubsidio = 'COBRADO' 
+--and dt.tra_NumeroIdentificacion = '1053780263'
+
+
+-- ###########################################
+-- # Inserta los registros en la tabla fisica
+-- ###########################################
+
+insert into ReportePagosCuotaMonetariaGiass
+	select ccf_id,tipo_identificacion_empleador_id,numero_identificacion_empleador,tipo_identificacion_trabajador_id,
+	numero_identificacion_trabajador,tipo_identificacion_beneficiario_id,numero_identificacion_beneficiario,tipo_cuota_id,
+	fecha_pago,anio_periodo,mes_periodo,valor_pago,es_condicion_discapacidad,es_condicion_sector_agropecuario,es_recobro,
+	tipo_identificacion_endosatario_id,numero_identificacion_endosatario,tipo_cargue,fecha_novedad
+	from #tmpCuotaSubsidio
+EXCEPT
+	select ccf_id,tipo_identificacion_empleador_id,numero_identificacion_empleador,tipo_identificacion_trabajador_id,
+	numero_identificacion_trabajador,tipo_identificacion_beneficiario_id,numero_identificacion_beneficiario,tipo_cuota_id,
+	fecha_pago,anio_periodo,mes_periodo,valor_pago,es_condicion_discapacidad,es_condicion_sector_agropecuario,es_recobro,
+	tipo_identificacion_endosatario_id,numero_identificacion_endosatario,tipo_cargue,fecha_novedad
+	from ReportePagosCuotaMonetariaGiass
+
+
+
+	select ccf_id,tipo_identificacion_empleador_id,numero_identificacion_empleador,tipo_identificacion_trabajador_id,
+	numero_identificacion_trabajador,tipo_identificacion_beneficiario_id,numero_identificacion_beneficiario,tipo_cuota_id,
+	fecha_pago,anio_periodo,mes_periodo,valor_pago,es_condicion_discapacidad,es_condicion_sector_agropecuario,es_recobro,
+	tipo_identificacion_endosatario_id,numero_identificacion_endosatario,tipo_cargue,fecha_novedad
+	from ReportePagosCuotaMonetariaGiass
+
+END
+

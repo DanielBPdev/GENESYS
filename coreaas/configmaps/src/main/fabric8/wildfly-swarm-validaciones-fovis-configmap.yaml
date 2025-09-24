@@ -1,0 +1,79 @@
+metadata:
+  name: wildfly-swarm-validaciones-fovis
+data:
+  wildfly-swarm-validaciones-fovis.yaml: |
+    servicelocator.type: KUBERNETES
+    gestor-cache: SERVICIO
+    org.apache.coyote.http11.Http11Protocol.MAX_HEADER_SIZE: 32768
+    com.arjuna.ats.arjuna.allowMultipleLastResources: true
+    jboss.as.management.blocking.timeout: 900    
+    swarm:
+      undertow:
+        servers:
+          default-server:
+            http-listeners:
+              default:
+                max-post-size: 104857600
+      transactions:
+        socket-binding: txn-recovery-environment
+        status-socket-binding: txn-status-manager
+        default-timeout: 7200
+      datasources:
+        data-sources:
+          asopagosDS:
+            driver-name: sqlserver
+            connection-url: ${url.core}
+            user-name: ${user.core}
+            password: ${password.core}
+            min-pool-size: 5
+            max-pool-size: 200
+            pool-prefill: false
+            pool-use-strict-min: false
+            flush-strategy: EntirePool
+            use-fast-fail: false
+            check-valid-connection-sql: select 1
+            background-validation: true        
+            validate-on-match: false
+            background-validation-millis: 4000
+            valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLValidConnectionChecker
+            exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLExceptionSorter
+            set-tx-query-timeout: false
+            blocking-timeout-wait-millis: 600000
+            idle-timeout-minutes: 5
+            query-timeout: 0
+            use-try-lock: 0
+            allocation-retry: 10
+            allocation-retry-wait-millis: 10000
+            use-ccm: true
+      ee:
+        annotation-property-replacement: true
+        context-services:
+          default:
+            jndi-name: java:jboss/ee/concurrency/context/default
+        default-bindings-service:
+          managed-thread-factory: java:jboss/ee/concurrency/factory/default
+        managed-executor-services:
+          jboss.naming.context.java.jboss.ee.concurrency.executor.validacionesFovis:
+            jndi-name: java:jboss/ee/concurrency/executor/validacionesFovis
+            context-service: default
+            hung-task-threshold: 180000
+            core-threads: 20
+            max-threads: 200
+            keepalive-time: 10000
+            queue-length: 100000
+        managed-scheduled-executor-services:
+          default:
+            jndi-name: java:jboss/ee/concurrency/scheduler/default
+            context-service: default
+            hung-task-threshold: 60000
+            keepalive-time: 3000
+        default-bindings:
+          context-service: java:jboss/ee/concurrency/context/default
+          datasource: java:jboss/datasources/ExampleDS
+          managed-executor-service: java:jboss/ee/concurrency/executor/default
+          managed-scheduled-executor-service: java:jboss/ee/concurrency/scheduler/default
+          managed-thread-factory: java:jboss/ee/concurrency/factory/default
+      logging:
+        loggers:
+          com.asopagos:
+            level: INFO

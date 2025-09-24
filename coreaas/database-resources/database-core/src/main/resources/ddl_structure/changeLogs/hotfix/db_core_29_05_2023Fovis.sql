@@ -1,0 +1,5 @@
+IF NOT EXISTS (SELECT * FROM Parametro WHERE prmNombre = 'PUNTAJE_FOVIS_ADICION_200_PUNTOS')
+	BEGIN
+		INSERT INTO Parametro
+		VALUES ('PUNTAJE_FOVIS_ADICION_200_PUNTOS','200',0,'VALOR_GLOBAL_NEGOCIO','Parámetro de puntaje FOVIS adicional Hogar Objeto Reubicacion Zona Alto Riesgo','NUMBER')
+	END

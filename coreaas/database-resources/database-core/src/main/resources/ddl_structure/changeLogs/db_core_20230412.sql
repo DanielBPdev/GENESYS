@@ -1,0 +1,1 @@
+ALTER TABLE rno.HistoricoConsolidadoPagosReintegroMicroDatoFOVIS ADD hcmModalidad NVARCHAR(150)

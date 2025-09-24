@@ -1,0 +1,1 @@
+ALTER TABLE HistoricoBeneficiario ADD hbeBeneficiario bigint 

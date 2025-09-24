@@ -1,0 +1,2 @@
+alter table DatosRegistraduriaNacionalAud
+alter column dnaConsulta varchar(4000)

@@ -1,0 +1,1 @@
+if not exists(select * from ParametrizacionReportesNormativos where prnNumero = 41 ) insert into ParametrizacionReportesNormativos(prnNumero, prnNombre, prnNFrecuencia,prnFormatos ) values (41, 'Informe contraloría mensual', 'Mensual', 'xlsx,csv')

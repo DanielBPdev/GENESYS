@@ -1,0 +1,96 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.asopagos.coreaas</groupId>
+		<artifactId>containers</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	<artifactId>nginx-plus</artifactId>
+	<name>nginx-plus</name>
+
+	<properties>
+		<fabric8.skip>false</fabric8.skip>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>Concat upstreams</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<concat destfile="${project.build.directory}/nginx-upstream.conf" force="yes">
+									<fileset dir="../../services">
+										<include name="**/target/classes/nginx/nginx-upstream.conf"></include>
+									</fileset>
+								</concat>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>Concat locations</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<concat destfile="${project.build.directory}/nginx-location.conf" force="yes">
+									<fileset dir="../../services">
+										<include name="**/target/classes/nginx/nginx-location.conf"></include>
+									</fileset>
+								</concat>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>Generate nginx conf file</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<concat destfile="${project.build.directory}/services.conf" force="yes">
+									<fileset dir="src/main/resources">
+										<include name="header.conf"></include>
+									</fileset>
+									<fileset dir="${project.build.directory}">
+										<include name="nginx-upstream.conf"></include>
+									</fileset>
+									<fileset dir="src/main/resources">
+										<include name="server.conf"></include>
+									</fileset>
+									<fileset dir="${project.build.directory}">
+										<include name="nginx-location.conf"></include>
+									</fileset>
+									<fileset dir="src/main/resources">
+										<include name="footer.conf"></include>
+									</fileset>
+								</concat>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>fabric8-maven-plugin</artifactId>
+				<version>4.0.0</version>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

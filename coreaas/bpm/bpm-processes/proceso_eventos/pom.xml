@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.asopagos.coreaas.bpm</groupId>
+		<artifactId>bpm-processes</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	<groupId>com.asopagos.coreaas.bpm.proceso_eventos</groupId>
+	<artifactId>proceso_eventos</artifactId>
+	<name>Proceso Eventos</name>
+	<description>Este proyecto es utilitario para enviar un mensaje a una cola</description>
+	<!-- <packaging>kjar</packaging> -->
+	<dependencies>
+		<!-- <dependency>
+			<groupId>com.asopagos.coreaas.esb</groupId>
+			<artifactId>cliente-mediacion-eventos-api</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency> -->
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.asopagos.coreaas.maven.plugin</groupId>
+				<artifactId>asopagos-maven-plugin</artifactId>
+				<version>0.0.2-SNAPSHOT</version>
+			</plugin>
+		</plugins>
+	</build>
+</project>

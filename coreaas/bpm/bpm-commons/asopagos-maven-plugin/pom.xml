@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.asopagos.coreaas.bpm</groupId>
+		<artifactId>bpm-commons</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	
+	<groupId>com.asopagos.coreaas.maven.plugin</groupId>
+	<artifactId>asopagos-maven-plugin</artifactId>	
+	<packaging>maven-plugin</packaging>
+	<description>Maven utility project</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+		</dependency>
+
+		<!-- dependencies to annotations -->
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-annotations</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.kie.remote</groupId>
+			<artifactId>kie-remote-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.kie.remote</groupId>
+			<artifactId>kie-remote-jaxb</artifactId>
+		</dependency>
+	</dependencies>
+</project>

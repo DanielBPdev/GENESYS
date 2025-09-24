@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+	<include file="liquibase/Core_Database/Technical/DDL_Transversal_Initial.sql" />
+	
+	<include file="liquibase/Core_Database/Business/Transversales/ParametrizacionMedioDePago.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/CodigoCIIU.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/Departamento.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/AFP.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/ARL.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/OcupacionProfesion.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/OperadorInformacion.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/CajaCompensacion.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/Municipio.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/DiasFestivos.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/ElementoDireccion.sql" />
+	<include file="liquibase/Core_Database/Business/Transversales/TipoVia.sql" />
+	
+	<include file="liquibase/Core_Database/Changelogs/Liquibase_Release_001/Modificaciones/db_asopagos_08052017.sql"/> 
+	
+	
+	</databaseChangeLog>

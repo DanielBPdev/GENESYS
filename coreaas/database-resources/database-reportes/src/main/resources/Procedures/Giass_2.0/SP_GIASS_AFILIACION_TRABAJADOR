@@ -1,0 +1,335 @@
+-- =============================================
+-- Author:      Jheysson Lopez
+-- Create Date: 05/09/2024
+-- =============================================
+CREATE OR ALTER   PROCEDURE [dbo].[SP_GIASS_AFILIACION_TRABAJADOR]
+AS
+BEGIN
+
+if not exists ( select * from INFORMATION_SCHEMA.TABLES t where t.TABLE_NAME = 'ReporteAfiliacionTrabajadorGiass')
+BEGIN
+-- drop table ReporteAfiliacionTrabajadorGiass
+create table dbo.ReporteAfiliacionTrabajadorGiass(
+
+ccf_id char(10),
+tipo_identificacion_empleador_id char(2),
+numero_identificacion_empleador nvarchar(20),
+tipo_identificacion_trabajador_id char(2),
+numero_identificacion_trabajador nvarchar(20),
+fecha_inicio date,
+fecha_terminacion date,
+tipo_afiliado_id char(2),
+categoria_id nvarchar(20),
+tipo_contrato_id nvarchar(20),
+cuoc_grupo_primario_id nvarchar(20),
+fecha_ingreso_empresa date,
+fecha_salida_empresa date,
+telefono1 nvarchar(15),
+telefono2 nvarchar(15),
+celular nvarchar(15),
+correo_electronico nvarchar(200),
+estado_civil_id char(2),
+orientacion_sexual_id char(2),
+nivel_escolaridad_id char(2),
+factor_vulnerabilidad_id char(2),
+pertenencia_etnica_id char(2),
+estado_afiliacion_id char(2),
+causal_estado_afiliacion_id char(2),
+tipo_trabajador_id char(2),
+sub_tipo_trabajador_id char(2),
+departamento_id char(2),
+municipio_id char(6),
+centro_poblado_id char(2),
+direccion nvarchar(200),
+area_geografica_id char(2),
+nivel_remuneracion_id char(2),
+nivel_remuneracion_vigente_desde char(2),
+nivel_remuneracion_vigente_hasta char(2),
+total_horas_contratadas_mes char(15),
+ingresos_reportados_dependiente char(15),
+ingresos_reportados_independiente char(15),
+ingresos_reportados_pensionado char(15),
+salario_mensual char(15),
+salario_integral char(15),
+tipo_cargue char(2),
+fecha_novedad date )
+
+END 
+	ELSE
+BEGIN
+	PRINT 'el objeto ReporteAfiliacionTrabajadorGiass ya existe'
+END
+
+
+exec Plano_Reporte160_paraReplica
+
+drop table if exists #Categorias
+create table #Categorias 
+(perTipoIdentificacion varchar(20)
+,perNumeroIdentificacion varchar(20)	
+,CategoriaDependiente varchar(13)	
+,CategoriaIndependiente varchar(13)	
+,CategoriaPensionado varchar(13)
+,perEmpTipoIdentificacion varchar(20)
+,perEmpNumeroIdentificacion varchar(20))
+
+insert #Categorias
+select 
+	rp.[Tipo de identificación afiliado principal] as perTipoIdentificacion
+	,rp.[Número de identificación afiliado principal] as perNumeroIdentificacion
+	,rp.[Categoría actual como dependiente afiliado principal] as CategoriaDependiente
+	,rp.[Categoría actual como independiente afiliado principal] as CategoriaIndependiente
+	,rp.[Categoría actual como pensionado afiliado principal] as CategoriaPensionado
+	,rp.[Tipo de Identificación Empleador] as perEmpTipoIdentificacion
+	,rp.[Número de Identificación Empleador] as perEmpNumeroIdentificacion
+from Reporte160 as rp
+where rp.[Categoría actual como dependiente afiliado principal] is not null
+	or rp.[Categoría actual como independiente afiliado principal] is not null
+	or rp.[Categoría actual como pensionado afiliado principal] is not null
+
+drop table if exists #ReporteGiass
+select distinct
+	isnull(	(SELECT cnsValor FROM Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO'),'') as ccf_id
+	,case when perEmp.perTipoIdentificacion = 'CEDULA_CIUDADANIA' then '1'
+		when perEmp.perTipoIdentificacion = 'TARJETA_IDENTIDAD' then '2'
+		when perEmp.perTipoIdentificacion = 'REGISTRO_CIVIL' then '3'
+		when perEmp.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' then '4'
+		when perEmp.perTipoIdentificacion = 'NUIP' then '5'
+		when perEmp.perTipoIdentificacion = 'PASAPORTE' then '6'
+		when perEmp.perTipoIdentificacion = 'NIT' then '7'
+		when perEmp.perTipoIdentificacion = 'CARNE_DIPLOMATICO' then '8'
+		when perEmp.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' then '9'
+		when perEmp.perTipoIdentificacion = 'CERTIFICADO_CABILDO' then '10'
+		when perEmp.perTipoIdentificacion = 'IDENTIFICACION_SECRETERIA_EDUCACION' then '11'
+		when perEmp.perTipoIdentificacion = 'TMF' then '12'
+		when perEmp.perTipoIdentificacion = 'VISA' then '13'
+		when perEmp.perTipoIdentificacion = 'ID_EXTRANJEROS_DIFERENTES_A_CE' then '14'
+		when perEmp.perTipoIdentificacion = 'PERM_PROT_TEMPORAL' then '15'  else ''
+	end as tipo_identificacion_empleador_id
+	,perEmp.perNumeroIdentificacion as 'numero_identificacion_empleador'
+	,case when per.perTipoIdentificacion = 'CEDULA_CIUDADANIA' then '1'
+		when per.perTipoIdentificacion = 'TARJETA_IDENTIDAD' then '2'
+		when per.perTipoIdentificacion = 'REGISTRO_CIVIL' then '3'
+		when per.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' then '4'
+		when per.perTipoIdentificacion = 'NUIP' then '5'
+		when per.perTipoIdentificacion = 'PASAPORTE' then '6'
+		when per.perTipoIdentificacion = 'NIT' then '7'
+		when per.perTipoIdentificacion = 'CARNE_DIPLOMATICO' then '8'
+		when per.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' then '9'
+		when per.perTipoIdentificacion = 'CERTIFICADO_CABILDO' then '10'
+		when per.perTipoIdentificacion = 'IDENTIFICACION_SECRETERIA_EDUCACION' then '11'
+		when per.perTipoIdentificacion = 'TMF' then '12'
+		when per.perTipoIdentificacion = 'VISA' then '13'
+		when per.perTipoIdentificacion = 'ID_EXTRANJEROS_DIFERENTES_A_CE' then '14'
+		when per.perTipoIdentificacion = 'PERM_PROT_TEMPORAL' then '15' else ''
+	end as tipo_identificacion_trabajador_id
+	,per.perNumeroIdentificacion as numero_identificacion_trabajador
+	,isnull(cast(cast(roa.roaFechaAfiliacion as date) as nvarchar),'') as fecha_inicio
+	,isnull(cast(cast(roa.roaFechaRetiro as date) as nvarchar),'')  as fecha_terminacion
+	,case 
+		when sol.solClasificacion = 'TRABAJADOR_DEPENDIENTE' then '1'
+		when sol.solClasificacion = 'EMPLEADOR_DE_SERVICIO_DOMESTICO' then '2'
+		when sol.solClasificacion = 'MAS_1_5_SM_0_6_POR_CIENTO' then	'4'
+		when sol.solClasificacion = 'MENOS_1_5_SM_0_6_POR_CIENTO' then	'4'
+		when sol.solClasificacion = 'MAS_1_5_SM_2_POR_CIENTO' then	'5'
+		when sol.solClasificacion = 'MENOS_1_5_SM_2_POR_CIENTO' then	'5'
+		when sol.solClasificacion = 'TRABAJADOR_INDEPENDIENTE_0_6_POR_CIENTO' then	'7'
+		when sol.solClasificacion = 'TRABAJADOR_INDEPENDIENTE_2_POR_CIENTO' then	'8'
+		when sol.solClasificacion = 'FIDELIDAD_25_ANIOS' then	'9'
+		when sol.solClasificacion = 'MENOS_1_5_SM_0_POR_CIENTO' then	'11' else ''
+	end as tipo_afiliado_id
+	,case 
+		when roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' then cat.CategoriaDependiente
+		when roa.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE' then cat.CategoriaIndependiente
+		when roa.roaTipoAfiliado = 'PENSIONADO' then cat.CategoriaPensionado
+	end as categoria_id
+	,isnull(roa.roaTipoContrato, '') as tipo_contrato_id
+	,'' as cuoc_grupo_primario_id
+	--,isnull(cast(cast(roa.roaFechaIngreso as date) as nvarchar(10),'') as fecha_ingreso_empresa
+	,isnull(cast(cast(roa.roaFechaIngreso as date) as nvarchar),'')	 as fecha_ingreso_empresa
+	,isnull(cast(cast(roa.roaFechaFinContrato as date) as nvarchar),'') as fecha_salida_empresa 
+	,isnull((ubi.ubiIndicativoTelFijo + ' ' + ubi.ubiTelefonoFijo),'') as telefono1
+	,'' as telefono2
+	,isnull(ubi.ubiTelefonoCelular,'') as celular
+	,isnull(ubi.ubiEmail,'') as correo_electronico
+	,case 
+		when ped.pedEstadoCivil = 'UNION_LIBRE' then '1'
+		when ped.pedEstadoCivil = 'CASADO' then '2'
+		when ped.pedEstadoCivil = 'VIUDO' then '5'
+		when ped.pedEstadoCivil = 'DIVORCIADO' then '3'
+		when ped.pedEstadoCivil = 'SOLTERO' then '6'
+		when ped.pedEstadoCivil = 'SEPARADO' then '4' else '' end as estado_civil_id
+	,case 
+	    when ped.pedOrientacionSexual = 'HETEROSEXUAL' then '1'
+		when ped.pedOrientacionSexual = 'HOMOSEXUAL' then '2'
+		when ped.pedOrientacionSexual = 'BISEXUAL' then '3'
+		when ped.pedOrientacionSexual = 'INFORMACION_NO_DISPONIBLE' then '4' else '' end as orientacion_sexual_id
+	,case 
+	    when ped.pedNivelEducativo = 'PREESCOLAR' then '1'
+		when ped.pedNivelEducativo = 'BASICA_PRIMARIA_COMPLETA' then '2'
+		when ped.pedNivelEducativo = 'BASICA_PRIMARIA_INCOMPLETA' then '2'		
+		when ped.pedNivelEducativo = 'BASICA_SECUNDARIA_COMPLETA' then '3'
+		when ped.pedNivelEducativo = 'BASICA_SECUNDARIA_INCOMPLETA' then '3'
+		when ped.pedNivelEducativo = 'MEDIA_COMPLETA' then '4'
+		when ped.pedNivelEducativo = 'MEDIA_INCOMPLETA' then '4'		
+		when ped.pedNivelEducativo = 'OTRA' then '5'		
+		when ped.pedNivelEducativo = 'BASICA_PRIMARIA_COMPLETA_ADULTOS' then '6'
+		when ped.pedNivelEducativo = 'BASICA_PRIMARIA_INCOMPLETA_ADULTOS' then '6'
+		when ped.pedNivelEducativo = 'BASICA_SECUNDARIA_COMPLETA_ADULTOS' then '7'
+	 	when ped.pedNivelEducativo = 'BASICA_SECUNDARIA_INCOMPLETA_ADULTOS' then '7' 
+		when ped.pedNivelEducativo = 'MEDIA_COMPLETA_ADULTOS' then '8'
+		when ped.pedNivelEducativo = 'MEDIA_INCOMPLETA_ADULTOS' then '8' 
+		when ped.pedNivelEducativo = 'PRIMERA_INFANCIA' then '9'
+		when ped.pedNivelEducativo = 'SUPERIOR' then '11'
+		when ped.pedNivelEducativo = 'SUPERIOR_PREGRADO' then '11'
+		when ped.pedNivelEducativo = 'SUPERIOR_POSGRADO' then '12' 
+		when ped.pedNivelEducativo = 'NINGUNO' then '13' 
+		when ped.pedNivelEducativo = 'INFORMACION_NO_DISPONIBLE' then '14' 
+		when ped.pedNivelEducativo is null then '14'  
+		else '5'
+	end as nivel_escolaridad_id	
+	,case 
+		when ped.pedFactorVulnerabilidad = 'DESPLAZADO' then '1'
+		when ped.pedFactorVulnerabilidad = 'VICTIMA_CONFLICTO_NO_DESPLAZADO' then '2'
+		when ped.pedFactorVulnerabilidad = 'DESMOVILIZADO_REINSERTADO' then '3'
+		when ped.pedFactorVulnerabilidad = 'HIJO_DESMOVILIZADO_REINSERTADO' then '4'
+		when ped.pedFactorVulnerabilidad = 'DAMNIFICADO_DESASTRE_NATURAL' then '5'
+		when ped.pedFactorVulnerabilidad = 'CABEZA_FAMILIA' then '6'
+		when ped.pedFactorVulnerabilidad = 'HIJO_MADRES_CABEZA_FAMILIA' then '7'
+		when ped.pedFactorVulnerabilidad = 'EN_CONDICION_DISCAPACIDAD' then '8'
+		when ped.pedFactorVulnerabilidad = 'POBLACION_MIGRANTE' then '9'
+		when ped.pedFactorVulnerabilidad = 'POBLACION_ZONAS_FRONTERA_NACIONALES' then '10'
+		when ped.pedFactorVulnerabilidad = 'EJERCICIO_TRABAJO_SEXUAL' then '11'
+		when ped.pedFactorVulnerabilidad = 'NO_APLICA' then '12 ' else '' end as factor_vulnerabilidad_id
+	,case 
+		when ped.pedPertenenciaEtnica = 'AFROCOLOMBIANO' then '1'
+		when ped.pedPertenenciaEtnica = 'COMUNIDAD_NEGRA' then '2'
+		when ped.pedPertenenciaEtnica = 'INDIGENA' then '3'
+		when ped.pedPertenenciaEtnica = 'PALENQUERO' then '4'
+		when ped.pedPertenenciaEtnica = 'RAIZAL_ARCHI_SAN_ANDRES_PROVIDENCIA_SANTA_CATALINA' then '5'
+		when ped.pedPertenenciaEtnica = 'ROOM_GITANO' then '6'
+		when ped.pedPertenenciaEtnica = 'NINGUNO_DE_LOS_ANTERIORES' then '7'
+		when ped.pedPertenenciaEtnica is null then '7'  else ''
+	end as pertenencia_etnica_id
+	,case 
+		when roa.roaEstadoAfiliado = 'ACTIVO' THEN '1' ELSE '2' END  as estado_afiliacion_id --terminado si es null
+	, case 
+		when roa.roaMotivoDesafiliacion = 'RETIRO_VOLUNTARIO' then '1'
+		when roa.roaMotivoDesafiliacion = 'RETIRO_POR_MORA_APORTES' then '2'
+		when roa.roaMotivoDesafiliacion = 'MAL_USO_DE_SERVICIOS_CCF' then '3'
+		when roa.roaMotivoDesafiliacion = 'FALLECIMIENTO' then '4' else '' end as causal_estado_afiliacion_id
+	,case 
+		when sol.solClasificacion = 'TRABAJADOR_DEPENDIENTE' then '1'
+		when sol.solClasificacion = 'EMPLEADOR_DE_SERVICIO_DOMESTICO' then '2'
+		when sol.solClasificacion = 'MAS_1_5_SM_0_6_POR_CIENTO' then	'4'
+		when sol.solClasificacion = 'MENOS_1_5_SM_0_6_POR_CIENTO' then	'4'
+		when sol.solClasificacion = 'MAS_1_5_SM_2_POR_CIENTO' then	'5'
+		when sol.solClasificacion = 'MENOS_1_5_SM_2_POR_CIENTO' then	'5'
+		when sol.solClasificacion = 'TRABAJADOR_INDEPENDIENTE_0_6_POR_CIENTO' then	'7'
+		when sol.solClasificacion = 'TRABAJADOR_INDEPENDIENTE_2_POR_CIENTO' then	'8'
+		when sol.solClasificacion = 'FIDELIDAD_25_ANIOS' then	'9'
+		when sol.solClasificacion = 'MENOS_1_5_SM_0_POR_CIENTO' then	'11' else ''
+	end  as tipo_trabajador_id
+	,case when sol.solClasificacion = 'TRABAJADOR_DEPENDIENTE' then '11'
+		when sol.solClasificacion = 'FIDELIDAD 25 AÑOS' then '13'
+		when sol.solClasificacion in 	
+			('MAS_1_5_SM_0_6_POR_CIENTO'
+			,'MAS_1_5_SM_2_POR_CIENTO'
+			,'MENOS_1_5_SM_0_6_POR_CIENTO'
+			,'MENOS_1_5_SM_0_POR_CIENTO'
+			,'MENOS_1_5_SM_2_POR_CIENTO') then 14
+		when sol.solClasificacion IN ('MENOS DE 1,5SM Y 2%', 'MAS DE 1,5 SM Y 2%') then '15' else ''
+	end as sub_tipo_trabajador_id
+	,dep.depCodigo as departamento_id
+	,mun.munCodigo as municipio_id
+	,'' as centro_poblado_id
+	,ubi.ubiDireccionFisica as direccion
+	,'' as area_geografica_id
+	,'' as nivel_remuneracion_id
+	,'' as nivel_remuneracion_vigente_desde
+	,'' as nivel_remuneracion_vigente_hasta
+	,(SELECT top 1 apd.apdhorasLaboradas FROM AporteDetallado2 apd inner join AporteGeneral2 apg  on apd.apdAporteGeneral = apg.apgId
+	  WHERE apd.apdPersona = per.perId AND apg.apgEmpresa = e.empId order by apg.apgfechaProcesamiento desc) as total_horas_contratadas_mes
+	,'' as ingresos_reportados_dependiente
+	,'' as ingresos_reportados_independiente
+	,'' as ingresos_reportados_pensionado
+	,roa.roaValorSalarioMesadaIngresos as salario_mensual
+	,'' as salario_integral
+	,case 
+		when getdate() < '2024-07-31' then 2
+		when getdate() > '2024-07-31' then 1 
+	end [tipo_cargue] --ok
+	,cast(sol.solFechaCreacion as date) as fecha_novedad
+into #ReporteGiass
+from Persona as per
+	inner join PersonaDetalle as ped on ped.pedPersona = per.perId
+	inner join Afiliado as afi on afi.afiPersona = per.perId
+	inner join RolAfiliado as roa on roa.roaAfiliado = afi.afiId
+	left join Empleador as emp on roa.roaEmpleador = emp.empId
+	left join Empresa as e on emp.empEmpresa = e.empId
+	left join Persona as perEmp on e.empPersona = perEmp.perId
+	left join SolicitudAfiliacionPersona as sap on sap.sapRolAfiliado = roa.roaId
+	inner join Solicitud as sol on sap.sapSolicitudGlobal = sol.solId
+	left join Ubicacion as ubi on per.perUbicacionPrincipal = ubi.ubiId
+	left join Municipio as mun on ubi.ubiMunicipio = mun.munId
+	left join Departamento as dep on mun.munDepartamento = dep.depId
+	left join #Categorias as cat 
+		on replace(cat.perTipoIdentificacion, ' ', '_')  = per.perTipoIdentificacion
+		and cat.perNumeroIdentificacion = per.perNumeroIdentificacion
+		and replace(cat.perEmpTipoIdentificacion, ' ', '_') = perEmp.perTipoIdentificacion
+		and cat.perEmpNumeroIdentificacion = perEmp.perNumeroIdentificacion
+--where  per.perNumeroIdentificacion = '25215604'
+
+insert into ReporteAfiliacionTrabajadorGiass
+select * from #ReporteGiass  r 
+except
+select * from ReporteAfiliacionTrabajadorGiass
+
+
+-- Generamos el reporte
+select 
+concat(substring(ccf_id,1,3),format(cast(substring(ccf_id,4,2) as int),'000'))	ccf_id
+,tipo_identificacion_empleador_id	
+,numero_identificacion_empleador	
+,tipo_identificacion_trabajador_id	
+,numero_identificacion_trabajador	
+,fecha_inicio	
+,CASE WHEN fecha_terminacion = '1900-01-01' THEN NULL ELSE fecha_terminacion END [fecha_terminacion]
+,tipo_afiliado_id	
+,categoria_id	
+,tipo_contrato_id	
+,cuoc_grupo_primario_id	
+,fecha_ingreso_empresa	
+,CASE WHEN fecha_salida_empresa = '1900-01-01' THEN NULL ELSE fecha_salida_empresa END [fecha_salida_empresa]	
+,telefono1	
+,telefono2	
+,celular	
+,correo_electronico	
+,estado_civil_id	
+,orientacion_sexual_id	
+,nivel_escolaridad_id	
+,factor_vulnerabilidad_id	
+,pertenencia_etnica_id	
+,estado_afiliacion_id	
+,causal_estado_afiliacion_id	
+,tipo_trabajador_id	
+,sub_tipo_trabajador_id	
+,departamento_id	
+,municipio_id	
+,centro_poblado_id	
+,direccion	
+,area_geografica_id	
+,nivel_remuneracion_id	
+,nivel_remuneracion_vigente_desde	
+,nivel_remuneracion_vigente_hasta	
+,total_horas_contratadas_mes	
+,ingresos_reportados_dependiente	
+,ingresos_reportados_independiente	
+,ingresos_reportados_pensionado	
+,salario_mensual	
+,salario_integral	
+,tipo_cargue	
+,fecha_novedad
+from ReporteAfiliacionTrabajadorGiass ratg
+
+END

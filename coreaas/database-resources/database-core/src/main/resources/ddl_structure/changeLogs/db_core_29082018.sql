@@ -1,0 +1,18 @@
+--liquibase formatted sql
+
+--changeset jvelandia:01
+--comment: Ajustes PrioridadDestinatario
+UPDATE PrioridadDestinatario SET prdGrupoPrioridad = (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='AFILIADO_PRINCIPAL')
+WHERE prdDestinatarioComunicado = (SELECT dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' and dcoEtiquetaPlantilla='NTF_REC_APT_PLA_PNS1')
+
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' AND des.dcoEtiquetaPlantilla='NTF_REC_APT_PLA_DEP1'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='REPRESENTANTE_LEGAL_SUPLENTE'), 2);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' AND des.dcoEtiquetaPlantilla='NTF_REC_APT_PLA_DEP1'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='OFICINA_PRINCIPAL'), 3);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' AND des.dcoEtiquetaPlantilla='NTF_REC_APT_PLA_DEP1'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='ENVIO_DE_CORRESPONDENCIA'), 4);
+
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' AND des.dcoEtiquetaPlantilla='NTF_REC_APT_PLA_IDPE1'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='REPRESENTANTE_LEGAL_SUPLENTE'), 2);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' AND des.dcoEtiquetaPlantilla='NTF_REC_APT_PLA_IDPE1'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='OFICINA_PRINCIPAL'), 3);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' AND des.dcoEtiquetaPlantilla='NTF_REC_APT_PLA_IDPE1'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='ENVIO_DE_CORRESPONDENCIA'), 4);
+
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' AND des.dcoEtiquetaPlantilla='NTF_REC_APT_PLA_PNS1'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='REPRESENTANTE_LEGAL_SUPLENTE'), 2);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' AND des.dcoEtiquetaPlantilla='NTF_REC_APT_PLA_PNS1'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='OFICINA_PRINCIPAL'), 3);
+INSERT INTO PrioridadDestinatario(prdDestinatarioComunicado, prdGrupoPrioridad, prdPrioridad)VALUES((SELECT des.dcoId FROM DestinatarioComunicado des WHERE des.dcoProceso='RECAUDO_APORTES_PILA' AND des.dcoEtiquetaPlantilla='NTF_REC_APT_PLA_PNS1'), (SELECT grp.gprId FROM GrupoPrioridad grp WHERE grp.gprNombre='ENVIO_DE_CORRESPONDENCIA'), 4);

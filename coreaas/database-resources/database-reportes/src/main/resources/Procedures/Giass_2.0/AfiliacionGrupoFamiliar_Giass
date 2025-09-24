@@ -1,0 +1,257 @@
+CREATE OR ALTER     procedure [dbo].[AfiliacionGrupoFamiliar_Giass]
+as
+--    =======    AfiliacionGrupoFamiliar Giass   =======
+-- Creado por Camilo Gomez 31-05-2024; se extraen los campos y se ajustan nombres segun diccionario de datos en GLPI 80908
+--    =======    CAMPOS    =======
+ 
+
+if not exists (select * from INFORMATION_SCHEMA.TABLES t where t.TABLE_NAME = N'ReporteGrupoFamiliarGiass')
+begin
+
+	create table dbo.ReporteGrupoFamiliarGiass(
+	ccf_id nvarchar(10),
+	tipo_identificacion_empleador_id char(2),
+	numero_identificacion_empleador nvarchar(20),
+	parentesco_id varchar(5),
+	tipo_identificacion_trabajador_id char(2),
+	numero_identificacion_trabajador nvarchar(20),
+	tipo_identificacion_beneficiario_id char(2),
+	numero_identificacion_beneficiario nvarchar(20),
+	fecha_inicio date,
+	fecha_terminacion date,
+	recibe_cuota_monetaria char(2),
+	estado_afiliacion_id char(2),
+	cuota_monetaria_endoso_tercero char(2),
+	tipo_identificacion_endosatario_id char(2),
+	numero_identificacion_endosatario nvarchar(20),
+	fecha_inicio_endosatario date,
+	fecha_terminacion_endosatario date,
+	tipo_cargue char(2),
+	fecha_novedad date )
+END
+	ELSE
+BEGIN
+	PRINT 'el objeto ReporteGrupoFamiliarGiass ya existe'
+END
+
+Drop table if exists #tabla001
+create table #tabla001(
+id tinyint,
+tipodocumento varchar(50)
+)
+
+Drop table if exists #tabla020
+create table #tabla020(
+id tinyint,
+parentesco varchar(50)
+)
+
+Drop table if exists #tabla011
+create table #tabla011(
+id tinyint,
+Estado_afiliacion varchar(50)
+)
+
+Insert into #tabla001
+select Distinct case perTipoIdentificacion when 'CEDULA_CIUDADANIA' then '1'
+										   when 'TARJETA_IDENTIDAD' then '2'
+										   when 'REGISTRO_CIVIL' then '3'
+										   when 'CEDULA_EXTRANJERIA' then '4'
+										   when 'NUIP' then '5'
+										   when 'PASAPORTE' then '6'
+										   when 'NIT' then '7'
+										   when 'CARNE_DIPLOMATICO' then '8'
+										   when 'PERM_ESP_PERMANENCIA' then '9'
+										   when 'CERTIFICADO_CABILDO' then '10'
+										   when 'IDENTIFICACIÓN_DADA_POR_LA_SECRETARIA_DE_EDUCACIÓN' then '11'										
+										   when 'PERM_PROT_TEMPORAL' then '15'
+								END
+,perTipoIdentificacion
+from Persona
+--select * from #tabla001
+
+Insert into #tabla020
+select Distinct case benTipoBeneficiario   when 'HIJO_BIOLOGICO' then '1'
+										   when 'HIJO_ADOPTIVO' then '1'
+										   when 'PADRE' then '2'
+										   when 'MADRE' then '2'
+										   when 'HERMANO_HUERFANO_DE_PADRES' then '3'
+										   when 'HIJASTRO' then '4'
+										   when 'CONYUGE' then '5'
+										   when 'BENEFICIARIO_EN_CUSTODIA' then '6'
+
+								END
+,benTipoBeneficiario
+from Beneficiario
+--select * from #tabla020
+
+Insert into #tabla011
+select Distinct case roaEstadoAfiliado when 'ACTIVO' then '1'
+									   when 'INACTIVO' then '2'
+								END
+,roaEstadoAfiliado
+from RolAfiliado ro
+
+-- generación de la data en la tabla temporal
+DROP TABLE IF EXISTS #tmpGrupoFamiliar
+select distinct
+(select top 1 ccf.ccfCodigo
+from CajaCompensacion as ccf
+where ccf.ccfSocioAsopagos = 1) AS ccf_id,
+hm.id [tipo_identificacion_empleador_id],
+pe.perNumeroIdentificacion [numero_identificacion_empleador],
+case when (b.benTipoBeneficiario) = 'HIJO_BIOLOGICO' THEN  '1'
+	 when (b.benTipoBeneficiario) = 'MADRE' THEN '2'
+	 when (b.benTipoBeneficiario) = 'PADRE' THEN '2'
+	 when (b.benTipoBeneficiario) = 'HERMANO_HUERFANO_DE_PADRES' THEN '3'
+	 when (b.benTipoBeneficiario) = 'HIJASTRO' THEN '4'
+	 when (b.benTipoBeneficiario) = 'HIJO_ADOPTIVO' THEN '4'
+	 when (b.benTipoBeneficiario) = 'CONYUGE' THEN '5'
+	 when (b.benTipoBeneficiario) = 'BENEFICIARIO_EN_CUSTODIA' THEN '6' else '' end
+[parentesco_id],
+CASE 
+	WHEN  pa.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 1
+	WHEN  pa.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 2
+	WHEN  pa.perTipoIdentificacion = 'REGISTRO_CIVIL'	 THEN 3
+	WHEN  pa.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 4
+	WHEN  pa.perTipoIdentificacion = 'PASAPORTE' THEN 6
+	WHEN  pa.perTipoIdentificacion = 'NIT' THEN 7
+	WHEN  pa.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 8
+	WHEN  pa.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 9
+	WHEN  pa.perTipoIdentificacion = 'PERM_PROT_TEMPORAL' THEN 15 END AS  [tipo_identificacion_trabajador_id],
+pa.perNumeroIdentificacion [numero_identificacion_trabajador],
+CASE 
+	WHEN  pb.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 1
+	WHEN  pb.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 2
+	WHEN  pb.perTipoIdentificacion = 'REGISTRO_CIVIL'	 THEN 3
+	WHEN  pb.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 4
+	WHEN  pb.perTipoIdentificacion = 'PASAPORTE' THEN 6
+	WHEN  pb.perTipoIdentificacion = 'NIT' THEN 7
+	WHEN  pb.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 8
+	WHEN  pb.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 9
+	WHEN  pb.perTipoIdentificacion = 'PERM_PROT_TEMPORAL' THEN 15 END AS [tipo_identificacion_beneficiario_id],
+pb.perNumeroIdentificacion [numero_identificacion_beneficiario],
+isnull(cast(cast(b.benFechaAfiliacion as date) as nvarchar),'') [fecha_inicio],
+CASE WHEN cast(cast(b.benFechaAfiliacion as date) as nvarchar) IS NOT NULL 
+THEN CASE WHEN cast( b.benFechaRetiro as date) >  cast(b.benFechaAfiliacion as date) THEN isnull( cast(cast( b.benFechaRetiro as date) as nvarchar),'') ELSE NULL END
+ELSE NULL END [fecha_terminacion],
+case when dsaEstado = 'DERECHO_ASIGNADO' then 1 else 0 end as [recibe_cuota_monetaria],
+case when b.benEstadoBeneficiarioAfiliado = 'ACTIVO' THEN 1 ELSE 2 END AS [estado_afiliacion_id],
+case when (select top 1 p.perNumeroIdentificacion from DetalleSubsidioAsignado dsa1 
+           inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+           inner join Persona p on p.perId = ads.asuPersona
+           where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = pa.perNumeroIdentificacion then 1 else 2 end as [cuota_monetaria_endoso_tercero],
+CASE 
+	WHEN  (select top 1 p.perTipoIdentificacion from DetalleSubsidioAsignado dsa1 
+inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+inner join Persona p on p.perId = ads.asuPersona
+where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = 'CEDULA_CIUDADANIA' THEN 1
+	WHEN  (select top 1 p.perTipoIdentificacion from DetalleSubsidioAsignado dsa1 
+inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+inner join Persona p on p.perId = ads.asuPersona
+where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = 'TARJETA_IDENTIDAD' THEN 2
+	WHEN  (select top 1 p.perTipoIdentificacion from DetalleSubsidioAsignado dsa1 
+inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+inner join Persona p on p.perId = ads.asuPersona
+where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = 'REGISTRO_CIVIL'	 THEN 3
+	WHEN  (select top 1 p.perTipoIdentificacion from DetalleSubsidioAsignado dsa1 
+inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+inner join Persona p on p.perId = ads.asuPersona
+where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = 'CEDULA_EXTRANJERIA' THEN 4
+	WHEN  (select top 1 p.perTipoIdentificacion from DetalleSubsidioAsignado dsa1 
+inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+inner join Persona p on p.perId = ads.asuPersona
+where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = 'PASAPORTE' THEN 6
+	WHEN  (select top 1 p.perTipoIdentificacion from DetalleSubsidioAsignado dsa1 
+inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+inner join Persona p on p.perId = ads.asuPersona
+where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = 'NIT' THEN 7
+	WHEN  (select top 1 p.perTipoIdentificacion from DetalleSubsidioAsignado dsa1 
+inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+inner join Persona p on p.perId = ads.asuPersona
+where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = 'CARNE_DIPLOMATICO' THEN 8
+	WHEN  (select top 1 p.perTipoIdentificacion from DetalleSubsidioAsignado dsa1 
+inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+inner join Persona p on p.perId = ads.asuPersona
+where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = 'PERM_ESP_PERMANENCIA' THEN 9
+	WHEN  (select top 1 p.perTipoIdentificacion from DetalleSubsidioAsignado dsa1 
+inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+inner join Persona p on p.perId = ads.asuPersona
+where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = 'PERM_PROT_TEMPORAL' THEN 15 END AS tipo_identificacion_endosatario_id,
+(select top 1 p.perNumeroIdentificacion from DetalleSubsidioAsignado dsa1
+           inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+           inner join Persona p on p.perId = ads.asuPersona
+           where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) as numero_identificacion_endosatario,
+Case WHEn (case when (select top 1 p.perNumeroIdentificacion from DetalleSubsidioAsignado dsa1 
+           inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+           inner join Persona p on p.perId = ads.asuPersona
+           where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = pa.perNumeroIdentificacion then 1 else 2 end) = 1
+then isnull( cast(cast( roaFechaIngreso as date) as nvarchar),'') 
+else '' end as fecha_inicio_endosatario,  ---- revisar con erica o deisy   (si el administrador de subsidio es el mismo afiliado principal colocar la fecha de ingreso del afiliado) si no debe ir en blanco
+Case WHEn (case when (select top 1 p.perNumeroIdentificacion from DetalleSubsidioAsignado dsa1 
+           inner join AdministradorSubsidio ads on dsa1.dsaAdministradorSubsidio = ads.asuId
+           inner join Persona p on p.perId = ads.asuPersona
+           where dsa.dsaAdministradorSubsidio = dsa1.dsaAdministradorSubsidio) = pa.perNumeroIdentificacion then 1 else 2 end) = 1
+then isnull( cast(cast( roaFechaRetiro as date) as nvarchar),'') 
+else '' end as fecha_terminacion_endosatario, ------ revisar con erica o deisy (si el administrador de subsidio es el mismo afiliado principal colocar la fecha de retiro del afiliado) si no debe ir en blanco
+'1' as tipo_cargue, --2 para cargue inicial, posterior cambiar a 1 cuando se hace la solicitud
+isnull( cast(cast( b.benFechaAfiliacion as date) as nvarchar),'') as fecha_novedad ------ revisar con erica o deisy  (fecha de afiliacion del grupo familiar) misma fecha inicio
+into #tmpGrupoFamiliar
+from Persona pa 
+inner join Afiliado a on pa.perId = a.afiPersona
+inner join GrupoFamiliar gf on gf.grfAfiliado = a.afiId
+inner join Beneficiario b on b.benGrupoFamiliar = gf.grfId
+inner join RolAfiliado ra on ra.roaAfiliado = a.afiId
+inner join Empleador epl on epl.empId = ra.roaEmpleador
+inner join Empresa epr on epr.empId = epl.empEmpresa
+inner join Persona pe on pe.perId = epr.empPersona
+inner join #tabla001 hm on pe.perTipoIdentificacion = hm.tipodocumento 
+inner join Persona pb on pb.perId = b.benPersona
+inner join #tabla001 hmb on pb.perTipoIdentificacion = hmb.tipodocumento
+inner join BeneficiarioDetalle bd on bd.bedId = b.benBeneficiarioDetalle
+inner join PersonaDetalle pd on pd.pedId = bd.bedPersonaDetalle
+inner join DetalleSubsidioAsignado dsa on dsa.dsaBeneficiarioDetalle = bd.bedId
+--where pa.perNumeroIdentificacion in( '25233553') 
+--and pe.perNumeroIdentificacion = '901367214'
+
+
+-- llenamos la tabla fisica del reporte
+insert into ReporteGrupoFamiliarGiass
+Select distinct 
+ccf_id,	tipo_identificacion_empleador_id,numero_identificacion_empleador,	parentesco_id,tipo_identificacion_trabajador_id,numero_identificacion_trabajador,
+tipo_identificacion_beneficiario_id,numero_identificacion_beneficiario,fecha_inicio,	fecha_terminacion,recibe_cuota_monetaria,estado_afiliacion_id,
+cuota_monetaria_endoso_tercero,tipo_identificacion_endosatario_id,numero_identificacion_endosatario,fecha_inicio_endosatario,fecha_terminacion_endosatario,
+tipo_cargue,fecha_novedad
+from #tmpGrupoFamiliar 
+except 
+select ccf_id,tipo_identificacion_empleador_id,numero_identificacion_empleador,	parentesco_id,tipo_identificacion_trabajador_id,numero_identificacion_trabajador,
+tipo_identificacion_beneficiario_id,numero_identificacion_beneficiario,fecha_inicio,fecha_terminacion,recibe_cuota_monetaria,estado_afiliacion_id,
+cuota_monetaria_endoso_tercero,tipo_identificacion_endosatario_id,numero_identificacion_endosatario,fecha_inicio_endosatario,fecha_terminacion_endosatario,
+tipo_cargue,fecha_novedad 
+from ReporteGrupoFamiliarGiass
+
+
+
+
+-- Visualizamos el reporte
+select 
+concat(substring(ccf_id,1,3),format(cast(substring(ccf_id,4,2) as int),'000')) [ccf_id]
+,tipo_identificacion_empleador_id
+,numero_identificacion_empleador
+,parentesco_id
+,tipo_identificacion_trabajador_id
+,numero_identificacion_trabajador
+,tipo_identificacion_beneficiario_id
+,numero_identificacion_beneficiario
+,fecha_inicio
+,fecha_terminacion
+,recibe_cuota_monetaria
+,estado_afiliacion_id
+,CASE WHEN cuota_monetaria_endoso_tercero = 1 THEN cuota_monetaria_endoso_tercero ELSE 0 END cuota_monetaria_endoso_tercero
+,tipo_identificacion_endosatario_id
+,numero_identificacion_endosatario
+,fecha_inicio_endosatario
+,CASE WHEN fecha_terminacion_endosatario = '1900-01-01' THEN '' ELSE fecha_terminacion_endosatario END fecha_terminacion_endosatario
+,tipo_cargue,fecha_novedad 
+from ReporteGrupoFamiliarGiass
+

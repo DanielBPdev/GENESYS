@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="heinsohn" id="1" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter=";"
+			path="DROP.sql" relativeToChangelogFile="true"
+			splitStatements="false" stripComments="false" />
+	</changeSet>
+
+	<!-- REFACTOR PILA MAYO 2020 INICIO -->
+	<changeSet author="heinsohn" id="2" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="USP_BorrarDatosTemporalesAportes.sql"
+			relativeToChangelogFile="true" splitStatements="false"
+			stripComments="false" />
+	</changeSet>
+	<!-- REFACTOR PILA MAYO 2020 FIN -->
+	
+	<changeSet author="heinsohn" id="3" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="USP_ReiniciarPlanillas.sql"
+			relativeToChangelogFile="true" splitStatements="false"
+			stripComments="false" />
+	</changeSet>
+	
+	<changeSet author="rcastillo" id="4" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="USP_ConsultarPlanillasConciliadasB6aB8.sql"
+			relativeToChangelogFile="true" splitStatements="false"
+			stripComments="false" />
+	</changeSet>
+	<changeSet author="rcastillo" id="5" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="USP_GET_ConsultarPlanillasLiberacionBloque9.sql"
+			relativeToChangelogFile="true" splitStatements="false"
+			stripComments="false" />
+	</changeSet>
+
+	<changeSet author="rcastillo" id="6" runAlways="true"
+		runOnChange="true">
+		<sqlFile dbms="mssql" encoding="utf8" endDelimiter="\nGO"
+			path="USP_GET_ConsultarPlanillasLiberacionBloque9_V2.sql"
+			relativeToChangelogFile="true" splitStatements="false"
+			stripComments="false" />
+	</changeSet>
+
+</databaseChangeLog>
