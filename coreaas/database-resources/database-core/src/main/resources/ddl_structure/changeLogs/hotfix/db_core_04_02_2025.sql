@@ -1,1 +1,0 @@
-INSERT [ParametrizacionMetodoAsignacion] ([pmaSedeCajaCompensacion], [pmaProceso], [pmaMetodoAsignacion], [pmaUsuario], [pmaGrupo], [pmaSedeCajaDestino]) VALUES ( 1, N'GESTION_COBRO_ELECTRONICO', N'PREDEFINIDO', 'john.osorio@comfenalcoantioquia.com', N'AnaCarApo', NULL)

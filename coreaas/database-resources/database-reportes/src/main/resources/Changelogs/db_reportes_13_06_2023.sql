@@ -1,1 +1,0 @@
-if not exists(select * from ParametrizacionReportesNormativos where prnNumero = 70 ) insert into ParametrizacionReportesNormativos(prnNumero, prnNombre, prnNFrecuencia,prnFormatos ) values (70, 'Detallado 3-030 Circular', 'Anual', 'xlsx')

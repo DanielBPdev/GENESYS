@@ -1,2 +1,0 @@
-if not exists (select * from ParametrizacionFOVIS where pafNombre = 'CRUCE_BENEFICIARIOS_MISMA_CAJA')
-    insert into ParametrizacionFOVIS (pafNombre, pafValor) values ('CRUCE_BENEFICIARIOS_MISMA_CAJA', 1);

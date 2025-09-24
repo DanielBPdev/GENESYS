@@ -1,4 +1,0 @@
-SET IDENTITY_INSERT [ParametrizacionCondicionesSubsidio] ON 
-
-INSERT [ParametrizacionCondicionesSubsidio] ([pcsId], [pcsAnioVigenciaParametrizacion], [pcsPeriodoInicio], [pcsPeriodoFin], [pcsValorCuotaAnualBase], [pcsValorCuotaAnualAgraria], [pcsProgramaDecreto4904], [pcsRetroactivoNovInvalidez], [pcsRetroactivoReingresoEmpleadores], [pcsCantidadSubsidiosLiquidados], [pcsMontoSubsidiosLiquidados], [pcsCantidadSubsidiosLiquidadosInvalidez], [pcsCantidadPeriodosRetroactivosMes], [pcsDiasNovedadFallecimiento], [pcsCodigoCajaCompensacion]) VALUES (1, 2016, CAST(N'2016-01-02' AS Date), CAST(N'2016-12-28' AS Date), CAST(25000.00000 AS Numeric(19, 5)), CAST(28000.00000 AS Numeric(19, 5)), 1, 1, 1, NULL, NULL, NULL, NULL, NULL, N'CCF10')
-SET IDENTITY_INSERT [ParametrizacionCondicionesSubsidio] OFF

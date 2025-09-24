@@ -1,2 +1,0 @@
-alter table dbo.MedioPagoPersona_aud
-add mppTarjetaMultiservicio bit null

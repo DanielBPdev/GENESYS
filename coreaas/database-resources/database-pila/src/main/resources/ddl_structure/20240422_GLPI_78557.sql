@@ -1,1 +1,0 @@
-alter table masivos.MasivoSimulado alter column maaUsuario varchar(150)

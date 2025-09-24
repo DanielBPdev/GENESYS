@@ -1,1 +1,0 @@
-INSERT [ProcessorCatalog] ([id], [className], [description], [name], [scope], [tenantId]) VALUES (1, N'com.asopagos.subsidiomonetario.pagos.processor.ValorConsignacionBancoFieldProcessor', N'ValorConsignacionBancoFieldProcessor', N'Procesador del campo valor consignación', N'FIELD', NULL)

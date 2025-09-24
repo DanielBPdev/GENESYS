@@ -1,1 +1,0 @@
-ALTER TABLE AuditoriaIntegracionServicios alter column aisUsuario text not null;

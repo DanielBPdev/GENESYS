@@ -1,1 +1,0 @@
-delete from VariableComunicado where vcoClave='$';

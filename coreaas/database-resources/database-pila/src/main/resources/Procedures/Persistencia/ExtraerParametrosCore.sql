@@ -1,1 +1,0 @@
-EXEC USP_CargarParametrizacionPersistencia;

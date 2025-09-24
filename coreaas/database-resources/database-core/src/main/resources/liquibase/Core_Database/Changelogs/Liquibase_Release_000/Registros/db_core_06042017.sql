@@ -1,5 +1,0 @@
---liquibase formatted sql
-
---changeset clmarin:01
---comment: Insert de datos de la tabla persona a personadetalle
-INSERT PersonaDetalle (pedPersona,pedFechaNacimiento,pedFechaExpedicionDocumento,pedGenero,pedOcupacionProfesion,pedNivelEducativo,pedCabezaHogar,pedAutorizaUsoDatosPersonales,pedResideSectorRural,pedMedioPago,pedEstadoCivil,pedHabitaCasaPropia,pedFallecido) SELECT perId,perFechaNacimiento,perFechaExpedicionDocumento,perGenero,perOcupacionProfesion,perNivelEducativo,perCabezaHogar,perAutorizaUsoDatosPersonales,perResideSectorRural,perMedioPago,perEstadoCivil,perHabitaCasaPropia,perFallecido FROM Persona;

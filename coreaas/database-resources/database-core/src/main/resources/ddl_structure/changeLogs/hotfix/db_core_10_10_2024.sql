@@ -1,3 +1,0 @@
-if not exists (select 1 from ValidacionProceso where vapBloque = '121-104-5' and vapValidacion = 'VALIDACION_TIEMPO_REINTEGRO_AFILIADO' and vapProceso = 'AFILIACION_PERSONAS_PRESENCIAL' and vapObjetoValidacion = 'TRABAJADOR_DEPENDIENTE') 
-INSERT ValidacionProceso(vapBloque, vapValidacion, vapProceso, vapEstadoProceso, vapOrden, vapObjetoValidacion, vapInversa)
-VALUES ('121-104-5', 'VALIDACION_TIEMPO_REINTEGRO_AFILIADO', 'AFILIACION_PERSONAS_PRESENCIAL', 'ACTIVO', 1, 'TRABAJADOR_DEPENDIENTE', 0);

@@ -1,1 +1,0 @@
-disable trigger [TRG_AF_INS_SolicitudAfiliacionPersona] on [dbo].[SolicitudAfiliacionPersona]

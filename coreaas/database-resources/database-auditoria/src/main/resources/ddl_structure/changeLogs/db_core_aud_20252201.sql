@@ -1,1 +1,0 @@
-alter table dbo.ConsolaEstadoCargueMasivo_aud alter column cecTipoProcesoMasivo varchar(45);

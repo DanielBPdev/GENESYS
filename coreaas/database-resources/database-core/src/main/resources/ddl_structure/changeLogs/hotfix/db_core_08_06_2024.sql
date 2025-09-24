@@ -1,2 +1,0 @@
-INSERT INTO parametrizacionNovedad (novTipoTransaccion,novPuntoResolucion,novRutaCualificada,novTipoNovedad,novProceso)
-VALUES ('CAMBIO_TIPO_PENSIONADO_PENSIONADO_25_ANIOS','BACK','com.asopagos.novedades.convertidores.persona.ActualizarSolAfiliacionNovedadPersona','GENERAL','NOVEDADES_PERSONAS_PRESENCIAL')

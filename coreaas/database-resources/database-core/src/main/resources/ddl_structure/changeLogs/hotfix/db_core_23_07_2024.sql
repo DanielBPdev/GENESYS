@@ -1,1 +1,0 @@
-update AuditoriaIntegracionServicios set aisUsuario = '';

@@ -1,2 +1,0 @@
-alter table DatosRegistraduriaNacional
-alter column drnFechaExpedicion date

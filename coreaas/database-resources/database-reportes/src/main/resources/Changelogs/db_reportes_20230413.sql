@@ -1,1 +1,0 @@
-ALTER TABLE rno.HistoricoConsolidadoPagosReintegroMicroDatoFOVIS ADD   hcmModalidad VARCHAR(250);

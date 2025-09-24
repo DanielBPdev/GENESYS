@@ -1,2 +1,0 @@
-IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'MedioPagoPersona_aud' 
-AND TABLE_SCHEMA = 'dbo' and COLUMN_NAME = 'mppTarjetaMultiservicio') alter table dbo.MedioPagoPersona_aud add mppTarjetaMultiservicio bit null

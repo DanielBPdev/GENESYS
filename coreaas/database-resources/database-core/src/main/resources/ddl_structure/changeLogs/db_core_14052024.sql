@@ -1,2 +1,0 @@
-if not exists (select * from ParametrizacionFOVIS where pafNombre = 'LIMITE_SOLICITUDES_AGRUPADAS_POR_TAREA')
-    insert into ParametrizacionFOVIS (pafNombre, pafValorNumerico) values ('LIMITE_SOLICITUDES_AGRUPADAS_POR_TAREA', 1);

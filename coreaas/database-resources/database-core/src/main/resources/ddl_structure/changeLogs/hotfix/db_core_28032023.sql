@@ -1,5 +1,0 @@
-DELETE FROM ValidacionProceso 
-WHERE vapProceso = 'POSTULACION_FOVIS_PRESENCIAL'
-AND vapValidacion = 'VALIDACION_MODALIDAD_ADQUISICION_VIVIENDA_USADA'
-AND vapObjetoValidacion <> 'JEFE_HOGAR'
-AND vapObjetoValidacion <> 'HOGAR'

@@ -1,1 +1,0 @@
-Colocar el archivo settings-security.xml en el .m2 de maven

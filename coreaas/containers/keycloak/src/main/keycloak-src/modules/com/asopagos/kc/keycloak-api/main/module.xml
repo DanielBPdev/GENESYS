@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-
-<module xmlns="urn:jboss:module:1.1" name="com.asopagos.kc.keycloak-api">
-
-    <resources>
-        <resource-root path="keycloak-api.jar"/>
-    </resources>
-</module>

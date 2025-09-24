@@ -1,1 +1,0 @@
-update VariableComunicado  set vcoTipoVariableComunicado = 'REPORTE_VARIABLE' WHERE  vcoClave like '%grupo%'

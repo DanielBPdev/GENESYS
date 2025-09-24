@@ -1,4 +1,0 @@
-if not exists (select 1 from ValidacionProceso where vapBloque='25LEY' and vapValidacion = 'VALIDACION_SOLICITUD_PERSONA' and vapProceso = 'AFILIACION_PERSONAS_PRESENCIAL' and vapObjetoValidacion = 'TRABAJADOR_DEPENDIENTE' )insert into ValidacionProceso(vapBloque, vapValidacion, vapProceso, vapEstadoProceso, vapOrden, vapObjetoValidacion, vapInversa)
-values ('25LEY', 'VALIDACION_SOLICITUD_PERSONA', 'AFILIACION_PERSONAS_PRESENCIAL', 'ACTIVO', 1, 'TRABAJADOR_DEPENDIENTE', 0)
-if not exists (select 1  from ValidacionProceso where vapBloque='25LEY' and vapValidacion = 'VALIDACION_SOLICITUD_PERSONA' and vapProceso = 'AFILIACION_PERSONAS_PRESENCIAL' and vapObjetoValidacion = 'TRABAJADOR_INDEPENDIENTE' )insert into ValidacionProceso(vapBloque, vapValidacion, vapProceso, vapEstadoProceso, vapOrden, vapObjetoValidacion, vapInversa)
-values ('25LEY', 'VALIDACION_SOLICITUD_PERSONA', 'AFILIACION_PERSONAS_PRESENCIAL', 'ACTIVO', 1, 'TRABAJADOR_INDEPENDIENTE', 0)

@@ -1,5 +1,0 @@
-1. Descargar Online la última version de Power BI Desktop
-2. Una vez instalado, abrir e ir al menú "Archivo->Opciones"
-	- Aparecerá una ventana de Opciones:
-	En GLOBAL, ir a Editor de Power Query y seleccionar "Mostrar barra de formulas"
-	En GLOBAL, ir a Direct Query y habilitar "Permitir medidas sin restricciones en el modo DirectQuery"

@@ -1,1 +1,0 @@
-IF ( Object_id( 'IC_Referencia_update_insert' ) IS NOT NULL )	DROP TRIGGER [sap].[IC_Referencia_update_insert];
