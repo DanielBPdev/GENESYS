@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="Persona.buscar.gruposFamiliaresRelacionados">
+		<description>constante para la consulta de los grupos familiares relacionados al administrador de subsidio</description>
+		<query>
+			SELECT new com.asopagos.historicos.dto.AfiliadoPpalGrupoFamiliarDTO(
+			per.numeroIdentificacion, 
+			per.primerNombre,
+			per.segundoNombre,
+			per.primerApellido,
+			per.segundoApellido,
+			per.tipoIdentificacion,
+			mdp.tipoMediopago, 
+			grf.idGrupoFamiliar) 
+			 FROM GrupoFamiliar grf, AdminSubsidioGrupo asg, AdministradorSubsidio asu,
+			 MedioDePago mdp, Afiliado afi, Persona per
+			 WHERE grf.idGrupoFamiliar = asg.idGrupoFamiliar
+			 AND asg.idAdminSubsidio = asu.idAdministradorSubsidio
+			 AND asg.idMedioDePago = mdp.idMedioPago
+			 AND grf.afiliado.idAfiliado = afi.idAfiliado
+			 AND afi.persona.idPersona = per.idPersona
+			 AND asu.idPersona = (
+			 	SELECT per2.idPersona FROM Persona per2
+			 	WHERE per2.tipoIdentificacion = :tipoIdAdminSubsidio
+			 	AND per2.numeroIdentificacion = :numeroIdAdminSubsidio 
+			 	)
+		</query>
+	</named-query>
+
+	<named-query name="Historicos.Consultar.Estadisticas.Genesys">
+		<query>
+			SELECT e FROM EstadisticasGenesys e
+			order by e.id DESC
+		</query>
+	</named-query>
+	
+	<!-- ESPACIO PARA NATIVE QUERIES -->
+	<named-native-query name="Persona.buscar.fechasRelacionAdminSbusidioConGrupoFamiliar">
+		<query>
+			select has.hasFechaInicio, has.hasFechaFin 
+			from HistoricoAdminSubsidioGrupo has
+			where has.hasGrupoFamiliar = :idGrupoFamiliar 
+			and has.hasNumeroIdentificacionAdmin = :numeroIdAdminSubsidio
+			and has.hasTipoIdentificacionAdmin = :tipoIdAdminSubsidio
+		</query>
+	</named-native-query>
+	<named-native-query name="Persona.buscar.datosHistoricoAdministradorSubsidioGrupo" result-set-mapping="mapping.PersonaComoAdminSubsidioDTO">
+		<query>
+            SELECT has.*, per.*, mdp.*, grf.*
+            FROM HistoricoAdminSubsidioGrupo has
+            JOIN (SELECT has.hasGrupoFamiliar, MAX(has.hasId) AS hasId
+                FROM HistoricoAdminSubsidioGrupo has
+                GROUP BY has.hasGrupoFamiliar) AS hasMax ON (has.hasId = hasMax.hasId)
+            JOIN GrupoFamiliar grf  ON (has.hasGrupoFamiliar = grf.grfId)
+            JOIN Afiliado afi ON (grf.grfAfiliado = afi.afiId)
+            JOIN Persona per ON (afi.afiPersona = per.perId)
+            LEFT JOIN MedioDePago mdp ON (has.hasMedioDePago = mdp.mdpId)
+            WHERE has.hasTipoIdentificacionAdmin = :tipoIdAdminSubsidio
+            AND has.hasNumeroIdentificacionAdmin = :numeroIdAdminSubsidio
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Persona.buscar.infoAfiliadoPrincipalGrupoFamiliar">
+		<description>constante para la consulta de los grupos familiares relacionados al administrador de subsidio</description>
+		<query>
+			SELECT
+				per.perPrimerNombre,
+				per.perSegundoNombre,
+				per.perPrimerApellido,
+				per.perSegundoApellido,
+				per.perTipoIdentificacion,
+				per.perNumeroIdentificacion,
+				mdp.mdpTipo
+			 FROM GrupoFamiliar grf 
+			 JOIN Afiliado afi ON grf.grfAfiliado = afi.afiId
+			 JOIN Persona per ON afi.afiPersona = per.perId
+			 LEFT JOIN MedioDePago mdp ON mdp.mdpId = :idMedioPago
+			 WHERE grf.grfId = :idGrupoFamiliar
+		</query>
+	</named-native-query>
+	<named-native-query name="Persona.buscar.beneficiariosGrupoFamiliar" result-set-mapping="mapping.BeneficiarioGrupoFamiliarDTO">
+		<description>Constante para la consulta de los beneficiarios de un grupo familiar dado</description>
+		<query>
+			SELECT ben.*, per.*,
+			    CASE WHEN perAfi.perId IS NOT NULL AND perAfi.perRazonSocial IS NULL
+			        THEN CONCAT(perAfi.perPrimerNombre,' ',perAfi.perSegundoNombre,' ',perAfi.perPrimerApellido,' ',perAfi.perSegundoApellido)
+			        ELSE perAfi.perRazonSocial
+			    END AS afiliadoSecundario,
+			    perAfi.perTipoIdentificacion AS tipoIdAfiSecundario,
+			    perAfi.perNumeroIdentificacion AS numeroIdAfiSecundario
+			FROM Beneficiario ben
+			JOIN Persona per ON (ben.benPersona = per.perId)
+			JOIN Afiliado afi ON (ben.benAfiliado = afi.afiId)
+			LEFT JOIN (SELECT benf.benPersona, benf.benGrupoFamiliar, afi.afiId, pers.*
+			    FROM Beneficiario benf
+			    JOIN Afiliado afi ON (benf.benAfiliado = afi.afiId)
+			    JOIN Persona pers ON (afi.afiPersona = pers.perId)) AS perAfi
+			    ON (ben.benPersona = perAfi.benPersona AND ben.benGrupoFamiliar != perAfi.benGrupoFamiliar AND perAfi.afiId!=ben.benAfiliado)
+			WHERE ben.benGrupoFamiliar = :idGrupoFamiliar
+		
+			<!-- consulta modificada por mantis 256355. la Original es la que está comentada debajo 
+			SELECT ben.*, per.*,
+			CASE WHEN perAfi.perId IS NOT NULL AND perAfi.perRazonSocial IS NULL
+			    THEN CONCAT(perAfi.perPrimerNombre,' ',perAfi.perSegundoNombre,' ',perAfi.perPrimerApellido,' ',perAfi.perSegundoApellido)
+			    ELSE perAfi.perRazonSocial
+			END AS afiliadoSecundario,
+			perAfi.perTipoIdentificacion AS tipoIdAfiSecundario,
+			perAfi.perNumeroIdentificacion AS numeroIdAfiSecundario
+			FROM Beneficiario ben
+			JOIN Persona per ON (ben.benPersona = per.perId)
+			JOIN Afiliado afi ON (ben.benAfiliado = afi.afiId)
+			JOIN Persona perAfi ON (afi.afiPersona = perAfi.perId)
+			WHERE ben.benGrupoFamiliar = :idGrupoFamiliar
+		
+            SELECT ben.*, per.*,
+                CASE WHEN perAfi.perId IS NOT NULL AND perAfi.perRazonSocial IS NULL
+                    THEN CONCAT(perAfi.perPrimerNombre,' ',perAfi.perSegundoNombre,' ',perAfi.perPrimerApellido,' ',perAfi.perSegundoApellido)
+                    ELSE perAfi.perRazonSocial
+                END AS afiliadoSecundario,
+                perAfi.perTipoIdentificacion AS tipoIdAfiSecundario,
+                perAfi.perNumeroIdentificacion AS numeroIdAfiSecundario
+            FROM Beneficiario ben
+            JOIN Persona per ON (ben.benPersona = per.perId)
+            LEFT JOIN (SELECT ben.benPersona, ben.benGrupoFamiliar, per.*
+                FROM Beneficiario ben
+                JOIN Afiliado afi ON (ben.benAfiliado = afi.afiId)
+                JOIN Persona per ON (afi.afiPersona = per.perId)) AS perAfi
+                ON (ben.benPersona = perAfi.benPersona AND ben.benGrupoFamiliar != perAfi.benGrupoFamiliar)
+            WHERE ben.benGrupoFamiliar = :idGrupoFamiliar -->
+		</query>
+	</named-native-query>
+	<named-native-query name="Persona.obtener.gruposFamiliaresAfiliadoPrincipal" result-set-mapping="mapping.PersonaComoAfiPpalGrupoFamiliarDTO">
+		<description></description>
+		<query>
+            SELECT per.*, grf.*, mun.*, ubi.*, mdp.*, asg.*, sip.*, has.*, 
+                CASE WHEN ubiAfi.ubiDireccionFisica = ubi.ubiDireccionFisica
+                    AND ubiAfi.ubiMunicipio = ubi.ubiMunicipio
+                    THEN 1
+                    ELSE 0
+                END AS dirIgualAfiPrincipal
+            FROM GrupoFamiliar grf
+            JOIN Afiliado afi ON (grf.grfAfiliado = afi.afiId)
+            JOIN Persona perAfi ON (afi.afiPersona = perAfi.perId)
+            LEFT JOIN Ubicacion ubiAfi ON (perAfi.perUbicacionPrincipal = ubiAfi.ubiId)
+            LEFT JOIN AdminSubsidioGrupo asg  ON (grf.grfId = asg.asgGrupoFamiliar)
+            LEFT JOIN AdministradorSubsidio asu ON (asg.asgAdministradorSubsidio = asu.asuId)
+            LEFT JOIN Persona per ON (asu.asuPersona = per.perId)
+            LEFT JOIN Ubicacion ubi ON (grf.grfUbicacion = ubi.ubiId)
+            LEFT JOIN Municipio mun ON (ubi.ubiMunicipio = mun.munId)
+            LEFT JOIN MedioDePago mdp ON (asg.asgMedioDePago = mdp.mdpId)
+            LEFT JOIN MedioEfectivo mef ON (mdp.mdpId = mef.mdpId)
+            LEFT JOIN SitioPago sip ON (mef.mefSitioPago = sip.sipId)
+            LEFT JOIN (SELECT has.hasGrupoFamiliar, hasMedioDePago, MAX(has.hasId) AS hasId
+                FROM HistoricoAdminSubsidioGrupo has
+                GROUP BY has.hasGrupoFamiliar, hasMedioDePago) AS hasMax 
+                ON (grf.grfId = hasMax.hasGrupoFamiliar AND asg.asgMedioDePago = hasMax.hasMedioDePago)
+            LEFT JOIN HistoricoAdminSubsidioGrupo has 
+                ON (hasMax.hasId = has.hasId AND per.perNumeroIdentificacion = has.hasNumeroIdentificacionAdmin AND per.perTipoIdentificacion = has.hasTipoIdentificacionAdmin)
+            WHERE perAfi.perNumeroIdentificacion = :numeroIdentificacion
+            AND perAfi.perTipoIdentificacion = :tipoIdentificacion
+            AND (asg.asgMedioPagoActivo = 1 OR asg.asgMedioPagoActivo IS NULL)
+            ORDER BY grf.grfNumero
+		</query>
+	</named-native-query>
+
+		
+<named-query name="Historicos.Consultar.medios.de.pagos.activo.por.tipo.transferencia.admin.subsidio">
+        <description>consulta encargada de buscar los registros de tipo transferencia de medio de pago asociado a un
+            administrador de subsidio. Se excluyen los id asociados a los abonos seleccionados en pantalla.
+        </description>
+        <query>
+            SELECT new com.asopagos.dto.modelo.MedioDePagoModeloDTO(mt,ban)
+            FROM AdminSubsidioGrupo adm, MedioTransferencia mt, Banco ban
+            WHERE adm.idMedioDePago= mt.idMedioPago
+            AND adm.idAdminSubsidio = :idAdminSubsidio
+			AND adm.idGrupoFamiliar = :idGrupoFamiliar
+            AND ban.id = mt.idBanco
+            AND adm.medioPagoActivo = true
+        </query>
+    </named-query>
+
+	<named-native-query
+		name="Historicos.Consultar.Empleador.Estado.Periodo">
+		<description>Consulta del estado de un empleador para un período</description>
+		<query>
+			SELECT TOP 1  
+				CASE 
+					WHEN eec.eecEstadoAfiliacion IS NOT NULL THEN eec.eecFechaCambioEstado
+					WHEN CONVERT(VARCHAR(10), eml.empFechaCambioEstadoAfiliacion, 121) &lt;= :endDate THEN eml.empFechaCambioEstadoAfiliacion
+					ELSE NULL
+				END fecha, 
+				CASE 
+					WHEN eec.eecEstadoAfiliacion IS NOT NULL THEN eec.eecEstadoAfiliacion
+					WHEN CONVERT(VARCHAR(10), eml.empFechaCambioEstadoAfiliacion, 121) &lt;= :endDate THEN eml.empEstadoEmpleador
+					ELSE (select top 1 eecEstadoAfiliacion from EstadoAfiliacionEmpleadorCaja  where eecPersona = perId and eecFechaCambioEstado &lt;= :endDate order by eecFechaCambioEstado desc)
+				END empEstadoEmpleador  
+			FROM Empleador eml 
+			INNER JOIN Empresa emp ON eml.empEmpresa = emp.empId
+			INNER JOIN Persona per ON empPersona = perId
+			LEFT JOIN EstadoAfiliacionEmpleadorCaja eec ON 
+			    eecPersona = perId
+			    AND CONVERT(VARCHAR(10), eec.eecFechaCambioEstado, 121) BETWEEN :startDate AND :endDate
+			WHERE eml.empId = :idEmpleador
+			ORDER BY eec.eecFechaCambioEstado DESC
+		</query>
+	</named-native-query>
+	
+	<named-native-query
+		name="Historicos.Consultar.Independiente.Estado.Periodo">
+		<description>Consulta del estado de un independiente para un período</description>
+		<query>
+			SELECT TOP 1 
+				CASE 
+					WHEN eai.eaiEstadoAfiliacion IS NOT NULL THEN eai.eaiFechaCambioEstado 
+					WHEN CONVERT(VARCHAR(10), roa.roaFechaAfiliacion, 121) &lt;= :endDate THEN roa.roaFechaAfiliacion
+					ELSE NULL
+				END fecha, 
+				CASE 
+					WHEN eai.eaiEstadoAfiliacion IS NOT NULL THEN eai.eaiEstadoAfiliacion 
+					WHEN CONVERT(VARCHAR(10), roa.roaFechaAfiliacion, 121) &lt;= :endDate THEN roa.roaEstadoAfiliado
+					ELSE NULL
+				END roaEstadoAfiliado
+			FROM RolAfiliado roa 
+			INNER JOIN Afiliado afi ON afi.afiId = roa.roaAfiliado
+			INNER JOIN Persona per ON per.perId = afi.afiPersona
+			LEFT JOIN EstadoAfiliacionPersonaIndependiente eai ON 
+			    eai.eaiPersona = per.perId
+			    AND CONVERT(VARCHAR(10), eai.eaiFechaCambioEstado, 121) BETWEEN :startDate AND :endDate
+			WHERE afi.afiId = :idAportante
+				AND roa.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+			ORDER BY eai.eaiFechaCambioEstado DESC
+		</query>
+	</named-native-query>
+	
+	<named-native-query
+		name="Historicos.Consultar.Pensionado.Estado.Periodo">
+		<description>Consulta del estado de un pensionado para un período</description>
+		<query>
+			SELECT TOP 1 
+				CASE 
+					WHEN eap.eapEstadoAfiliacion IS NOT NULL THEN eap.eapFechaCambioEstado 
+					WHEN CONVERT(VARCHAR(10), roa.roaFechaAfiliacion, 121) &lt;= :endDate THEN roa.roaFechaAfiliacion
+					ELSE NULL
+				END fecha, 
+				CASE 
+					WHEN eap.eapEstadoAfiliacion IS NOT NULL THEN eap.eapEstadoAfiliacion 
+					WHEN CONVERT(VARCHAR(10), roa.roaFechaAfiliacion, 121) &lt;= :endDate THEN roa.roaEstadoAfiliado
+					ELSE NULL
+				END roaEstadoAfiliado
+			FROM RolAfiliado roa 
+			INNER JOIN Afiliado afi ON afi.afiId = roa.roaAfiliado
+			INNER JOIN Persona per ON per.perId = afi.afiPersona
+			LEFT JOIN EstadoAfiliacionPersonaPensionado eap ON 
+			    eap.eapPersona = per.perId
+			    AND CONVERT(VARCHAR(10), eap.eapFechaCambioEstado, 121) BETWEEN :startDate AND :endDate 
+			WHERE afi.afiId = :idAportante
+				AND roa.roaTipoAfiliado = 'PENSIONADO'
+			ORDER BY eap.eapFechaCambioEstado DESC
+		</query>
+	</named-native-query>
+	
+    <named-native-query
+        name="Historicos.Consultar.RolAfiliado.Periodo.Empleador.Afiliado">
+        <description>Consulta del estado de un dependiente respecto a un empleador para un período</description>
+        <query>
+            SELECT TOP 1 
+			    CASE 
+			        WHEN eae.eaeEstadoAfiliacion IS NOT NULL THEN eae.eaeFechaCambioEstado 
+			        WHEN CONVERT(VARCHAR(10), roa.roaFechaAfiliacion, 121) &lt;= :endDate THEN roa.roaFechaAfiliacion 
+			        ELSE NULL 
+			    END fecha, 
+			    CASE 
+			        WHEN eae.eaeEstadoAfiliacion IS NOT NULL THEN eae.eaeEstadoAfiliacion 
+			        WHEN CONVERT(VARCHAR(10), roa.roaFechaAfiliacion, 121) &lt;= :endDate THEN roa.roaEstadoAfiliado 
+			        ELSE NULL 
+			    END roaEstadoAfiliado 
+			FROM RolAfiliado roa 
+			INNER JOIN Afiliado afi ON afi.afiId = roa.roaAfiliado 
+			INNER JOIN Persona per ON per.perId = afi.afiPersona 
+			LEFT JOIN EstadoAfiliacionPersonaEmpresa eae ON 
+			    eae.eaePersona = per.perId 
+			    AND eae.eaeEmpleador = roa.roaEmpleador
+			    AND CONVERT(VARCHAR(10), eae.eaeFechaCambioEstado, 121) BETWEEN :startDate AND :endDate
+			WHERE afi.afiId = :idAfiliado 
+				AND roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' 
+				AND roa.roaEmpleador = :idEmpleador
+			ORDER BY fecha DESC
+        </query>
+    </named-native-query>
+    <named-native-query name="Persona.buscar.beneficiariosGrupoFamiliarActivoAfiliado2" result-set-mapping="mapping.BeneficiarioGrupoFamiliarDTO">
+    	<query>
+  			SELECT ben.*, per.*,
+			    CASE WHEN perAfi.perId IS NOT NULL AND perAfi.perRazonSocial IS NULL
+			        THEN CONCAT(perAfi.perPrimerNombre,' ',perAfi.perSegundoNombre,' ',perAfi.perPrimerApellido,' ',perAfi.perSegundoApellido)
+			        ELSE perAfi.perRazonSocial
+			    END AS afiliadoSecundario,
+			    perAfi.perTipoIdentificacion AS tipoIdAfiSecundario,
+			    perAfi.perNumeroIdentificacion AS numeroIdAfiSecundario
+			FROM Beneficiario ben
+			JOIN Persona per ON (ben.benPersona = per.perId)
+			JOIN Afiliado afi ON (ben.benAfiliado = afi.afiId)
+			LEFT JOIN (SELECT benf.benPersona, benf.benGrupoFamiliar, afi.afiId, pers.*
+			    FROM Beneficiario benf
+			    JOIN Afiliado afi ON (benf.benAfiliado = afi.afiId)
+			    JOIN Persona pers ON (afi.afiPersona = pers.perId)
+			    WHERE benf.benEstadoBeneficiarioafiliado = 'ACTIVO') AS perAfi
+			    ON (ben.benPersona = perAfi.benPersona AND ben.benGrupoFamiliar = perAfi.benGrupoFamiliar AND perAfi.afiId!=ben.benAfiliado)
+			WHERE ben.benGrupoFamiliar = :idGrupoFamiliar  	
+    	</query>
+    </named-native-query>
+	<named-native-query name="Persona.buscar.beneficiariosIDGrupoFamiliarActivoAfiliado2" result-set-mapping="mapping.BeneficiarioIDGrupoFamiliarDTO">
+    	<query>
+  			SELECT ben.*, per.*,
+			    CASE WHEN perAfi.perId IS NOT NULL AND perAfi.perRazonSocial IS NULL
+			        THEN CONCAT(perAfi.perPrimerNombre,' ',perAfi.perSegundoNombre,' ',perAfi.perPrimerApellido,' ',perAfi.perSegundoApellido)
+			        ELSE perAfi.perRazonSocial
+			    END AS afiliadoSecundario,
+			    perAfi.perTipoIdentificacion AS tipoIdAfiSecundario,
+			    perAfi.perNumeroIdentificacion AS numeroIdAfiSecundario
+			FROM Beneficiario ben
+			JOIN Persona per ON (ben.benPersona = per.perId)
+			JOIN Afiliado afi ON (ben.benAfiliado = afi.afiId)
+			LEFT JOIN (SELECT benf.benPersona, benf.benGrupoFamiliar, afi.afiId, pers.*
+			    FROM Beneficiario benf
+			    JOIN Afiliado afi ON (benf.benAfiliado = afi.afiId)
+			    JOIN Persona pers ON (afi.afiPersona = pers.perId)
+			    WHERE benf.benEstadoBeneficiarioafiliado = 'ACTIVO') AS perAfi
+			    ON (ben.benPersona = perAfi.benPersona AND ben.benGrupoFamiliar != perAfi.benGrupoFamiliar AND perAfi.afiId!=ben.benAfiliado)
+			WHERE ben.benGrupoFamiliar = :idGrupoFamiliar  	
+    	</query>
+    </named-native-query>
+    <sql-result-set-mapping name="mapping.PersonaComoAfiPpalGrupoFamiliarDTO">
+        <constructor-result target-class="com.asopagos.historicos.dto.PersonaComoAfiPpalGrupoFamiliarDTO">
+            <column name="perTipoIdentificacion"/>
+            <column name="perNumeroIdentificacion"/>
+            <column name="perPrimerNombre"/>
+            <column name="perSegundoNombre"/>
+            <column name="perPrimerApellido"/>
+            <column name="perSegundoApellido"/>
+            <column name="mdpTipo"/>
+            <column name="grfId" class="java.lang.Long"/>
+            <column name="sipNombre"/>
+            <column name="grfInembargable" class="java.lang.Boolean"/>
+            <column name="dirIgualAfiPrincipal" class="java.lang.Boolean"/>
+            <column name="munId" class="java.lang.Short"/>
+            <column name="munDepartamento" class="java.lang.Short"/>
+            <column name="ubiDireccionFisica"/>
+            <column name="ubiCodigoPostal"/>
+            <column name="ubiIndicativoTelFijo "/>
+            <column name="ubiTelefonoFijo"/>
+            <column name="ubiTelefonoCelular"/>
+            <column name="ubiEmail"/>
+            <column name="hasFechaInicio" class="java.util.Date"/>
+            <column name="asgMedioPagoActivo" class="java.lang.Boolean"/>
+			<column name="asgAdministradorSubsidio" class="java.lang.Long"/>
+			<column name="grfTarjetaMultiservicio" class="java.lang.Boolean"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="mapping.BeneficiarioGrupoFamiliarDTO">
+        <constructor-result target-class="com.asopagos.historicos.dto.BeneficiarioGrupoFamiliarDTO">
+            <column name="benTipoBeneficiario"/>
+            <column name="perPrimerNombre"/>
+            <column name="perSegundoNombre"/>
+            <column name="perPrimerApellido"/>
+            <column name="perSegundoApellido"/>
+            <column name="perTipoIdentificacion"/>
+            <column name="perNumeroIdentificacion"/>
+            <column name="benEstadoBeneficiarioAfiliado"/>
+            <column name="benFechaAfiliacion" class="java.util.Date"/>
+            <column name="afiliadoSecundario"/>
+            <column name="tipoIdAfiSecundario"/>
+            <column name="numeroIdAfiSecundario"/>
+            <column name="benMotivoDesafiliacion"/>
+            <column name="benFechaRetiro" class="java.util.Date"/>
+			<column name="benId" class="java.lang.Long"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+	<sql-result-set-mapping name="mapping.BeneficiarioIDGrupoFamiliarDTO">
+        <constructor-result target-class="com.asopagos.historicos.dto.BeneficiarioIDGrupoFamiliarDTO">
+            <column name="benTipoBeneficiario"/>
+            <column name="perPrimerNombre"/>
+            <column name="perSegundoNombre"/>
+            <column name="perPrimerApellido"/>
+            <column name="perSegundoApellido"/>
+            <column name="perTipoIdentificacion"/>
+            <column name="perNumeroIdentificacion"/>
+            <column name="benEstadoBeneficiarioAfiliado"/>
+            <column name="benFechaAfiliacion" class="java.util.Date"/>
+            <column name="afiliadoSecundario"/>
+            <column name="tipoIdAfiSecundario"/>
+            <column name="numeroIdAfiSecundario"/>
+            <column name="benMotivoDesafiliacion"/>
+            <column name="benFechaRetiro" class="java.util.Date"/>
+			<column name="benId" class="java.lang.Long"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="mapping.PersonaComoAdminSubsidioDTO">
+        <constructor-result target-class="com.asopagos.historicos.dto.PersonaComoAdminSubsidioDTO">
+            <column name="perTipoIdentificacion"/>
+            <column name="perNumeroIdentificacion"/>
+            <column name="perRazonSocial"/>
+            <column name="hasFechaInicio" class="java.util.Date"/>
+            <column name="hasFechaFin" class="java.util.Date"/>
+            <column name="mdpTipo"/>
+            <column name="grfId" class="java.lang.Long"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+    <!-- ESPACIO PARA STORED PROCEDURES-->
+	<named-stored-procedure-query 
+		name ="Personas.StoredProcedures.USP_ExecuteConsultarHistoricoContactoPersona" 
+		procedure-name="dbo.USP_ExecuteConsultarHistoricoContactoPersona">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="tipoIdentificacion"/>
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="numeroIdentificacion"/>			
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query
+			name="Historicos.storedProcedures.SP_ActualizarEstadisticasGenesys"
+			procedure-name="dbo.SP_ActualizarEstadisticasGenesys">
+	</named-stored-procedure-query>
+</entity-mappings>

@@ -1,0 +1,37 @@
+data:
+  wildfly-swarm-mysql.yaml: |-
+    servicelocator.type: KUBERNETES
+    gestor-cache: SERVICIO
+    swarm:
+      transactions:
+        socket-binding: txn-recovery-environment
+        status-socket-binding: txn-status-manager
+        default-timeout: 7200
+      datasources:
+        data-sources:
+          asopagosDS:
+            driver-name: sqlserver
+            connection-url: ${url.core}
+            user-name: ${user.core}
+            password: ${password.core}
+            pool-prefill: true
+            check-valid-connection-sql: select 1
+            background-validation: true        
+            validate-on-match: false
+            background-validation-millis: 10000
+            valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLValidConnectionChecker
+            stale-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.novendor.AlwaysStaleConnectionChecker
+            exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLExceptionSorter
+          bpmsDS:
+            driver-name: mysql
+            connection-url: ${url.bpms}
+            user-name: ${user.bpms}
+            password: ${password.bpms}
+            pool-prefill: true
+            check-valid-connection-sql: select 1
+            background-validation: true        
+            validate-on-match: false
+            background-validation-millis: 10000
+            valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker
+            stale-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.novendor.AlwaysStaleConnectionChecker
+            exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter

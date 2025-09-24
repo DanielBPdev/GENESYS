@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>services</artifactId>  
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>archivos-pila</artifactId>
+	<packaging>pom</packaging>
+	<name>Archivos PILA</name>
+	<description>Proyecto padre para los servicios de archivos PILA</description>
+	
+	<modules>
+	    <module>archivos-pila-api</module>
+	    <module>archivos-pila-service</module>
+	    
+	    
+	</modules>
+  	
+  	<properties>
+        <!-- Explicitly declaring the source encoding eliminates the following 
+			message: -->
+        <!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
+			resources, i.e. build is platform dependent! -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- other plugin versions -->
+        <version.ear.plugin>2.6</version.ear.plugin>
+        <version.ejb.plugin>2.3</version.ejb.plugin>
+        <version.surefire.plugin>2.10</version.surefire.plugin>
+        <version.war.plugin>2.1.1</version.war.plugin>
+        <xstream.version>1.3.1</xstream.version>
+		<jxl.version>2.6.12</jxl.version>
+        <!-- maven-compiler-plugin -->
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<!-- Tema y Version del tema -->
+        <tema.version>1.0.10</tema.version>
+        <!-- commons configuration -->
+        <commons.configuration.version>1.6</commons.configuration.version>
+        <!-- Version de file upload -->
+        <fileupload.version>1.2.1</fileupload.version>
+        
+        <app.name>archivos-pila</app.name>        
+    </properties>
+  	
+  	<dependencies>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+	    </dependency>
+	</dependencies>	
+</project>

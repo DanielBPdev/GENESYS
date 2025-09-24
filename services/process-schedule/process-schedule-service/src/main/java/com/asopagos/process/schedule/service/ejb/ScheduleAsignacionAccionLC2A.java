@@ -1,0 +1,88 @@
+package com.asopagos.process.schedule.service.ejb;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.Timer;
+
+import com.asopagos.cartera.composite.clients.EjecutarProcesoAutomaticoGestionCobro;
+import com.asopagos.enumeraciones.cartera.TipoAccionCobroEnum;
+import com.asopagos.enumeraciones.core.ProcesoAutomaticoEnum;
+import com.asopagos.enumeraciones.core.ResultadoEjecucionProcesoEnum;
+import com.asopagos.enumeraciones.core.TipoResultadoProcesoEnum;
+import com.asopagos.process.schedule.api.ScheduleAbstract;
+
+/**
+ * <b>Descripción: </b> Bean que ejecuta el proceso automático de asignación de
+ * la acción de cobro LC2A <br/>
+ * <b>Historia de Usuario: </b> HU-164
+ * 
+ * @author <a href="mailto:fvasquez@heinsohn.com.co">Ferney Alonso Vásquez
+ *         Benavides</a>
+ */
+@Singleton
+@Startup
+public class ScheduleAsignacionAccionLC2A extends ScheduleAbstract {
+
+	/**
+	 * Proceso actual
+	 */
+	private static final ProcesoAutomaticoEnum CURRENT_PROCESS = ProcesoAutomaticoEnum.ASIGNACION_ACCION_LC2A;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.asopagos.process.schedule.api.ScheduleAbstract#init()
+	 */
+	@PostConstruct
+	@Override
+	public void init() {
+		start();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.asopagos.process.schedule.api.ScheduleAbstract#run(javax.ejb.Timer)
+	 */
+	@Timeout
+	@Override
+	public void run(Timer timer) {
+		try {
+			logger.debug("Inicio de método ScheduleAsignacionAccionLC2A.run(Timer timer)");
+			// Se indica el usuario al contexto
+			initContextUsuarioCore();
+			ejecutarProcesoAutomaticoGestionCobro(TipoAccionCobroEnum.LC2A);
+			logger.debug("Fin de método ScheduleAsignacionAccionLC2A.run(Timer timer)");
+		} catch (Exception e) {
+			logger.error("Ocurrió un error inesperado en ScheduleAsignacionAccionLC2A.run(Timer timer)", e);
+			this.crearLogEjecucionProceso(ResultadoEjecucionProcesoEnum.FALLIDO, getCurrentProcess(), TipoResultadoProcesoEnum.EJECUCION);
+		}
+	}
+
+	/**
+	 * Método encargado invocar el servicio de asignación de acciones de cobro
+	 * 
+	 * @param accionCobro
+	 *            Tipo de acción de cobro
+	 */
+	private void ejecutarProcesoAutomaticoGestionCobro(TipoAccionCobroEnum accionCobro) {
+		logger.debug("Inicio de método ejecutarProcesoAutomaticoGestionCobro");
+		EjecutarProcesoAutomaticoGestionCobro service = new EjecutarProcesoAutomaticoGestionCobro(accionCobro);
+		service.execute();
+		logger.debug("Fin de método ejecutarProcesoAutomaticoGestionCobro");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.asopagos.process.schedule.api.ScheduleAbstract#getCurrentProcess()
+	 */
+	@Override
+	public ProcesoAutomaticoEnum getCurrentProcess() {
+		return CURRENT_PROCESS;
+	}
+}

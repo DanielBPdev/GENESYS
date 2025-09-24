@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>usuarios</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>usuarios-service</artifactId>
+	<packaging>war</packaging>
+	<name>Servicio Usuarios</name>
+	<description>Aplicación Web que implementa los servicios backend de usuarios-service</description>
+
+	<properties>
+		<fabric8.skip>false</fabric8.skip>
+		<docker.cmd>java -Xms512m -Xmx2500m -XX:+UseG1GC -jar /opt/$TIPO_SERVIDOR -s/opt/conf/${configuracion.servidor}.yaml /maven/${project.build.finalName}.war -Dswarm.context.path=${project.build.finalName} -Dinfinispan.service.host=$INFINISPAN_SERVICE_HOST -DLionConfigurationImpl=com.asopagos.lion.config.LionConfigurationAsopagosImpl</docker.cmd>
+		<resourceDir.path>../../../util-develop/plantillas-despliegue/src/main/resources/kubernetes-definitions-usuarios</resourceDir.path>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>usuarios-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-admin-client</artifactId>
+			<version>${keycloak.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<version>3.1.0.CR2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+    		<groupId>org.json</groupId>
+    		<artifactId>json</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>notificaciones-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-ses</artifactId>
+			<version>1.12.730</version> 
+		</dependency>
+		<!-- APACHE POI -->
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.16</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.16</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-schemas -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>3.16</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
+		<dependency>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<!-- APACHE POI END-->
+	</dependencies>
+
+	<build>
+		<finalName>UsuariosService</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

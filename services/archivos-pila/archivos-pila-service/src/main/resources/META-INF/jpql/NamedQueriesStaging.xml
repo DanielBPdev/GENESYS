@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	
+	<named-stored-procedure-query 
+		name ="ArchivosPilaService.StoredProcedures.USP_ExecutePILA1Persistencia" 
+		procedure-name="USP_ExecutePILA1Persistencia">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="IndicePlanilla"
+		/>
+	</named-stored-procedure-query>
+</entity-mappings>

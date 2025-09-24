@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>services</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>novedades-fovis</artifactId>
+	<packaging>pom</packaging>
+	<name>Novedades FOVIS</name>
+	<description>Contiene los servicios para el procesamiento de novedades FOVIS</description>
+
+	<modules>
+		<module>novedades-fovis-api</module>
+		<module>novedades-fovis-service</module>
+	</modules>
+
+</project>

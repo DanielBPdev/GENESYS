@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<named-query
+		name="FOVIS.consultar.solicitudLegalizacionDesembolso.idSolicitudGlobal">
+		<description>Busca una solicitud de legalización y desembolso por el id de la solicitud global</description>
+		<query>
+			SELECT sld
+			FROM SolicitudLegalizacionDesembolso sld
+			LEFT JOIN FETCH sld.solicitudGlobal
+			WHERE sld.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>
+	
+	<named-query
+		name="FOVIS.consultar.legalizacionPorId">
+		<description>Busca una legalizacion por Id.</description>
+		<query>
+			SELECT ld
+			FROM LegalizacionDesembolso ld
+			WHERE ld.idLegalizacionDesembolso = :idLegalizacion
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.consultar.LegalizacionDesembolsada.idPostulacion">
+		<description>Busca las legalizaciones desembolsadas por el id de la postulación Fovis</description>
+		<query>
+			SELECT new com.asopagos.dto.fovis.AnticipoLegalizacionDesembolsoDTO(lgd.idLegalizacionDesembolso, sld.idSolicitudLegalizacionDesembolso, lgd.valorADesembolsar,
+				sol.numeroRadicacion, sol.fechaRadicacion, lgd.formaPago)
+			FROM SolicitudLegalizacionDesembolso sld, LegalizacionDesembolso lgd
+			INNER JOIN sld.solicitudGlobal sol 
+			WHERE sld.idLegalizacionDesembolso = lgd.idLegalizacionDesembolso
+				AND lgd.subsidioDesembolsado = TRUE
+				AND sld.idPostulacionFOVIS = :idPostulacion
+        </query>
+	</named-query>
+
+	<named-query name="Empleador.Empresa.consultarEmpresaPorPersona">
+		<query>
+			SELECT e FROM Empresa e
+			JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+			WHERE p.tipoIdentificacion = :tipoIdentificacion
+			AND p.numeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-query>
+
+
+	<named-query name="Empleador.Persona.consultarPersona">
+		<query>
+			SELECT per FROM Persona per
+			WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.consultar.idPostulacionFovis.Solicitud">
+		<description>Consulta el id de la postulacion Fovis por el id de la solicitud</description>
+		<query>
+			SELECT spo.idPostulacionFOVIS 
+			FROM SolicitudPostulacion spo
+			WHERE spo.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.consultarJefeHogar.Postulacion">
+		<description>Consulta los datos del jefe de hogar por el id de la postulacion</description>
+		<query>
+			SELECT jeh, afi, perDet
+			FROM PostulacionFOVIS pof
+				, JefeHogar jeh
+				, Afiliado afi
+				, PersonaDetalle perDet
+			WHERE (pof.jefeHogar = jeh.idJefeHogar)
+				AND (jeh.idAfiliado = afi.idAfiliado)
+				AND (afi.persona.idPersona = perDet.idPersona)
+				AND (pof.idPostulacion =:idPostulacionFovis)
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.consultarOferente.Postulacion">
+		<description>Consulta los datos del oferente a partir de la postulacion fovis</description>
+		<query>
+			SELECT per
+			FROM PostulacionFOVIS pof
+				, ProyectoSolucionVivienda psv
+				, Oferente ofe
+				, Persona per
+			WHERE (psv.idProyectoVivienda = pof.idProyectoVivienda)
+				AND (ofe.idOferente = psv.idOferente)
+				AND (per.idPersona = ofe.idPersona)
+				AND (pof.idPostulacion =:idPostulacionFovis )
+		</query>
+	</named-query>
+	<named-query name="FOVIS.consultarPersonaDetalle.idPersona">
+		<description>Consulta los datos del oferente a partir de la postulacion fovis</description>
+		<query>
+			SELECT pd
+			FROM PersonaDetalle pd
+			WHERE pd.idPersona =:idPersona
+		</query>
+	</named-query>
+	<named-query name="FOVIS.Consultar.ProyectoSolucionVivienda">
+		<description>Consulta los datos del proyecto de solucion de vivienda a partir de la postulacion fovis</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.ProyectoSolucionViviendaModeloDTO(psv)
+			FROM PostulacionFOVIS pof
+				, ProyectoSolucionVivienda psv
+				, Oferente ofe
+				, Persona per
+			WHERE (psv.idProyectoVivienda = pof.idProyectoVivienda)
+				AND (ofe.idOferente = psv.idOferente)
+				AND (per.idPersona = ofe.idPersona)
+				AND (pof.idPostulacion =:idPostulacionFovis )
+				AND psv.registrado =:registrado
+		</query>
+	</named-query>
+	<named-query name="FOVIS.Consultar.licencia">
+		<description>Consulta los datos del proyecto de una licencia</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.LicenciaModeloDTO(lic)
+			FROM ProyectoSolucionVivienda psv,
+				 Licencia lic
+			WHERE (psv.idProyectoVivienda = lic.idProyectoSolucionVivienda)
+				AND (psv.idProyectoVivienda =:idProyectoVivienda)	
+		</query>
+	</named-query>
+	<named-query name="FOVIS.Consultar.DetalleLicencia">
+		<description>Consulta los detalles asociados a una licencia</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.LicenciaDetalleModeloDTO(licDet)
+			FROM Licencia lic,
+				 LicenciaDetalle licDet
+			WHERE (lic.idLicencia = licDet.idLicencia)
+				AND (lic.idLicencia =:idLicencia) 
+				
+		</query>
+	</named-query>
+	<named-query name="FOVIS.Consultar.Visita">
+		<description>Consulta los datos de una visita</description>
+		<query>
+			SELECT new com.asopagos.dto.fovis.VisitaDTO(vis)
+			FROM Visita vis
+			WHERE (vis.idVisita =:idVisita)	
+		</query>
+	</named-query>
+	<named-query name="FOVIS.Consultar.ConidicionesVisita">
+		<description>Consulta los datos de una visita</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.CondicionVisitaModeloDTO(cov)
+			FROM Visita vis,
+			CondicionVisita cov
+			WHERE (cov.idVisita = vis.idVisita)
+			AND (vis.idVisita =:idVisita)
+		</query>
+	</named-query>
+
+	<named-query
+		name="Fovis.Consultar.ProyectoSolucionVivienda.OferenteNombreProyecto">
+		<description>Consulta para validar si el oferente tiene un proyecto de vivienda con el nombre ingresado</description>
+		<query>
+			SELECT psv
+			FROM ProyectoSolucionVivienda psv, Oferente ofe, Persona per, Empresa emp 			
+			WHERE ofe.idPersona=per.idPersona 
+			AND ofe.idPersona=emp.persona.idPersona
+			AND per.tipoIdentificacion=:tipoIdentificacion
+			AND per.numeroIdentificacion=:numeroIdentificacion
+			AND psv.nombreProyecto=:nombreProyecto
+		</query>
+	</named-query>
+
+	<named-query
+		name="Fovis.Consultar.DocumentosSoporteOferente.PorIdentificadorOferente">
+		<description>Consulta para obtener los documentos soporte del oferente</description>
+		<query>
+			SELECT ds
+			FROM DocumentoSoporteOferente dso, DocumentoSoporte ds		
+			WHERE dso.idDocumentoSoporte = ds.idDocumentoSoporte
+			AND dso.idOferente = :idOferente	
+		</query>
+	</named-query>
+        
+        <named-query
+		name="Fovis.Consultar.DocumentosSoporteProveedor.PorIdentificadorProveedor">
+		<description>Consulta para obtener los documentos soporte del oferente</description>
+		<query>
+			SELECT ds
+			FROM DocumentoSoporteProveedor dsp, DocumentoSoporte ds		
+			WHERE dsp.idDocumentoSoporte = ds.idDocumentoSoporte
+			AND dsp.idProveedor = :idProveedor	
+		</query>
+	</named-query>
+        
+
+	<named-query
+		name="Fovis.Consultar.DocumentosSoporteProyectoVivienda.PorIdentificadorProyecto">
+		<description>Consulta para obtener los documentos del proyecto de vivienda</description>
+		<query>
+			SELECT ds
+			FROM DocumentoSoporteProyectoVivienda dsp, DocumentoSoporte ds		
+			WHERE dsp.idDocumentoSoporte = ds.idDocumentoSoporte
+			AND dsp.idProyectoVivienda = :idProyectoVivienda	
+		</query>
+	</named-query>
+
+	<named-query
+		name="FOVIS.Consultar.jsonPostulacion.porNumeroRadicadoSolicitudPostulacion">
+		<description>Consulta para obtener el json de los datos de la postulacion en la solicitud de legalizacion y desembolso</description>
+		<query>
+			SELECT sld.jsonPostulacion
+			FROM SolicitudLegalizacionDesembolso sld, SolicitudPostulacion spo
+			INNER JOIN spo.solicitudGlobal sol 
+			WHERE sld.idPostulacionFOVIS = spo.idPostulacionFOVIS
+				AND sol.numeroRadicacion = :numeroRadicado
+			ORDER by sld.idSolicitudLegalizacionDesembolso
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.Consultar.TiposAhorro.Postulacion">
+		<description>Consulta para obtener los tipos de ahorro previo asociados a una postulacion</description>
+		<query>
+			SELECT ahp.nombreAhorro
+			FROM AhorroPrevio ahp,
+				PostulacionFOVIS pof
+			WHERE pof.idPostulacion = ahp.idPostulacion
+				AND pof.idPostulacion =:idPostulacionFovis
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.Consultar.TiposRecursos.Postulacion">
+		<description>Consulta para obtener los tipos de ahorro previo asociados a una postulacion</description>
+		<query>
+			SELECT rec.nombre
+			FROM RecursoComplementario rec,
+				PostulacionFOVIS pof
+			WHERE pof.idPostulacion = rec.postulacion
+				AND pof.idPostulacion =:idPostulacionFovis
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.Consultar.RecursoComplementario">
+		<description>Consulta para obtener los tipos de ahorro previo asociados a una postulacion</description>
+		<query>
+			SELECT rec
+			FROM RecursoComplementario rec
+			WHERE rec.postulacion =:idPostulacion
+				AND rec.nombre =:tipoRecursoComplementario
+		</query>
+	</named-query>
+
+	<named-query name="Fovis.Consultar.Oferente.PorID">
+		<description>Consulta que obtiene el oferente, por el identificador</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.OferenteModeloDTO(ofe,per)
+			FROM Oferente ofe, Persona per	
+			WHERE ofe.idPersona = per.idPersona 
+			AND ofe.idOferente=:idOferente
+		</query>
+	</named-query>
+
+	<named-query name="Fovis.empresa.id">
+		<query>
+            SELECT emp FROM Empresa emp   
+            WHERE emp.id = :idEmpresa 
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.Consultar.ListaAhorrosPrevios">
+		<description>Consulta para obtener la lista de ahorros previos asociadas a una postulacion</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.AhorroPrevioModeloDTO(ahp)
+			FROM AhorroPrevio ahp
+			WHERE ahp.idPostulacion =:idPostulacion
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.Consultar.ListaRecursosComplementarios">
+		<description>Consulta para obtener la lista de recursos complementarios asociados a una postulacion</description>
+		<query>
+			SELECT  new com.asopagos.dto.modelo.RecursoComplementarioModeloDTO(rec)
+			FROM RecursoComplementario rec
+			WHERE rec.postulacion =:idPostulacion
+		</query>
+	</named-query>
+	
+	<named-query name="FOVIS.consultar.condiciones.visitaID">
+		<description>Consulta para obtener las condiciones de visita por id de VIsita y condición.</description>
+		<query>
+			SELECT  cv
+			FROM CondicionVisita cv
+			WHERE cv.idVisita =:idVisita
+			AND cv.condicion =:condicion
+		</query> 
+	</named-query>
+	
+	<named-query name="FOVIS.Consultar.ResultadosExistenciaHabitabilidad">
+		<description>Consulta los datos de existencia y habitabilidad</description>
+		<query>
+				SELECT new com.asopagos.dto.fovis.VisitaDTO(vis, cov)
+				FROM Visita vis, CondicionVisita cov, 
+				SolicitudLegalizacionDesembolso sld, 
+				LegalizacionDesembolso lgd, PostulacionFOVIS pof,
+				SolicitudPostulacion spo
+				WHERE pof.idPostulacion = sld.idPostulacionFOVIS			
+				AND sld.idLegalizacionDesembolso = lgd.idLegalizacionDesembolso
+				AND vis.idVisita =lgd.idVisita	
+				AND cov.idVisita = vis.idVisita		
+				AND spo.idPostulacionFOVIS      = pof.idPostulacion
+				AND spo.solicitudGlobal.numeroRadicacion = :numeroRadicacion 
+				ORDER BY vis.idVisita DESC
+			</query>
+	</named-query>
+    
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+	<named-native-query
+		name="Fovis.SolicitudPostulacion.consultarPorNumeroRadicadoYODatosJefeHogar">
+		<description>Consulta que obtiene datos de las solicitudes que posiblemente puedan iniciar un proceso de legalizacion y desembolso</description>
+		<query>
+			SELECT top 1 sol.solNumeroRadicacion AS numeroRadicacion,
+			per.perTipoIdentificacion AS tipoIdentificacion,
+			per.perNumeroIdentificacion AS numeroIdentificacion,
+			per.perPrimerNombre + CASE WHEN per.perSegundoNombre IS NOT NULL
+			THEN ' '+ per.perSegundoNombre ELSE '' END + ' ' +
+			per.perPrimerApellido + CASE WHEN per.perSegundoApellido IS NOT NULL
+			THEN ' ' + per.perSegundoApellido ELSE '' END AS nombreCompletoJefeHogar,
+			pof.pofEstadoHogar AS estadoHogar,
+			aas.aafFinVigencia AS fechaFinVigencia,
+			sol.solId AS idSolicitudGlobalPostulacion,
+			spo.spoId AS idSolicitudPostulacion,
+			pof.pofId AS idPostulacionFovis,
+			sld.sldId as solicitudLegalizacionEnCusrso,
+			solleg.solId as idSolicitudGlobalLegalizacionDesembolso,
+			aas.aafInicioVigencia as fechaInicioVigencia
+			FROM SolicitudPostulacion spo
+			INNER JOIN Solicitud sol on sol.solId = spo.spoSolicitudGlobal
+			INNER JOIN PostulacionFOVIS pof on pof.pofId = spo.spoPostulacionFOVIS
+			INNER JOIN JefeHogar jeh on jeh.jehId = pof.pofJefeHogar
+			INNER JOIN Afiliado afi on afi.afiId = jeh.jehAfiliado
+			INNER JOIN Persona per on per.perId = afi.afiPersona
+			INNER JOIN ActaAsignacionFovis aas on aas.aafSolicitudAsignacion = pof.pofSolicitudasignacion
+			LEFT JOIN SolicitudLegalizaciondesembolso sld on pof.pofId = sld.sldPostulacionFOVIS
+			AND (sldEstadoSolicitud != :estadoSolicitudLegalizacionDesembolso or sldEstadoSolicitud is null)
+			LEFT JOIN Solicitud solleg on sld.sldSolicitudGlobal = solleg.solId
+			WHERE (1 = (case when :numeroRadicadoSolicitud is null then 1 else 0 end) OR (sol.solNumeroRadicacion = :numeroRadicadoSolicitud))
+			AND (1 = (case when :tipoIdentificacion is null then 1 else 0 end) OR (per.perTipoIdentificacion = :tipoIdentificacion))
+			AND (1 = (case when :numeroIdentificacion is null then 1 else 0 end) OR (per.perNumeroIdentificacion = :numeroIdentificacion))
+			ORDER BY sol.solNumeroRadicacion ASC
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Fovis.consultarSolicitudEnProceso.idPostulacion">
+		<description>Consulta si existen solicitudes en proceso para la postulacion.</description>
+		<query>
+			SELECT sld.sldId FROM SolicitudLegalizacionDesembolso sld
+				WHERE sld.sldPostulacionFOVIS = :idPostulacion
+				AND (sld.sldEstadoSolicitud != :estadoSolicitud OR sld.sldEstadoSolicitud is null)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="FOVIS.Consultar.LicenciaPorMatricula">
+		<description>Consulta si existen Licencias con la misma Matrícula Inmobiliaria</description>
+		<query>
+			SELECT lic.licId FROM Licencia lic
+				WHERE lic.licMatriculaInmobiliaria = :matriculaInmobiliaria
+		</query>
+	</named-native-query>
+	
+	<named-native-query	name="fovis.consultarHistoricoSolicitudesNovedadesFovis">
+		<description>Consulta el historico de las solicitudes de postulacion</description>
+		<query>
+			SELECT solicitudGlobal.solId, solicitudGlobal.solNumeroRadicacion, solicitudGlobal.solFechaRadicacion,
+				  solicitudLegalizacionDesembolso.sldId,  solicitudLegalizacionDesembolso.sldEstadoSolicitud, comunicado.comIdentificaArchivoComunicado		      
+			FROM Solicitud solicitudGlobal,
+							 SolicitudLegalizacionDesembolso solicitudLegalizacionDesembolso,
+							 Comunicado comunicado
+			WHERE solicitudGlobal.solId  = solicitudLegalizacionDesembolso.sldSolicitudGlobal	
+			      AND comunicado.comSolicitud = solicitudLegalizacionDesembolso.sldSolicitudGlobal 			  
+				  AND (solicitudGlobal.solNumeroRadicacion = :numeroSolicitud OR :numeroSolicitud IS NULL)
+				  AND (solicitudLegalizacionDesembolso.sldEstadoSolicitud = :estadoSolicitud OR :estadoSolicitud IS NULL)
+				  AND (solicitudGlobal.solNumeroRadicacion = :fechaExactaRadicacion OR :fechaExactaRadicacion IS NULL)				 
+		</query>
+	</named-native-query>
+	
+	<named-native-query	name="fovis.consultarHistoricoSolicitudesNovedadesFovisRangoFechas">
+		<description>Consulta el historico de las solicitudes de postulacion</description>
+		<query>
+			SELECT solicitudGlobal.solId, solicitudGlobal.solNumeroRadicacion, solicitudGlobal.solFechaRadicacion,
+				  solicitudLegalizacionDesembolso.sldId,  solicitudLegalizacionDesembolso.sldEstadoSolicitud, comunicado.comIdentificaArchivoComunicado		      
+			FROM Solicitud solicitudGlobal,
+							 SolicitudLegalizacionDesembolso solicitudLegalizacionDesembolso,
+							 Comunicado comunicado
+			WHERE solicitudGlobal.solId  = solicitudLegalizacionDesembolso.sldSolicitudGlobal	
+			      AND comunicado.comSolicitud = solicitudLegalizacionDesembolso.sldSolicitudGlobal 
+			      AND (solicitudGlobal.solNumeroRadicacion = :numeroSolicitud OR :numeroSolicitud IS NULL)
+				  AND (solicitudLegalizacionDesembolso.sldEstadoSolicitud = :estadoSolicitud OR :estadoSolicitud IS NULL)
+				  AND (solicitudGlobal.solNumeroRadicacion = :fechaExactaRadicacion OR :fechaExactaRadicacion IS NULL)	
+				  AND solicitudGlobal.solNumeroRadicacion BETWEEN :fechaInicio  AND :fechaFin
+		</query>
+	</named-native-query>
+	
+	<named-native-query	name="fovis.consultar.SubsidiosFOVISLegalizadosDesembolsados">
+		<description>Consulta el listado de hogares que presentaron solicitud de legalización y desembolso del subsidio FOVIS</description>
+		<query>
+			SELECT new com.asopagos.dto.fovis.ConsultarSubsidiosFOVISLegalizacionDTO(cicloAsignacion.ciaNombre, solicitudGlobalPostulacion.solNumeroRadicacion, postulacion.pofModalidad, 
+			       persona.perTipoIdentificacion, persona.perNumeroIdentificacion, 
+				   persona.perPrimerNombre, persona.perSegundoNombre,
+				   persona.perPrimerApellido, persona.perSegundoApellido,
+				   depto.depNombre, mun.munNombre, postulacion.pofEstadoHogar,
+				   pofe.perTipoIdentificacion, pofe.perNumeroIdentificacion, 
+				   pofe.perPrimerNombre +' '+ CASE WHEN pofe.perSegundoNombre IS NOT NULL
+				   THEN pofe.perSegundoNombre ELSE '' END + ' ' 
+				   + pofe.perPrimerApellido + ' ' + CASE WHEN pofe.perSegundoApellido IS NOT NULL
+				   THEN persona.perSegundoApellido ELSE pofe.perRazonSocial END	AS nombresOferente,
+				   psv.psvNombreProyecto, deptopsv.depNombre, munpsv.munNombre, postulacion.pofValorAsignadoSFV,
+				   solicitudGlobal.solNumeroRadicacion, solicitudGlobal.solFechaRadicacion, 
+				   slg.sldEstadoSolicitud, lg.lgdValorDesembolsar)
+			FROM Solicitud solicitudGlobal,
+			     Solicitud solicitudGlobalPostulacion,
+				 SolicitudLegalizacionDesembolso slg, 
+				 SolicitudPostulacion solicitudPostulacion,
+				 PostulacionFOVIS postulacion,
+				 LegalizacionDesembolso lg,
+				 JefeHogar jefeHogar, Afiliado afiliado ,
+				 Persona persona, CicloAsignacion cicloAsignacion,
+				 Ubicacion ub, Municipio mun, Departamento depto, ProyectoSolucionVivienda psv,
+				 Oferente ofe, Persona pofe, Ubicacion ubpsv, Municipio munpsv, Departamento deptopsv
+			WHERE solicitudGlobal.solId  = slg.sldSolicitudGlobal
+			      AND solicitudPostulacion.spoSolicitudGlobal = solicitudGlobalPostulacion.solId 
+				  AND slg.sldPostulacionFOVIS = postulacion.pofId
+				  AND solicitudPostulacion.spoPostulacionFOVIS = postulacion.pofId
+				  AND postulacion.pofCicloAsignacion = cicloAsignacion.ciaId
+				  AND postulacion.pofJefeHogar				= jefeHogar.jehId
+				  AND jefeHogar.jehAfiliado					= afiliado.afiId
+				  AND afiliado.afiPersona					= persona.perId
+				  AND persona.perUbicacionPrincipal         = ub.ubiId
+				  AND ub.ubiMunicipio						= mun.munId
+				  AND mun.munDepartamento					= depto.depId
+				  AND postulacion.pofProyectoSolucionVivienda = psv.psvId
+				  AND psv.psvOferente = ofe.ofeId
+				  AND ofe.ofePersona  = pofe.perId
+				  AND pofe.perUbicacionPrincipal         = ubpsv.ubiId
+				  AND ubpsv.ubiMunicipio				 = munpsv.munId
+				  AND munpsv.munDepartamento			 = deptopsv.depId
+				  AND slg.sldLegalizacionDesembolso      = lg.lgdId
+				  AND (slg.sldEstadoSolicitud IN ('LEGALIZACION_Y_DESEMBOLSO_AUTORIZADO','LEGALIZACION_Y_DESEMBOLSO_NO_AUTORIZADO') OR lg.lgdSubsidioDesembolsado=1)			       
+			      AND (cicloAsignacion.ciaId = :idCiclo OR :idCiclo IS NULL)
+				  AND (postulacion.pofEstadoHogar= :estadoHogar OR :estadoHogar IS NULL)
+				  AND (slg.sldEstadoSolicitud = :estadoSolicitudLegalizacion OR :estadoSolicitudLegalizacion IS NULL)	
+				  AND (solicitudGlobal.solNumeroRadicacion = :numeroRadicacionLegalizacion OR :numeroRadicacionLegalizacion IS NULL)
+				  AND (solicitudGlobalPostulacion.solNumeroRadicacion = :numeroRadicacionPostulacion OR :numeroRadicacionPostulacion IS NULL)
+				  AND (persona.perTipoIdentificacion = :tipoIdentificacionJefe  OR :tipoIdentificacionjefe IS NULL)
+				  AND (persona.perNumeroIdentificacion= :numeroIdentificacionJefe OR :numeroIdentificacionJefe IS NULL)
+				  AND (persona.perPrimerNombre LIKE '%:primerNombre%' OR :primerNombre IS NULL)
+				  AND (persona.perPrimerApellido LIKE '%:primerApellido%' OR :primerApellido IS NULL)
+				  AND (depto.depId = :idDepartamento OR :idDepartamento IS NULL)
+				  AND (mun.munId = :idMunicipio OR :idMunicipio IS NULL)				  
+				  AND (pofe.perTipoIdentificacion = :tipoIdentificacionOf  OR :tipoIdentificacionOf IS NULL)
+				  AND (pofe.perNumeroIdentificacion = :numeroIdentificacionOf OR :numeroIdentificacionOf IS NULL)
+				  AND (pofe.perRazonSocial = :nombreRazon OR :nombreRazon IS NULL)				  
+				  AND (psv.psvId = :idProyecto OR :idProyecto IS NULL)
+				  AND (deptopsv.depId = :idDeptoProyecto OR :idDeptoProyecto IS NULL)
+				  AND (munpsv.munId = :idMunicipioProyecto OR :idMunicipioProyecto IS NULL)
+		</query>
+	</named-native-query>
+	
+	<named-native-query	name="fovis.consultar.SubsidiosFOVISLegalizadosDesembolsados.RangoFechas">
+		<description>Consulta el listado de hogares que presentaron solicitud de legalización y desembolso del subsidio FOVIS rango de fechas</description>
+		<query>
+			SELECT new com.asopagos.dto.fovis.ConsultarSubsidiosFOVISLegalizacionDTO( cicloAsignacion.ciaNombre, solicitudGlobalPostulacion.solNumeroRadicacion, postulacion.pofModalidad, 
+			       persona.perTipoIdentificacion, persona.perNumeroIdentificacion, 
+				   persona.perPrimerNombre, persona.perSegundoNombre,
+				   persona.perPrimerApellido, persona.perSegundoApellido,
+				   depto.depNombre, mun.munNombre, postulacion.pofEstadoHogar,
+				   pofe.perTipoIdentificacion, pofe.perNumeroIdentificacion, 
+				   pofe.perPrimerNombre +' '+ CASE WHEN pofe.perSegundoNombre IS NOT NULL
+				   THEN pofe.perSegundoNombre ELSE '' END + ' ' 
+				   + pofe.perPrimerApellido + ' ' + CASE WHEN pofe.perSegundoApellido IS NOT NULL
+				   THEN persona.perSegundoApellido ELSE pofe.perRazonSocial END	AS nombresOferente,
+				   psv.psvNombreProyecto, deptopsv.depNombre, munpsv.munNombre, postulacion.pofValorAsignadoSFV,
+				   solicitudGlobal.solNumeroRadicacion, solicitudGlobal.solFechaRadicacion, 
+				   slg.sldEstadoSolicitud, lg.lgdValorDesembolsar)
+			FROM Solicitud solicitudGlobal,
+			     Solicitud solicitudGlobalPostulacion,
+				 SolicitudLegalizacionDesembolso slg, 
+				 SolicitudPostulacion solicitudPostulacion,
+				 PostulacionFOVIS postulacion,
+				 LegalizacionDesembolso lg,
+				 JefeHogar jefeHogar, Afiliado afiliado ,
+				 Persona persona, CicloAsignacion cicloAsignacion,
+				 Ubicacion ub, Municipio mun, Departamento depto, ProyectoSolucionVivienda psv,
+				 Oferente ofe, Persona pofe, Ubicacion ubpsv, Municipio munpsv, Departamento deptopsv
+			WHERE solicitudGlobal.solId  = slg.sldSolicitudGlobal
+			      AND solicitudPostulacion.spoSolicitudGlobal = solicitudGlobalPostulacion.solId 
+				  AND slg.sldPostulacionFOVIS = postulacion.pofId
+				  AND solicitudPostulacion.spoPostulacionFOVIS = postulacion.pofId
+				  AND postulacion.pofCicloAsignacion = cicloAsignacion.ciaId
+				  AND postulacion.pofJefeHogar				= jefeHogar.jehId
+				  AND jefeHogar.jehAfiliado					= afiliado.afiId
+				  AND afiliado.afiPersona					= persona.perId
+				  AND persona.perUbicacionPrincipal         = ub.ubiId
+				  AND ub.ubiMunicipio						= mun.munId
+				  AND mun.munDepartamento					= depto.depId
+				  AND postulacion.pofProyectoSolucionVivienda = psv.psvId
+				  AND psv.psvOferente = ofe.ofeId
+				  AND ofe.ofePersona  = pofe.perId
+				  AND pofe.perUbicacionPrincipal         = ubpsv.ubiId
+				  AND ubpsv.ubiMunicipio				 = munpsv.munId
+				  AND munpsv.munDepartamento			 = deptopsv.depId
+				  AND slg.sldLegalizacionDesembolso      = lg.lgdId
+				  AND (slg.sldEstadoSolicitud IN ('LEGALIZACION_Y_DESEMBOLSO_AUTORIZADO','LEGALIZACION_Y_DESEMBOLSO_NO_AUTORIZADO') OR lg.lgdSubsidioDesembolsado=1)			       
+			      AND (cicloAsignacion.ciaId = :idCiclo OR :idCiclo IS NULL)
+				  AND (postulacion.pofEstadoHogar= :estadoHogar OR :estadoHogar IS NULL)
+				  AND (slg.sldEstadoSolicitud = :estadoSolicitudLegalizacion OR :estadoSolicitudLegalizacion IS NULL)	
+				  AND (solicitudGlobal.solNumeroRadicacion = :numeroRadicacionLegalizacion OR :numeroRadicacionLegalizacion IS NULL)
+				  AND (solicitudGlobalPostulacion.solNumeroRadicacion = :numeroRadicacionPostulacion OR :numeroRadicacionPostulacion IS NULL)
+				  AND (persona.perTipoIdentificacion = :tipoIdentificacionJefe  OR :tipoIdentificacionjefe IS NULL)
+				  AND (persona.perNumeroIdentificacion= :numeroIdentificacionJefe OR :numeroIdentificacionJefe IS NULL)
+				  AND (persona.perPrimerNombre LIKE '%:primerNombre%' OR :primerNombre IS NULL)
+				  AND (persona.perPrimerApellido LIKE '%:primerApellido%' OR :primerApellido IS NULL)
+				  AND (depto.depId = :idDepartamento OR :idDepartamento IS NULL)
+				  AND (mun.munId = :idMunicipio OR :idMunicipio IS NULL)				  
+				  AND (pofe.perTipoIdentificacion = :tipoIdentificacionOf  OR :tipoIdentificacionOf IS NULL)
+				  AND (pofe.perNumeroIdentificacion = :numeroIdentificacionOf OR :numeroIdentificacionOf IS NULL)
+				  AND (pofe.perRazonSocial = :nombreRazon OR :nombreRazon IS NULL)				  
+				  AND (psv.psvId = :idProyecto OR :idProyecto IS NULL)
+				  AND (deptopsv.depId = :idDeptoProyecto OR :idDeptoProyecto IS NULL)
+				  AND (munpsv.munId = :idMunicipioProyecto OR :idMunicipioProyecto IS NULL)
+				  AND solicitudGlobal.solNumeroRadicacion BETWEEN :fechaInicio  AND :fechaFin
+		</query>
+	</named-native-query>
+
+    <named-native-query
+        name="fovis.legalizacion.desembolso.historico.jefe.hogar.tipo.numero.identificacion">
+        <description>Consulta el historico de legalizaciones asociadas a la postulacion del jefe hogar enviado por parametro de tipo y numero de identificacion</description>
+        <query>
+            SELECT
+                sol.solNumeroRadicacion,
+                sol.solFechaRadicacion,
+                lgd.lgdFormaPago,
+                lgd.lgdValorDesembolsar,
+                sld.sldEstadoSolicitud,
+                sld.sldFechaOperacion,
+                sld.sldId,
+                sld.sldJsonPostulacion,
+                sld.sldPostulacionFovis,
+                lgd.lgdId,
+                lgd.lgdTipoMedioPago,
+                lgd.lgdFechaLimitePago,
+                lgd.lgdSubsidioDesembolsado,
+                sol.solTipoTransaccion,
+                lgd.lgdVisita,
+                CASE WHEN lgd.lgdVisita IS NOT NULL THEN 1 ELSE 0 END AS certificadoHabitaExis,
+                CASE WHEN vis.covCumple IS NOT NULL THEN 1 ELSE 0 END AS noCumpleCondiciones,
+                CASE WHEN pnc.countPnc IS NOT NULL THEN 1 ELSE 0 END AS pncNoResuelto,
+                sol.solResultadoProceso,
+                aaf.aafNumeroResolucion,
+                aaf.aafFechaResolucion,
+                sol.solClasificacion,
+                sol.solId
+            FROM SolicitudLegalizacionDesembolso sld
+            JOIN LegalizacionDesembolso lgd ON sld.sldLegalizacionDesembolso = lgd.lgdId
+            JOIN Solicitud sol ON sld.sldSolicitudGlobal = sol.solId
+            JOIN PostulacionFovis pof ON sld.sldPostulacionFovis = pof.pofId
+            JOIN SolicitudPostulacion spo ON spo.spoPostulacionFovis = pof.pofId
+            JOIN Solicitud solspo ON spo.spoSolicitudGlobal = solspo.solId
+            JOIN SolicitudAsignacion saf ON pof.pofSolicitudAsignacion = saf.safId
+            JOIN ActaAsignacionFovis aaf ON aaf.aafSolicitudAsignacion = saf.safId
+            LEFT JOIN (SELECT lgd.lgdId, COUNT(covCumple) covCumple
+                    FROM LegalizacionDesembolso lgd
+                    JOIN Visita vis ON lgd.lgdVisita = vis.visId
+                    JOIN CondicionVisita cov ON cov.covVisita = vis.visId
+                    WHERE covCumple = 0
+                    GROUP BY lgd.lgdId
+                    HAVING COUNT(covCumple) > 0) vis 
+                ON lgd.lgdId = vis.lgdId
+            LEFT JOIN (SELECT sld.sldId, COUNT(pnc.pncId) countPnc
+                    FROM SolicitudLegalizacionDesembolso sld
+                    JOIN Solicitud sol ON sld.sldSolicitudGlobal = sol.solId
+                    JOIN ProductoNoConforme pnc ON pnc.pncSolicitud = sol.solId
+                    WHERE pncTipoProductoNoConforme = 'NO_RESUELTO'
+                    GROUP BY sld.sldId) pnc 
+                ON pnc.sldId = sld.sldId
+            WHERE solspo.solNumeroRadicacion = :numeroRadicacion
+        </query>
+    </named-native-query>
+    
+    <named-native-query name="FOVIS.consultar.historico.desembolso">
+        <description>Busca el estado actual de los desembolsoso a partir del historico</description>
+        <query>
+			SELECT pof.pofId, pof.pofValorAsignadoSFV, pof.pofValorAjusteIPCSFV, dem.valorDesembolsado
+			, (iif(isnull(pof.pofValorSFVAjustado,0)!=0,pof.pofValorSFVAjustado, pof.pofValorAsignadoSFV) - dem.valorDesembolsado) as pendiente
+			, dem.fechaTransferencia, pof.pofValorSFVAjustado
+			FROM SolicitudPostulacion spo
+			JOIN PostulacionFovis pof ON spo.spoPostulacionFovis = pof.pofId
+			JOIN Solicitud solspo ON spo.spoSolicitudGlobal = solspo.solId
+			JOIN (SELECT sld.sldPostulacionFovis AS idPos, SUM((iif(isnull(lgd.lgdMontoDesembolsado,0)!=0,lgd.lgdMontoDesembolsado, lgd.lgdValorDesembolsar))) AS valorDesembolsado, MAX(lgd.lgdFechaTransferencia) AS fechaTransferencia
+			FROM SolicitudLegalizacionDesembolso sld
+			JOIN LegalizacionDesembolso lgd ON sld.sldLegalizacionDesembolso = lgd.lgdId
+			GROUP BY sld.sldPostulacionFovis) dem
+			ON dem.idPos = pof.pofId
+            WHERE solspo.solNumeroRadicacion = :numeroRadicacion
+        </query>
+    </named-native-query>
+
+	<named-stored-procedure-query
+			name="stored.procedure.consultar.postulacion.legalizacion.desembolso"
+			procedure-name="dbo.USP_Consultar_Postulaciones_Para_Legalizacion">
+		<parameter class="java.lang.String" mode="IN" name="numeroRadicadoSolicitud"/>
+		<parameter class="java.lang.String" mode="IN" name="tipoIdentificacion"/>
+		<parameter class="java.lang.String" mode="IN" name="numeroIdentificacion"/>
+	</named-stored-procedure-query>
+
+</entity-mappings>

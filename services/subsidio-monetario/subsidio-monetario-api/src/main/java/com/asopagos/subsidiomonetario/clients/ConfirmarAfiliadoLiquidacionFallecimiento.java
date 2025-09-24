@@ -1,0 +1,59 @@
+package com.asopagos.subsidiomonetario.clients;
+
+import java.lang.Long;
+import java.lang.String;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import com.asopagos.services.common.ServiceClient;
+
+/**
+ * Metodo que hace la peticion REST al servicio PUT
+ * /rest/subsidioMonetario/liquidacionFallecimiento/resultados/confirmarAfiliado/{numeroRadicacion}
+ */
+public class ConfirmarAfiliadoLiquidacionFallecimiento extends ServiceClient { 
+  	private String numeroRadicacion;
+   	private Long idCondicionAfiliado;
+   
+  
+ 	public ConfirmarAfiliadoLiquidacionFallecimiento (String numeroRadicacion,Long idCondicionAfiliado){
+ 		super();
+		this.numeroRadicacion=numeroRadicacion;
+		this.idCondicionAfiliado=idCondicionAfiliado;
+ 	}
+ 
+ 	@Override
+	protected Response invoke(WebTarget webTarget, String path) {
+		Response response = webTarget.path(path)
+			.resolveTemplate("numeroRadicacion", numeroRadicacion)
+			.queryParam("idCondicionAfiliado", idCondicionAfiliado)
+			.request(MediaType.APPLICATION_JSON)
+			.put(null);
+		return response;
+	}
+
+	@Override
+	protected void getResultData(Response response) {
+	}
+	
+
+ 	public void setNumeroRadicacion (String numeroRadicacion){
+ 		this.numeroRadicacion=numeroRadicacion;
+ 	}
+ 	
+ 	public String getNumeroRadicacion (){
+ 		return numeroRadicacion;
+ 	}
+  
+  	public void setIdCondicionAfiliado (Long idCondicionAfiliado){
+ 		this.idCondicionAfiliado=idCondicionAfiliado;
+ 	}
+ 	
+ 	public Long getIdCondicionAfiliado (){
+ 		return idCondicionAfiliado;
+ 	}
+  
+  
+}

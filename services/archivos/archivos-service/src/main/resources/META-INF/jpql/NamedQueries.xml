@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+        version="2.1">
+    
+    <!--
+        ESPACIO PARA NAMED QUERIES JPA
+    -->
+	<named-query name="PropietarioArchivo.buscarPorTipoIdNumeroIdTipoPropietario">
+		<query>
+            SELECT pa.idPropietarioArchivo
+            FROM PropietarioArchivo pa 
+            WHERE pa.tipoIdentificacion = :tipoIdentificacion
+            AND pa.numeroIdentificacion = :numeroIdentificacion
+            AND pa.tipoPropietario = :tipoPropietario
+        </query>
+	</named-query>    
+	<named-query name="VersionArchivo.buscarVersionArchivoParaDocumento">
+		<query>
+            SELECT aa.idArchivoAlmacenado
+            FROM ArchivoAlmacenado aa 
+            WHERE aa.idRequisito = :idRequisito
+            AND aa.idPropietario = :idPropietario            
+        </query>
+	</named-query>    
+	        <named-query name="VersionArchivo.consultarVersionArchivoPorIdArchivoAlmacenado">
+            <query>
+                SELECT va FROM VersionArchivo va 
+                WHERE va.idArchivoAlmacenado = :idArchivoAlmacenado
+            </query> 
+        </named-query> 
+	<named-query name="VersionArchivo.consultarArchivoPorIdentificador">
+		<query>
+            SELECT va.idArchivoAlmacenado FROM VersionArchivo va
+            WHERE va.identificador = :identificador
+        </query>
+	</named-query>    
+	        <named-query name="VersionArchivo.eliminarDocumentoSoportePorIdentificadorVersion">
+            <query>
+                DELETE FROM DocumentoSoporte va
+                WHERE va.identificacionDocumento = :identificacionDocumento
+                AND va.versionDocumento = :version
+            </query>  
+        </named-query> 
+	<named-query name="VersionArchivo.eliminarVersionArchivoPorIdentificadorVersion">
+		<query>
+            DELETE FROM VersionArchivo va 
+            WHERE va.identificador = :identificador 
+            AND va.version = :version
+        </query>
+	</named-query>    
+	<named-query name="VersionArchivo.eliminarVersionArchivoPorIdentificador">
+		<query>
+            DELETE FROM VersionArchivo va 
+            WHERE va.identificador = :identificador 
+        </query>
+	</named-query>    
+	<named-query name="VersionArchivo.eliminarArchivoAlmacenado">
+		<query>
+            DELETE FROM ArchivoAlmacenado aa 
+            WHERE aa.idArchivoAlmacenado = :idArchivoAlmacenado
+        </query>
+	</named-query>    
+	
+	<named-query name="Solicitudes.buscarSolicitud.porIdSolicitud">
+		<query>
+			SELECT sol FROM Solicitud sol
+			WHERE sol.idSolicitud= :idSolicitud
+		</query>
+	</named-query>
+	
+	<!-- CONSULTAS PARA CLASIFICACION DE DOCUMENTOS EN ESCANEO MASIVO -->
+	<named-query name="Solicitudes.buscarSolicitud.postulacionFOVIS.presencial.porIdSolicitud">
+		<description>Busca la solicitud de POSTULACION_FOVIS_PRESENCIAL - 3.2.1 y los datos del propietario 
+			del documento asociado al tipo de transaccion</description>
+		<query>
+			SELECT new com.asopagos.dto.InformacionArchivoClasificableDTO(
+				sol.idSolicitud, 
+				sol.tipoTransaccion, 
+				sol.idInstanciaProceso, 
+				per.tipoIdentificacion, 
+				per.numeroIdentificacion
+			)
+			FROM Solicitud sol, SolicitudPostulacion solP, PostulacionFOVIS posF, JefeHogar jeh, Afiliado afi, Persona per
+			WHERE sol.idSolicitud = solP.solicitudGlobal 
+			AND posF.idPostulacion = solP.idPostulacionFOVIS  
+			AND posF.jefeHogar = jeh.idJefeHogar
+			AND jeh.idAfiliado = afi.idAfiliado
+			AND afi.persona = per.idPersona
+			AND sol.idSolicitud = (:idSolicitud)
+		</query>
+	</named-query>
+	
+	<named-query name="Solicitudes.buscarSolicitud.novedadesEmpresas.presencial.porIdSolicitud">
+		<description>Busca la solicitud de NOVEDADES_EMPRESAS_PRESENCIAL - 1.3.1 y los datos del propietario 
+			del documento asociado al tipo de transaccion</description>
+		<query>
+			SELECT new com.asopagos.dto.InformacionArchivoClasificableDTO(
+				sol.idSolicitud, 
+				sol.tipoTransaccion, 
+				sol.idInstanciaProceso, 
+				per.tipoIdentificacion, 
+				per.numeroIdentificacion
+				)
+			FROM Solicitud sol, SolicitudNovedad solN, SolicitudNovedadEmpleador novEmpl, Empleador empl, Empresa emp, Persona per
+			WHERE sol.idSolicitud = solN.solicitudGlobal 
+			AND solN.idSolicitudNovedad = novEmpl.idSolicitudNovedad
+			AND novEmpl.idEmpleador = empl.idEmpleador
+			AND empl.empresa = emp.idEmpresa
+			AND emp.persona = per.idPersona
+			AND sol.idSolicitud = (:idSolicitud)
+		</query>
+	</named-query>
+	
+	<named-query name="Solicitudes.buscarSolicitud.novedadesPersonas.presencial.porIdSolicitud">
+		<description>Busca la solicitud de NOVEDADES_PERSONAS_PRESENCIAL - 1.3.4	y los datos del propietario 
+			del documento asociado al tipo de transaccion</description>
+		<query>
+			SELECT new com.asopagos.dto.InformacionArchivoClasificableDTO(
+				sol.idSolicitud, 
+				sol.tipoTransaccion, 
+				sol.idInstanciaProceso, 
+				per.tipoIdentificacion, 
+				per.numeroIdentificacion
+				)
+			FROM Solicitud sol, SolicitudNovedad solN, SolicitudNovedadPersona novPer,Persona per
+			WHERE sol.idSolicitud = solN.solicitudGlobal 
+			AND solN.idSolicitudNovedad = novPer.idSolicitudNovedad
+			AND novPer.idPersona = per.idPersona
+			AND sol.idSolicitud = (:idSolicitud)
+		</query>
+	</named-query>
+	
+	<named-query name="Solicitudes.buscarSolicitud.solicitudAfiliacionEmpresas.presencial.porIdSolicitud">
+		<description>Busca la solicitud de AFILIACION_EMPRESAS_PRESENCIAL - 1.1.1 y los datos del propietario 
+			del documento asociado al tipo de transaccion</description>
+		<query>
+			SELECT new com.asopagos.dto.InformacionArchivoClasificableDTO(
+				sol.idSolicitud, 
+				sol.tipoTransaccion, 
+				sol.idInstanciaProceso, 
+				per.tipoIdentificacion, 
+				per.numeroIdentificacion
+				)
+			FROM Solicitud sol, SolicitudAfiliacionEmpleador solAfilEmpl, Empleador empl, Empresa emp, Persona per
+			WHERE sol.idSolicitud = solAfilEmpl.solicitudGlobal 
+			AND solAfilEmpl.idEmpleador = empl.idEmpleador
+			AND empl.empresa = emp.idEmpresa
+			AND emp.persona = per.idPersona
+			AND sol.idSolicitud = (:idSolicitud)
+		</query>
+	</named-query>
+	
+	<named-query name="Solicitudes.buscarSolicitud.solicitudAfiliacionPersonas.presencial.porIdSolicitud">
+		<description>Busca la solicitud de AFILIACION_PERSONAS_PRESENCIAL - 1.2.1 y los datos del propietario 
+			del documento asociado al tipo de transaccion</description>
+		<query>
+			SELECT new com.asopagos.dto.InformacionArchivoClasificableDTO(
+				sol.idSolicitud, 
+				sol.tipoTransaccion, 
+				sol.idInstanciaProceso, 
+				per.tipoIdentificacion, 
+				per.numeroIdentificacion
+				)
+			FROM Solicitud sol, SolicitudAfiliacionPersona solAfilPer, RolAfiliado rolAfi, Afiliado afi, Persona per
+			WHERE sol.idSolicitud = solAfilPer.solicitudGlobal 
+			AND solAfilPer.rolAfiliado = rolAfi.idRolAfiliado
+			AND rolAfi.afiliado = afi.idAfiliado
+			AND afi.persona = per.idPersona
+			AND sol.idSolicitud = (:idSolicitud)
+		</query>
+	</named-query>
+	
+	<named-query name="Solicitudes.buscarSolicitud.legalizacionDesembolsoFOVIS.porIdSolicitud">
+		<description>Busca la solicitud de LEGALIZACION_DESEMBOLSO_FOVIS - 3.2.4 y los datos del propietario 
+			del documento asociado al tipo de transaccion</description>
+		<query>
+			SELECT new com.asopagos.dto.InformacionArchivoClasificableDTO(
+				sol.idSolicitud, 
+				sol.tipoTransaccion, 
+				sol.idInstanciaProceso, 
+				per.tipoIdentificacion, 
+				per.numeroIdentificacion
+				)
+			FROM Solicitud sol, SolicitudLegalizacionDesembolso solLeg, PostulacionFOVIS posF, JefeHogar jeh, Afiliado afi, Persona per
+			WHERE sol.idSolicitud = solLeg.solicitudGlobal 
+			AND posF.idPostulacion = solLeg.idPostulacionFOVIS  
+			AND posF.jefeHogar = jeh.idJefeHogar
+			AND jeh.idAfiliado = afi.idAfiliado
+			AND afi.persona = per.idPersona
+			AND sol.idSolicitud = (:idSolicitud)
+		</query>
+	</named-query>
+	
+	<named-query name="Solicitudes.buscarSolicitud.novedadesFOVIS.regularEspecial.porIdSolicitud">
+		<description>Busca la solicitud de NOVEDADES_FOVIS_REGULAR - 3.2.5.2 y NOVEDADES_FOVIS_ESPECIAL - 3.2.5.3 y los datos del propietario 
+			del documento asociado al tipo de transaccion</description>
+		<query>
+			SELECT new com.asopagos.dto.InformacionArchivoClasificableDTO(
+				sol.idSolicitud, 
+				sol.tipoTransaccion, 
+				sol.idInstanciaProceso, 
+				per.tipoIdentificacion, 
+				per.numeroIdentificacion
+				)
+			FROM Solicitud sol, SolicitudNovedadFovis solNovF, SolicitudNovedadPersonaFovis solNovPF, PostulacionFOVIS posF, JefeHogar jeh, Afiliado afi, Persona per
+			WHERE sol.idSolicitud = solNovF.solicitudGlobal 
+			AND solNovF.idSolicitudNovedadFovis = solNovPF.idSolicitudNovedadFovis
+			AND solNovPF.idPostulacionFovis = posF.idPostulacion  
+			AND posF.jefeHogar = jeh.idJefeHogar
+			AND jeh.idAfiliado = afi.idAfiliado
+			AND afi.persona = per.idPersona
+			AND sol.idSolicitud = (:idSolicitud)
+		</query>
+	</named-query>
+
+	 <named-query name="Archivos.buscarRequisitoDocumental.PorSolicitudRequisitoPersona">
+        <query>
+            SELECT ich
+            FROM ItemChequeo ich, RequisitoCajaClasificacion rcc
+            WHERE rcc.requisito = ich.requisito
+            AND ich.solicitudGlobal.idSolicitud = :idSolicitud
+			AND ich.requisito.idRequisito = :idRequisito
+            AND ich.persona.idPersona = :idPersona
+        </query>
+    </named-query>
+    
+    <named-query name="Solicitudes.buscarPersona.porId">
+        <query>
+            SELECT per
+            FROM Persona per
+            WHERE per.idPersona = :idPersona
+        </query>
+    </named-query>
+
+    <!--
+        ESPACIO PARA NAMED QUERIES NATIVOS
+    -->    
+    <named-native-query name="Archivos.consultar.metadataRestanteDelArchivo">
+    	<query>
+    		SELECT 
+				per.perRazonSocial,
+				mun.munCodigo,
+				ubi.ubiDireccionFisica,
+				ubi.ubiTelefonoFijo,
+				ubi.ubiTelefonoCelular,
+				ubi.ubiEmail
+			FROM Persona per
+			LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			WHERE per.perNumeroIdentificacion = :numeroId
+			AND per.perTipoIdentificacion = :tipoId
+    	</query>
+    </named-native-query>
+    <named-native-query name="Archivos.registrar.respuestaECMExterno">
+    	<query>
+    		INSERT INTO RespuestaEcmExterno (reeCud, reeCode, reeMessage, reeStatus)
+			VALUES (:ecmCud, :ecmCode, :ecmMessage, :ecmStatus)
+    	</query>
+    </named-native-query>
+	<named-native-query name="Archivos.consultar.metadataNumeroRadicacion">
+    	<query>
+    		SELECT TOP 1 solNumeroRadicacion from Solicitud sol
+			INNER JOIN SolicitudAfiliacionPersona sap on sol.solId = sap.sapSolicitudGlobal
+			INNER JOIN RolAfiliado roa on roa.roaId = sap.sapRolAfiliado
+			INNER JOIN Afiliado afi on afi.afiId = roa.roaAfiliado
+			INNER JOIN persona per on per.perId = afi.afiPersona
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+			AND sol.solTipoTransaccion like '%:proceso%'
+			ORDER BY sol.solid desc
+    	</query>
+    </named-native-query>
+	<named-native-query name="Archivos.consultar.metadataNumeroRadicacion.instanciaProceso">
+    	<query>
+    		SELECT  sol.solNumeroRadicacion from Solicitud sol
+			WHERE sol.solInstanciaProceso = :instanciaProceso
+    	</query>
+    </named-native-query>
+	<named-native-query name="Archivos.consultar.persona.numeroRadicacion.aflafe">
+    	<query>
+    		select distinct perRazonSocial,pernumeroidentificacion,perTipoIdentificacion, 
+				mun.munCodigo,
+				ubi.ubiDireccionFisica,
+				ubi.ubiTelefonoFijo,
+				ubi.ubiTelefonoCelular,
+				ubi.ubiEmail from solicitud
+			inner join SolicitudAfiliaciEmpleador on saeSolicitudGlobal = solId
+			LEFT join Empleador e on e.empid = saeEmpleador
+			LEFT join Empresa em on em.empid = e.empEmpresa
+			LEFT JOIN UbicacionEmpresa  ON ubeEmpresa = em.empId
+			left join Ubicacion ubi on ubeUbicacion = ubi.ubiId
+			left join Persona on perid = em.empPersona
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			where solNumeroRadicacion = :numeroRadicacion
+    	</query>
+    </named-native-query>
+		<named-native-query name="Archivos.consultar.persona.numeroRadicacion.pfovis">
+    	<query>
+    		SELECT distinct perRazonSocial,pernumeroidentificacion,perTipoIdentificacion,
+				mun.munCodigo,
+				ubi.ubiDireccionFisica,
+				ubi.ubiTelefonoFijo,
+				ubi.ubiTelefonoCelular,
+				ubi.ubiEmail FROM Solicitud
+			INNER JOIN SolicitudPostulacion ON spoSolicitudGlobal = solId
+			inner join PostulacionFOVIS on pofId = spoPostulacionFOVIS
+			inner join JefeHogar on pofJefeHogar = jehId
+			inner join Afiliado on afiId = jehAfiliado
+			left join Persona on perid = afiPersona
+			left join Ubicacion ubi on perUbicacionPrincipal = ubi.ubiId
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			where solNumeroRadicacion = :numeroRadicacion
+    	</query>
+    </named-native-query>
+	<named-native-query name="Archivos.consultar.persona.numeroRadicacion.afltra">
+    	<query>
+    		select distinct perRazonSocial,pernumeroidentificacion,perTipoIdentificacion ,
+				mun.munCodigo,
+				ubi.ubiDireccionFisica,
+				ubi.ubiTelefonoFijo,
+				ubi.ubiTelefonoCelular,
+				ubi.ubiEmail from Solicitud
+			inner join SolicitudAfiliacionPersona on sapSolicitudGlobal = solId
+			inner join RolAfiliado on sapRolAfiliado = roaId
+			inner join Afiliado on afiId = roaAfiliado
+			left join Persona on perid = afiPersona
+			left join Ubicacion ubi on perUbicacionPrincipal = ubi.ubiId
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			where solNumeroRadicacion = :numeroRadicacion
+    	</query>
+    </named-native-query>
+		<named-native-query name="Archivos.consultar.persona.numeroRadicacion.nfovis">
+    	<query>
+    		SELECT distinct perRazonSocial,pernumeroidentificacion,perTipoIdentificacion ,
+				mun.munCodigo,
+				ubi.ubiDireccionFisica,
+				ubi.ubiTelefonoFijo,
+				ubi.ubiTelefonoCelular,
+				ubi.ubiEmail FROM Solicitud
+			inner join SolicitudNovedadFovis on snfSolicitudGlobal = solId
+			inner join SolicitudNovedadPersonaFovis on spfSolicitudNovedadFovis = snfId
+			left join Persona on perid = spfPersona
+			left join Ubicacion ubi on perUbicacionPrincipal = ubi.ubiId
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			where solNumeroRadicacion = :numeroRadicacion
+    	</query>
+    </named-native-query>
+	<named-native-query name="Archivos.consultar.persona.numeroRadicacion.aflnve">
+    	<query>
+    		SELECT distinct perRazonSocial,pernumeroidentificacion,perTipoIdentificacion ,
+				mun.munCodigo,
+				ubi.ubiDireccionFisica,
+				ubi.ubiTelefonoFijo,
+				ubi.ubiTelefonoCelular,
+				ubi.ubiEmail FROM Solicitud 
+			inner join SolicitudNovedad on snoSolicitudGlobal = solId
+			LEFT join SolicitudNovedadEmpleador on sneIdSolicitudNovedad = snoId
+			LEFT join Empleador e on e.empid = sneIdEmpleador
+			LEFT join Empresa em on em.empid = e.empEmpresa
+			LEFT JOIN UbicacionEmpresa  ON ubeEmpresa = em.empId
+			left join Ubicacion ubi on ubeUbicacion = ubi.ubiId
+			left join Persona on perid = em.empPersona
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			where solNumeroRadicacion = :numeroRadicacion
+    	</query>
+    </named-native-query>
+		<named-native-query name="Archivos.consultar.persona.numeroRadicacion.aflnip">
+    	<query>		
+			select distinct perRazonSocial,pernumeroidentificacion,perTipoIdentificacion ,
+							mun.munCodigo,
+							ubi.ubiDireccionFisica,
+							ubi.ubiTelefonoFijo,
+							ubi.ubiTelefonoCelular,
+							ubi.ubiEmail  from Solicitud
+			inner join SolicitudNovedad on snoSolicitudGlobal = solId
+			inner join SolicitudNovedadPersona on snpSolicitudNovedad = snoid
+			left join Persona on perid = snpPersona
+			left join Ubicacion ubi on perUbicacionPrincipal = ubi.ubiId
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			where solNumeroRadicacion = :numeroRadicacion
+    	</query>
+    </named-native-query>
+</entity-mappings>

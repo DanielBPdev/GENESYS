@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+				 version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<named-query name="ArchivoEntidadDescuentoSubsidioPignorado.buscar.id">
+		<description>Consulta que devuelve la información del archivo de descuento </description>
+		<query>
+			SELECT ardesc
+			FROM ArchivoEntidadDescuentoSubsidioPignorado ardesc
+			WHERE idArchivoEntidadDescuentoSubsidioMonetario = :idInformacionTrazabilidad
+		</query>
+	</named-query>
+
+	<named-query name="ArchivoEntidadDescuentoSubsidioPignorado.buscar.nombre">
+		<description>
+			Consulta que devuelve el primer archivo de descuento cuyo nombre inicia con el parámetro proporcionado, ordenado descendentemente.
+		</description>
+		<query>
+			SELECT a.nombre
+			FROM ArchivoEntidadDescuentoSubsidioPignorado a
+			WHERE SUBSTRING(a.nombre, 1, 21) = :nombreArchivo
+			ORDER BY a.nombre DESC
+		</query>
+	</named-query>
+
+	<named-query name="ArchivoEntidadDescuentoSubsidioPignorado.estadoCargadoProcesado.buscarTodas">
+		<description>Consulta que devuelve la información de la trazabilidad de archivos de descuento con estado CARGADO o PROCESADO</description>
+		<query>
+			SELECT ardesc
+			FROM ArchivoEntidadDescuentoSubsidioPignorado ardesc
+			WHERE ardesc.idEntidadDescuento IN (:listaActivas)
+			AND ((ardesc.estadoCarga = com.asopagos.enumeraciones.subsidiomonetario.entidadDescuento.EstadoCargaArchivoDescuentoEnum.CARGADO)
+			OR (ardesc.estadoCarga = com.asopagos.enumeraciones.subsidiomonetario.entidadDescuento.EstadoCargaArchivoDescuentoEnum.PROCESADO
+			AND ardesc.nombre IN (:listaNombres)))
+		</query>
+	</named-query>
+
+	<named-query name="SubsidioMonetarioValorPignorado.buscar.idTrazabilidad">
+		<description>Consulta que devuelve los registros asociados a la trazabilidad de un archivo de descuentos</description>
+		<query>
+			SELECT new com.asopagos.entidaddescuento.dto.ArchivoEntidadDescuentoGeneradoDTO (smp)
+			FROM SubsidioMonetarioValorPignorado smp, ArchivoEntidadDescuentoSubsidioPignorado ardesc
+			WHERE smp.numeroRadicado = :numeroRadicado
+			AND smp.valorPignorado IS NOT NULL
+			AND smp.resultado =:resultado
+			AND smp.idArchivoEntidadDescuentoSubsidioPignorado = ardesc.idArchivoEntidadDescuentoSubsidioMonetario
+			AND ardesc.idEntidadDescuento = :idEntidadDescuento
+		</query>
+	</named-query>
+
+	<named-query name="ArchivoEntidadDescuentoSubsidioPignorado.buscar.idTrazabilidad">
+		<description>Consulta que devuelve la información de trazabilidad que corresponde con un identificador</description>
+		<query>
+			SELECT ardesc
+			FROM ArchivoEntidadDescuentoSubsidioPignorado ardesc
+			WHERE ardesc.idArchivoEntidadDescuentoSubsidioMonetario = :idTrazabilidad
+		</query>
+	</named-query>
+
+	<named-query name="ArchivoEntidadDescuentoSubsidioPignorado.eliminar.registrosArchivoDescuentos">
+		<description>Consulta que elimina la información de los registros asociados a un archivo de descuento</description>
+		<query>
+			DELETE SubsidioMonetarioValorPignorado p WHERE p.idSubsidioMonetarioValorPignorado IN (:myIds)
+		</query>
+	</named-query>
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+	<named-native-query name="EntidadDescuento.actualizar.valoresPignorar.liquidacionCancelada">
+		<description>Consulta que permite actualizar la información de los valores a pignorar para una liquidación</description>
+		<query>
+			UPDATE SubsidioMonetarioValorPignorado
+			SET SubsidioMonetarioValorPignorado.smvValorPignorado = NULL,
+			SubsidioMonetarioValorPignorado.smvResultado = NULL
+			WHERE SubsidioMonetarioValorPignorado.smvNumeroRadicado =:numeroRadicado
+			AND SubsidioMonetarioValorPignorado.smvOrigenRegistro = 'CARGUE_ARCHIVO'
+		</query>
+	</named-native-query>
+
+	<named-native-query name="EntidadDescuento.eliminar.rezagosPignorar.liquidacionCancelada">
+		<description>Consulta que permite actualizar la información de los valores a pignorar para una liquidación</description>
+		<query>
+			DELETE smvSaldo
+			FROM SubsidioMonetarioValorPignorado smvSaldo
+			JOIN SubsidioMonetarioValorPignorado smvLiquidacion ON
+			(smvLiquidacion.smvArchivoEntidadDescuentoSubsidioPignorado = smvSaldo.smvArchivoEntidadDescuentoSubsidioPignorado
+			AND smvLiquidacion.smvOrigenRegistro = 'CARGUE_ARCHIVO')
+			WHERE smvSaldo.smvNumeroIdentificacionTrabajador = smvLiquidacion.smvNumeroIdentificacionTrabajador
+			AND smvSaldo.smvCodigoGrupoFamiliar = smvliquidacion.smvCodigoGrupoFamiliar
+			AND smvSaldo.smvOrigenRegistro = 'DESCONTADO'
+			AND smvSaldo.smvNumeroRadicado = smvLiquidacion.smvNumeroRadicado
+			AND smvSaldo.smvNumeroRadicado =:numeroRadicado
+		</query>
+	</named-native-query>
+
+	<named-native-query name="EntidadDescuento.actualizar.saldosDiferenteLiquidacion">
+		<description>Consulta que permite actualizar la información de los valores a pignorar para una liquidación</description>
+		<query>
+			UPDATE smvSaldo
+			SET smvSaldo.smvResultado = NULL, smvSaldo.smvValorPignorado = NULL
+			FROM SubsidioMonetarioValorPignorado smvSaldo
+			JOIN SubsidioMonetarioValorPignorado smvLiquidacion ON (smvLiquidacion.smvArchivoEntidadDescuentoSubsidioPignorado = smvSaldo.smvArchivoEntidadDescuentoSubsidioPignorado
+			AND smvLiquidacion.smvOrigenRegistro = 'CARGUE_ARCHIVO')
+			where smvSaldo.smvNumeroIdentificacionTrabajador = smvLiquidacion.smvNumeroIdentificacionTrabajador
+			and smvSaldo.smvCodigoGrupoFamiliar = smvliquidacion.smvCodigoGrupoFamiliar
+			and smvSaldo.smvOrigenRegistro = 'DESCONTADO'
+			and smvSaldo.smvNumeroRadicado != smvLiquidacion.smvNumeroRadicado
+			and smvSaldo.smvNumeroRadicado =:numeroRadicado
+			and smvSaldo.smvResultado = 'APLICADO'
+		</query>
+	</named-native-query>
+
+	<named-native-query name="EntidadDescuento.actualizar.archivosDescuento.liquidacionCancelada">
+		<description>Consulta que permite actualizar la información de los archivos de descuento para una liquidación</description>
+		<query>
+			UPDATE ard
+			SET ard.ardEstado = 'CARGADO'
+			FROM ArchivoEntidadDescuentoSubsidioPignorado ard
+			JOIN SubsidioMonetarioValorPignorado smv ON smv.smvArchivoEntidadDescuentoSubsidioPignorado = ard.ardId
+			WHERE smv.smvNumeroRadicado  = :numeroRadicado
+			AND ard.ardEstado = 'PROCESADO'
+		</query>
+	</named-native-query>
+
+	<named-native-query name="EntidadDescuento.buscar.subsidioMonetarioValorPignorado">
+		<description>Consulta que devuelva la lista de identificadores de entidad de descuento para un proceso de liquidacion</description>
+		<query>	
+			SELECT DISTINCT(ard.ardEntidadDescuento) FROM SubsidioMonetarioValorPignorado smvp
+			JOIN ArchivoEntidadDescuentoSubsidioPignorado ard ON ard.ardId = smvp.smvArchivoEntidadDescuentoSubsidioPignorado
+			WHERE smvp.smvNumeroRadicado = :numeroRadicacion
+			AND smvp.smvResultado = 'APLICADO'
+		</query>
+	</named-native-query>
+
+	<named-stored-procedure-query
+			name="ACTUALIZAR_DESCUENTOS_NUEVO_ARCHIVO"
+			procedure-name="ACTUALIZAR_DESCUENTOS_NUEVO_ARCHIVO">
+		<parameter class="java.lang.Long" mode="IN" name="idArchivo" />
+		<parameter class="java.lang.Long" mode="IN" name="codigoEntidad" />
+		<parameter class="java.lang.Long" mode="OUT" name="out" />
+	</named-stored-procedure-query>
+</entity-mappings>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="archivosPila_PU" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>jboss/datasources/pilaDS</jta-data-source>
+        <mapping-file>META-INF/jpql/NamedQueries.xml</mapping-file>
+        
+     	<!-- PILA BD -->
+		
+		<class>com.asopagos.entidades.pila.procesamiento.ErrorValidacionLog</class>
+		<class>com.asopagos.entidades.pila.procesamiento.EstadoArchivoPorBloque</class>
+		<class>com.asopagos.entidades.pila.procesamiento.EstadoArchivoPorBloqueOF</class>
+		<class>com.asopagos.entidades.pila.procesamiento.IndicePlanilla</class>
+		<class>com.asopagos.entidades.pila.procesamiento.IndicePlanillaOF</class>
+		<class>com.asopagos.entidades.pila.procesamiento.SolicitudCambioNumIdentAportante</class>
+		<class>com.asopagos.entidades.pila.procesamiento.HistorialEstadoBloque</class>
+		<class>com.asopagos.entidades.pila.parametrizacion.CondicionAportanteVencimiento</class>
+		<class>com.asopagos.entidades.pila.parametrizacion.NormatividadFechaVencimiento</class>
+		<class>com.asopagos.entidades.pila.parametrizacion.OportunidadPresentacion</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoAPRegistro1</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoARegistro1</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoFRegistro1</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoFRegistro5</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoFRegistro6</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoFRegistro8</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoFRegistro9</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoIPRegistro1</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoIPRegistro2</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoIPRegistro3</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoIRegistro1</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoIRegistro2</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoIRegistro3</class>
+		<class>com.asopagos.entidades.pila.archivolinea.PilaArchivoIRegistro4</class>
+		<class>com.asopagos.entidades.pila.soporte.PasoValores</class>
+		<class>com.asopagos.entidades.pila.soporte.ProcesoPila</class>
+		<class>com.asopagos.entidades.pila.soporte.LogErrorPilaM1</class>
+		
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="${persistencia}" />
+ 			<property name="hibernate.show_sql" value="false" />
+ 			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.order_inserts" value="true"/>
+			<property name="hibernate.order_updates" value="true"/>
+			<property name="hibernate.jdbc.batch_size" value="500"/>
+			<property name="javax.persistence.query.timeout" value="60000" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+			<property name="hibernate.connection.autocommit" value="true"/>
+            
+            <!-- events -->
+ 			<!-- property name="hibernate.ejb.event.post-load" value="com.asopagos.audit.event.AuditQueryEventListener"/> -->
+			<!-- envers -->
+			<property name="hibernate.integration.envers.enabled" value="false"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="false"/> 
+		</properties>
+       
+	</persistence-unit>
+	
+	<persistence-unit name="pilaStaging_PU" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jboss/datasources/pilaDS</jta-data-source>
+		<mapping-file>META-INF/jpql/NamedQueriesStaging.xml</mapping-file>
+		
+		
+		<class>com.asopagos.entidades.pila.staging.RegistroGeneral</class>
+		<class>com.asopagos.entidades.pila.staging.RegistroDetallado</class>
+		<class>com.asopagos.entidades.pila.staging.ControlEjecucionPlanillas</class>
+		<class>com.asopagos.entidades.pila.staging.PreliminarArchivoPila</class>
+		
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.default_catalog" value="${pila.database}" />
+			<property name="hibernate.default_schema" value="staging" />
+			<property name="hibernate.hbm2ddl.auto" value="${persistencia}" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+            <property name="hibernate.jdbc.batch_size" value="500"/>
+			<property name="javax.persistence.query.timeout" value="60000" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+			<property name="hibernate.connection.autocommit" value="true" />
+			<!-- events -->
+			<!-- property name="hibernate.ejb.event.post-load" value="com.asopagos.audit.event.AuditQueryEventListener"/> -->
+			<!-- envers -->
+			<property name="hibernate.integration.envers.enabled" value="false"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="false"/>
+		</properties>
+
+	</persistence-unit>	
+	
+	<persistence-unit name="core_PU" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jboss/datasources/asopagosDS</jta-data-source>
+		<mapping-file>META-INF/jpql/NamedQueriesCore.xml</mapping-file>
+		 
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorParamValue</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorParameter</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorDefinition</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorCatalog</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.LineLoadCatalog</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.LineDefinitionLoad</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.FileLoadedLog</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.FileLoaded</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.FileDefinitionLoadType</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.FileDefinitionLoad</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.FieldLoadCatalog</class>
+		<class>co.com.heinsohn.lion.fileprocessing.fileloader.FieldDefinitionLoad</class>
+		<class>co.com.heinsohn.lion.fileCommon.FileLocationCommon</class>
+		<class>co.com.heinsohn.lion.fileCommon.ProcessorParamValue</class>
+		<class>co.com.heinsohn.lion.fileCommon.ProcessorParameter</class>
+		<class>co.com.heinsohn.lion.fileCommon.ProcessorDefinition</class>
+		<class>co.com.heinsohn.lion.fileCommon.ProcessorCatalog</class>
+        
+		<class>com.asopagos.entidades.transversal.core.DiasFestivos</class>
+		<class>com.asopagos.entidades.ccf.core.Banco</class>
+		<class>com.asopagos.entidades.ccf.personas.Persona</class>
+		<class>com.asopagos.entidades.ccf.personas.Empresa</class>
+		<class>com.asopagos.entidades.ccf.core.Ubicacion</class>
+		<class>com.asopagos.entidades.ccf.personas.Empleador</class>
+		<class>com.asopagos.entidades.ccf.personas.EntidadPagadora</class>
+		<class>com.asopagos.entidades.ccf.core.Beneficio</class>
+                <class>com.asopagos.entidades.ccf.afiliaciones.PreRegistroEmpresaDesCentralizada</class>
+                
+		<class>com.asopagos.entidades.transversal.personas.ARL</class>
+		<class>com.asopagos.entidades.transversal.core.Departamento</class>
+		<class>com.asopagos.entidades.transversal.core.Municipio</class>
+		<class>com.asopagos.entidades.transversal.core.CodigoCIIU</class>
+		<class>com.asopagos.entidades.transversal.core.CajaCompensacion</class>
+		<class>com.asopagos.entidades.ccf.general.Constante</class>
+		
+		<class>com.asopagos.entidades.ccf.aportes.AporteDetallado</class>
+		<class>com.asopagos.entidades.ccf.aportes.AporteGeneral</class>
+		<class>com.asopagos.entidades.ccf.aportes.DescuentoInteresMora</class>
+		
+		<class>com.asopagos.entidades.ccf.core.OperadorInformacion</class>
+		<class>com.asopagos.entidades.ccf.core.OperadorInformacionCcf</class>
+		<class>com.asopagos.entidades.ccf.general.EjecucionProgramada</class>
+		<class>com.asopagos.entidades.ccf.general.ConexionOperadorInformacion</class>
+		<class>com.asopagos.entidades.ccf.aportes.TasasInteresMora</class>
+		
+		<class>com.asopagos.entidades.ccf.aportes.ListasBlancasAportantes</class>
+		
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="${persistencia}" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+			<property name="hibernate.connection.autocommit" value="true" />
+			
+			<!-- PROPIEDADES REQUERIDAS POR COMPONENTE -->
+			<property name="jboss.entity.manager.factory.jndi.name" value="java:/${app.name}EntityManagerFactory"/>
+			<property name="jboss.entity.manager.jndi.name" value="java:/${app.name}EntityManager"/>
+            
+			<!-- events -->
+			<!--property name="hibernate.ejb.event.post-load" value="com.asopagos.audit.event.AuditQueryEventListener"/-->
+			<!-- envers -->
+			<property name="hibernate.integration.envers.enabled" value="false"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="false"/>
+		</properties>
+
+	</persistence-unit>
+</persistence>

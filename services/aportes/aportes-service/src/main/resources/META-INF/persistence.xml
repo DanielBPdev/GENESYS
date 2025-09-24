@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="core_PU" transaction-type="JTA">
+	<provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>jboss/datasources/asopagosDS</jta-data-source>
+        <mapping-file>META-INF/jpql/NamedQueries.xml</mapping-file>
+        <jar-file>lib/model-auditoria-entities-${project.version}.jar</jar-file>
+        
+        <!-- Rutines -->
+		<mapping-file>META-INF/jpql/ActualizarEstadoEmpleadorPorAportesRutineNamedQueries.xml</mapping-file>
+		<mapping-file>META-INF/jpql/CrearEmpresaRutineNamedQueries.xml</mapping-file>
+		<mapping-file>META-INF/jpql/crearPersonaRutineNamedQueries.xml</mapping-file>
+        
+        <class>com.asopagos.entidades.ccf.aportes.SolicitudAporte</class>
+        <class>com.asopagos.entidades.ccf.personas.Persona</class>
+        <class>com.asopagos.entidades.transversal.core.Municipio</class>
+        <class>com.asopagos.entidades.ccf.aportes.AporteDetallado</class>
+        <class>com.asopagos.entidades.ccf.core.OperadorInformacion</class>
+        <class>com.asopagos.entidades.transversal.core.Departamento</class>
+        <class>com.asopagos.entidades.ccf.aportes.AporteGeneral</class>
+        <class>com.asopagos.entidades.ccf.novedades.SolicitudNovedad</class>
+        <class>com.asopagos.entidades.ccf.novedades.SolicitudNovedadPersona</class>
+        <class>com.asopagos.entidades.ccf.novedades.SolicitudNovedadPila</class>
+        <class>com.asopagos.entidades.ccf.personas.NovedadDetalle</class>
+        <class>com.asopagos.entidades.ccf.personas.RolAfiliado</class>
+        <class>com.asopagos.entidades.ccf.personas.Afiliado</class>
+        <class>com.asopagos.entidades.ccf.personas.Empleador</class>
+        <class>com.asopagos.entidades.ccf.personas.EntidadPagadora</class>
+        <class>com.asopagos.entidades.ccf.aportes.InformacionFaltanteAportante</class>
+        <class>com.asopagos.entidades.ccf.general.Solicitud</class>
+        <class>com.asopagos.entidades.ccf.core.Ubicacion</class>
+        <class>com.asopagos.entidades.ccf.personas.Empresa</class>
+        <class>com.asopagos.entidades.transversal.personas.ARL</class>
+        <class>com.asopagos.entidades.transversal.personas.AFP</class>
+        <class>com.asopagos.entidades.transversal.core.CodigoCIIU</class>
+        <class>com.asopagos.entidades.ccf.core.SucursalEmpresa</class>
+        <class>com.asopagos.entidades.ccf.aportes.MovimientoAporte</class>  
+        <class>com.asopagos.entidades.ccf.aportes.AporteDetalladoRegistroControlN</class>     
+       	<class>com.asopagos.entidades.ccf.aportes.SolicitudDevolucionAporte</class>
+       	<class>com.asopagos.entidades.ccf.aportes.DevolucionAporteDetalle</class>
+       	<class>com.asopagos.entidades.ccf.aportes.DevolucionAporte</class>
+       	<class>com.asopagos.entidades.ccf.aportes.SolicitudCorreccionAporte</class>  
+       	<class>com.asopagos.entidades.ccf.aportes.Correccion</class>
+       	<class>com.asopagos.entidades.ccf.aportes.PilaEstadoTransitorio</class>  
+       	<class>com.asopagos.aportes.dto.MovimientoIngresosDetalladoDTO</class>
+       	<class>com.asopagos.dto.modelo.AporteGeneralModeloDTO</class> 
+        <class>com.asopagos.entidades.ccf.core.BeneficioEmpleador</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorParamValue</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorParameter</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorDefinition</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorCatalog</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.LineLoadCatalog</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.LineDefinitionLoad</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FileLoadedLog</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FileLoaded</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FileDefinitionLoadType</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FileDefinitionLoad</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FieldLoadCatalog</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FieldDefinitionLoad</class>
+        <class>co.com.heinsohn.lion.fileCommon.FileLocationCommon</class>
+        <class>co.com.heinsohn.lion.fileCommon.ProcessorParamValue</class>
+        <class>co.com.heinsohn.lion.fileCommon.ProcessorParameter</class>
+        <class>co.com.heinsohn.lion.fileCommon.ProcessorDefinition</class>
+        <class>co.com.heinsohn.lion.fileCommon.ProcessorCatalog</class>
+        <class>com.asopagos.entidades.ccf.aportes.SolicitudCierreRecaudo</class>
+        <class>com.asopagos.entidades.ccf.personas.MedioDePago</class>
+        <class>com.asopagos.entidades.ccf.personas.MedioConsignacion</class>
+        <class>com.asopagos.entidades.ccf.personas.MedioTransferencia</class>
+        <class>com.asopagos.entidades.ccf.novedades.RegistroPersonaInconsistente</class>
+        <class>com.asopagos.entidades.ccf.aportes.TasasInteresMora</class>
+        <class>com.asopagos.entidades.ccf.core.UbicacionEmpresa</class>
+        <class>com.asopagos.pila.clients.ActualizarEstadosRegistroPlanilla</class>
+        <class>com.asopagos.entidades.ccf.aportes.ControladorCarteraAportes</class>
+        <class>com.asopagos.entidades.ccf.aportes.ControladorCarteraPlanilla</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="none" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.jdbc.batch_size" value="500"/>
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+			<property name="hibernate.connection.autocommit" value="true"/>
+			<!-- envers -->
+			<property name="hibernate.integration.envers.enabled" value="${audit.enabled}"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="${audit.enabled}"/>
+			<property name="org.hibernate.envers.default_schema" value="${default.schema}"/>
+			<property name="org.hibernate.envers.store_data_at_delete" value="true"/>
+			<property name="org.hibernate.envers.default_catalog" value="${nombre.usuario}"/>
+		</properties>
+       
+	</persistence-unit>
+	
+</persistence>

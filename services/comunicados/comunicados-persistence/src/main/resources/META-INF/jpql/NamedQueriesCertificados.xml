@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-native-query
+		name="Certificados.consulta.validarEstadoAfiliadoDependiente">
+		<query>
+            select top(1) * from estadoAfiliacionPersonaEmpresa
+            where eaePersona = :idPersona
+            and eaeEmpleador = :idEmpleador
+            and eaeEstadoAfiliacion = :estadoActualEnCore
+            order by eaeFechaCambioEstado desc
+        </query>
+	</named-native-query>
+	<named-native-query
+		name="Certificados.insertar.registrarEstadoAfiliadoDependiente">
+		<query>
+            insert into estadoAfiliacionPersonaEmpresa (eaePersona, eaeEmpleador, eaeEstadoAfiliacion, eaeFechaCambioEstado)
+            values (:idPersona, :idEmpleador, :estadoActualEnCore, dbo.GetLocalDate());
+        </query>
+	</named-native-query>
+	<named-native-query
+		name="Certificados.consulta.validarEstadoAfiliadoIndependiente">
+		<query>
+            select top(1) * from estadoAfiliacionPersonaIndependiente
+            where eaiPersona = :idPersona
+            and eaiEstadoAfiliacion = :estadoActualEnCore
+            order by eaiFechaCambioEstado desc
+        </query>
+	</named-native-query>
+	<named-native-query
+		name="Certificados.insertar.registrarEstadoAfiliadoIndependiente">
+		<query>
+            insert into estadoAfiliacionPersonaIndependiente (eaiPersona, eaiEstadoAfiliacion, eaiFechaCambioEstado, eaiClaseIndependiente)
+            values (:idPersona, :estadoActualEnCore, dbo.GetLocalDate(), :claseIndependiente);
+        </query>
+	</named-native-query>
+	<named-native-query
+		name="Certificados.consulta.validarEstadoAfiliadoPensionado">
+		<query>
+            select top(1) * from estadoAfiliacionPersonaPensionado
+			where eapPersona = :idPersona
+			and eapEstadoAfiliacion = :estadoActualEnCore
+			order by eapFechaCambioEstado desc
+        </query>
+	</named-native-query>
+	<named-native-query
+		name="Certificados.insertar.registrarEstadoAfiliadoPensionado">
+		<query>
+            insert into estadoAfiliacionPersonaPensionado (eapPersona, eapEstadoAfiliacion, eapFechaCambioCategoria)
+			values (:idPersona, :estadoActualEnCore, dbo.GetLocalDate());
+        </query>
+	</named-native-query>
+	<named-native-query name="Certificados.consulta.validarEstadoActualEmpleadorReportes">
+		<query>
+			SELECT TOP(1) eecPersona, eecEstadoAfiliacion FROM estadoAfiliacionEmpleadorCaja
+			WHERE eecPersona = :idPersonaEmpleador
+			ORDER BY eecFechaCambioEstado DESC
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Certificados.insertar.actualizarHistoricoEstadoEmpleador">
+		<query>
+			insert into estadoAfiliacionEmpleadorCaja (eecPersona, eecEstadoAfiliacion, eecFechaCambioEstado, eecMotivoDesafiliacion, eecNumeroTrabajadores)
+			values (:persona, :estadoAfiliacion, dbo.GetLocalDate(), :motivoDesafiliacion, :numeroTrabajadores)
+		</query>
+	</named-native-query>
+	
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-stored-procedure-query name="Certificados.consulta.historico.afiliacion"  procedure-name="USP_ExecuteConsultarHistoricoEstadoAportante">
+    	<parameter mode="IN" name="tipoIdentificacion" class="java.lang.String"/>
+    	<parameter mode="IN" name="numeroIdentificacion" class="java.lang.String"/>
+    	<parameter mode="IN" name="tipoAportante" class="java.lang.String"/>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query name="Certificados.consulta.historico.afiliacion.empleador"  procedure-name="USP_ExecuteConsultarHistoricoAfiliacionEmpleador">
+    	<parameter mode="IN" name="tipoIdentificacion" class="java.lang.String"/>
+    	<parameter mode="IN" name="numeroIdentificacion" class="java.lang.String"/>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query name="Certificados.consulta.historico.afiliacion.persona"  procedure-name="USP_ExecuteConsultarHistoricoAfiliacionPersona">
+    	<parameter mode="IN" name="tipoIdentificacion" class="java.lang.String"/>
+    	<parameter mode="IN" name="numeroIdentificacion" class="java.lang.String"/>
+    	<parameter mode="IN" name="tipoAfiliado" class="java.lang.String"/>
+    	<parameter mode="IN" name="tipoIdentificacionEmpleador" class="java.lang.String"/>
+    	<parameter mode="IN" name="numeroIdentificacionEmpleador" class="java.lang.String"/>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query name="Historicos.consultar.USP_ExecuteConsultarHistoricoAfiliacionEmpleador" procedure-name="USP_ExecuteConsultarHistoricoAfiliacionEmpleador">
+		<parameter mode="IN" name="idPersona" class="java.lang.String"/>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query name="Historicos.consultar.USP_ExecuteConsultarHistoricoEstadoAportante" procedure-name="USP_ExecuteConsultarHistoricoEstadoAportante">
+		<parameter mode="IN" name="idPersona" class="java.lang.String"/>
+		<parameter mode="IN" name="tipoAportante" class="java.lang.String"/>
+	</named-stored-procedure-query>
+</entity-mappings>

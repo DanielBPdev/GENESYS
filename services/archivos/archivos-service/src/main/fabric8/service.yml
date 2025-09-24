@@ -1,0 +1,12 @@
+metadata:
+  name: ${project.artifactId}
+  labels:
+    app: ${project.artifactId}
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    name: ${project.artifactId}

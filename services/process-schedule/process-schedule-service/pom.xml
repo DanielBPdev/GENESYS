@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>process-schedule</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>process-schedule-service</artifactId>
+	<packaging>war</packaging>
+	<name>Process Schedule Service</name>
+	<description>Aplicación Web que implementa los procesos automáticos</description>
+
+	<properties>
+		<fabric8.skip>false</fabric8.skip>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>novedades-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>process-schedule-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>usuarios-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>subsidio-monetario-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>subsidio-monetario-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>cartera-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>cartera-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>historicos-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>aportes-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>aportes-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>sat-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>archivos-pila-api</artifactId>
+			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.heinsohn.lion.components.fileProcessing</groupId>
+					<artifactId>lion-fileProcessingHot</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.heinsohn.lion.components.common</groupId>
+					<artifactId>lion-commonHot</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.heinsohn.lion.components.cache</groupId>
+					<artifactId>lion-cacheHot</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>entidad-descuento-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>novedades-fovis-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>pagos-subsidio-monetario-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>seven-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>pila-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>solicitudes-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	
+	</dependencies>
+
+	<build>
+		<!-- Maven will append the version to the finalName (which is the name 
+			given to the generated war, and hence the context root) -->
+		<finalName>ProcessScheduleService</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+	</profiles>
+
+</project>

@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="Aportes.RegistroGeneral.consultarPorIdSolicitud">
+		<query>
+			SELECT rg  FROM RegistroGeneral rg  WHERE rg.registroControlManual=:idSolicitud AND (:limitarFinalizados = 0 OR rg.outFinalizadoProcesoManual = 0)
+		</query>
+	</named-query>
+	<named-query name="Aportes.RegistroGeneral.consultarPorIdSolicitudIdRegistroGeneral">
+		<query>
+			SELECT rg 
+			FROM RegistroGeneral rg 
+			WHERE rg.registroControlManual=:idSolicitud 
+			AND rg.id = :idRegistroGeneral
+			AND (:limitarFinalizados = 0 OR rg.outFinalizadoProcesoManual = 0)
+		</query>
+	</named-query>
+	<named-query name="Aportes.RegistroGeneral.consultarPorIdRegistroGeneral">
+		<query>
+			SELECT rd FROM RegistroDetallado rd WHERE rd.registroGeneral=:idRegistroGeneral
+		</query>
+	</named-query>
+    <named-query name="Aportes.RegistroGeneral.consultarPorIdRegistroGeneral.tipoAfiliado">
+        <query>
+            SELECT new com.asopagos.dto.modelo.RegistroDetalladoModeloDTO(rd) 
+            FROM RegistroDetallado rd 
+            WHERE rd.registroGeneral = :idRegistroGeneral
+            AND rd.outTipoAfiliado = :tipoAfiliado
+            AND (:tipoId IS NULL OR rd.tipoIdentificacionCotizante = :tipoId)
+            AND (:numId IS NULL OR rd.numeroIdentificacionCotizante = :numId)
+        </query>
+    </named-query>
+	<named-query name="Aportes.Registro.General.Id">
+		<query>
+			SELECT rg FROM RegistroGeneral rg WHERE rg.id=:idRegistroGeneral
+		</query>
+	</named-query>
+	<named-query name="Aportes.RegistroGeneral.consultarPorNumPlanilla">
+		<query>
+			SELECT new com.asopagos.dto.modelo.RegistroGeneralModeloDTO(rg) 
+			FROM RegistroGeneral rg 
+			WHERE rg.registroControlManual IS NULL
+			AND rg.numPlanilla = :numPlanilla
+		</query>
+	</named-query>
+	<named-query name="Aportes.Consultar.RegistroDetallado">
+		<description>Consulta un registro en RegistroDetallado, por id</description>
+		<query>
+			SELECT rd FROM RegistroDetallado rd WHERE rd.id=:idRegistroDetallado
+		</query>
+	</named-query>	
+	<named-query name="Aportes.actualizar.estado.registro.detallado.no.ok">
+		<query>
+			UPDATE RegistroDetallado rd SET rd.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_OK_APROBADO
+            WHERE rd.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_OK 
+            AND rd.id IN (:idCotizantes)
+		</query>
+	</named-query>
+	<named-query name="Aportes.actualizar.estado.registro.detallado.no.validado">
+		<query>
+			UPDATE RegistroDetallado rd SET rd.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_VALIDADO_BD_APROBADO
+            WHERE rd.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_VALIDADO_BD 
+            AND rd.id IN (:idCotizantes)
+		</query>
+	</named-query>
+	<named-query name="Aportes.actualizar.estado.registro.general.validacion.vs.bd">
+		<query>
+			UPDATE RegistroGeneral rg SET rg.outEstadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PROCESADO_VS_BD
+            WHERE rg.outEstadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD 
+            AND rg.id IN (:idRegistroGeneral)
+		</query>
+	</named-query>
+	
+	<named-query name="Consultar.Registrado.General.Por.Id.Registro.General.Aporte">
+		<query>
+			SELECT rg FROM RegistroGeneral rg WHERE rg.id=:idRegistroGeneral
+			AND rg.numeroIdentificacionAportante =:numeroIdentificacion
+			AND rg.tipoIdentificacionAportante =:tipoIdentificacion
+		</query>
+	</named-query>
+		<named-query name="Aportes.consultar.recaudo.cotizantes.novedades.procesadas">
+		<query>
+			SELECT new com.asopagos.aportes.dto.RecaudoCotizanteDTO(red.id, red.tipoIdentificacionCotizante, red.numeroIdentificacionCotizante,
+            red.primerNombre, red.segundoNombre, red.primerApellido, red.segundoApellido, red.tipoCotizante, rno.tipoNovedad) 
+            FROM RegistroDetallado red , RegistroDetalladoNovedad rno 
+            WHERE red.registroGeneral =:idRegistroGeneral 
+            AND red.id = rno.registroDetallado
+            AND rno.accionNovedad = com.asopagos.enumeraciones.aportes.MarcaAccionNovedadEnum.APLICAR_NOVEDAD
+		</query>
+	</named-query>
+	<named-query name="Aportes.consultar.recaudo.cotizantes.novedades.no.procesadas">
+		<query>
+			SELECT new com.asopagos.aportes.dto.RecaudoCotizanteDTO(red.id, red.tipoIdentificacionCotizante, red.numeroIdentificacionCotizante,
+            red.primerNombre, red.segundoNombre, red.primerApellido, red.segundoApellido, red.tipoCotizante, rno.tipoNovedad) 
+            FROM RegistroDetallado red , RegistroDetalladoNovedad rno 
+            WHERE red.registroGeneral =:idRegistroGeneral 
+            AND red.id = rno.registroDetallado
+            AND (rno.accionNovedad = com.asopagos.enumeraciones.aportes.MarcaAccionNovedadEnum.NO_APLICADA
+            OR rno.accionNovedad = com.asopagos.enumeraciones.aportes.MarcaAccionNovedadEnum.RELACIONAR_NOVEDAD)
+		</query>
+	</named-query>
+	<named-query name="Aportes.Consultar.RegistroGeneral.marcaPilaManula">
+		<description>Consulta de marca de planilla PILA Manual</description>
+		<query>
+			SELECT CASE WHEN reg.outMotivoProcesoManual IS NOT NULL THEN true ELSE false END
+			FROM RegistroGeneral reg 
+			WHERE reg.id = :idRegistroGeneral
+		</query>
+	</named-query>
+	
+	<named-query name="Aporte.Consultar.RegistroGeneral.listadoIds">
+	   <description>Consulta de registros generales por listado de IDs</description>
+	   <query>
+	       SELECT new com.asopagos.dto.modelo.RegistroGeneralModeloDTO(reg)
+	       FROM RegistroGeneral reg
+	       WHERE reg.id IN (:idsRegistrosGeneral)
+	   </query>
+	</named-query>
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="Aportes.Consultar.NovedadesRechazadas.Cotizante.Aporte">
+		<description>Consulta las novedades rechazadas relacionadas a un aporte detallado (cotizante)</description>
+		<query>
+			SELECT rdn.rdnTipoTransaccion, rdn.rdnFechaInicioNovedad, rdn.rdnFechaFinNovedad, 'RECHAZADA'
+			FROM staging.RegistroDetalladoNovedad rdn
+			WHERE rdn.rdnRegistroDetallado = :idRegistroDetallado 
+			AND rdn.rdnTipoTransaccion IN :tiposTransaccionNovedadesRechazadas
+		</query>
+	</named-native-query>
+	<named-native-query name="Aportes.consultar.novedades.rechazadas">
+		<query>
+			select redoutFechaProcesamientoValidRegAporte,rdnTipotransaccion,regregistrocontrolManual,regnombreAportante,rdnfechaInicioNovedad,rdnfechafinNovedad,rdnTipoNovedad 
+			from staging.RegistroDetallado 
+			join staging.RegistroDetalladoNovedad on redid= rdnregistrodetallado 
+			join staging.RegistroGeneral on regid=redregistrogeneral 
+			where redtipoIdentificacionCotizante=:tipoIdentificacion 
+			and redNumeroIdentificacionCotizante=:numeroIdentificacion
+			and rdnAccionNovedad in ('NO_APLICADA','RELACIONAR_NOVEDAD')
+			and rdnfechaInicioNovedad BETWEEN :fechaInicio AND :fechaFin
+		</query>
+	</named-native-query>
+	<named-native-query name="Aportes.consultar.novedades.rechazadas.recientes">
+		<query>
+			select redoutFechaProcesamientoValidRegAporte,rdnTipotransaccion,regregistrocontrolManual,regnombreAportante,rdnfechaInicioNovedad,rdnfechafinNovedad 
+			from staging.RegistroDetallado 
+			join staging.RegistroDetalladoNovedad on redid= rdnregistrodetallado 
+			join staging.RegistroGeneral on regid=redregistrogeneral 
+			where redtipoIdentificacionCotizante=:tipoIdentificacion 
+			and redNumeroIdentificacionCotizante=:numeroIdentificacion
+			and rdnAccionNovedad in ('NO_APLICADA','RELACIONAR_NOVEDAD')
+			and rdnfechaInicioNovedad &gt;=:fechaFin
+			ORDER BY rdnfechaInicioNovedad ASC 
+		</query>
+	</named-native-query>
+	<named-native-query name="Aportes.consultar.novedades.cotizante">
+		<query>
+			SELECT rdn.rdnTipoTransaccion, rdn.rdnFechaInicioNovedad, rdn.rdnFechaFinNovedad, CASE WHEN rdn.rdnAccionNovedad='APLICAR_NOVEDAD'
+			THEN 'APROBADA'
+			ELSE 'RECHAZADA' END, rdn.rdnTipoNovedad,
+			rg.regNovedadFutura, 
+			rdn.rdnid
+			FROM staging.RegistroDetalladoNovedad rdn
+			LEFT JOIN staging.RegistroDetallado rd ON rdn.rdnRegistroDetallado = rd.redId
+			LEFT JOIN staging.RegistroGeneral rg ON rg.regId = rd.redRegistroGeneral 
+			WHERE rdn.rdnRegistroDetallado = :idRegistroDetallado
+			union
+			SELECT rdn.rdnTipoTransaccion, rdn.rdnFechaInicioNovedad, rdn.rdnFechaFinNovedad, CASE WHEN rdn.rdnAccionNovedad='APLICAR_NOVEDAD'
+			THEN 'APROBADA'
+			ELSE 'RECHAZADA' END, rdn.rdnTipoNovedad,
+			rg.regNovedadFutura, 
+			rdn.rdnid 
+			FROM staging.RegistroDetalladoNovedad rdn
+			LEFT JOIN staging.RegistroDetallado rd ON rdn.rdnRegistroDetallado = rd.redId
+			inner join staging.RegistroDetalladoPlanillaN as rdnp on rd.redId = rdnp.redId
+			LEFT JOIN staging.RegistroGeneral rg ON rg.regId = rd.redRegistroGeneral 
+			WHERE rdnp.redRegistroDetalladoAnterior = :idRegistroDetallado  
+			order by rdn.rdnid 
+		</query>
+	</named-native-query>
+	<named-native-query name="Aportes.consultar.registroDetallado.tipoCotizanteAporteInd">
+		<description>Consulta del tipo de cotizante más reciente en un aporte como independiente</description>
+		<query>
+			SELECT TOP 1 redTipoCotizante
+            FROM staging.RegistroGeneral
+            INNER JOIN staging.RegistroDetallado ON redRegistroGeneral = regId
+            WHERE redOUTTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+            	AND regTipoIdentificacionAportante = :sTipoID
+				AND regNumeroIdentificacionAportante = :sNumID
+				AND regPeriodoAporte &lt;= :sPeriodo
+		</query>
+	</named-native-query>
+    <named-native-query name="Aportes.eliminar.RegistroDetalladoNovedad.idRegistroGeneral">
+        <description>Sentencia para el borrado de registros detallados novedad asociados a un registro general</description>
+        <query>
+            DELETE rdn 
+            FROM staging.RegistroDetallado red
+            INNER JOIN staging.RegistroDetalladoNovedad rdn ON rdn.rdnRegistroDetallado = red.redId 
+            WHERE red.redRegistroGeneral = :idRegistroGeneral
+        </query>
+    </named-native-query>
+	<named-native-query name="Aportes.eliminar.RegistroDetallado.idRegistroGeneral">
+		<description>Sentencia para el borrado de registros detallados asociados a un registro general</description>
+		<query>
+			DELETE FROM staging.RegistroDetallado WHERE redRegistroGeneral = :idRegistroGeneral
+		</query>
+	</named-native-query>
+    <named-native-query name="Aportes.eliminar.RegistroGeneral.id">
+        <description>Sentencia para el borrado de registros detallados asociados a un registro general</description>
+        <query>
+            DELETE FROM staging.RegistroGeneral WHERE regId = :idRegistroGeneral
+        </query>
+    </named-native-query>
+	<named-native-query name="Aportes.Consultar.RegistroGeneral.tieneNovedades">
+	   <description>Consulta para establecer la presencia de novedades y el tamaño de la planilla en un listado de registros generales</description>
+	   <query>
+	        SELECT T.regId, T.tieneNovedad, COUNT(*) registros
+			FROM staging.RegistroDetallado red2
+			INNER JOIN (
+			    SELECT reg2.regId, CASE WHEN rdn2.novedades IS NULL THEN 0 ELSE 1 END tieneNovedad
+			    FROM staging.RegistroGeneral reg2
+			    LEFT JOIN (
+			        SELECT reg.regId, COUNT(*) novedades
+			        FROM staging.RegistroDetalladoNovedad rdn
+			        INNER JOIN staging.RegistroDetallado red ON rdn.rdnRegistroDetallado = red.redId 
+			        INNER JOIN staging.RegistroGeneral reg ON red.redRegistroGeneral = reg.regId
+			        WHERE reg.regId IN (:idRegistroGeneral)
+			        AND ISNULL(reg.regNovedadFutura, 0) = 0
+			        GROUP BY reg.regId
+			    ) AS rdn2 ON rdn2.regId = reg2.regId
+			    WHERE reg2.regId IN (:idRegistroGeneral)
+			) AS T ON T.regId = red2.redRegistroGeneral
+			GROUP BY T.regId, T.tieneNovedad
+	   </query>
+	</named-native-query>
+	
+	<named-native-query name="Aportes.Consultar.RegistroGeneral.datosPlanillaAporteOriginal">
+		<description>Consulta de datos de planilla para información de aporte original en vistas 360</description>
+		<query>
+			SELECT reg.regNumPlanilla, reg.regOUTEstadoArchivo, pip.pipTipoArchivo, reg.regTipoPlanilla 
+			FROM staging.RegistroDetallado red 
+			INNER JOIN staging.RegistroGeneral reg ON red.redRegistroGeneral = reg.regId
+			INNER JOIN dbo.PilaIndicePlanilla pip ON reg.regRegistroControl = pip.pipId
+			WHERE red.redId = :idRegistroDetallado
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Aportes.Consultar.RegistroGeneral.datosPlanillaAporte">
+		<description>Consulta de datos de planilla para información de aporte original en vistas 360</description>
+		<query>
+			SELECT reg.regRegistroControl, reg.regOUTEstadoArchivo
+			FROM staging.RegistroGeneral reg			
+			WHERE reg.regId = :idRegistroGeneral
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Aportes.Eliminar.ControlEjecucionPlanillas">
+	   <description>Sentencia para la limpieza de registros de control de planillas terminadas</description>
+	   <query>
+	        DELETE cep
+		    FROM staging.ControlEjecucionPlanillas cep
+			INNER JOIN staging.RegistroGeneral reg ON reg.regRegistroControl = cep.cepIdPlanilla
+			WHERE reg.regId IN (:idsRegistroGeneral)
+	   </query>
+	</named-native-query>
+
+	<named-native-query name="Aporte.Consultar.RegistroGeneral.listadoIds.native"
+		result-set-mapping="Aporte.Consultar.RegistroGeneral.listadoIds.native.mapping"> 
+		<query>
+			select
+			r.regId as id, 
+			r.regTransaccion as transaccion, 
+			r.regEsAportePensionados as esAportePensionados, 
+			r.regNombreAportante as nombreAportante, 
+			r.regTipoIdentificacionAportante as tipoIdentificacionAportante, 
+			r.regNumeroIdentificacionAportante as numeroIdentificacionAportante, 
+			r.regDigVerAportante as digVerAportante, 
+			r.regPeriodoAporte as periodoAporte,
+			r.regTipoPlanilla as tipoPlanilla, 
+			r.regClaseAportante as claseAportante, 
+			r.regCodSucursal as codSucursal, 
+			r.regNomSucursal as nomSucursal, 
+			r.regCantPensionados as cantPensionados, 
+			r.regModalidadPlanilla as modalidadPlanilla, 
+			r.regValTotalApoObligatorio as valTotalApoObligatorio, 
+			r.regValorIntMora as valorIntMora, 
+			r.regFechaRecaudo as fechaRecaudo, 
+			r.regCodigoEntidadFinanciera as codigoEntidadFinanciera, 
+			r.regOperadorInformacion as operadorInformacion, 
+			COALESCE(r.regNumeroCuenta,RIGHT(REPLICATE('0', 17) + REPLACE(cb.NUMERO_CUENTA , '-', ''), 17)) as numeroCuenta, 
+			r.regFechaActualizacion as fechaActualizacion, 
+			r.regRegistroControl as registroControl, 
+			r.regRegistroControlManual as registroControlManual, 
+			r.regRegistroFControl as registroFControl, 
+			r.regOUTTarifaBaseEmpleador as outTarifaEmpleador, 
+			r.regOUTFinalizadoProcesoManual as outFinalizadoProcesoManual, 
+			r.regOUTEsEmpleador as outEsEmpleador, 
+			r.regOUTEstadoEmpleador as outEstadoEmpleador, 
+			r.regOUTTipoBeneficio as outTipoBeneficio, 
+			r.regOUTBeneficioActivo as outBeneficioActivo, 
+			r.regOUTEsEmpleadorReintegrable as outEsEmpleadorReintegrable,
+			r.regOUTEstadoArchivo as outEstadoArchivo,
+			r.regEsSimulado as esSimulado, 
+			r.regEstadoEvaluacion as estadoEvaluacion, 
+			r.regOUTMarcaSucursalPILA as outMarcaSucursalPILA, 
+			r.regOUTCodSucursalPrincipal as outCodSucursalPrincipal, 
+			r.regOUTNomSucursalPrincipal as outNomSucursalPrincipal, 
+			r.regNumPlanilla as numPlanilla, 
+			r.regDireccion as direccion, 
+			r.regCodSucursal as codCiudad, 
+			r.regCodDepartamento as codDepartamento, 
+			r.regEmail as email, 
+			r.regFechaMatricula as fechaMatricula, 
+			r.regTelefono as telefono,
+			r.regFax as fax,
+			r.regNaturalezaJuridica as naturalezaJuridica,
+			r.regOUTEnviadoAFiscalizacion as outEnviadoAFiscalizacion,
+			r.regOUTMotivoFiscalizacion as outMotivoFiscalizacion, 
+			r.regOUTMotivoProcesoManual as outMotivoProcesoManual, 
+			r.regNumPlanillaAsociada as numPlanillaAsociada, 
+			r.regOUTPrimerNombreAportante as outPrimerNombreAportante, 
+			r.regOUTSegundoNombreAportante as outSegundoNombreAportante, 
+			r.regOUTPrimerApellidoAportante as outPrimerApellidoAportante, 
+			r.regOUTSegundoApellidoAportante as outSegundoApellidoAportante, 
+			r.regDiasMora as diasMora, 
+			r.regFechaPagoAporte as fechaPlanilla, 
+			r.regFormaPresentacion as formaPresentacion, 
+			r.regCantidadEmpleados as cantEmpleados, 
+			r.regCantidadAfiliados as cantAfiliados, 
+			r.regTipoPersona as tipoPersona, 
+			r.regOUTEnProceso as outEnProceso, 
+			r.regCantidadReg2 as cantidadReg2, 
+			r.regFechaPagoPlanillaAsociada as fechaPagoPlanillaAsociada, 
+			r.regOUTRegistroActual as outRegistroActual, 
+			r.regOUTReginicial as outRegInicial, 
+			r.regCuentaBancariaRecaudo as cuentaBancariaRecaudo
+			from staging.RegistroGeneral r
+				left join core.CUENTAS_BANCARIAS cb on cb.id = r.regCuentaBancariaRecaudo
+			WHERE r.regId IN (:idsRegistrosGeneral)
+		</query>
+	</named-native-query>
+	<sql-result-set-mapping name="Aporte.Consultar.RegistroGeneral.listadoIds.native.mapping">
+		<constructor-result target-class="com.asopagos.dto.modelo.RegistroGeneralModeloDTO">
+			<column name="id" class="java.lang.Long"/>
+			<column name="transaccion" class="java.lang.Long"/>
+			<column name="esAportePensionados" class="java.lang.Boolean"/>
+			<column name="nombreAportante" class="java.lang.String"/>
+			<column name="tipoIdentificacionAportante" class="java.lang.String"/>
+			<column name="numeroIdentificacionAportante" class="java.lang.String"/>
+			<column name="digVerAportante" class="java.lang.Short"/>
+			<column name="periodoAporte" class="java.lang.String"/>
+			<column name="tipoPlanilla" class="java.lang.String"/>
+			<column name="claseAportante" class="java.lang.String"/>
+			<column name="codSucursal" class="java.lang.String"/>
+			<column name="nomSucursal" class="java.lang.String"/>
+			<column name="cantPensionados" class="java.lang.Integer"/>
+			<column name="modalidadPlanilla" class="java.lang.String"/>
+			<column name="valTotalApoObligatorio" class="java.math.BigDecimal"/>
+			<column name="valorIntMora" class="java.math.BigDecimal"/>
+			<column name="fechaRecaudo" class="java.util.Date"/>
+			<column name="codigoEntidadFinanciera" class="java.lang.Short"/>
+			<column name="operadorInformacion" class="java.lang.Long"/>
+			<column name="numeroCuenta" class="java.lang.String"/>
+			<column name="fechaActualizacion" class="java.util.Date"/>
+			<column name="registroControl" class="java.lang.Long"/>
+			<column name="registroControlManual" class="java.lang.Long"/>
+			<column name="registroFControl" class="java.lang.Long"/>
+			<column name="outTarifaEmpleador" class="java.math.BigDecimal"/>
+			<column name="outFinalizadoProcesoManual" class="java.lang.Boolean"/>
+			<column name="outEsEmpleador" class="java.lang.Boolean"/>
+			<column name="outEstadoEmpleador" class="java.lang.String"/>
+			<column name="outTipoBeneficio" class="java.lang.String"/>
+			<column name="outBeneficioActivo" class="java.lang.Boolean"/>
+			<column name="outEsEmpleadorReintegrable" class="java.lang.Boolean"/>
+			<column name="outEstadoArchivo" class="java.lang.String"/>
+			<column name="esSimulado" class="java.lang.Boolean"/>
+			<column name="estadoEvaluacion" class="java.lang.String"/>
+			<column name="outMarcaSucursalPILA" class="java.lang.Boolean"/>
+			<column name="outCodSucursalPrincipal" class="java.lang.String"/>
+			<column name="outNomSucursalPrincipal" class="java.lang.String"/>
+			<column name="numPlanilla" class="java.lang.String"/>
+			<column name="direccion" class="java.lang.String"/>
+			<column name="codCiudad" class="java.lang.String"/>
+			<column name="codDepartamento" class="java.lang.String"/>
+			<column name="email" class="java.lang.String"/>
+			<column name="fechaMatricula" class="java.util.Date"/>
+			<column name="telefono" class="java.lang.Long"/>
+			<column name="fax" class="java.lang.Long"/>
+			<column name="naturalezaJuridica" class="java.lang.Short"/>
+			<column name="outEnviadoAFiscalizacion" class="java.lang.Boolean"/>
+			<column name="outMotivoFiscalizacion" class="java.lang.String"/>
+			<column name="outMotivoProcesoManual" class="java.lang.String"/>
+			<column name="numPlanillaAsociada" class="java.lang.String"/>
+			<column name="outPrimerNombreAportante" class="java.lang.String"/>
+			<column name="outSegundoNombreAportante" class="java.lang.String"/>
+			<column name="outPrimerApellidoAportante" class="java.lang.String"/>
+			<column name="outSegundoApellidoAportante" class="java.lang.String"/>
+			<column name="diasMora" class="java.lang.Short"/>
+			<column name="fechaPlanilla" class="java.util.Date"/>
+			<column name="formaPresentacion" class="java.lang.String"/>
+			<column name="cantEmpleados" class="java.lang.Integer"/>
+			<column name="cantAfiliados" class="java.lang.Integer"/>
+			<column name="tipoPersona" class="java.lang.String"/>
+			<column name="outEnProceso" class="java.lang.Boolean"/>
+			<column name="cantidadReg2" class="java.lang.Integer"/>
+			<column name="fechaPagoPlanillaAsociada" class="java.util.Date"/>
+			<column name="outRegistroActual" class="java.lang.Boolean"/>
+			<column name="outRegInicial" class="java.lang.Long"/>
+			<column name="cuentaBancariaRecaudo" class="java.lang.Integer"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	
+</entity-mappings>

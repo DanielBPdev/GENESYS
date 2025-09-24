@@ -1,0 +1,52 @@
+metadata:
+  name: ${project.artifactId}
+spec:
+  template: 
+    metadata:
+      name: ${project.artifactId}
+      labels:
+        name: ${project.artifactId}
+      annotations:
+        date: ${timestamp}
+    spec:
+      containers:
+        - name: ${project.artifactId}
+          image: "${docker.registry.name}/${project.artifactId}:latest"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 80
+            - name: http-alt
+              protocol: TCP
+              containerPort: 8080
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 100m
+            limits:
+              memory: 5Gi
+              cpu: 2
+          volumeMounts:
+            - name: config
+              mountPath: /opt/conf
+            - name: tz-config
+              mountPath: /etc/localtime
+      env:
+            - name: JAVA_OPTS
+              value: "-Xms256m -Xmx4500m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport"
+
+      volumes:
+        - name: config
+          configMap:
+            name: wildfly-swarm-messaging
+            items:
+            - key: wildfly-swarm-messaging.yaml
+              path: wildfly-swarm-messaging.yaml
+        - name: tz-config
+          hostPath:
+            path: /usr/share/zoneinfo/America/Bogota
+  replicas: 1 
+  selector:
+    name: ${project.artifactId}
+      

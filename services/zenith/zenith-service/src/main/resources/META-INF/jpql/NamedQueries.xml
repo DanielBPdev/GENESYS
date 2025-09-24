@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="Zenith.consultar.informacionAfiliadosActivos" result-set-mapping="RegistroDetalleDTOMapping">
+		<query>
+			(select 
+				2 as tipoRegistro,
+				(CASE WHEN perAfi.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perAfi.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perAfi.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perAfi.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perAfi.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perAfi.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perAfi.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionCotizante,
+				perAfi.perNumeroIdentificacion as numeroIdentificacionCotizante,
+				null as tipoIdentificacionMiembroPoblacionCubierta,
+				null as numeroIdentificacionMiembroPoblacionCubierta,
+				(CASE WHEN pedAfi.pedGenero = 'FEMENINO' THEN 'F'
+					WHEN pedAfi.pedGenero = 'MASCULINO' OR pedAfi.pedGenero = 'INDEFINIDO' THEN 'M' END) as codigoGenero,
+				pedAfi.pedFechaNacimiento as fechaNacimiento,
+				perAfi.perPrimerApellido as primerApellido,
+				perAfi.perSegundoApellido as segundoApellido,
+				perAfi.perPrimerNombre as primerNombre,
+				perAfi.perSegundoNombre as segundoNombre,
+				depAfi.depCodigo as departamentoResidencia,
+				(CASE WHEN munAfi.munCodigo IS NOT NULL THEN substring(munAfi.munCodigo, 3, (len(munAfi.munCodigo))) ELSE munAfi.munCodigo END) as municipioResidencia,
+				roa.roaFechaIngreso as fechaIngreso,
+				null as fechaRetiro,
+				(select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') as codigoCajaCompensacionFamiliar,
+				(CASE WHEN roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' THEN 1 ELSE 4 END) as codigoTipoCotizante,
+				1 as codigoTipoMiembroPoblacionCubierta,
+				null as codigoCondicionBeneficiario,
+				null as codigoTipoRelacionCotizante,
+				(CASE WHEN (select top(1) eaeEstadoAfiliacion from estadoAfiliacionPersonaEmpresa where eaePersona = perAfi.perId order by eaeFechaCambioEstado desc) = 'ACTIVO' THEN 1 ELSE 2 END)  as estadoAfiliacion,
+				ubiAfi.ubiDireccionFisica as direccionCotizante,
+				ubiAfi.ubiCodigoPostal as codigoPostalCotizante,
+				ubiAfi.ubiTelefonoFijo as telefonoCotizante,
+				ubiAfi.ubiTelefonoCelular as celularCotizante,
+				ubiAfi.ubiEmail as correoElectronicoCotizante,
+				roa.roaValorSalarioMesadaIngresos as salarioCotizante,
+				null as fechaVigenciaCertificadoEscolaridad,
+				null as beneficiarioAgricola,
+				null as fechaActualizacionHojaVida,
+				null as nivelEducativoPersonaCargo,
+				2 as tipoTrayectoria,
+				null as empresaQueRealizaAporte,
+				null as nitEmpresaQueRealizaAporte
+			from RolAfiliado roa 
+			join Afiliado afi on roa.roaAfiliado = afi.afiId
+			join Persona perAfi on afi.afiPersona = perAfi.perId
+			join PersonaDetalle pedAfi on pedAfi.pedPersona = perAfi.perId
+			join Ubicacion ubiAfi on perAfi.perUbicacionPrincipal = ubiAfi.ubiId
+			join Municipio munAfi on ubiAfi.ubiMunicipio = munAfi.munId
+			join Departamento depAfi on munAfi.munDepartamento = depAfi.depId
+			where perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+			AND roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+			AND roa.roaEstadoAfiliado = 'ACTIVO'
+			)
+			UNION ALL
+			(select 
+				2 as tipoRegistro,
+				(CASE WHEN perAfi.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perAfi.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perAfi.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perAfi.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perAfi.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perAfi.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perAfi.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionCotizante,
+				perAfi.perNumeroIdentificacion as numeroIdentificacionCotizante,
+				(CASE WHEN perBen.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perBen.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perBen.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perBen.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perBen.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perBen.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perBen.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionMiembroPoblacionCubierta,
+				perBen.perNumeroIdentificacion as numeroIdentificacionMiembroPoblacionCubierta,
+				(CASE WHEN pedBen.pedGenero = 'FEMENINO' THEN 'F'
+					WHEN pedBen.pedGenero = 'MASCULINO' THEN 'M' END) as codigoGenero,
+				pedBen.pedFechaNacimiento as fechaNacimiento,
+				perBen.perPrimerApellido as primerApellido,
+				perBen.perSegundoApellido as segundoApellido,
+				perBen.perPrimerNombre as primerNombre,
+				perBen.perSegundoNombre as segundoNombre,
+				depBen.depCodigo as departamentoResidencia,
+				(CASE WHEN munBen.munCodigo IS NOT NULL THEN substring(munBen.munCodigo, 3, (len(munBen.munCodigo))) ELSE munBen.munCodigo END) as municipioResidencia,
+				ben.benFechaAfiliacion as fechaIngreso,
+				null as fechaRetiro,
+				(select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') as codigoCajaCompensacionFamiliar,
+				null as codigoTipoCotizante,
+				2 as codigoTipoMiembroPoblacionCubierta,
+				(CASE WHEN (select top(1) coiId from CondicionInvalidez where coiPersona = perBen.perId and coiInvalidez = 1) is not null THEN 'D' 
+					WHEN (select top(1) cebId from certificadoEscolarBeneficiario where cebBeneficiarioDetalle = ben.benBeneficiarioDetalle 
+					and cebFechaVencimiento &gt;= dbo.getLocalDate()) is not null THEN 'E' END) as codigoCondicionBeneficiario,
+				(CASE WHEN ben.benTipoBeneficiario = 'CONYUGE' THEN 1
+				WHEN ben.benTipoBeneficiario IN ('HIJO_BIOLOGICO', 'BENEFICIARIO_EN_CUSTODIA', 'HIJO_ADOPTIVO', 'HIJASTRO') THEN 2
+				WHEN ben.benTipoBeneficiario IN ('PADRE', 'MADRE') THEN 3
+				WHEN ben.benTipoBeneficiario = 'HERMANO_HUERFANO_DE_PADRES' THEN 4 END) as codigoTipoRelacionCotizante,
+				(CASE WHEN ben.benEstadoBeneficiarioAfiliado = 'ACTIVO' THEN 1 ELSE 2 END) as estadoAfiliacion,
+				null as direccionCotizante,
+				null as codigoPostalCotizante,
+				null as telefonoCotizante,
+				null as celularCotizante,
+				null as correoElectronicoCotizante,
+				null as salarioCotizante,
+				(select top(1) cebFechaVencimiento from certificadoEscolarBeneficiario where cebBeneficiarioDetalle = bed.bedId order by cebId desc) as fechaVigenciaCertificadoEscolaridad,
+				(CASE WHEN 
+				(select top(1) sueId from sucursalEmpresa 
+				join CodigoCIIU on sueCodigoCIIU = ciiId 
+				where sueId = roa.roaSucursalEmpleador 
+				and roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+				and (ciiCodigoDivision = '01' OR ciiCodigoDivision = '02')) is not null THEN 1 ELSE 2 END) as beneficiarioAgricola,
+				null as fechaActualizacionHojaVida,
+				(CASE WHEN pedBen.pedNivelEducativo = 'NINGUNO' THEN 'N'
+				WHEN (pedBen.pedNivelEducativo = 'BASICA_PRIMARIA_COMPLETA' OR pedBen.pedNivelEducativo = 'BASICA_PRIMARIA_INCOMPLETA') THEN 'P'
+				WHEN (pedBen.pedNivelEducativo = 'BASICA_SECUNDARIA_COMPLETA' OR pedBen.pedNivelEducativo = 'BASICA_SECUNDARIA_INCOMPLETA' OR pedBen.pedNivelEducativo = 'MEDIA_COMPLETA' OR pedBen.pedNivelEducativo = 'MEDIA_INCOMPLETA') THEN 'S'
+				WHEN (pedBen.pedNivelEducativo = 'SUPERIOR' OR pedBen.pedNivelEducativo = 'EDUCACION_PARA_TRABAJO_Y_DESARROLLO_HUMANO') THEN 'SP' END) as nivelEducativoPersonaCargo,
+				2 as tipoTrayectoria,
+				null as empresaQueRealizaAporte,
+				null as nitEmpresaQueRealizaAporte
+			from Beneficiario ben 
+			join BeneficiarioDetalle bed on ben.benBeneficiarioDetalle = bed.bedId
+			join Persona perBen on ben.benPersona = perBen.perId
+			join PersonaDetalle pedBen on pedBen.pedPersona = perBen.perId
+			join GrupoFamiliar grfBen on grfBen.grfId = ben.benGrupoFamiliar
+			left join Ubicacion ubiBen on grfBen.grfUbicacion = ubiBen.ubiId
+			left join Municipio munBen on ubiBen.ubiMunicipio = munBen.munId
+			left join Departamento depBen on munBen.munDepartamento = depBen.depId
+			join Afiliado afi on ben.benAfiliado = afi.afiId
+			join RolAfiliado roa on roa.roaAfiliado = afi.afiId
+			join Persona perAfi on afi.afiPersona = perAfi.perId
+			where perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+			AND roa.roaId = (
+			select top(1) roa1.roaId from RolAfiliado roa1 
+			join Afiliado afi1 on roa1.roaAfiliado = afi1.afiId
+			join Persona perAfi1 on afi1.afiPersona = perAfi1.perId
+			where perAfi1.perNumeroIdentificacion = :numeroId
+			AND perAfi1.perTipoIdentificacion = :tipoId
+			AND roa1.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+			AND roa1.roaEstadoAfiliado = 'ACTIVO'
+			)
+			AND ben.benEstadoBeneficiarioAfiliado = 'ACTIVO'
+			)
+			UNION ALL
+			(select 
+				2 as tipoRegistro,
+				(CASE WHEN perAfi.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perAfi.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perAfi.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perAfi.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perAfi.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perAfi.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perAfi.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionCotizante,
+				perAfi.perNumeroIdentificacion as numeroIdentificacionCotizante,
+				null as tipoIdentificacionMiembroPoblacionCubierta,
+				null as numeroIdentificacionMiembroPoblacionCubierta,
+				(CASE WHEN pedAfi.pedGenero = 'FEMENINO' THEN 'F'
+					WHEN pedAfi.pedGenero = 'MASCULINO' THEN 'M' END) as codigoGenero,
+				pedAfi.pedFechaNacimiento as fechaNacimiento,
+				perAfi.perPrimerApellido as primerApellido,
+				perAfi.perSegundoApellido as segundoApellido,
+				perAfi.perPrimerNombre as primerNombre,
+				perAfi.perSegundoNombre as segundoNombre,
+				depAfi.depCodigo as departamentoResidencia,
+			(CASE WHEN munAfi.munCodigo IS NOT NULL THEN substring(munAfi.munCodigo, 3, (len(munAfi.munCodigo))) ELSE munAfi.munCodigo END) as municipioResidencia,
+				roa.roaFechaIngreso as fechaIngreso,
+				null as fechaRetiro,
+				(select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') as codigoCajaCompensacionFamiliar,
+				(CASE WHEN roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' THEN 1 ELSE 4 END) as codigoTipoCotizante,
+				1 as codigoTipoMiembroPoblacionCubierta,
+				null as codigoCondicionBeneficiario,
+				null as codigoTipoRelacionCotizante,
+				(CASE WHEN (select top(1) eaiEstadoAfiliacion from estadoAfiliacionPersonaIndependiente where eaiPersona = perAfi.perId order by eaiFechaCambioEstado desc) = 'ACTIVO' THEN 1 ELSE 2 END) as estadoAfiliacion,
+				ubiAfi.ubiDireccionFisica as direccionCotizante,
+				ubiAfi.ubiCodigoPostal as codigoPostalCotizante,
+				ubiAfi.ubiTelefonoFijo as telefonoCotizante,
+				ubiAfi.ubiTelefonoCelular as celularCotizante,
+				ubiAfi.ubiEmail as correoElectronicoCotizante,
+				roa.roaValorSalarioMesadaIngresos as salarioCotizante,
+				null as fechaVigenciaCertificadoEscolaridad,
+				null as beneficiarioAgricola,
+				null as fechaActualizacionHojaVida,
+				null as nivelEducativoPersonaCargo,
+				2 as tipoTrayectoria,
+				null as empresaQueRealizaAporte,
+				null as nitEmpresaQueRealizaAporte
+			from RolAfiliado roa 
+			join Afiliado afi on roa.roaAfiliado = afi.afiId
+			join Persona perAfi on afi.afiPersona = perAfi.perId
+			join PersonaDetalle pedAfi on pedAfi.pedPersona = perAfi.perId
+			join Ubicacion ubiAfi on perAfi.perUbicacionPrincipal = ubiAfi.ubiId
+			join Municipio munAfi on ubiAfi.ubiMunicipio = munAfi.munId
+			join Departamento depAfi on munAfi.munDepartamento = depAfi.depId
+			where perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+			AND roa.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+			AND roa.roaEstadoAfiliado = 'ACTIVO'
+			)
+			UNION ALL
+			(select 
+				2 as tipoRegistro,
+				(CASE WHEN perAfi.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perAfi.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perAfi.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perAfi.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perAfi.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perAfi.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perAfi.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionCotizante,
+				perAfi.perNumeroIdentificacion as numeroIdentificacionCotizante,
+				(CASE WHEN perBen.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perBen.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perBen.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perBen.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perBen.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perBen.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perBen.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionMiembroPoblacionCubierta,
+				perBen.perNumeroIdentificacion as numeroIdentificacionMiembroPoblacionCubierta,
+				(CASE WHEN pedBen.pedGenero = 'FEMENINO' THEN 'F'
+					WHEN pedBen.pedGenero = 'MASCULINO' THEN 'M' END) as codigoGenero,
+				pedBen.pedFechaNacimiento as fechaNacimiento,
+				perBen.perPrimerApellido as primerApellido,
+				perBen.perSegundoApellido as segundoApellido,
+				perBen.perPrimerNombre as primerNombre,
+				perBen.perSegundoNombre as segundoNombre,
+				depBen.depCodigo as departamentoResidencia,
+				(CASE WHEN munBen.munCodigo IS NOT NULL THEN substring(munBen.munCodigo, 3, (len(munBen.munCodigo))) ELSE munBen.munCodigo END) as municipioResidencia,
+				ben.benFechaAfiliacion as fechaIngreso,
+				null as fechaRetiro,
+				(select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') as codigoCajaCompensacionFamiliar,
+				null as codigoTipoCotizante,
+				2 as codigoTipoMiembroPoblacionCubierta,
+				(CASE WHEN (select top(1) coiId from CondicionInvalidez where coiPersona = perBen.perId and coiInvalidez = 1) is not null THEN 'D' 
+				WHEN (select top(1) cebId from certificadoEscolarBeneficiario where cebBeneficiarioDetalle = ben.benBeneficiarioDetalle 
+					and cebFechaVencimiento &gt;= dbo.getLocalDate()) is not null THEN 'E' END) as codigoCondicionBeneficiario,
+				(CASE WHEN ben.benTipoBeneficiario = 'CONYUGE' THEN 1
+				WHEN ben.benTipoBeneficiario IN ('HIJO_BIOLOGICO', 'BENEFICIARIO_EN_CUSTODIA', 'HIJO_ADOPTIVO', 'HIJASTRO') THEN 2
+				WHEN ben.benTipoBeneficiario IN ('PADRE', 'MADRE') THEN 3
+				WHEN ben.benTipoBeneficiario = 'HERMANO_HUERFANO_DE_PADRES' THEN 4 END) as codigoTipoRelacionCotizante,
+				(CASE WHEN ben.benEstadoBeneficiarioAfiliado = 'ACTIVO' THEN 1 ELSE 2 END) as estadoAfiliacion,
+				null as direccionCotizante,
+				null as codigoPostalCotizante,
+				null as telefonoCotizante,
+				null as celularCotizante,
+				null as correoElectronicoCotizante,
+				null as salarioCotizante,
+				(select top(1) cebFechaVencimiento from certificadoEscolarBeneficiario where cebBeneficiarioDetalle = bed.bedId order by cebId desc) as fechaVigenciaCertificadoEscolaridad,
+				(CASE WHEN 
+				(select top(1) sueId from sucursalEmpresa 
+				join CodigoCIIU on sueCodigoCIIU = ciiId 
+				where sueId = roa.roaSucursalEmpleador 
+				and roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+				and (ciiCodigoDivision = '01' OR ciiCodigoDivision = '02')) is not null THEN 1 ELSE 2 END) as beneficiarioAgricola,
+				null as fechaActualizacionHojaVida,
+				(CASE WHEN pedBen.pedNivelEducativo = 'NINGUNO' THEN 'N'
+				WHEN (pedBen.pedNivelEducativo = 'BASICA_PRIMARIA_COMPLETA' OR pedBen.pedNivelEducativo = 'BASICA_PRIMARIA_INCOMPLETA') THEN 'P'
+				WHEN (pedBen.pedNivelEducativo = 'BASICA_SECUNDARIA_COMPLETA' OR pedBen.pedNivelEducativo = 'BASICA_SECUNDARIA_INCOMPLETA' OR pedBen.pedNivelEducativo = 'MEDIA_COMPLETA' OR pedBen.pedNivelEducativo = 'MEDIA_INCOMPLETA') THEN 'S'
+				WHEN (pedBen.pedNivelEducativo = 'SUPERIOR' OR pedBen.pedNivelEducativo = 'EDUCACION_PARA_TRABAJO_Y_DESARROLLO_HUMANO') THEN 'SP' END) as nivelEducativoPersonaCargo,
+				2 as tipoTrayectoria,
+				null as empresaQueRealizaAporte,
+				null as nitEmpresaQueRealizaAporte
+			from Beneficiario ben 
+			join BeneficiarioDetalle bed on ben.benBeneficiarioDetalle = bed.bedId
+			join Persona perBen on ben.benPersona = perBen.perId
+			join PersonaDetalle pedBen on pedBen.pedPersona = perBen.perId
+			join GrupoFamiliar grfBen on grfBen.grfId = ben.benGrupoFamiliar
+			left join Ubicacion ubiBen on grfBen.grfUbicacion = ubiBen.ubiId
+			left join Municipio munBen on ubiBen.ubiMunicipio = munBen.munId
+			left join Departamento depBen on munBen.munDepartamento = depBen.depId
+			join Afiliado afi on ben.benAfiliado = afi.afiId
+			join RolAfiliado roa on roa.roaAfiliado = afi.afiId
+			join Persona perAfi on afi.afiPersona = perAfi.perId
+			where perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+			AND roa.roaId = (
+			select top(1) roa1.roaId from RolAfiliado roa1 
+			join Afiliado afi1 on roa1.roaAfiliado = afi1.afiId
+			join Persona perAfi1 on afi1.afiPersona = perAfi1.perId
+			where perAfi1.perNumeroIdentificacion = :numeroId
+			AND perAfi1.perTipoIdentificacion = :tipoId
+			AND roa1.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+			AND roa1.roaEstadoAfiliado = 'ACTIVO'
+			)
+			AND ben.benEstadoBeneficiarioAfiliado = 'ACTIVO'
+			)
+			UNION ALL
+			(select 
+				2 as tipoRegistro,
+				(CASE WHEN perAfi.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perAfi.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perAfi.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perAfi.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perAfi.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perAfi.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perAfi.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionCotizante,
+				perAfi.perNumeroIdentificacion as numeroIdentificacionCotizante,
+				null as tipoIdentificacionMiembroPoblacionCubierta,
+				null as numeroIdentificacionMiembroPoblacionCubierta,
+				(CASE WHEN pedAfi.pedGenero = 'FEMENINO' THEN 'F'
+					WHEN pedAfi.pedGenero = 'MASCULINO' THEN 'M' END) as codigoGenero,
+				pedAfi.pedFechaNacimiento as fechaNacimiento,
+				perAfi.perPrimerApellido as primerApellido,
+				perAfi.perSegundoApellido as segundoApellido,
+				perAfi.perPrimerNombre as primerNombre,
+				perAfi.perSegundoNombre as segundoNombre,
+				depAfi.depCodigo as departamentoResidencia,
+			(CASE WHEN munAfi.munCodigo IS NOT NULL THEN substring(munAfi.munCodigo, 3, (len(munAfi.munCodigo))) ELSE munAfi.munCodigo END) as municipioResidencia,
+				roa.roaFechaIngreso as fechaIngreso,
+				null as fechaRetiro,
+				(select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') as codigoCajaCompensacionFamiliar,
+				(CASE WHEN roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' THEN 1 ELSE 4 END) as codigoTipoCotizante,
+				1 as codigoTipoMiembroPoblacionCubierta,
+				null as codigoCondicionBeneficiario,
+				null as codigoTipoRelacionCotizante,
+				(CASE WHEN (select top(1) eapEstadoAfiliacion from estadoAfiliacionPersonaPensionado where eapPersona = perAfi.perId order by eapFechaCambioEstado desc) = 'ACTIVO' THEN 1 ELSE 2 END) as estadoAfiliacion,
+				ubiAfi.ubiDireccionFisica as direccionCotizante,
+				ubiAfi.ubiCodigoPostal as codigoPostalCotizante,
+				ubiAfi.ubiTelefonoFijo as telefonoCotizante,
+				ubiAfi.ubiTelefonoCelular as celularCotizante,
+				ubiAfi.ubiEmail as correoElectronicoCotizante,
+				roa.roaValorSalarioMesadaIngresos as salarioCotizante,
+				null as fechaVigenciaCertificadoEscolaridad,
+				null as beneficiarioAgricola,
+				null as fechaActualizacionHojaVida,
+				null as nivelEducativoPersonaCargo,
+				2 as tipoTrayectoria,
+				null as empresaQueRealizaAporte,
+				null as nitEmpresaQueRealizaAporte
+			from RolAfiliado roa 
+			join Afiliado afi on roa.roaAfiliado = afi.afiId
+			join Persona perAfi on afi.afiPersona = perAfi.perId
+			join PersonaDetalle pedAfi on pedAfi.pedPersona = perAfi.perId
+			join Ubicacion ubiAfi on perAfi.perUbicacionPrincipal = ubiAfi.ubiId
+			join Municipio munAfi on ubiAfi.ubiMunicipio = munAfi.munId
+			join Departamento depAfi on munAfi.munDepartamento = depAfi.depId
+			where perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+			AND roa.roaTipoAfiliado = 'PENSIONADO'
+			AND roa.roaEstadoAfiliado = 'ACTIVO'
+			)
+			UNION ALL
+			(select 
+				2 as tipoRegistro,
+				(CASE WHEN perAfi.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perAfi.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perAfi.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perAfi.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perAfi.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perAfi.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perAfi.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionCotizante,
+				perAfi.perNumeroIdentificacion as numeroIdentificacionCotizante,
+				(CASE WHEN perBen.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perBen.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perBen.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perBen.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perBen.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perBen.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perBen.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionMiembroPoblacionCubierta,
+				perBen.perNumeroIdentificacion as numeroIdentificacionMiembroPoblacionCubierta,
+				(CASE WHEN pedBen.pedGenero = 'FEMENINO' THEN 'F'
+					WHEN pedBen.pedGenero = 'MASCULINO' THEN 'M' END) as codigoGenero,
+				pedBen.pedFechaNacimiento as fechaNacimiento,
+				perBen.perPrimerApellido as primerApellido,
+				perBen.perSegundoApellido as segundoApellido,
+				perBen.perPrimerNombre as primerNombre,
+				perBen.perSegundoNombre as segundoNombre,
+				depBen.depCodigo as departamentoResidencia,
+				(CASE WHEN munBen.munCodigo IS NOT NULL THEN substring(munBen.munCodigo, 3, (len(munBen.munCodigo))) ELSE munBen.munCodigo END) as municipioResidencia,
+				ben.benFechaAfiliacion as fechaIngreso,
+				null as fechaRetiro,
+				(select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') as codigoCajaCompensacionFamiliar,
+				null as codigoTipoCotizante,
+				2 as codigoTipoMiembroPoblacionCubierta,
+				(CASE WHEN (select top(1) coiId from CondicionInvalidez where coiPersona = perBen.perId and coiInvalidez = 1) is not null THEN 'D' 
+				WHEN (select top(1) cebId from certificadoEscolarBeneficiario where cebBeneficiarioDetalle = ben.benBeneficiarioDetalle 
+					and cebFechaVencimiento &gt;= dbo.getLocalDate()) is not null THEN 'E' END) as codigoCondicionBeneficiario,
+				(CASE WHEN ben.benTipoBeneficiario = 'CONYUGE' THEN 1
+				WHEN ben.benTipoBeneficiario IN ('HIJO_BIOLOGICO', 'BENEFICIARIO_EN_CUSTODIA', 'HIJO_ADOPTIVO', 'HIJASTRO') THEN 2
+				WHEN ben.benTipoBeneficiario IN ('PADRE', 'MADRE') THEN 3
+				WHEN ben.benTipoBeneficiario = 'HERMANO_HUERFANO_DE_PADRES' THEN 4 END) as codigoTipoRelacionCotizante,
+				(CASE WHEN ben.benEstadoBeneficiarioAfiliado = 'ACTIVO' THEN 1 ELSE 2 END) as estadoAfiliacion,
+				null as direccionCotizante,
+				null as codigoPostalCotizante,
+				null as telefonoCotizante,
+				null as celularCotizante,
+				null as correoElectronicoCotizante,
+				null as salarioCotizante,
+				(select top(1) cebFechaVencimiento from certificadoEscolarBeneficiario where cebBeneficiarioDetalle = bed.bedId order by cebId desc) as fechaVigenciaCertificadoEscolaridad,
+				(CASE WHEN 
+				(select top(1) sueId from sucursalEmpresa 
+				join CodigoCIIU on sueCodigoCIIU = ciiId 
+				where sueId = roa.roaSucursalEmpleador 
+				and roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+				and (ciiCodigoDivision = '01' OR ciiCodigoDivision = '02')) is not null THEN 1 ELSE 2 END) as beneficiarioAgricola,
+				null as fechaActualizacionHojaVida,
+				(CASE WHEN pedBen.pedNivelEducativo = 'NINGUNO' THEN 'N'
+				WHEN (pedBen.pedNivelEducativo = 'BASICA_PRIMARIA_COMPLETA' OR pedBen.pedNivelEducativo = 'BASICA_PRIMARIA_INCOMPLETA') THEN 'P'
+				WHEN (pedBen.pedNivelEducativo = 'BASICA_SECUNDARIA_COMPLETA' OR pedBen.pedNivelEducativo = 'BASICA_SECUNDARIA_INCOMPLETA' OR pedBen.pedNivelEducativo = 'MEDIA_COMPLETA' OR pedBen.pedNivelEducativo = 'MEDIA_INCOMPLETA') THEN 'S'
+				WHEN (pedBen.pedNivelEducativo = 'SUPERIOR' OR pedBen.pedNivelEducativo = 'EDUCACION_PARA_TRABAJO_Y_DESARROLLO_HUMANO') THEN 'SP' END) as nivelEducativoPersonaCargo,
+				2 as tipoTrayectoria,
+				null as empresaQueRealizaAporte,
+				null as nitEmpresaQueRealizaAporte
+			from 
+				Beneficiario ben 
+				join BeneficiarioDetalle bed on ben.benBeneficiarioDetalle = bed.bedId
+				join Persona perBen on ben.benPersona = perBen.perId
+				join PersonaDetalle pedBen on pedBen.pedPersona = perBen.perId
+				join GrupoFamiliar grfBen on grfBen.grfId = ben.benGrupoFamiliar
+			left join Ubicacion ubiBen on grfBen.grfUbicacion = ubiBen.ubiId
+				left join Municipio munBen on ubiBen.ubiMunicipio = munBen.munId
+				left join Departamento depBen on munBen.munDepartamento = depBen.depId
+				join Afiliado afi on ben.benAfiliado = afi.afiId
+				join RolAfiliado roa on roa.roaAfiliado = afi.afiId
+				join Persona perAfi on afi.afiPersona = perAfi.perId
+				where perAfi.perNumeroIdentificacion = :numeroId
+				AND perAfi.perTipoIdentificacion = :tipoId
+				AND roa.roaId = (
+				select top(1) roa1.roaId from RolAfiliado roa1 
+				join Afiliado afi1 on roa1.roaAfiliado = afi1.afiId
+				join Persona perAfi1 on afi1.afiPersona = perAfi1.perId
+				where perAfi1.perNumeroIdentificacion = :numeroId
+				AND perAfi1.perTipoIdentificacion = :tipoId
+				AND roa1.roaTipoAfiliado = 'PENSIONADO'
+				AND roa1.roaEstadoAfiliado = 'ACTIVO'
+			)
+			AND ben.benEstadoBeneficiarioAfiliado = 'ACTIVO'
+			)
+			UNION ALL
+			(
+			select top(1)
+				2 as tipoRegistro,
+				(CASE WHEN perAfi.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perAfi.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perAfi.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perAfi.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perAfi.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perAfi.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perAfi.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) as tipoIdentificacionCotizante,
+				perAfi.perNumeroIdentificacion as numeroIdentificacionCotizante,
+				null as tipoIdentificacionMiembroPoblacionCubierta,
+				null as numeroIdentificacionMiembroPoblacionCubierta,
+				null as codigoGenero,
+				null as fechaNacimiento,
+				perAfi.perPrimerApellido as primerApellido,
+				perAfi.perSegundoApellido as segundoApellido,
+				perAfi.perPrimerNombre as primerNombre,
+				perAfi.perSegundoNombre as segundoNombre,
+				depAfi.depCodigo as departamentoResidencia,
+				(CASE WHEN munAfi.munCodigo IS NOT NULL THEN substring(munAfi.munCodigo, 3, (len(munAfi.munCodigo))) ELSE munAfi.munCodigo END) as municipioResidencia,
+				concat(apg.apgPeriodoAporte,'-01') as fechaIngreso,
+				(CASE WHEN apd.apdDiasCotizados = 0 THEN concat(apg.apgPeriodoAporte,'-01') 
+				ELSE concat(apg.apgPeriodoAporte,'-', (CASE WHEN (RIGHT(apg.apgPeriodoAporte,2) = '02' AND apd.apdDiasCotizados &gt;= 29) THEN 28 ELSE apd.apdDiasCotizados END)) END) as fechaRetiro,
+				(select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') as codigoCajaCompensacionFamiliar,
+				(CASE WHEN apd.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE' THEN 1 ELSE 4 END) as codigoTipoCotizante,
+				1 as codigoTipoMiembroPoblacionCubierta,
+				null as codigoCondicionBeneficiario,
+				null as codigoTipoRelacionCotizante,
+				(CASE WHEN roa.roaEstadoAfiliado = 'ACTIVO' THEN 1 ELSE 2 END) as estadoAfiliacion,
+				null as direccionCotizante,
+				null as codigoPostalCotizante,
+				null as telefonoCotizante,
+				null as celularCotizante,
+				null as correoElectronicoCotizante,
+				apd.apdSalarioBasico as salarioCotizante,
+				null as fechaVigenciaCertificadoEscolaridad,
+				null as beneficiarioAgricola,
+				null as fechaActualizacionHojaVida,
+				null as nivelEducativoPersonaCargo,
+				1 as tipoTrayectoria,
+				(CASE WHEN perEmp.perRazonSocial IS NOT NULL THEN perEmp.perRazonSocial ELSE perEmp2.perRazonSocial END) as empresaQueRealizaAporte,
+				(CASE WHEN perEmp.perNumeroIdentificacion IS NOT NULL THEN concat(perEmp.perNumeroIdentificacion, perEmp.perDigitoVerificacion) 
+				ELSE concat(perEmp2.perNumeroIdentificacion, perEmp2.perDigitoVerificacion) END) as nitEmpresaQueRealizaAporte
+			from persona perAfi
+			left join Afiliado afi on afi.afiPersona = perAfi.perId
+			left join RolAfiliado roa on roa.roaAfiliado = afi.afiId
+			join AporteDetallado apd on apd.apdPersona = perAfi.perId
+			join AporteGeneral apg on apd.apdAporteGeneral = apg.apgId
+			left join Empresa emp on apg.apgEmpresa = emp.empId
+			left join persona perEmp on emp.empPersona = perEmp.perId
+			left join Persona perEmp2 on apg.apgPersona = perEmp2.perId
+			join Ubicacion ubiAfi on perAfi.perUbicacionPrincipal = ubiAfi.ubiId
+			join Municipio munAfi on ubiAfi.ubiMunicipio = munAfi.munId
+			join Departamento depAfi on munAfi.munDepartamento = depAfi.depId
+			where perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+			AND apg.apgId = (
+			select a.idAporte from (
+				select TOP(1) apg1.apgPeriodoAporte as periodo, apg1.apgId as idAporte 
+				from aporteGeneral apg1 
+				join aporteDetallado apd1 on apd1.apdAporteGeneral = apg1.apgId 
+				join Persona per1 on apd1.apdPersona = per1.perId 
+				where per1.perNumeroIdentificacion = :numeroId 
+				and per1.perTipoIdentificacion = :tipoId
+				ORDER BY apg1.apgPeriodoAporte DESC) as a
+			)
+			)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Zenith.consultar.datosPostulanteYGrupoFamiliar" result-set-mapping="MiembroGrupoPostulanteDTOMapping">
+		<query>
+			SELECT * FROM (SELECT TOP 1
+				(CASE WHEN perAfi.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perAfi.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perAfi.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perAfi.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perAfi.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perAfi.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perAfi.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perAfi.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) AS tipoIdentificacionMiembroPoblacionCubierta,
+				perAfi.perNumeroIdentificacion AS numeroIdentificacionMiembroPoblacionCubierta,
+				(CASE WHEN pedAfi.pedGenero = 'FEMENINO' THEN 'F'
+					WHEN pedAfi.pedGenero = 'MASCULINO' THEN 'M'
+					WHEN pedAfi.pedGenero = 'INDEFINIDO' THEN 'I' END) AS codigoGenero,
+				 pedAfi.pedFechaNacimiento AS fechaNacimiento,
+				 perAfi.perPrimerApellido AS primerApellido,
+				 perAfi.perSegundoApellido AS segundoApellido,
+				 perAfi.perPrimerNombre AS primerNombre,
+				 perAfi.perSegundoNombre AS segundoNombre,
+				 depAfi.depCodigo AS departamentoResidencia,
+				 (CASE WHEN LEN(munAfi.munCodigo) &gt;= 5 THEN SUBSTRING(munAfi.munCodigo, 3, 5) ELSE munAfi.munCodigo END) AS municipioResidencia,
+				 (select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') AS codigoCaja,
+				 (CASE WHEN roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' THEN 1 
+				 WHEN roa.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE' THEN 2 END) AS TipoCotizante,
+				 1 AS codigoTipoMiembroPoblacion,
+				 null AS codigoCondicionBeneficiario,
+				 null AS codigoTipoRelacionAportante,
+				 (CASE WHEN roa.roaEstadoAfiliado = 'ACTIVO' THEN 1 
+				 WHEN roa.roaEstadoAfiliado = 'INACTIVO' THEN 2 END) AS estadoAfiliacion,
+				 ubiAfi.ubiDireccionFisica AS direccionResidenciaCotizante,
+				 ubiAfi.ubiCodigoPostal AS codigoPostalResidenciaCotizante,
+				 ubiAfi.ubiTelefonoFijo AS telefonoCotizante,
+				 ubiAfi.ubiTelefonoCelular AS celularCotizante,
+				 ubiAfi.ubiEmail AS correoElectronicoCotizante,
+				 roa.roaValorSalarioMesadaIngresos AS salarioTrabajador,
+				 null AS fechaVencimientoCertificadoEscolaridad,
+				 null AS beneficiarioRural,
+				 null AS nivelEducativoPersonaACargo,
+				 perEmp.perRazonSocial AS nombreUltimaEmpresa,
+				 CASE 
+					WHEN (perEmp.perNumeroIdentificacion IS NULL OR perEmp.perNumeroIdentificacion = '') 
+						AND (perEmp.perDigitoVerificacion IS NULL OR perEmp.perDigitoVerificacion = '')
+					THEN NULL
+					ELSE CONCAT(perEmp.perNumeroIdentificacion, '-', perEmp.perDigitoVerificacion)
+				END AS nITUltimaEmpresa,
+				 roa.roaFechaRetiro AS fechaRetiroUltimaEmpresa,
+				 null AS condicionBeneficiario,
+				 cat.ctaCategoria as categoriaTrabajador
+			 FROM 
+			 RolAfiliado roa 
+			 JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+			 LEFT JOIN categoriaAfiliado cat ON cat.ctaAfiliado = afi.afiId
+			 JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			 LEFT JOIN PersonaDetalle pedAfi ON pedAfi.pedPersona = perAfi.perId
+			 LEFT JOIN Empleador empl ON roa.roaEmpleador = empl.empId
+			 LEFT JOIN Empresa emp ON empl.empEmpresa = emp.empId
+			 LEFT JOIN Persona perEmp ON emp.empPersona = perEmp.perId
+			 LEFT JOIN Ubicacion ubiAfi ON perAfi.perUbicacionPrincipal = ubiAfi.ubiId
+			 LEFT JOIN Municipio munAfi ON ubiAfi.ubiMunicipio = munAfi.munId
+			 LEFT JOIN Departamento depAfi ON munAfi.munDepartamento = depAfi.depId
+			 WHERE perAfi.perNumeroidentificacion = :numeroId
+			 AND perAfi.perTipoidentificacion = :tipoId
+			 AND cat.ctaFechaCambioCategoria = (
+				SELECT MAX(cat.ctaFechaCambioCategoria)
+				FROM categoriaAfiliado cat
+				WHERE cat.ctaAfiliado = afi.afiId
+			 )
+			 ORDER BY ISNULL(roaFechaRetiro, GETDATE()) DESC
+			 ) jefe
+			 UNION ALL
+			 (
+				SELECT
+				(CASE WHEN perBen.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perBen.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perBen.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perBen.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perBen.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perBen.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perBen.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) AS tipoIdentificacionMiembroPoblacionCubierta,
+				perBen.perNumeroIdentificacion AS numeroIdentificacionMiembroPoblacionCubierta,
+				(CASE WHEN pedBen.pedGenero = 'FEMENINO' THEN 'F'
+					WHEN pedBen.pedGenero = 'MASCULINO' THEN 'M'
+					WHEN pedBen.pedGenero = 'INDEFINIDO' THEN 'I' END) AS codigoGenero,
+				 pedBen.pedFechaNacimiento AS fechaNacimiento,
+				 perBen.perPrimerApellido AS primerApellido,
+				 perBen.perSegundoApellido AS segundoApellido,
+				 perBen.perPrimerNombre AS primerNombre,
+				 perBen.perSegundoNombre AS segundoNombre,
+				 depBen.depCodigo AS departamentoResidencia,
+				 (CASE WHEN LEN(munBen.munCodigo) &gt;= 5 THEN SUBSTRING(munBen.munCodigo, 3, 5) ELSE munBen.munCodigo END) AS municipioResidencia,
+				 (select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') AS codigoCaja,
+				 null AS TipoCotizante,
+				 2 AS codigoTipoMiembroPoblacion,
+				 (CASE WHEN (select top(1) coiId from CondicionInvalidez where coiPersona = perBen.perId and coiInvalidez = 1) is not null 
+					THEN 'D' END) AS codigoCondicionBeneficiario,
+				 (CASE WHEN ben.benTipoBeneficiario = 'CONYUGE' THEN 1
+						WHEN ben.benTipoBeneficiario IN ('HIJO_BIOLOGICO', 'BENEFICIARIO_EN_CUSTODIA', 'HIJO_ADOPTIVO', 'HIJASTRO') THEN 2
+						WHEN ben.benTipoBeneficiario IN ('PADRE', 'MADRE') THEN 3
+						WHEN ben.benTipoBeneficiario = 'HERMANO_HUERFANO_DE_PADRES' THEN 4 END) AS codigoTipoRelacionAportante,
+				 (CASE WHEN ben.benEstadoBeneficiarioAfiliado = 'ACTIVO' THEN 1 
+				 WHEN ben.benEstadoBeneficiarioAfiliado = 'INACTIVO' THEN 2 END) AS estadoAfiliacion,
+				 ubiBen.ubiDireccionFisica AS direccionResidenciaCotizante,
+				 ubiBen.ubiCodigoPostal AS codigoPostalResidenciaCotizante,
+				 ubiBen.ubiTelefonoFijo AS telefonoCotizante,
+				 ubiBen.ubiTelefonoCelular AS celularCotizante,
+				 ubiBen.ubiEmail AS correoElectronicoCotizante,
+				 null AS salarioTrabajador,
+				 (select top(1) cebFechaRecepcion from certificadoEscolarBeneficiario where cebBeneficiarioDetalle = bed.bedId order by cebId desc) AS fechaVencimientoCertificadoEscolaridad,
+				 CASE WHEN (SELECT TOP(1) sueId FROM RolAfiliado 
+						JOIN SucursalEmpresa ON roaSucursalEmpleador = sueId
+						JOIN CodigoCIIU ON sueCodigoCIIU = ciiId 
+						WHERE roaAfiliado = afi.afiId
+						AND roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+						AND (ciiCodigoDivision = '01' OR ciiCodigoDivision = '02')) is not null THEN 1 ELSE 2 END AS beneficiarioRural,
+				 (CASE WHEN pedBen.pedNivelEducativo = 'NINGUNO' THEN 'N'
+						WHEN (pedBen.pedNivelEducativo = 'BASICA_PRIMARIA_COMPLETA' OR pedBen.pedNivelEducativo = 'BASICA_PRIMARIA_INCOMPLETA') THEN 'P'
+						WHEN (pedBen.pedNivelEducativo = 'BASICA_SECUNDARIA_COMPLETA' OR pedBen.pedNivelEducativo = 'BASICA_SECUNDARIA_INCOMPLETA' OR pedBen.pedNivelEducativo = 'MEDIA_COMPLETA' OR pedBen.pedNivelEducativo = 'MEDIA_INCOMPLETA') THEN 'S'
+						WHEN (pedBen.pedNivelEducativo = 'SUPERIOR' OR pedBen.pedNivelEducativo = 'EDUCACION_PARA_TRABAJO_Y_DESARROLLO_HUMANO') THEN 'SP' END) AS nivelEducativoPersonaACargo,
+				 null AS nombreUltimaEmpresa,
+				 null AS nITUltimaEmpresa,
+				 null AS fechaRetiroUltimaEmpresa,
+				 (CASE WHEN (SELECT TOP(1) coiId FROM CondicionInvalidez WHERE coiPersona = perBen.perId AND coiInvalidez = 1) IS NOT NULL
+					THEN 'D' END) AS condicionBeneficiario,
+					cat.ctaCategoria as categoriaTrabajador
+			 FROM Beneficiario ben 
+			 LEFT JOIN BeneficiarioDetalle bed on ben.benBeneficiarioDetalle = bed.bedId
+			 JOIN persona perBen ON ben.benPersona = perBen.perId
+			 JOIN PersonaDetalle pedBen ON pedBen.pedPersona = perBen.perId
+			 LEFT JOIN Ubicacion ubiBen ON perBen.perUbicacionPrincipal = ubiBen.ubiId
+			 LEFT JOIN Municipio munBen ON ubiBen.ubiMunicipio = munBen.munId
+			 LEFT JOIN Departamento depBen ON munBen.munDepartamento = depBen.depId
+			 JOIN Afiliado afi ON ben.benAfiliado = afi.afiId
+			 LEFT JOIN categoriaAfiliado cat ON cat.ctaAfiliado = afi.afiId
+			 JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			 WHERE perAfi.perNumeroidentificacion = :numeroId
+			 AND perAfi.perTipoidentificacion = :tipoId
+			 AND cat.ctaFechaCambioCategoria = (
+				SELECT MAX(cat.ctaFechaCambioCategoria)
+				FROM categoriaAfiliado cat
+				WHERE cat.ctaAfiliado = afi.afiId
+			)
+			)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Zenith.consultar.detallesAportesMayoresAPeriodo" result-set-mapping="RegistroDetalleAporteDTOMapping">
+		<query>
+			SELECT 
+    (CASE 
+        WHEN perApo.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+        WHEN perApo.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+        WHEN perApo.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+        WHEN perApo.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+        WHEN perApo.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+        WHEN perApo.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+        WHEN perApo.perTipoIdentificacion = 'NIT' THEN 'NI'
+        WHEN perApo.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+        WHEN perApo.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' 
+		WHEN perApo.perTipoIdentificacion = 'PERM_PROT_TEMPORAL' THEN 'PT'
+    END) AS tipoIdentificacionCotizante,
+    perApo.perNumeroIdentificacion AS numeroIdentificacionCotizante,
+    apg.apgPeriodoAporte AS periodoAporte,
+    apd.apdDiasCotizados AS diasCotizadosPeriodo,
+    moa.moaTipoMovimiento as movimiento,
+    moa.moaTipoAjuste as ajuste,
+    (CASE WHEN apd.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE' THEN 1 ELSE 2 END) AS tipoCotizante,
+    (SELECT cnsValor FROM Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO') AS codigoCCFDondeRealizoAporte,
+    (CASE WHEN apd.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE' THEN perEmp.perRazonSocial ELSE perApo.perRazonSocial END)  AS empresaDondeRealizoAporte,
+    (CASE WHEN apd.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE' THEN CONCAT(perEmp.perNumeroIdentificacion,'-',perEmp.perDigitoVerificacion) ELSE perApo.perNumeroIdentificacion END) AS nITEmpresaRealizoAporte,
+	apd.apdTarifa as tarifaAporte,
+	apd.apdAporteObligatorio as valorAporteObligatorio
+	FROM  
+		AporteDetallado apd 
+	INNER JOIN 
+		MovimientoAporte moa ON moa.moaAporteDetallado = apd.apdId 
+	INNER JOIN 
+		AporteGeneral apg ON apd.apdAporteGeneral = apg.apgId
+	INNER JOIN 
+		Persona perApo ON apd.apdPersona = perApo.perId
+	LEFT JOIN 
+		Empresa emp ON 
+			apg.apgEmpresa = emp.empId AND 
+			apd.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE'
+	LEFT JOIN 
+		Persona perEmp ON 
+			emp.empPersona = perEmp.perId AND 
+			apd.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE'
+	WHERE perApo.perNumeroIdentificacion = :numeroId
+				AND perApo.perTipoIdentificacion = :tipoId
+				AND apg.apgPeriodoAporte >= :periodoBase
+				and (moa.moaEstadoAporte != 'CORREGIDO')
+				AND apg.apgId NOT IN (
+					SELECT apg.apgId AS periodoAporte from AporteDetallado apd 
+					INNER JOIN 
+						MovimientoAporte moa ON moa.moaAporteDetallado = apd.apdId 
+					INNER JOIN 
+						AporteGeneral apg ON apd.apdAporteGeneral = apg.apgId
+					INNER JOIN 
+						Persona perApo ON apd.apdPersona = perApo.perId
+						WHERE
+							perApo.perNumeroIdentificacion = :numeroId
+							AND perApo.perTipoIdentificacion = :tipoId 
+							AND (
+								moa.moaTipoMovimiento = 'DEVOLUCION_APORTES' 
+								OR (moa.moaTipoMovimiento = 'CORRECCION_APORTES' AND moa.moaTipoAjuste != 'CORRECCION_A_LA_ALTA')
+							)
+					)
+				ORDER BY apg.apgPeriodoAporte DESC
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Zenith.consultar.datosSubsidioPostulante" result-set-mapping="DatosSubsidioDTOMapping">
+		<query>
+			select
+				dsa.dsaId AS identificadorSubsidio,
+				(select cnsValor from Constante where cnsNombre = 'CAJA_COMPENSACION_CODIGO') AS codigoCCF,
+				1 AS codigoAQuienSeOtorgoSubsidio,
+				cas.casFechaHoraCreacionRegistro AS fechaAsignacionSubsidio,
+				dsa.dsaValorTotal AS valor,
+				1 AS codigoTipoSubsidio,
+				(CASE WHEN cas.casEstadoTransaccionSubsidio = 'COBRADO' THEN 3
+				WHEN (cas.casEstadoTransaccionSubsidio = 'RETENIDO' OR cas.casEstadoTransaccionSubsidio = 'ANULADO') THEN 2
+				ELSE 1 END) AS estado,
+				(CASE WHEN cas.casSitioDePago IS NOT NULL THEN (SELECT TOP(1) depInf.depCodigo FROM SitioPago sip 
+					JOIN Infraestructura inf ON sip.sipInfraestructura = inf.infId
+					JOIN Municipio munInf ON inf.infMunicipio = munInf.munId 
+					JOIN Departamento depInf ON munInf.munDepartamento =depInf.depId
+					WHERE sip.sipId = cas.casSitioDePago) 
+				ELSE null END)AS departamentoRecepcion,
+				(CASE WHEN cas.casSitioDePago IS NOT NULL THEN (SELECT TOP(1) (CASE WHEN LEN(munInf.munCodigo) = 5 THEN SUBSTRING(munInf.munCodigo, 3,5) ELSE munInf.munCodigo END) FROM SitioPago sip 
+					JOIN Infraestructura inf ON sip.sipInfraestructura = inf.infId
+					JOIN Municipio munInf ON inf.infMunicipio = munInf.munId 
+					WHERE sip.sipId = cas.casSitioDePago)
+					ELSE null END) AS municipioRecepcion,
+				dsa.dsaFechaHoraUltimaModificacion AS fechaEntregaUltimoSubsidio,
+				(CASE WHEN perBen.perTipoIdentificacion = 'REGISTRO_CIVIL' THEN 'RC'
+					WHEN perBen.perTipoIdentificacion = 'TARJETA_IDENTIDAD' THEN 'TI' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_CIUDADANIA' THEN 'CC' 
+					WHEN perBen.perTipoIdentificacion = 'CEDULA_EXTRANJERIA' THEN 'CE' 
+					WHEN perBen.perTipoIdentificacion = 'PASAPORTE' THEN 'PA' 
+					WHEN perBen.perTipoIdentificacion = 'CARNE_DIPLOMATICO' THEN 'CD'
+					WHEN perBen.perTipoIdentificacion = 'NIT' THEN 'NI'
+					WHEN perBen.perTipoIdentificacion = 'SALVOCONDUCTO' THEN 'SC' 
+					WHEN perBen.perTipoIdentificacion = 'PERM_ESP_PERMANENCIA' THEN 'PE' END) AS tipoIdentificacionBeneficiario,
+				perBen.perNumeroIdentificacion AS numeroIdentificacionBeneficiario,
+				(CASE WHEN pedBen.pedGenero = 'FEMENINO' THEN 'F'
+					WHEN pedBen.pedGenero = 'MASCULINO' THEN 'M'
+					WHEN pedBen.pedGenero = 'INDEFINIDO' THEN 'I' END) AS generoBeneficiario,
+				pedBen.pedFechaNacimiento AS fechaNacimientoBeneficiario,
+				perBen.perPrimerApellido AS primerApellidoBeneficiario,
+				perBen.perSegundoApellido AS segundoApellidoBeneficiario,
+				perBen.perPrimerNombre AS primerNombreBeneficiario,
+				perBen.perSegundoApellido AS segundoNombreBeneficiario
+			FROM 
+			CuentaAdministradorSubsidio cas 
+			JOIN DetalleSubsidioAsignado dsa ON dsa.dsaCuentaAdministradorSubsidio = cas.casId
+			JOIN BeneficiarioDetalle bed ON dsa.dsaBeneficiarioDetalle = bed.bedId
+			JOIN Beneficiario ben ON ben.benBeneficiarioDetalle = bed.bedId
+			JOIN Persona perBen ON ben.benPersona = perBen.perId
+			JOIN PersonaDetalle pedBen ON pedBen.pedPersona = perBen.perId
+			JOIN Afiliado afi ON dsa.dsaAfiliadoPrincipal = afi.afiId
+			JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			WHERE perAfi.perNumeroIdentificacion = :numeroIdentificacion
+			AND perAfi.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Zenith.consultar.parametroUrlConfirmacion">
+		<query>	
+			SELECT prmValor FROM Parametro
+			WHERE prmNombre = 'URL_CONFIRMACION_ZENITH_TRABAJADORES_ACTIVOS'
+		</query>
+	</named-native-query>
+	
+	<sql-result-set-mapping name="DatosSubsidioDTOMapping">
+		<constructor-result target-class="com.asopagos.zenith.dto.DatosSubsidioDTO">
+			<column name="identificadorSubsidio" class="java.lang.Integer"/>
+			<column name="codigoCCF" class="java.lang.String"/>
+			<column name="codigoAQuienSeOtorgoSubsidio" class="java.lang.Short"/>
+			<column name="fechaAsignacionSubsidio" class="java.lang.String"/>
+			<column name="valor" class="java.lang.String"/>
+			<column name="codigoTipoSubsidio" class="java.lang.Short"/>
+			<column name="estado" class="java.lang.Short"/>
+			<column name="departamentoRecepcion" class="java.lang.Short"/>
+			<column name="municipioRecepcion" class="java.lang.Short"/>
+			<column name="fechaEntregaUltimoSubsidio" class="java.lang.String"/>
+			<column name="tipoIdentificacionBeneficiario" class="java.lang.String"/>
+			<column name="numeroIdentificacionBeneficiario" class="java.lang.String"/>
+			<column name="generoBeneficiario" class="java.lang.String"/>
+			<column name="fechaNacimientoBeneficiario" class="java.lang.String"/>
+			<column name="primerApellidoBeneficiario" class="java.lang.String"/>
+			<column name="segundoApellidoBeneficiario" class="java.lang.String"/>
+			<column name="primerNombreBeneficiario" class="java.lang.String"/>
+			<column name="segundoNombreBeneficiario" class="java.lang.String"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="RegistroDetalleDTOMapping">
+        <constructor-result target-class="com.asopagos.zenith.dto.RegistroDetalleDTO">
+        	<column name="tipoRegistro" class="java.lang.Short"/>
+			<column name="tipoIdentificacionCotizante" class="java.lang.String"/>
+			<column name="numeroIdentificacionCotizante" class="java.lang.String"/>
+			<column name="tipoIdentificacionMiembroPoblacionCubierta" class="java.lang.String"/>
+			<column name="numeroIdentificacionMiembroPoblacionCubierta" class="java.lang.String"/>
+			<column name="codigoGenero" class="java.lang.String"/>
+			<column name="fechaNacimiento" class="java.lang.String"/>
+			<column name="primerApellido" class="java.lang.String"/>
+			<column name="segundoApellido" class="java.lang.String"/>
+			<column name="primerNombre" class="java.lang.String"/>
+			<column name="segundoNombre" class="java.lang.String"/>
+			<column name="departamentoResidencia" class="java.lang.String"/>
+			<column name="municipioResidencia" class="java.lang.String"/>
+			<column name="fechaIngreso" class="java.lang.String"/>
+			<column name="fechaRetiro" class="java.lang.String"/>
+			<column name="codigoCajaCompensacionFamiliar" class="java.lang.String"/>
+			<column name="codigoTipoCotizante" class="java.lang.Short"/>
+			<column name="codigoTipoMiembroPoblacionCubierta" class="java.lang.Short"/>
+			<column name="codigoCondicionBeneficiario" class="java.lang.String"/>
+			<column name="codigoTipoRelacionCotizante" class="java.lang.Short"/>
+			<column name="estadoAfiliacion" class="java.lang.Short"/>
+			<column name="direccionCotizante" class="java.lang.String"/>
+			<column name="codigoPostalCotizante" class="java.lang.Integer"/>
+			<column name="telefonoCotizante" class="java.lang.String"/>
+			<column name="celularCotizante" class="java.lang.String"/>
+			<column name="correoElectronicoCotizante" class="java.lang.String"/>
+			<column name="salarioCotizante" class="java.lang.Double"/>
+			<column name="fechaVigenciaCertificadoEscolaridad" class="java.lang.String"/>
+			<column name="beneficiarioAgricola" class="java.lang.Short"/>
+			<column name="fechaActualizacionHojaVida" class="java.lang.String"/>
+			<column name="nivelEducativoPersonaCargo" class="java.lang.String"/>
+			<column name="tipoTrayectoria" class="java.lang.Short"/>
+			<column name="empresaQueRealizaAporte" class="java.lang.String"/>
+			<column name="nitEmpresaQueRealizaAporte" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+    
+    <sql-result-set-mapping name="MiembroGrupoPostulanteDTOMapping">
+    	<constructor-result target-class="com.asopagos.zenith.dto.MiembroGrupoPostulanteDTO">
+    		<column name="tipoIdentificacionMiembroPoblacionCubierta" class="java.lang.String"/>
+			<column name="numeroIdentificacionMiembroPoblacionCubierta" class="java.lang.String"/>
+			<column name="codigoGenero" class="java.lang.String"/>
+			<column name="fechaNacimiento" class="java.lang.String"/>
+			<column name="primerApellido" class="java.lang.String"/>
+			<column name="segundoApellido" class="java.lang.String"/>
+			<column name="primerNombre" class="java.lang.String"/>
+			<column name="segundoNombre" class="java.lang.String"/>
+			<column name="departamentoResidencia" class="java.lang.Short"/>
+			<column name="municipioResidencia" class="java.lang.Short"/>
+			<column name="codigoCaja" class="java.lang.String"/>
+			<column name="TipoCotizante" class="java.lang.Short"/>
+			<column name="codigoTipoMiembroPoblacion" class="java.lang.Short"/>
+			<column name="codigoCondicionBeneficiario" class="java.lang.String"/>
+			<column name="codigoTipoRelacionAportante" class="java.lang.Short"/>
+			<column name="estadoAfiliacion" class="java.lang.Short"/>
+			<column name="direccionResidenciaCotizante" class="java.lang.String"/>
+			<column name="codigoPostalResidenciaCotizante" class="java.lang.String"/>
+			<column name="telefonoCotizante" class="java.lang.String"/>
+			<column name="celularCotizante" class="java.lang.String"/>
+			<column name="correoElectronicoCotizante" class="java.lang.String"/>
+			<column name="salarioTrabajador" class="java.lang.String"/>
+			<column name="fechaVencimientoCertificadoEscolaridad" class="java.lang.String"/>
+			<column name="beneficiarioRural" class="java.lang.Short"/>
+			<column name="nivelEducativoPersonaACargo" class="java.lang.String"/>
+			<column name="nombreUltimaEmpresa" class="java.lang.String"/>
+			<column name="nITUltimaEmpresa" class="java.lang.String"/>
+			<column name="fechaRetiroUltimaEmpresa" class="java.lang.String"/>
+			<column name="condicionBeneficiario" class="java.lang.String"/>
+			<column name="categoriaTrabajador" class="java.lang.String"/>
+    	</constructor-result>
+    </sql-result-set-mapping>
+    
+    <sql-result-set-mapping name="RegistroDetalleAporteDTOMapping">
+    	<constructor-result target-class="com.asopagos.zenith.dto.RegistroDetalleAporteDTO">
+    		<column name="tipoIdentificacionCotizante" class="java.lang.String"/>
+			<column name="numeroIdentificacionCotizante" class="java.lang.String"/>
+			<column name="periodoAporte" class="java.lang.String"/>
+			<column name="diasCotizadosPeriodo" class="java.lang.Short"/>
+			<column name="tipoCotizante" class="java.lang.Short"/>
+			<column name="codigoCCFDondeRealizoAporte" class="java.lang.String"/>
+			<column name="empresaDondeRealizoAporte" class="java.lang.String"/>
+			<column name="nITEmpresaRealizoAporte" class="java.lang.String"/>
+			<column name="tarifaAporte" class="java.math.BigDecimal"/>
+        	<column name="valorAporteObligatorio" class="java.math.BigDecimal"/>
+    	</constructor-result>
+    </sql-result-set-mapping>
+</entity-mappings>

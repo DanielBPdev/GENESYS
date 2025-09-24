@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="EntidadesPagadoras.buscar.entidades.documento">
+		<description>Consulta la EntidadPagadora, filtrando con tipo y nro documento</description>
+		<query>
+				SELECT epa
+				FROM EntidadPagadora epa
+				JOIN FETCH epa.empresa emp
+				JOIN FETCH emp.persona per
+				JOIN FETCH per.ubicacionPrincipal
+				WHERE per.tipoIdentificacion = :tipoIdentificacion
+				AND per.numeroIdentificacion = :numeroIdentificacion
+				ORDER BY epa.estadoEntidadPagadora ASC,
+				per.razonSocial
+	        </query>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.buscar.entidades.razonSocial">
+		<description>Consulta la EntidadPagadora, filtrando con la razón social </description>
+		<query>
+				SELECT epa
+				FROM EntidadPagadora epa
+				JOIN FETCH epa.empresa emp
+				JOIN FETCH emp.persona per
+				JOIN FETCH per.ubicacionPrincipal
+				WHERE per.razonSocial LIKE :razonSocial
+				ORDER BY epa.estadoEntidadPagadora ASC,
+				per.razonSocial
+	        </query>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.buscar.empleador">
+		<description>Consulta sobre las tablas Emleador y persona filtrando con tipo y nro documento </description>
+		<query>
+				SELECT emp
+				FROM Empleador emp
+				JOIN FETCH emp.empresa e
+				JOIN FETCH e.persona per
+				LEFT JOIN FETCH per.ubicacionPrincipal
+				WHERE per.tipoIdentificacion = :tipoIdentificacion
+				AND per.numeroIdentificacion = :numeroIdentificacion
+	        </query>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.consultar.municipio">
+		<description>Consulta un municipio con el id del municio y departamento </description>
+		<query>
+				SELECT mun
+				FROM Municipio mun
+				WHERE mun.idMunicipio = :idMunicipio
+				AND mun.idDepartamento = :idDepartamento
+	        </query>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.consultar.ubicacionEmpresa">
+		<description>Consulta la ubicacion del empleador </description>
+		<query>
+				SELECT ubiEm
+				FROM UbicacionEmpresa ubiEm
+				WHERE ubiEm.idEmpresa = :idEmpresa
+				AND ubiEm.tipoUbicacion = 'ENVIO_CORRESPONDENCIA'
+	        </query>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.consultar.persona">
+		<description>Consulta una persona </description>
+		<query>
+				SELECT per 
+				FROM Persona per
+            	WHERE per.tipoIdentificacion = :tipoIdentificacion
+				AND per.numeroIdentificacion = :numeroIdentificacion
+	        </query>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.consultar.personas">
+		<description>Consulta todas las personas excepto la que se quiere actualizar </description>
+		<query>
+				SELECT per 
+				FROM Persona per
+	        </query>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.consultar.entidades.pagadoras">
+		<description>Consulta todas las Entidades Pagadoras</description>
+		<query>
+				SELECT epa
+				FROM EntidadPagadora epa
+				JOIN epa.empresa emp
+				JOIN emp.persona per
+		</query>
+		<hint name="estadoEntidadPagadora" value="epa.estadoEntidadPagadora"/>
+		<hint name="razonSocial" value="per.razonSocial"/>
+		<hint name="numeroIdentificacion" value="per.numeroIdentificacion"/>
+		<hint name="tipoIdentificacion" value="per.tipoIdentificacion"/>
+		<hint name="aportante" value="epa.aportante"/>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.consultar.documentos.entidad.pagadora">
+		<description>Consulta la ubicacion del empleador </description>
+		<query>
+				SELECT dep
+				FROM DocumentoEntidadPagadora dep,
+				EntidadPagadora ep
+				WHERE dep.idEntidadPagadora = ep.idEntidadPagadora
+				AND dep.idEntidadPagadora = :idEntidadPagadora 
+	        </query>
+	</named-query>
+
+	<named-query
+		name="EntidadesPagadoras.actualizar.identificador.archivo.carta">
+		<description>Actualiza el campo soaIdentificadorArchivoCarta de la tabla SolicitudAsociacionPersonaEntidadPagadora</description>
+		<query>
+			UPDATE SolicitudAsociacionPersonaEntidadPagadora  
+			SET identificadorArchivoCarta= :identificadorArchivoCarta 
+			WHERE (solicitudGlobal.idSolicitud IN ( 
+				SELECT soli.idSolicitud 
+				FROM Solicitud soli 
+				WHERE soli.numeroRadicacion IN (:numerosRadicado)
+			))	
+		</query>
+	</named-query>
+	
+	<named-query
+		name="EntidadesPagadoras.consultar.persona.empresa">
+		<description>Consulta si existe una persona en la empresa</description>
+		<query>
+			SELECT e FROM Empresa e
+			WHERE e.persona = :persona
+		</query>
+	</named-query>
+
+	<named-query
+		name="EntidadesPagadoras.actualizar.identificador.carta.resultado.gestion">
+		<description>Actualiza el campo soaIdentificadorCartaResultadoGestion de la tabla SolicitudAsociacionPersonaEntidadPagadora</description>
+		<query>
+		UPDATE SolicitudAsociacionPersonaEntidadPagadora  
+			SET identificadorCartaResultadoGestion= :identificadorCartaResultadoGestion 
+			WHERE (solicitudGlobal.idSolicitud IN ( 
+				SELECT soli.idSolicitud 
+				FROM Solicitud soli 
+				WHERE soli.numeroRadicacion IN (:numerosRadicado)
+			))
+	    </query>
+	</named-query>
+
+	<named-query
+		name="EntidadesPagadoras.validar.entidad.tipo.gestion.solicitar.alta">
+		<description>Consulta los registros con tipo de gestion SOLICITAR_ALTA</description>
+		<query>
+				SELECT per, rolAf, sapep, sol
+				FROM EntidadPagadora epa,
+				Persona per,
+				Afiliado afi,
+				RolAfiliado rolAf,
+				SolicitudAsociacionPersonaEntidadPagadora sapep,
+				Solicitud sol
+				WHERE sapep.solicitudGlobal = sol.idSolicitud
+				AND sapep.rolAfiliado = rolAf.idRolAfiliado
+				AND rolAf.afiliado = afi.idAfiliado
+				AND afi.persona = per.idPersona
+				AND rolAf.pagadorAportes.idEntidadPagadora = epa.idEntidadPagadora
+				AND sapep.tipoGestion = 'SOLICITAR_ALTA'
+				AND sapep.estado = 'PENDIENTE_SOLICITAR_ALTA'
+				AND rolAf.estadoEnEntidadPagadora = 'INACTIVO'
+				AND epa.estadoEntidadPagadora = 'HABILITADO'
+				AND sol.numeroRadicacion = :numeroRadicacion
+	        </query>
+	</named-query>
+
+	<named-query
+		name="EntidadesPagadoras.validar.entidad.tipo.gestion.solicitar.retiro">
+		<description>Consulta los registros con tipo de gestion SOLICITAR_RETIRO</description>
+		<query>
+				SELECT per, rolAf, sapep, sol
+				FROM EntidadPagadora epa,
+				Persona per,
+				Afiliado afi,
+				RolAfiliado rolAf,
+				SolicitudAsociacionPersonaEntidadPagadora sapep,
+				Solicitud sol
+				WHERE sapep.solicitudGlobal = sol.idSolicitud
+				AND sapep.rolAfiliado = rolAf.idRolAfiliado
+				AND rolAf.afiliado = afi.idAfiliado
+				AND afi.persona = per.idPersona
+				AND rolAf.pagadorAportes.idEntidadPagadora = epa.idEntidadPagadora
+				AND sapep.tipoGestion = 'SOLICITAR_RETIRO'
+				AND sapep.estado = 'PENDIENTE_SOLICITAR_RETIRO'
+				AND rolAf.estadoEnEntidadPagadora = 'ACTIVO'
+				AND sol.numeroRadicacion = :numeroRadicacion
+	        </query>
+	</named-query>
+
+	<named-query
+		name="EntidadesPagadoras.validar.entidad.tipo.gestion.registrar.resultado.solicitud">
+		<description>Consulta los registros con tipo de gestion REGISTRAR_RESULTADO_SOLICITUD</description>
+		<query>
+				SELECT per, rolAf, sapep, sol
+				FROM EntidadPagadora epa,
+				Persona per,
+				Afiliado afi,
+				RolAfiliado rolAf,
+				SolicitudAsociacionPersonaEntidadPagadora sapep,
+				Solicitud sol
+				WHERE sapep.solicitudGlobal = sol.idSolicitud
+				AND sapep.rolAfiliado = rolAf.idRolAfiliado
+				AND rolAf.afiliado = afi.idAfiliado
+				AND afi.persona = per.idPersona
+				AND rolAf.pagadorAportes.idEntidadPagadora = epa.idEntidadPagadora
+				AND sapep.tipoGestion = 'REGISTRAR_RESULTADO_SOLICITUD'
+				AND sapep.estado IN ('SOLICITADA_ALTA', 'RETIRO_SOLICITADO', 'APROBADA')
+				AND sol.numeroRadicacion = :numeroRadicacion
+	        </query>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.consultar.solicitud">
+		<description>Consulta los registros de la solicitud</description>
+		<query>
+				SELECT sol, rolAf
+				FROM Solicitud sol,
+				SolicitudAsociacionPersonaEntidadPagadora sapep,
+				RolAfiliado rolAf
+				WHERE sapep.solicitudGlobal = sol.idSolicitud
+				AND sapep.rolAfiliado = rolAf.idRolAfiliado 
+				AND sol.numeroRadicacion = :numeroRadicacion
+	        </query>
+	</named-query>
+	
+	<named-query name="EntidadesPagadoras.generarArchivoTXT.EstructuraSolicitudAlta">
+		<description>Consulta los registros de la solicitud para el archivo a generar</description>
+			<query>
+				SELECT sapep
+				FROM SolicitudAsociacionPersonaEntidadPagadora sapep
+				JOIN FETCH sapep.rolAfiliado rol
+				JOIN FETCH rol.afiliado afi
+				JOIN FETCH afi.persona per
+				JOIN FETCH rol.pagadorAportes ep
+				JOIN FETCH ep.empresa emp
+				JOIN FETCH emp.persona peremp
+				WHERE rol.pagadorAportes.idEntidadPagadora = :idEntidadPagadora
+				AND sapep.consecutivo = :consecutivoGestion
+	        </query>
+	</named-query>
+
+	<named-query name="EntidadesPagadoras.asociar.pagador.aportes">
+		<description>Actualiza el campo roaPagadorAportes sobre la tabla RolAfiliado</description>
+		<query>
+				UPDATE  RolAfiliado rol
+				SET rol.pagadorAportes.idEntidadPagadora = :idEntidadPagadora
+            	WHERE rol.idRolAfiliado = :idRolAfiliado
+	        </query>
+	</named-query>
+
+    <named-query name="EntidadesPagadoras.consultar.habilitadas.by.tipoAfiliacion">
+        <description>Consulta las entidades pagadoras filtrando con tipo afiliacion</description>
+        <query>
+            SELECT epa
+            FROM EntidadPagadora epa
+            WHERE epa.estadoEntidadPagadora = :estadoEntidadPagadora
+            AND epa.tipoAfiliacion = :tipoAfiliacion
+        </query>
+    </named-query>
+    
+    <named-query name="EntidadesPagadoras.consultar.habilitadas.by.tipoAfiliacion.completa">
+        <description>Consulta las entidades pagadoras filtrando con tipo afiliacion + el registro paga.por.simismo</description>
+        <query>
+            SELECT epa
+            FROM EntidadPagadora epa
+            WHERE epa.estadoEntidadPagadora = :estadoEntidadPagadora
+            AND (epa.tipoAfiliacion = :tipoAfiliacion OR epa.empresa.idEmpresa = null)
+        </query>
+    </named-query>
+    
+    <named-query
+		name="EntidadesPagadoras.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudAsociacionPersonaEntidadPagadora sol
+            WHERE sol.solicitudGlobal.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+    
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+	<named-native-query
+		name="EntidadesPagadoras.actualizar.gestion.solicitud.asociacion">
+		<description>Actualiza la gestion de solicitud asociacion</description>
+		<query>
+			UPDATE SolicitudAsociacionPersonaEntidadPagadora
+				SET soaTipoGestion = :tipoGestion,
+				soaEstado = :estadoSolicitud,
+				soaFechaGestion = :fechaGestion,
+				soaUsuarioGestion = :usuario
+				WHERE soaSolicitudGlobal IN (:idsSolicitudes)
+	        </query>
+	</named-native-query>
+
+	<named-native-query name="EntidadesPagadoras.consultar.consecutivo">
+		<description>Genera el consecutivo de la Gestión de Solicitud Asociacion </description>
+		<query>
+			 SELECT MAX(soaId)+1 FROM SolicitudAsociacionPersonaEntidadPagadora
+        </query>
+	</named-native-query>
+
+	<named-native-query name="EntidadesPagadoras.actualizar.consecutivo">
+		<description>Genera el consecutivo de la Gestión de Solicitud Asociacion </description>
+		<query>
+				UPDATE SolicitudAsociacionPersonaEntidadPagadora
+					SET soaConsecutivo =  :consecutivo
+					WHERE soaSolicitudGlobal IN (:idsSolicitudes)
+	        </query>
+	</named-native-query>
+
+	<named-native-query name="EntidadesPagadoras.actualizar.rol.afiliado">
+		<description>Actualiza la tabla RolAfiliado</description>
+		<query>
+				UPDATE RolAfiliado 
+					SET roaEstadoEnEntidadPagadora = :estadoEnEntidadPagadora
+					WHERE roaId IN (:idsRolAfiliado) 
+	        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="EntidadesPagadoras.consultar.consecutivo.gestion.solicitud.asociacion">
+		<description>Consulta el consecutivo de la gestion solicitud ascociacion</description>
+		<query>
+				SELECT soaConsecutivo 
+					FROM SolicitudAsociacionPersonaEntidadPagadora
+					WHERE soaSolicitudGlobal = :idSolicitud
+	        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="EntidadesPagadoras.actualizar.identificador.archivo">
+		<description>Actualiza la tabla RolAfiliado</description>
+		<query>
+				UPDATE SolicitudAsociacionPersonaEntidadPagadora 
+					SET soaIdentificadorArchivoPlano = :identificadorArchivo
+					WHERE soaConsecutivo = :consecutivoGestion 
+	        </query>
+	</named-native-query>
+
+    <named-native-query name="find.solicitud.asociacion.persona.by.idEntidadPagadora">
+        <query>
+            SELECT per.perTipoIdentificacion, 
+                per.perNumeroIdentificacion,
+                roa.roaTipoAfiliado,
+                CASE WHEN per.perRazonSocial IS NOT NULL
+                THEN per.perRazonSocial ELSE
+                CONCAT(per.perPrimerNombre,
+                CASE WHEN per.perSegundoNombre IS NOT NULL THEN CONCAT(' ', per.perSegundoNombre) ELSE '' END, ' ', 
+                per.perPrimerApellido,
+                CASE WHEN per.perSegundoApellido IS NOT NULL THEN CONCAT(' ', per.perSegundoApellido) ELSE '' END) END  AS perNombres,
+                soa.soaFecha,
+                per.perId,
+                epa.epaId,
+                roa.roaId
+            FROM RolAfiliado roa
+            JOIN Afiliado afi ON roa.roaAfiliado= afi.afiId
+            JOIN Persona per ON afi.afiPersona = per.perId
+            JOIN EntidadPagadora epa ON roa.roaPagadorAportes = epa.epaId
+            JOIN (SELECT soa.soaRolAfiliado, MAX(sol.solFechaRadicacion) AS soaFecha FROM SolicitudAsociacionPersonaEntidadPagadora soa JOIN Solicitud sol ON soa.soaSolicitudGlobal = sol.solId GROUP BY soa.soaRolAfiliado) soa ON soa.soaRolAfiliado = roaId
+            WHERE epa.epaId = :idEntidadPagadora  
+        </query>
+        <hint name="tipoIdentificacion" value="perTipoIdentificacion" />
+        <hint name="numeroIdentificacion" value="perNumeroIdentificacion" />
+        <hint name="tipoAfiliado" value="roaTipoAfiliado" />
+        <hint name="nombresApellidos" value="perNombres" />
+        <hint name="fechaInicio" value="soaFecha" />
+    </named-native-query>
+
+</entity-mappings>

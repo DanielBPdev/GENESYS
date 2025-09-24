@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>services</artifactId>  
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>listas-chequeo</artifactId>
+	<packaging>pom</packaging>
+	<name>Listas de Chequeo</name>
+	<description>Proyecto padre para los servicios de listas de chequeo</description>
+	
+	<modules>
+		<module>listas-chequeo-api</module>
+		<module>listas-chequeo-service</module>
+	</modules>
+    
+    <dependencies>
+    </dependencies>
+	
+</project>

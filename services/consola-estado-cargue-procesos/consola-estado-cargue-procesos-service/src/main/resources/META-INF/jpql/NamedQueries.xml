@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="consola.estado.consultar.file.load.log.por.load.id">
+		<query>
+			SELECT log 
+			FROM FileLoadedLog log 
+			LEFT JOIN FETCH log.fileLoaded filo 
+			WHERE filo.id= :fileLoadedId
+			ORDER BY log.lineNumber
+		</query>
+		<hint name="" value=""></hint>
+	</named-query>
+	<named-query name="afiliacion.buscar.file.nombreCampos">
+		<query>   
+		SELECT new com.asopagos.dto.DefinicionCamposCargaDTO(fieldl.label,fieldl.fieldLoadCatalog.name) 
+		FROM FieldDefinitionLoad fieldl 
+		LEFT JOIN fieldl.fieldLoadCatalog flc
+		JOIN fieldl.lineDefinition ld
+		JOIN ld.fileDefinition fid
+		WHERE fid.id = :idFileDefinition
+	   </query>
+	</named-query>
+	<named-query
+		name="consola.estado.consultar.consola.estado.por.carga.id.tipo.proceso">
+		<query>   
+		SELECT consola FROM ConsolaEstadoCargueMasivo consola WHERE consola.cargueId= :idCargue and consola.tipoProcesoMasivo= :tipoProceso
+	   </query>
+	</named-query>
+    <named-query
+		name="consola.estado.consultar.consola.estado.por.proceso.id.tipo.proceso">
+		<query>   
+            SELECT consola FROM ConsolaEstadoProcesoMasivo consola 
+            WHERE consola.idConsolaEstadoProcesoMasivo = :idConsolaEstadoProcesoMasivo and consola.tipoProcesoMasivo= :tipoProce	 
+  </query>
+	</named-query>
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+    <named-native-query name="consultar.consola.cargue.por.filtro.paginada" result-set-mapping="mapping.consultar.consola.cargue.por.filtro.paginada">
+        <query>
+            SELECT *
+            FROM ConsolaEstadoCargueMasivo cec
+            LEFT JOIN FileLoaded fil ON (cec.cecFileLoadedId = fil.id)
+            WHERE cec.cecTipoProcesoMasivo = :tipoProceso
+            AND (1 = (CASE WHEN :estado IS NULL THEN 1 ELSE 0 END) OR (cec.cecEstadoCargueMasivo = :estado))
+            AND (1 = (CASE WHEN :fechaInicio IS NULL THEN 1 ELSE 0 END) OR (cec.cecFechaInicio &gt;= CAST(:fechaInicio AS datetime2(7))))
+            AND (1 = (CASE WHEN :fechaFin IS NULL THEN 1 ELSE 0 END) OR (cec.cecFechaFin &lt;= CAST(:fechaFin AS datetime2(7)))) 
+        </query>
+        <hint name="proceso" value="cecTipoProcesoMasivo" />
+        <hint name="nombreArchivo" value="cecNombreArchivo" />
+        <hint name="fechaInicio" value="cecFechaInicio" />
+        <hint name="fechaFin" value="cecFechaFin" />
+        <hint name="estado" value="cecEstadoCargueMasivo" />
+        <hint name="numRegistroProcesado" value="cecNumRegistroProcesado" />
+        <hint name="numRegistroConErrores" value="cecNumRegistroConErrores" />
+    </named-native-query>
+
+    <!--Consola de procesos-->
+
+    <!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+    <named-native-query name="consultar.consola.procesos.por.filtro.paginada" result-set-mapping="mapping.consultar.consola.proceso.por.filtro.paginada">
+        <query>
+        SELECT * FROM ConsolaEstadoProcesoMasivo AS cepm
+        LEFT JOIN FileLoaded AS fil ON cepm.cepmId = fil.id
+        WHERE cepm.cepmTipoProcesoMasivo = :tipoProceso
+        AND (1 = CASE WHEN :estado IS NULL THEN 1 ELSE 0 END OR (cepm.cepmEstadoCargueMasivo = :estado))
+        AND (1 = CASE WHEN :fechaInicio IS NULL THEN 1 ELSE 0 END OR cepm.cepmFechaInicio &lt; CAST(:fechaInicio AS datetime2(7)))
+        AND (1 = CASE WHEN :fechaFin IS NULL THEN 1 ELSE 0 END OR cepm.cepmFechaFin &lt; CAST(:fechaFin AS datetime2(7)))
+
+        </query>
+        <hint name="proceso" value="cepmTipoProcesoMasivo" />
+        <hint name="fechaInicio" value="cepmFechaInicio" />
+        <hint name="fechaFin" value="cepmFechaFin" />
+        <hint name="estado" value="cepmEstadoCargueMasivo" />
+    </named-native-query>
+
+    <named-native-query name="consultar.log.consola.cargue.id" result-set-mapping="mapping.consultar.log.consola.cargue.id">
+        <query>
+            SELECT *
+            FROM ResultadoHallazgoValidacionArchivo rhv
+            JOIN ConsolaEstadoCargueMasivo cec ON (rhv.rhvIdConsolaEstadoCargueMasivo = cec.cecId)
+            WHERE cec.cecId = :idConsola
+        </query>
+        <hint name="tipoProceso" value="cecTipoProcesoMasivo"/>
+        <hint name="nombreArchivo" value="cecNombreArchivo"/>
+        <hint name="numeroLinea" value="rhvNumeroLinea"/>
+        <hint name="nombreCampo" value="rhvNombreCampo"/>
+        <hint name="error" value="rhvError"/>
+    </named-native-query>
+
+    <named-native-query name="consultar.consola.cargue.por.nombre" >
+        <query>
+            SELECT *
+            FROM ConsolaEstadoCargueMasivo cec
+            WHERE cec.cecTipoProcesoMasivo = :tipoProceso
+            AND  cec.cecNombreArchivo like CONCAT(:nombreArchivo,'%')
+        </query>
+    </named-native-query>
+    <named-native-query
+		name="consola.estado.consultar.consola.unico.por.carga.tipo.proceso" result-set-mapping="mapping.consultar.consola.cargue.por.filtro.paginada">
+		<query>   
+		SELECT top 1 consola.*,NULL AS fileDefinition_id FROM ConsolaEstadoCargueMasivo consola WHERE   consola.cecTipoProcesoMasivo= :tipoProceso order by consola.cecCargueId desc
+	   </query>
+	</named-native-query>
+    
+    <sql-result-set-mapping name="mapping.consultar.consola.proceso.por.filtro.paginada">
+        <constructor-result target-class="com.asopagos.dto.ConsolaEstadoProcesoDTO">
+            <column name="cepmTipoProcesoMasivo"/>
+            <column name="cepmFechaInicio" class="java.util.Date"/>
+            <column name="cepmFechaFin" class="java.util.Date"/>
+            <column name="cepmEstadoCargueMasivo"/>
+            <column name="cepmGradoAvance" class="java.math.BigDecimal"/>
+            <column name="cepmId" class="java.lang.Long"/>
+            <column name="cepmError"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="mapping.consultar.consola.cargue.por.filtro.paginada">
+        <constructor-result target-class="com.asopagos.dto.ConsolaEstadoCargueProcesoDTO">
+            <column name="cecCcf"/>
+            <column name="cecTipoProcesoMasivo"/>
+            <column name="cecUsuario"/>
+            <column name="cecFechaInicio" class="java.util.Date"/>
+            <column name="cecFechaFin" class="java.util.Date"/>
+            <column name="cecNumRegistroObjetivo" class="java.lang.Long"/>
+            <column name="cecNumRegistroProcesado" class="java.lang.Long"/>
+            <column name="cecNumRegistroValidos" class="java.lang.Long"/>
+            <column name="cecNumRegistroConErrores" class="java.lang.Long"/>
+            <column name="cecEstadoCargueMasivo"/>
+            <column name="cecGradoAvance" class="java.math.BigDecimal"/>
+            <column name="cecFileLoadedId" class="java.lang.Long"/>
+            <column name="cecNombreArchivo"/>
+            <column name="cecCargueId" class="java.lang.Long"/>
+            <column name="cecIdentificacionECM"/>
+            <column name="cecId" class="java.lang.Long"/>
+            <column name="fileDefinition_id" class="java.lang.Long"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="mapping.consultar.log.consola.cargue.id">
+        <constructor-result target-class="com.asopagos.dto.ResultadoHallazgosValidacionArchivoDTO">
+            <column name="rhvId" class="java.lang.Long"/>
+            <column name="rhvIdConsolaEstadoCargueMasivo" class="java.lang.Long"/>
+            <column name="rhvNumeroLinea" class="java.lang.Long"/>
+            <column name="rhvNombreCampo"/>
+            <column name="rhvError"/>
+            <column name="cecTipoProcesoMasivo"/>
+            <column name="cecNombreArchivo"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+</entity-mappings> 

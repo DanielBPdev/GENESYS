@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+	http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<named-query name="Afiliaciones.escalar.buscarAsignacion">
+		<query>
+			SELECT escalar_sol FROM EscalamientoSolicitud escalar_sol WHERE
+			escalar_sol.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+
+	<named-query name="Solicitudes.consultar.datosTemporales">
+		<query>
+			SELECT dts
+			FROM DatoTemporalSolicitud dts
+			WHERE dts.Solicitud =
+			:idSolicitud
+		</query>
+	</named-query>
+
+	<named-query name="Solicitudes.buscarSolicitud.porNumeroRadicado">
+		<query>
+			SELECT NEW com.asopagos.dto.SolicitudDTO(sol) FROM Solicitud
+			sol
+			WHERE sol.numeroRadicacion = :numeroRadicacion
+		</query>
+	</named-query>
+	<named-query name="Solicitudes.buscarSolicitud.porIdInstanciaProceso">
+		<query>
+			SELECT sol FROM Solicitud sol
+			WHERE sol.idInstanciaProceso = :idInstanciaProceso
+		</query>
+	</named-query>
+	<named-query name="Solicitudes.Trazabilidad.buscarPorIdSolicitud">
+		<query>
+			SELECT rea FROM RegistroEstadoAporte rea
+			WHERE rea.idSolicitud = :idSolicitud
+		</query>
+	</named-query>
+	<named-query
+		name="SolicitudAfiliacionEmpleadorTemporalEstado.buscarPorPersona">
+		<query>
+            SELECT sol FROM DatoTemporalSolicitud dtem,SolicitudAfiliacionEmpleador sol
+            JOIN FETCH sol.solicitudGlobal 
+            WHERE dtem.Solicitud = sol.solicitudGlobal.idSolicitud
+            AND dtem.tipoIdentificacion = :tipoIdentificacion
+            AND dtem.numeroIdentificacion = :numeroIdentificacion
+            AND sol.estadoSolicitud IN (:estadosSolicitud)
+         </query>
+	</named-query>
+	<named-query name="Solicitudes.DocumentoAdministracionEstado.buscarPorIdActividad">
+	<query>
+	select des from DocumentoAdministracionEstadoSolicitud des WHERE des.idSolicitudGlobal=:idSolicitud and des.actividad=:actividad
+	</query>
+	</named-query>
+	<named-query
+		name="Solicitudes.Trazabilidad.buscarPorSolicitudActividad">
+		<query>
+            SELECT tra FROM RegistroEstadoAporte tra WHERE tra.idSolicitud=:idSolicitud and tra.actividadRealizada=:actividad
+            ORDER BY tra.idRegistroEstadoAporte DESC
+         </query>
+	</named-query>
+	<named-query name="Aportes.Consultar.Solicitud">
+		<description>Consulta el registro de Solicitud por identificador</description>
+		<query>
+			SELECT so
+			FROM Solicitud so
+			WHERE so.idSolicitud = :idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Solicitud.consultarFechaRadicacionSolicitud">
+		<query>  
+			SELECT sol.fechaRadicacion FROM Solicitud sol WHERE sol.numeroRadicacion = :numeroRadicacion
+		</query>
+	</named-query>   
+	
+	<named-native-query name="Solicitud.persistir.resultadoEjecucionUtilitarioBPM">
+		<query>
+			INSERT INTO ResultadoEjecucionUtilitarioBPM 
+			VALUES (:reuNumeroRadicado, dbo.GetLocalDate(), :reuResultadaoProceso, :reuUsuario)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Solicitud.Consultar.Solicitudes.Vigentes">
+		<query>
+			SELECT desIdSolicitud, desTipoTransaccion
+			FROM desistirSolicitudes
+			WHERE desFechaDesistir &gt;= DATEADD(DAY, DATEDIFF(DAY, 0, dbo.GetLocalDate()) - 2, 0)
+			AND desFechaDesistir &lt; DATEADD(DAY, DATEDIFF(DAY, 0, dbo.GetLocalDate()) + 1, 0)
+			AND desEstadoSolicitud = 'PRE_RADICADA'
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Solicitud.buscarIdSolicitudGlobal.SolicitudAfiliacionEmpleador">
+	<description>Consulta el id de solicitud global de una solicitud de afiliacion de empleador</description>
+		<query>
+			SELECT
+				sae.saeSolicitudGlobal
+			FROM SolicitudAfiliaciEmpleador sae
+			WHERE sae.saeId = :idSolicitud
+		</query>
+	</named-native-query>
+	
+	
+	<!-- ESPACIO PARA STORE PROCEDURES -->
+	
+	<named-stored-procedure-query 
+		name="Solicitud.StoredProcedures.USP_consultaListaSolicitudes360" 
+		procedure-name="dbo.USP_consultaListaSolicitudes360">
+		<parameter class="java.lang.String" mode="IN" name="tipoIdentificacion" />
+		<parameter class="java.lang.String" mode="IN" name="numeroIdentificacion" />
+		<parameter class="java.lang.String" mode="IN" name="tiposAportante" />
+		<parameter class="java.lang.String" mode="IN" name="numeroRadicado" />
+		<parameter class="java.lang.String" mode="IN" name="tipoSolicitud" />
+		<parameter class="java.lang.String" mode="IN" name="estadoSolicitud" />
+		<parameter class="java.lang.String" mode="IN" name="fechaRadicado" />
+		<parameter class="java.lang.String" mode="IN" name="fechaInicio" />
+		<parameter class="java.lang.String" mode="IN" name="fechaFin" />
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query 
+		name="Solicitud.StoredProcedures.SP_CalcularTiempoDesistirSolicitud" 
+		procedure-name="dbo.SP_CalcularTiempoDesistirSolicitud">
+		<parameter class="java.lang.Long" mode="IN" name="idSolicitud"/>
+		<parameter class="java.lang.String" mode="IN" name="idTareaString"/>
+		<parameter class="java.lang.String" mode="IN" name="estadoSolicitud"/>
+		<parameter class="java.lang.String" mode="IN" name="tipoTransaccion"/>
+	</named-stored-procedure-query>
+
+</entity-mappings>

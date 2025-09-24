@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="8596abce-2ce0-4692-8d0e-d2c87780e4be" activeEnvironment="Default" name="EmpleadoresServiceTest" resourceRoot="" soapui-version="5.2.1" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="afd3dfaf-1fa3-4a72-9a5e-e4b97ec6e99b" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://10.77.187.38/EmpleadoresService/rest/empleadores/1/responsablesCajaCompensacion</con:endpoint><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores</con:endpoint><con:endpoint>http://localhost:8080/listas-chequeo-service/rest/requisitos</con:endpoint></con:endpoints><con:resource name="Empleadores" path="" id="e07c8d16-87bc-4511-b4b6-643151ec9d49"><con:settings/><con:parameters><con:parameter><con:name>tipoIdentificacion</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>numeroIdentificacion</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>digitoVerificacion</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="Empleadores" id="44227633-dd42-4ec2-8a25-7c71f70ccdcb" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500 403</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>text/html</con:mediaType><con:status>200</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:emp="http://localhost/empleadores-service/rest/empleadores">emp:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>400 404 405</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>415</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>404 500 400 409</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/plain</con:mediaType><con:status>400</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="crearEmpleador" id="024a640d-58bf-402f-8dcb-4bef60cca5a3" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores</con:endpoint><con:request>{
+   "empresa": {
+      "persona": {
+         "tipoIdentificacion": "CEDULA_CIUDADANIA",
+         "numeroIdentificacion": "samsi3nerpas",
+         "digitoVerificacion": 27062,
+         "primerNombre": "insamsinsamner",
+         "segundoNombre": "comsamsin",
+         "primerApellido": "pasinensinpas",
+         "segundoApellido": "inened",
+         "razonSocial": "ininnerassin"
+      },
+      "nombreComercial": "ennercom",
+      "fechaConstitucion": 1495051636215,
+      "naturalezaJuridica": "MIXTA",
+      "idUltimaCajaCompensacion": 29,
+      "paginaWeb": "eneden",
+      "idPersonaRepresentanteLegal": 1,
+      "idPersonaRepresentanteLegalSuplente": 2,
+      "especialRevision": false,
+      "idUbicacionRepresentanteLegal": 1,
+      "idUbicacionRepresentanteLegalSuplente": 1
+   },
+   "estadoAportesEmpleador": "AL_DIA",
+   "motivoDesafiliacion": "CESE_EN_PROCESO_LIQUIDACION_LIQUIDADO_FALLECIDO",
+   "expulsionSubsanada": true,
+   "fechaCambioEstadoAfiliacion": 1495051636215,
+   "numeroTotalTrabajadores": 12,
+   "valorTotalUltimaNomina": -2047479313,
+   "periodoUltimaNomina": 1495051636215,
+   "estadoEmpleador": "NO_FORMALIZADO_CON_INFORMACION",
+   "fechaRetiro": 1495051636215
+}</con:request><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="actualizarEmpleador" id="08d7c524-7fc8-449e-822f-ab4e611c80b4" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/12345</con:endpoint><con:request>{"persona":{
+	"tipoIdentificacion":{
+		"idTipoIdentificacion":"109456"
+		},
+	"numeroIdentificacion":"12345",
+	"digitoVerificacion":"12345",
+	"nombres":"Rubiel",
+	"apellidos":"Angulo",
+	"razonSocial":"HEINSOHN",
+	"idUbicacionPrincipal":"12"
+	},
+"estadoAportesEmpleador":"MOROSO",
+"motivoDesafiliacion":"LIQUIDACION",
+"expulsionSubsanada":"true",
+"estadoAfiliacion":"ACTIVO",
+"fechaCambioEstadoAfiliacion":1466032909,
+"fechaConstitucion":1466032909,
+"naturalezaJuridica":"PRIVADA",
+"codigoCIIU":{
+	"idCodigoCIIU":"12345"
+	},
+"arl":{
+	"idARL":"12345"
+	},
+"numeroTotalTrabajadores":"1566",
+"valorTotalUltimaNomina":"1",
+"periodoUltimaNomina":"asd",
+"ultimaCajaCompensacion":"la de ayer",
+"paginaWeb":"www.com.com",
+"idUbicacionOficinaPrincipal":"123",
+"idUbicacionEnvioCorrespondencia":"125",
+"idUbicacionNotificacionJudicial":"124",
+"idPersonaRepresentanteLegal":"147",
+"idPersonaRepresentanteLegalSuplente":"146",
+"medioDePagoSubsidioMonetario":{
+	"idParametrizacionMedioDePago":"12345"
+	},
+"idRolResponsableAfiliaciones":"116",
+"idRolResponsableAportes":"896",
+"idRolResponsableSubsidios":"965",
+"estadoEmpleador":"ACTIVO",
+"especialRevision":true
+	
+}</con:request><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores/12345</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="crearRepresentanteLegal" id="6206858a-e117-4f5e-b146-52127f805212" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="crearSocioEmpleador" id="630b65f0-ce58-4f35-aa31-de01adb3bd47" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080//EmpleadoresService/rest/empleadores/12345/sociosEmpleador</con:endpoint><con:request>{ "persona":{
+	"tipoIdentificacion":"109456",
+	"numeroIdentificacion":"1094934263",
+	"digitoVerificacion":"1094934263",
+	"nombres":"Jerson Zambrano",
+	"apellidos":"Zambrano",
+	"razonSocial":"HEINSOHN",
+	"idUbicacionPrincipal":"12"
+},
+ "idEmpleador":"1094665",
+ "conyugue":{
+	"tipoIdentificacion":{"idTipoIdentificacion":"109456"},
+	"numeroIdentificacion":"1094934263",
+	"digitoVerificacion":"1094934263",
+	"nombres":"Jerson Zambrano",
+	"apellidos":"Zambrano",
+	"razonSocial":"HEINSOHN",
+	"idUbicacionPrincipal":"12"
+ },
+"existenCapitulaciones":"true",
+"identificadorDocumentoCapitulaciones":"si"
+}</con:request><con:originalUri>http://localhost//EmpleadoresService/rest/empleadores/12345/sociosEmpleador</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="crearSucursalEmpleador" id="e5cc6ea0-902e-44cc-99a0-04375f65a4b7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/12345/sucursales</con:endpoint><con:request>{"idSucursalEmpleador":1907154296432167617,"empleador":{"idEmpleador":3674970130367013770,"persona":{"idPersona":1807654714099140715,"tipoIdentificacion":{"idTipoIdentificacion":1648659014022707524,"codigo":"nereninpas","descripcion":"insinnerencom"},"numeroIdentificacion":"edasen","digitoVerificacion":10,"nombres":"edasinedas","apellidos":"edasinenin","razonSocial":"nerinnerened","idUbicacionPrincipal":1299380386799598326,"precargado":true},"estadoAportesEmpleador":"MOROSO","motivoDesafiliacion":"EXPULSION_POR_INFORMACION_INCORRECTA","expulsionSubsanada":false,"estadoAfiliacion":"ACTIVO","fechaCambioEstadoAfiliacion":1466088370040,"fechaConstitucion":1466088370040,"naturalezaJuridica":"ENTIDADES_DERECHO_PUBLICO_NO_SOMETIDAS","codigoCIIU":{"idCodigoCIIU":4069107400238872856,"codigo":"pasened","descripcion":"edeninnerin"},"arl":{"idARL":9062797669463973924,"nombre":"ensamedcom"},"numeroTotalTrabajadores":28,"valorTotalUltimaNomina":1007318013,"periodoUltimaNomina":"samincomner","ultimaCajaCompensacion":"nercompassam","paginaWeb":"inednerner","idUbicacionOficinaPrincipal":7257860847831440429,"idUbicacionEnvioCorrespondencia":3420900340119278893,"idUbicacionNotificacionJudicial":8652646778125323201,"idPersonaRepresentanteLegal":4453730975928203819,"idPersonaRepresentanteLegalSuplente":6341859572086395987,"medioDePagoSubsidioMonetario":{"idParametrizacionMedioDePago":5255137488721815444,"medioPago":"MEDIO_PAGO_1","preferente":true},"idRolResponsableAfiliaciones":2283135600911471794,"idRolResponsableAportes":6216196856471481197,"idRolResponsableSubsidios":3876933671833815305,"estadoEmpleador":"ACTIVO","especialRevision":true},"codigo":"edpassin","nombre":"inenasneras","ubicacion":{"idUbicacion":9084907731789347633,"direccionFisica":"sinsamed","codigoPostal":"comined","telefonoFijo":"edensamneren","telefonoCelular":"asencomased","email":"sinassin","autorizacionEnvioEmail":true,"municipio":{"idMunicipio":3582717714586409421,"codigo":"edsamincom","nombre":"ednered","departamento":{"idDepartamento":1662593001636757503,"codigo":"nernersin","nombre":"pascomcompasas","indicativoTelefoniaFija":"assamcompas"}}},"codigoCIIU":{"idCodigoCIIU":1842708360295538191,"codigo":"pasinedenpas","descripcion":"nersamed"},"contactosEmpleador":[{"idRolContactoEmpleador":3411774391314450668,"persona":{"idPersona":6053927584884635214,"tipoIdentificacion":{"idTipoIdentificacion":6072401249739624155,"codigo":"enincomsamin","descripcion":"edednersamed"},"numeroIdentificacion":"edsamsin","digitoVerificacion":24,"nombres":"edsamner","apellidos":"inpasedin","razonSocial":"ednerpasincom","idUbicacionPrincipal":1949587865931909562,"precargado":false},"sucursal":{"idSucursalEmpleador":7954712235449100791,"empleador":{"idEmpleador":1018132156170135185,"estadoAportesEmpleador":"AL_DIA","motivoDesafiliacion":"EXPULSION_POR_INFORMACION_INCORRECTA","expulsionSubsanada":false,"estadoAfiliacion":"PREAFILIADO","fechaCambioEstadoAfiliacion":1466088370043,"fechaConstitucion":1466088370043,"naturalezaJuridica":"ORGANISMOS_MULTILATERALES","numeroTotalTrabajadores":0,"valorTotalUltimaNomina":1397695518,"periodoUltimaNomina":"passinsampas","ultimaCajaCompensacion":"inininin","paginaWeb":"inennersin","idUbicacionOficinaPrincipal":3874819577107220907,"idUbicacionEnvioCorrespondencia":1887515828989865297,"idUbicacionNotificacionJudicial":5681114559738161198,"idPersonaRepresentanteLegal":457029349744711331,"idPersonaRepresentanteLegalSuplente":6442316725392856598,"idRolResponsableAfiliaciones":5443540615598645873,"idRolResponsableAportes":3693892334614454610,"idRolResponsableSubsidios":6728185547784541393,"estadoEmpleador":"ACTIVO","especialRevision":true},"codigo":"pasaspaspas","nombre":"pasnerascomcom","ubicacion":{"idUbicacion":2138658807536580392,"direccionFisica":"samsampas","codigoPostal":"edeninensin","telefonoFijo":"cominedpasen","telefonoCelular":"compasenpassam","email":"inenenner","autorizacionEnvioEmail":true},"codigoCIIU":{"idCodigoCIIU":6074855040889857913,"codigo":"sinnerasner","descripcion":"nerasinpas"},"contactosEmpleador":[{"idRolContactoEmpleador":745499228742240644},{"idRolContactoEmpleador":162775763459155047},{"idRolContactoEmpleador":2621397722052148035}]}},{"idRolContactoEmpleador":8212106578542706127,"persona":{"idPersona":5850860862404929280,"tipoIdentificacion":{"idTipoIdentificacion":828231587807071610,"codigo":"saminsam","descripcion":"edenensampas"},"numeroIdentificacion":"insamsininsin","digitoVerificacion":9,"nombres":"samsinsin","apellidos":"pasenedsin","razonSocial":"ededpaspas","idUbicacionPrincipal":3731912645625278657,"precargado":false},"sucursal":{"idSucursalEmpleador":1152270317001775842,"empleador":{"idEmpleador":7864816163846696605,"estadoAportesEmpleador":"AL_DIA","motivoDesafiliacion":"CERO_TRABAJADORES","expulsionSubsanada":true,"estadoAfiliacion":"ACTIVO","fechaCambioEstadoAfiliacion":1466088370044,"fechaConstitucion":1466088370044,"naturalezaJuridica":"ORGANISMOS_MULTILATERALES","numeroTotalTrabajadores":12,"valorTotalUltimaNomina":-779811222,"periodoUltimaNomina":"ascomen","ultimaCajaCompensacion":"sinsinen","paginaWeb":"nerenner","idUbicacionOficinaPrincipal":6145675105635694052,"idUbicacionEnvioCorrespondencia":6989111789320629824,"idUbicacionNotificacionJudicial":5304586562804152945,"idPersonaRepresentanteLegal":410779299448692210,"idPersonaRepresentanteLegalSuplente":6774496268720967813,"idRolResponsableAfiliaciones":984719728907329705,"idRolResponsableAportes":1215921648765269757,"idRolResponsableSubsidios":1795348959804448741,"estadoEmpleador":"INACTIVO","especialRevision":false},"codigo":"sinededner","nombre":"samincomas","ubicacion":{"idUbicacion":8626789201647251078,"direccionFisica":"pasinsamcom","codigoPostal":"edeninasner","telefonoFijo":"pasenpascom","telefonoCelular":"sinednerner","email":"nerasencom","autorizacionEnvioEmail":false},"codigoCIIU":{"idCodigoCIIU":7812007063078379597,"codigo":"inenased","descripcion":"cominenedin"},"contactosEmpleador":[{"idRolContactoEmpleador":8494109330866971230},{"idRolContactoEmpleador":6850226009131543476},{"idRolContactoEmpleador":4280446716754293794}]}},{"idRolContactoEmpleador":8209272509835364806,"persona":{"idPersona":641360509924330215,"tipoIdentificacion":{"idTipoIdentificacion":785588374980480553,"codigo":"comnerpasin","descripcion":"samedpas"},"numeroIdentificacion":"sinedenin","digitoVerificacion":15,"nombres":"enneras","apellidos":"sampasin","razonSocial":"cominner","idUbicacionPrincipal":7969393159228011706,"precargado":true},"sucursal":{"idSucursalEmpleador":2828332693688792450,"empleador":{"idEmpleador":1017646118221315018,"estadoAportesEmpleador":"AL_DIA","motivoDesafiliacion":"EXPULSION_POR_MOROSIDAD","expulsionSubsanada":true,"estadoAfiliacion":"EN_PROCESO","fechaCambioEstadoAfiliacion":1466088370045,"fechaConstitucion":1466088370045,"naturalezaJuridica":"PRIVADA","numeroTotalTrabajadores":3,"valorTotalUltimaNomina":-1627222718,"periodoUltimaNomina":"sinenner","ultimaCajaCompensacion":"sinpasinaspas","paginaWeb":"enpasnerinin","idUbicacionOficinaPrincipal":131138803512598707,"idUbicacionEnvioCorrespondencia":6763275355847441911,"idUbicacionNotificacionJudicial":7655946865133227540,"idPersonaRepresentanteLegal":4855634798133905412,"idPersonaRepresentanteLegalSuplente":8434787200885046094,"idRolResponsableAfiliaciones":2055689229155398499,"idRolResponsableAportes":6007227392483378616,"idRolResponsableSubsidios":8992912398093071894,"estadoEmpleador":"ACTIVO","especialRevision":false},"codigo":"aspasenas","nombre":"assinner","ubicacion":{"idUbicacion":1115839640365094862,"direccionFisica":"pasnercom","codigoPostal":"sinencomsin","telefonoFijo":"assinner","telefonoCelular":"comsamenner","email":"comsinasencom","autorizacionEnvioEmail":false},"codigoCIIU":{"idCodigoCIIU":5187656400933194088,"codigo":"comassamin","descripcion":"sinsinpas"},"contactosEmpleador":[{"idRolContactoEmpleador":4400505123825598264},{"idRolContactoEmpleador":7456447575911077574},{"idRolContactoEmpleador":5952287215603047236}]}}]}</con:request><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores/12345/sucursales</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="crearRolContactoEmpleador" id="51bcd4dd-c711-48aa-8d9a-8d78685b05da" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/12345/rolesContacto</con:endpoint><con:request>{"persona":{
+	"tipoIdentificacion":{
+		"idTipoIdentificacion":"1"
+		},
+	"numeroIdentificacion":"12345",
+	"digitoVerificacion":"12345",
+	"nombres":"Rubiel",
+	"apellidos":"Angulo",
+	"razonSocial":"HEINSOHN",
+	"idUbicacionPrincipal":"12"
+	},
+
+	"sucursal":{
+		"idSucursalEmpleador":"12345"
+		
+		}
+	}
+</con:request><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores/12345/rolesContacto</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="actualizarEstadoAfliliacionEmpleador" id="c35a4ceb-c788-4887-bfd4-edf1a7cd7bfb" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/12345/estado</con:endpoint><con:request>{ "estadoAfiliacion":"PREAFILIADO"
+}
+</con:request><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores/12345/estado</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="establecerResponsablesCajaCompensacion" id="b47cd91e-ca84-45ad-bce6-0dd38e614b7a" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/1/responsablesCajaCompensacion</con:endpoint><con:request>["sbrinez", "kjsdkas"]</con:request><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores/1/responsablesCajaCompensacion</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request></con:method><con:method name="MetodosGet" id="cf68dffd-faf6-438b-b6ff-ad95879596dd" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="BuscarEmpleador" id="9f34716e-a73c-4d9d-bee2-e52e1b422b38" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores</con:endpoint><con:request/><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="digitoVerificacion" value="1"/>
+  <con:entry key="tipoIdentificacion" value="NIT"/>
+  <con:entry key="numeroIdentificacion" value="1094907957"/>
+</con:parameters><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="GenerarReporteEmpleadoresAfilidos" id="7c5f30e8-0ff7-4df7-a4b3-2110d1b84e0f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/afiliados</con:endpoint><con:request/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="consultarResponsablesCajaCompensacion" id="a08947a8-dcd0-4385-9280-6e7e39a3f3f2" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://10.77.187.38/EmpleadoresService/rest/empleadores/1/responsablesCajaCompensacion</con:endpoint><con:request/><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores/1/responsablesCajaCompensacion</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request></con:method><con:method name="MetodosPut" id="76f51aba-22cf-4ae4-8124-2630f3b02846" method="PUT"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>405</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>404 500 400</con:status><con:params/><con:element xmlns:ns="http://localhost/EmpleadoresService/rest/empleadores/60">ns:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/plain</con:mediaType><con:status>400</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="gestionarSociosEmpleador" id="0dc5e57b-bf73-4faa-96bc-8c6dfa0b8611" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/132/sociosEmpleador/gestionar</con:endpoint><con:request>{
+	"persona":{
+		"tipoIdentificacion":"CEDULA_CIUDADANIA",
+		"numeroIdentificacion":"852"
+	}
+}</con:request><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores/60</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="ActualizarSocio" id="2484c550-5c90-46af-8701-2e10b8f85614" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/12345/sociosEmpleador/12345</con:endpoint><con:request>{
+   "idSocioEmpleador": 3594607316863524400,
+   "persona": {
+      "idPersona": 6448281020572847000,
+      "tipoIdentificacion": "REGISTRO_CIVIL",
+      "numeroIdentificacion": "samnerin",
+      "digitoVerificacion": 8,
+      "nombres": "nernersin",
+      "apellidos": "incomsam",
+      "razonSocial": "samsampasedsam",
+      "idUbicacionPrincipal": 6253865156973347000,
+      "precargado": false
+   },
+   "idEmpleador": 8745682773803914000,
+   "conyugue": {
+      "idPersona": 8834549147799167000,
+      "tipoIdentificacion": "TARJETA_IDENTIDAD",
+      "numeroIdentificacion": "sincompas",
+      "digitoVerificacion": 25,
+      "nombres": "samenincomen",
+      "apellidos": "paspassamsin",
+      "razonSocial": "insamsampas",
+      "idUbicacionPrincipal": 7053393117772305000,
+      "precargado": false
+   },
+   "existenCapitulaciones": false,
+   "identificadorDocumentoCapitulaciones": "saminpassam"
+}</con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="ActualizarSucursal" id="9c8fef61-5dc4-4c4a-a749-32e06b58965f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/12345/sucursales/12345</con:endpoint><con:request>{
+   "idSucursalEmpleador": 4533316557618722000,
+   "empleador": {
+      "idEmpleador": 8807951292296337000,
+      "persona": {
+         "idPersona": 6252095707715255000,
+         "tipoIdentificacion": "PASAPORTE",
+         "numeroIdentificacion": "samasinsin",
+         "digitoVerificacion": 29,
+         "nombres": "pascomsin",
+         "apellidos": "sininsin",
+         "razonSocial": "samsamsineded",
+         "idUbicacionPrincipal": 5488204774674766000,
+         "precargado": false
+      },
+      "estadoAportesEmpleador": "AL_DIA",
+      "motivoDesafiliacion": "EN_PROCESO_LIQUIDACION",
+      "expulsionSubsanada": true,
+      "estadoAfiliacion": "ACTIVO",
+      "fechaCambioEstadoAfiliacion": 1466719678068,
+      "fechaConstitucion": 1466719678068,
+      "naturalezaJuridica": "ENTIDADES_DERECHO_PUBLICO_NO_SOMETIDAS",
+      "codigoCIIU": {
+         "idCodigoCIIU": 3570464231481153500,
+         "codigo": "edsinpassamen",
+         "descripcion": "edsinen"
+      },
+      "arl": {
+         "idARL": 4993565903608711000,
+         "nombre": "nernersincomner"
+      },
+      "numeroTotalTrabajadores": 20,
+      "valorTotalUltimaNomina": -473835408,
+      "periodoUltimaNomina": "comsamas",
+      "ultimaCajaCompensacion": "incompascomed",
+      "paginaWeb": "encomcomasin",
+      "idUbicacionOficinaPrincipal": 5320577855584306000,
+      "idUbicacionEnvioCorrespondencia": 483652246319034200,
+      "idUbicacionNotificacionJudicial": 4593976022106818000,
+      "idPersonaRepresentanteLegal": 1378241152838668000,
+      "idPersonaRepresentanteLegalSuplente": 32434391980880124,
+      "medioDePagoSubsidioMonetario": {
+         "idParametrizacionMedioDePago": 5779452967169532000,
+         "medioPago": "MEDIO_PAGO_1",
+         "preferente": false
+      },
+      "idRolResponsableAfiliaciones": 5652356354773331000,
+      "idRolResponsableAportes": 2664748101584183300,
+      "idRolResponsableSubsidios": 3996456987270426000,
+      "estadoEmpleador": "INACTIVO",
+      "especialRevision": true
+   },
+   "codigo": "comasined",
+   "nombre": "ascompassin",
+   "ubicacion": {
+      "idUbicacion": 2833230286350482400,
+      "direccionFisica": "edpased",
+      "codigoPostal": "saminin",
+      "telefonoFijo": "edsinsamsamsam",
+      "telefonoCelular": "asedin",
+      "email": "edsamin",
+      "autorizacionEnvioEmail": false,
+      "municipio": {
+         "idMunicipio": 7659823145686957000,
+         "codigo": "inedsin",
+         "nombre": "edcomnernerner",
+         "departamento": {
+            "idDepartamento": 8330550389608103000,
+            "codigo": "edcompassinsin",
+            "nombre": "edinsamas",
+            "indicativoTelefoniaFija": "innered"
+         }
+      }
+   },
+   "codigoCIIU": {
+      "idCodigoCIIU": 152373028254723420,
+      "codigo": "sinedsin",
+      "descripcion": "nerpaseded"
+   },
+   "contactosEmpleador": [
+      {
+         "idRolContactoEmpleador": 496379181658264400,
+         "persona": {
+            "idPersona": 3920574860355183000,
+            "tipoIdentificacion": "CEDULA_CIUDADANIA",
+            "numeroIdentificacion": "nersinnercom",
+            "digitoVerificacion": 8,
+            "nombres": "nercomsam",
+            "apellidos": "nereninnerner",
+            "razonSocial": "samsampassin",
+            "idUbicacionPrincipal": 5432370645399636000,
+            "precargado": true
+         },
+         "sucursal": {
+            "idSucursalEmpleador": 3499123208697730600,
+            "empleador": {
+               "idEmpleador": 8340664421360745000,
+               "persona": {
+                  "idPersona": 7421533559740553000,
+                  "tipoIdentificacion": "CARNE_DIPLOMATICO",
+                  "numeroIdentificacion": "inenas",
+                  "digitoVerificacion": 0,
+                  "nombres": "sinsamsam",
+                  "apellidos": "samenpas",
+                  "razonSocial": "passamsined",
+                  "idUbicacionPrincipal": 5980747885286117000,
+                  "precargado": false
+               },
+               "estadoAportesEmpleador": "AL_DIA",
+               "motivoDesafiliacion": "CESE_ACTIVIDADES",
+               "expulsionSubsanada": false,
+               "estadoAfiliacion": "PREAFILIADO",
+               "fechaCambioEstadoAfiliacion": 1466719678068,
+               "fechaConstitucion": 1466719678068,
+               "naturalezaJuridica": "ENTIDADES_DERECHO_PUBLICO_NO_SOMETIDAS",
+               "codigoCIIU": {
+                  "idCodigoCIIU": 4562279048839960600,
+                  "codigo": "incomner",
+                  "descripcion": "encomsin"
+               },
+               "arl": {
+                  "idARL": 6563486365374388000,
+                  "nombre": "asedinsamsin"
+               },
+               "numeroTotalTrabajadores": 27,
+               "valorTotalUltimaNomina": 1411112580,
+               "periodoUltimaNomina": "asnerinedas",
+               "ultimaCajaCompensacion": "ensinsampaspas",
+               "paginaWeb": "ededin",
+               "idUbicacionOficinaPrincipal": 228514625896487230,
+               "idUbicacionEnvioCorrespondencia": 226749190765891260,
+               "idUbicacionNotificacionJudicial": 7392794457012155000,
+               "idPersonaRepresentanteLegal": 3735276315114855400,
+               "idPersonaRepresentanteLegalSuplente": 8770218595708337000,
+               "medioDePagoSubsidioMonetario": {
+                  "idParametrizacionMedioDePago": 1794867128942191900,
+                  "medioPago": "MEDIO_PAGO_2",
+                  "preferente": false
+               },
+               "idRolResponsableAfiliaciones": 4251307497212510700,
+               "idRolResponsableAportes": 550566289135445200,
+               "idRolResponsableSubsidios": 6265000444796454000,
+               "estadoEmpleador": "INACTIVO",
+               "especialRevision": true
+            },
+            "codigo": "enedin",
+            "nombre": "asinsam",
+            "ubicacion": {
+               "idUbicacion": 3246537118418287600,
+               "direccionFisica": "sinenasner",
+               "codigoPostal": "asinenascom",
+               "telefonoFijo": "nerasensam",
+               "telefonoCelular": "sinsinsin",
+               "email": "nercompasensam",
+               "autorizacionEnvioEmail": true,
+               "municipio": {
+                  "idMunicipio": 7312243592224955000,
+                  "codigo": "passamed",
+                  "nombre": "enpasasinen"
+               }
+            },
+            "codigoCIIU": {
+               "idCodigoCIIU": 8871759136594358000,
+               "codigo": "samenpas",
+               "descripcion": "edsininpas"
+            },
+            "contactosEmpleador": [
+               {
+                  "idRolContactoEmpleador": 3900178379683894300,
+                  "persona": {
+                     "idPersona": 1342086241039147500,
+                     "tipoIdentificacion": "TARJETA_IDENTIDAD",
+                     "numeroIdentificacion": "ensinsinassin",
+                     "digitoVerificacion": 17,
+                     "nombres": "samenneren",
+                     "apellidos": "asassam",
+                     "razonSocial": "compasensinner",
+                     "idUbicacionPrincipal": 6407132563645431000,
+                     "precargado": false
+                  },
+                  "sucursal": {
+                     "idSucursalEmpleador": 5836427795124137000,
+                     "codigo": "asenin",
+                     "nombre": "aspasencompas",
+                     "contactosEmpleador": []
+                  }
+               },
+               {
+                  "idRolContactoEmpleador": 134381145509700700,
+                  "persona": {
+                     "idPersona": 296113952909385700,
+                     "tipoIdentificacion": "REGISTRO_CIVIL",
+                     "numeroIdentificacion": "edennersined",
+                     "digitoVerificacion": 20,
+                     "nombres": "nercomensin",
+                     "apellidos": "paspasensin",
+                     "razonSocial": "comcominen",
+                     "idUbicacionPrincipal": 3534587087935631000,
+                     "precargado": false
+                  },
+                  "sucursal": {
+                     "idSucursalEmpleador": 7541236797305306000,
+                     "codigo": "sampasnernerner",
+                     "nombre": "inpasas",
+                     "contactosEmpleador": []
+                  }
+               },
+               {
+                  "idRolContactoEmpleador": 8739618548526857000,
+                  "persona": {
+                     "idPersona": 6429117867834958000,
+                     "tipoIdentificacion": "CEDULA_EXTRANJERIA",
+                     "numeroIdentificacion": "sinsinpas",
+                     "digitoVerificacion": 0,
+                     "nombres": "sinpasas",
+                     "apellidos": "passinedsam",
+                     "razonSocial": "nersampasnerin",
+                     "idUbicacionPrincipal": 4400843461535836000,
+                     "precargado": false
+                  },
+                  "sucursal": {
+                     "idSucursalEmpleador": 6339106030523774000,
+                     "codigo": "aspasenpas",
+                     "nombre": "samsamcompas",
+                     "contactosEmpleador": []
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "idRolContactoEmpleador": 451152670010533100,
+         "persona": {
+            "idPersona": 1833481194381651500,
+            "tipoIdentificacion": "CEDULA_EXTRANJERIA",
+            "numeroIdentificacion": "pasasas",
+            "digitoVerificacion": 0,
+            "nombres": "passampassampas",
+            "apellidos": "nerenedinas",
+            "razonSocial": "inenenas",
+            "idUbicacionPrincipal": 3711569131650417000,
+            "precargado": true
+         },
+         "sucursal": {
+            "idSucursalEmpleador": 1965465079884375000,
+            "empleador": {
+               "idEmpleador": 2609873562870089000,
+               "persona": {
+                  "idPersona": 8722100621955493000,
+                  "tipoIdentificacion": "TARJETA_IDENTIDAD",
+                  "numeroIdentificacion": "enencomin",
+                  "digitoVerificacion": 10,
+                  "nombres": "samcomen",
+                  "apellidos": "samcomed",
+                  "razonSocial": "enasensam",
+                  "idUbicacionPrincipal": 33946146961832284,
+                  "precargado": false
+               },
+               "estadoAportesEmpleador": "AL_DIA",
+               "motivoDesafiliacion": "LIQUIDACION",
+               "expulsionSubsanada": true,
+               "estadoAfiliacion": "EN_PROCESO",
+               "fechaCambioEstadoAfiliacion": 1466719678068,
+               "fechaConstitucion": 1466719678068,
+               "naturalezaJuridica": "PRIVADA",
+               "codigoCIIU": {
+                  "idCodigoCIIU": 1769176720130953200,
+                  "codigo": "nernersinpassin",
+                  "descripcion": "nerenedpascom"
+               },
+               "arl": {
+                  "idARL": 4167471071791324000,
+                  "nombre": "encomsin"
+               },
+               "numeroTotalTrabajadores": 1,
+               "valorTotalUltimaNomina": -1330225822,
+               "periodoUltimaNomina": "nersamner",
+               "ultimaCajaCompensacion": "nersamsamsin",
+               "paginaWeb": "cominenpased",
+               "idUbicacionOficinaPrincipal": 6581974576804642000,
+               "idUbicacionEnvioCorrespondencia": 2897680040053876000,
+               "idUbicacionNotificacionJudicial": 2083545685653596400,
+               "idPersonaRepresentanteLegal": 1325974696634301400,
+               "idPersonaRepresentanteLegalSuplente": 7364078032126280000,
+               "medioDePagoSubsidioMonetario": {
+                  "idParametrizacionMedioDePago": 7763527230740088000,
+                  "medioPago": "MEDIO_PAGO_2",
+                  "preferente": true
+               },
+               "idRolResponsableAfiliaciones": 3293362719239747000,
+               "idRolResponsableAportes": 2094726607107078700,
+               "idRolResponsableSubsidios": 4751659024978979000,
+               "estadoEmpleador": "NO_FORMALIZADO",
+               "especialRevision": false
+            },
+            "codigo": "asininsam",
+            "nombre": "samensinased",
+            "ubicacion": {
+               "idUbicacion": 4136768630434879500,
+               "direccionFisica": "comineninsam",
+               "codigoPostal": "nersinenas",
+               "telefonoFijo": "nersamedas",
+               "telefonoCelular": "enpascom",
+               "email": "nerinpas",
+               "autorizacionEnvioEmail": true,
+               "municipio": {
+                  "idMunicipio": 8262372501135980000,
+                  "codigo": "inasedpasin",
+                  "nombre": "edpasner"
+               }
+            },
+            "codigoCIIU": {
+               "idCodigoCIIU": 1428762977005198000,
+               "codigo": "enasedsamsin",
+               "descripcion": "neredenin"
+            },
+            "contactosEmpleador": [
+               {
+                  "idRolContactoEmpleador": 8120199383839748000,
+                  "persona": {
+                     "idPersona": 6848640517804551000,
+                     "tipoIdentificacion": "CEDULA_CIUDADANIA",
+                     "numeroIdentificacion": "encomsinnercom",
+                     "digitoVerificacion": 10,
+                     "nombres": "ednernersinsam",
+                     "apellidos": "ednerinen",
+                     "razonSocial": "samsincomedsin",
+                     "idUbicacionPrincipal": 7986619906306951000,
+                     "precargado": false
+                  },
+                  "sucursal": {
+                     "idSucursalEmpleador": 1088502245582388900,
+                     "codigo": "insamner",
+                     "nombre": "inedsamen",
+                     "contactosEmpleador": []
+                  }
+               },
+               {
+                  "idRolContactoEmpleador": 8334872304798645000,
+                  "persona": {
+                     "idPersona": 2504107926692937000,
+                     "tipoIdentificacion": "CEDULA_EXTRANJERIA",
+                     "numeroIdentificacion": "asedpascomin",
+                     "digitoVerificacion": 27,
+                     "nombres": "asinsampas",
+                     "apellidos": "pasenenen",
+                     "razonSocial": "ensinsam",
+                     "idUbicacionPrincipal": 8691350311495228000,
+                     "precargado": false
+                  },
+                  "sucursal": {
+                     "idSucursalEmpleador": 885787921662916400,
+                     "codigo": "insinased",
+                     "nombre": "passinsamnerin",
+                     "contactosEmpleador": []
+                  }
+               },
+               {
+                  "idRolContactoEmpleador": 147971179466803140,
+                  "persona": {
+                     "idPersona": 806526422165919100,
+                     "tipoIdentificacion": "CARNE_DIPLOMATICO",
+                     "numeroIdentificacion": "sinsamas",
+                     "digitoVerificacion": 26,
+                     "nombres": "sinsamenedner",
+                     "apellidos": "enpasedsin",
+                     "razonSocial": "ensinsampasin",
+                     "idUbicacionPrincipal": 4368390703158467600,
+                     "precargado": false
+                  },
+                  "sucursal": {
+                     "idSucursalEmpleador": 2857186588961712600,
+                     "codigo": "nerassin",
+                     "nombre": "pasasasner",
+                     "contactosEmpleador": []
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "idRolContactoEmpleador": 980164852373540000,
+         "persona": {
+            "idPersona": 5952121066855136000,
+            "tipoIdentificacion": "REGISTRO_CIVIL",
+            "numeroIdentificacion": "pasasas",
+            "digitoVerificacion": 16,
+            "nombres": "ininsam",
+            "apellidos": "assinenneren",
+            "razonSocial": "comedin",
+            "idUbicacionPrincipal": 4742048579223125000,
+            "precargado": true
+         },
+         "sucursal": {
+            "idSucursalEmpleador": 4144473473475896300,
+            "empleador": {
+               "idEmpleador": 6477034005346178000,
+               "persona": {
+                  "idPersona": 5472604970401623000,
+                  "tipoIdentificacion": "PASAPORTE",
+                  "numeroIdentificacion": "ennered",
+                  "digitoVerificacion": 4,
+                  "nombres": "pascomnercomen",
+                  "apellidos": "edpassam",
+                  "razonSocial": "samsamsin",
+                  "idUbicacionPrincipal": 674504058460582100,
+                  "precargado": true
+               },
+               "estadoAportesEmpleador": "MOROSO",
+               "motivoDesafiliacion": "EXPULSION_POR_INFORMACION_INCORRECTA",
+               "expulsionSubsanada": false,
+               "estadoAfiliacion": "EN_PROCESO",
+               "fechaCambioEstadoAfiliacion": 1466719678069,
+               "fechaConstitucion": 1466719678069,
+               "naturalezaJuridica": "MIXTA",
+               "codigoCIIU": {
+                  "idCodigoCIIU": 5870433878522214000,
+                  "codigo": "sinencom",
+                  "descripcion": "sinenpas"
+               },
+               "arl": {
+                  "idARL": 6770722296015870000,
+                  "nombre": "sinedenas"
+               },
+               "numeroTotalTrabajadores": 26,
+               "valorTotalUltimaNomina": 1154433661,
+               "periodoUltimaNomina": "pasenpas",
+               "ultimaCajaCompensacion": "nersinnerinpas",
+               "paginaWeb": "samsinensamsin",
+               "idUbicacionOficinaPrincipal": 6440044794322710000,
+               "idUbicacionEnvioCorrespondencia": 671889611434136300,
+               "idUbicacionNotificacionJudicial": 5440319518844125000,
+               "idPersonaRepresentanteLegal": 1317005985367799000,
+               "idPersonaRepresentanteLegalSuplente": 2279640505095818800,
+               "medioDePagoSubsidioMonetario": {
+                  "idParametrizacionMedioDePago": 6300763821531418000,
+                  "medioPago": "MEDIO_PAGO_2",
+                  "preferente": true
+               },
+               "idRolResponsableAfiliaciones": 3520859098500343300,
+               "idRolResponsableAportes": 5244082400147571000,
+               "idRolResponsableSubsidios": 4806358865777209000,
+               "estadoEmpleador": "INACTIVO",
+               "especialRevision": false
+            },
+            "codigo": "aspascom",
+            "nombre": "sinpascomaspas",
+            "ubicacion": {
+               "idUbicacion": 8588744475388586000,
+               "direccionFisica": "ininnerpas",
+               "codigoPostal": "ednerassinpas",
+               "telefonoFijo": "assamincomsin",
+               "telefonoCelular": "edpassin",
+               "email": "nerasascomas",
+               "autorizacionEnvioEmail": false,
+               "municipio": {
+                  "idMunicipio": 4788572135556012000,
+                  "codigo": "comeninner",
+                  "nombre": "pasedaseded"
+               }
+            },
+            "codigoCIIU": {
+               "idCodigoCIIU": 7889880337836553000,
+               "codigo": "innernersinsam",
+               "descripcion": "pasenneras"
+            },
+            "contactosEmpleador": [
+               {
+                  "idRolContactoEmpleador": 7068049042362570000,
+                  "persona": {
+                     "idPersona": 3599178578120174600,
+                     "tipoIdentificacion": "TARJETA_IDENTIDAD",
+                     "numeroIdentificacion": "eneninsin",
+                     "digitoVerificacion": 5,
+                     "nombres": "asassinen",
+                     "apellidos": "edsamsamcom",
+                     "razonSocial": "comneredpaspas",
+                     "idUbicacionPrincipal": 3671547898545935400,
+                     "precargado": true
+                  },
+                  "sucursal": {
+                     "idSucursalEmpleador": 2838093841034951000,
+                     "codigo": "comenpas",
+                     "nombre": "asinen",
+                     "contactosEmpleador": []
+                  }
+               },
+               {
+                  "idRolContactoEmpleador": 7756286235974381000,
+                  "persona": {
+                     "idPersona": 4675494400099360000,
+                     "tipoIdentificacion": "NIT",
+                     "numeroIdentificacion": "nersinaspas",
+                     "digitoVerificacion": 14,
+                     "nombres": "encomcompasas",
+                     "apellidos": "samsinen",
+                     "razonSocial": "samened",
+                     "idUbicacionPrincipal": 8087768206610029000,
+                     "precargado": false
+                  },
+                  "sucursal": {
+                     "idSucursalEmpleador": 7172407641330458000,
+                     "codigo": "sinpasascom",
+                     "nombre": "paspaspassamsin",
+                     "contactosEmpleador": []
+                  }
+               },
+               {
+                  "idRolContactoEmpleador": 4047367196272007000,
+                  "persona": {
+                     "idPersona": 1204047558990487800,
+                     "tipoIdentificacion": "REGISTRO_CIVIL",
+                     "numeroIdentificacion": "samsinsin",
+                     "digitoVerificacion": 16,
+                     "nombres": "inassinpassin",
+                     "apellidos": "sampasedpas",
+                     "razonSocial": "ennereded",
+                     "idUbicacionPrincipal": 7849278586544616000,
+                     "precargado": false
+                  },
+                  "sucursal": {
+                     "idSucursalEmpleador": 3819700351685332500,
+                     "codigo": "comnerenensam",
+                     "nombre": "pasined",
+                     "contactosEmpleador": []
+                  }
+               }
+            ]
+         }
+      }
+   ]
+}</con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="ActualizarRolContactoEmpleador" id="fd7d8d23-7a04-4936-8995-c4e1cfc9dde2" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/12345/rolesContacto/12345</con:endpoint><con:request>{
+   "idSocioEmpleador": 3594607316863524400,
+   "persona": {
+      "idPersona": 6448281020572847000,
+      "tipoIdentificacion": "REGISTRO_CIVIL",
+      "numeroIdentificacion": "samnerin",
+      "digitoVerificacion": 8,
+      "nombres": "nernersin",
+      "apellidos": "incomsam",
+      "razonSocial": "samsampasedsam",
+      "idUbicacionPrincipal": 6253865156973347000,
+      "precargado": false
+   },
+   "idEmpleador": 8745682773803914000,
+   "conyugue": {
+      "idPersona": 8834549147799167000,
+      "tipoIdentificacion": "TARJETA_IDENTIDAD",
+      "numeroIdentificacion": "sincompas",
+      "digitoVerificacion": 25,
+      "nombres": "samenincomen",
+      "apellidos": "paspassamsin",
+      "razonSocial": "insamsampas",
+      "idUbicacionPrincipal": 7053393117772305000,
+      "precargado": false
+   },
+   "existenCapitulaciones": false,
+   "identificadorDocumentoCapitulaciones": "saminpassam"
+}</con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="gestionarSociosEmpleador" id="ddeb70d1-3fb1-4b58-b8f6-5b4f1d2f1649" mediaType="application/json"><con:settings/><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores</con:endpoint><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="actualizarResponsablesCajaCompensacion" id="7f45824b-5697-45d3-a905-88275f922e14" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/1/responsablesCajaCompensacion</con:endpoint><con:request>["dbrinz", "otro"]</con:request><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores/1/responsablesCajaCompensacion</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request><con:request name="actualizarEmpleador" id="17011a3c-5ba9-43a4-a78a-6773b78ab957" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/EmpleadoresService/rest/empleadores/1/</con:endpoint><con:request>{
+	"persona":{
+		"numeroIdentificacion":"900587956-5",
+		"tipoIdentificacion":"NIT"
+	}
+}</con:request><con:originalUri>http://localhost/EmpleadoresService/rest/empleadores/1/</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>tipoIdentificacion</con:entry><con:entry>numeroIdentificacion</con:entry><con:entry>digitoVerificacion</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:sensitiveInformation/></con:soapui-project>

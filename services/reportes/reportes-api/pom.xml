@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>reportes</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>reportes-api</artifactId>
+	<packaging>jar</packaging>
+	<name>Reportes API</name>
+	<description>Proyecto que contiene las interfaces del proyecto de implementación de servicios de reportes</description>
+
+	<properties>
+		<client.directory>com/asopagos/reportes/clients</client.directory>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<annotationProcessorPath>
+							<groupId>com.asopagos.coreaas.utilities.services</groupId>
+							<artifactId>services-processor</artifactId>
+							<version>${project.version}</version>
+						</annotationProcessorPath>
+						<annotationProcessorPath>
+							<groupId>javax</groupId>
+							<artifactId>javaee-web-api</artifactId>
+							<version>${javax.version}</version>
+						</annotationProcessorPath>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

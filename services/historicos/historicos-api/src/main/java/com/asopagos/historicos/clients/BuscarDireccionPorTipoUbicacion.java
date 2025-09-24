@@ -1,0 +1,92 @@
+package com.asopagos.historicos.clients;
+
+import javax.ws.rs.core.GenericType;
+import java.util.List;
+import com.asopagos.enumeraciones.core.TipoUbicacionEnum;
+import java.lang.Long;
+import com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum;
+import com.asopagos.dto.UbicacionDTO;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import com.asopagos.services.common.ServiceClient;
+
+/**
+ * Metodo que hace la peticion REST al servicio GET
+ * /rest/historicos/buscarDireccionPorTipoUbicacion/{idPersona}
+ */
+public class BuscarDireccionPorTipoUbicacion extends ServiceClient {
+ 
+  	private Long idPersona;
+  
+  	private TipoSolicitanteMovimientoAporteEnum tipoSolicitante;
+  	private List<TipoUbicacionEnum> tiposUbicacion;
+  	private Long fechaRevision;
+  
+  	/** Atributo que almacena los datos resultado del llamado al servicio */
+ 	private List<UbicacionDTO> result;
+  
+ 	public BuscarDireccionPorTipoUbicacion (Long idPersona,TipoSolicitanteMovimientoAporteEnum tipoSolicitante,List<TipoUbicacionEnum> tiposUbicacion,Long fechaRevision){
+ 		super();
+		this.idPersona=idPersona;
+		this.tipoSolicitante=tipoSolicitante;
+		this.tiposUbicacion=tiposUbicacion;
+		this.fechaRevision=fechaRevision;
+ 	}
+ 
+ 	@Override
+	protected Response invoke(WebTarget webTarget, String path) {
+		Response response = webTarget.path(path)
+						.resolveTemplate("idPersona", idPersona)
+									.queryParam("tipoSolicitante", tipoSolicitante)
+						.queryParam("tiposUbicacion", tiposUbicacion.toArray())
+						.queryParam("fechaRevision", fechaRevision)
+						.request(MediaType.APPLICATION_JSON).get();
+		return response;
+	}
+	
+	
+	@Override
+	protected void getResultData(Response response) {
+		this.result = (List<UbicacionDTO>) response.readEntity(new GenericType<List<UbicacionDTO>>(){});
+	}
+	
+	/**
+	 * Retorna el resultado del llamado al servicio
+	 */
+	 public List<UbicacionDTO> getResult() {
+		return result;
+	}
+
+ 	public void setIdPersona (Long idPersona){
+ 		this.idPersona=idPersona;
+ 	}
+ 	
+ 	public Long getIdPersona (){
+ 		return idPersona;
+ 	}
+  
+  	public void setTipoSolicitante (TipoSolicitanteMovimientoAporteEnum tipoSolicitante){
+ 		this.tipoSolicitante=tipoSolicitante;
+ 	}
+ 	
+ 	public TipoSolicitanteMovimientoAporteEnum getTipoSolicitante (){
+ 		return tipoSolicitante;
+ 	}
+  	public void setTiposUbicacion (List<TipoUbicacionEnum> tiposUbicacion){
+ 		this.tiposUbicacion=tiposUbicacion;
+ 	}
+ 	
+ 	public List<TipoUbicacionEnum> getTiposUbicacion (){
+ 		return tiposUbicacion;
+ 	}
+  	public void setFechaRevision (Long fechaRevision){
+ 		this.fechaRevision=fechaRevision;
+ 	}
+ 	
+ 	public Long getFechaRevision (){
+ 		return fechaRevision;
+ 	}
+  
+}

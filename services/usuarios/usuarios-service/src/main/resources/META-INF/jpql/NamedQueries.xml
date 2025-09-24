@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<named-query name="ReferenciaToken.consultarPersona">
+		<query>
+            SELECT rt FROM ReferenciaToken rt 
+            WHERE rt.tipoIdentificacion=:tipoIdentificacion
+            AND rt.numeroIdentificacion=:numeroIdentificacion                        
+        </query>
+	</named-query>
+	
+	<named-query name="ReferenciaToken.consultarPersonaDV">
+		<query>
+            SELECT rt FROM ReferenciaToken rt 
+            WHERE rt.tipoIdentificacion=:tipoIdentificacion
+            AND rt.numeroIdentificacion=:numeroIdentificacion
+            AND rt.digitoVerificacion=:digitoVerificacion                       
+        </query>
+	</named-query>
+	
+	<named-query name="ReferenciaToken.consultarPorSessionId">
+		<query>
+            SELECT rt FROM ReferenciaToken rt 
+            WHERE rt.token = :sessionId
+        </query>
+	</named-query>
+	
+	<named-query name="Pregunta.consultarPregunta">
+		<query>
+            SELECT pr FROM Pregunta pr 
+            WHERE pr.pregunta=:pregunta                               
+        </query>
+	</named-query>
+	<named-query name="Pregunta.consultarPreguntasEstado">
+		<query>
+            SELECT pr FROM Pregunta pr 
+            WHERE pr.estado=:estado                               
+        </query>
+	</named-query>
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<!-- GLPI 82800 Consultar Empleador Razon Social -->
+	<named-native-query name="Consultar.razon.social.empleador.por.numero.documento">
+        <description>Consulta una la Razon Social de un empleador por su numero de documento</description>
+        <query>
+			select per.perRazonSocial,per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido, ubi.ubiemail,
+            per.perNumeroIdentificacion, per.perTipoIdentificacion
+			from Persona per
+			inner join Empresa emp on per.perId = emp.empPersona
+			inner join Ubicacion ubi on ubi.ubiId = emp.empUbicacionRepresentanteLegal
+			WHERE UPPER(per.perRazonSocial) LIKE CONCAT('%', UPPER(:razonSocial), '%')
+        </query>
+    </named-native-query >
+
+	<!-- GLPI 82800 Consultar Datos Empleador -->
+	<named-native-query name="Consultar.datos.empleador.por.numero.documento">
+        <description>Consulta datos de un empleador por su numero de documento</description>
+        <query>
+            select per.perRazonSocial,per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido, ubi.ubiemail,
+            per.perNumeroIdentificacion, per.perTipoIdentificacion
+			from Persona per
+			inner join Empresa emp on per.perId = emp.empPersona
+			inner join Ubicacion ubi on ubi.ubiId = emp.empUbicacionRepresentanteLegal
+			where per.perNumeroIdentificacion = :numIdentificacion
+            and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+
+	<named-native-query name="Consultar.datos.empleador.por.numero.documento.y.tipo.documento">
+        <description>Consulta datos de un empleador por su numero de documento y tipo documento</description>
+        <query>
+            select per.perRazonSocial,per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido, ubi.ubiemail
+			from Persona per
+			inner join Empresa emp on per.perId = emp.empPersona
+			inner join Ubicacion ubi on ubi.ubiId = emp.empUbicacionRepresentanteLegal
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+
+	<!-- GLPI 82800 Actualizar Email Empleador -->
+	<named-native-query name="Actualizar.email.empleador.por.numero.documento">
+        <description>Actualizar email de un empleador por su numero de documento</description>
+        <query>
+            UPDATE ubi
+			SET ubi.ubiEmail = :email
+			FROM Ubicacion ubi
+			INNER JOIN Empresa emp ON ubi.ubiId = emp.empUbicacionRepresentanteLegal
+			INNER JOIN Persona per ON per.perId = emp.empPersona
+			WHERE per.perNumeroIdentificacion = :numIdentificacion
+        </query>
+    </named-native-query>
+
+	<!-- GLPI 82800 Insertar Datos Auditoria al actualizar Empleador -->
+	<named-native-query name="Insertar.datos.auditoria.actualizar.usuario.empleador">
+        <description>Insertar Datos Auditoria al actualizar Empleador</description>
+        <query>
+            INSERT INTO aud.GestionUsuariosEmpleador_aud 
+            (gueUsuarioEditado, gueCampoModificado, gueValorAnterior, gueNuevoValor, gueFechaModificacion, gueModificadoPor, REV)
+            SELECT :usuarioEditado, :campoModificado, :valorAnterior, :nuevoValor, :fechaModificacion, :modificadoPor, (SELECT ISNULL(MAX(REV), 0) + 1 FROM aud.GestionUsuariosEmpleador_aud)
+        </query>
+    </named-native-query>
+
+	<!-- GLPI 82800 Consultar Datos Persona -->
+	<named-native-query name="Consultar.datos.persona.por.numero.documento">
+        <description>Consulta datos de una persona por su numero de documento</description>
+        <query>
+            select per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido, ubi.ubiemail,
+            roafi.roaTipoAfiliado , emp.empId, per.perNumeroIdentificacion, per.perTipoIdentificacion 
+			from Persona per
+            inner join Afiliado afi on per.perId = afi.afiPersona
+            inner join RolAfiliado roafi on afi.afiId = roafi.roaAfiliado
+            left join Empleador emp on roafi.roaEmpleador = emp.empId
+            left join Empresa empr on empr.empId = emp.empEmpresa
+			inner join Ubicacion ubi on ubi.ubiId = per.perUbicacionPrincipal
+			where per.perNumeroIdentificacion = :numIdentificacion
+            and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+
+	<named-native-query name="Consultar.datos.persona.por.nombres.apellidos">
+        <description>Consulta datos de una persona por sus nombres o apellidos</description>
+        <query>
+            SELECT per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido,
+                ubi.ubiemail, roafi.roaTipoAfiliado, emp.empId, per.perNumeroIdentificacion, per.perTipoIdentificacion 
+            FROM Persona per
+            INNER JOIN Afiliado afi ON per.perId = afi.afiPersona
+            INNER JOIN RolAfiliado roafi ON afi.afiId = roafi.roaAfiliado
+            LEFT JOIN Empleador emp ON roafi.roaEmpleador = emp.empId
+            LEFT JOIN Empresa empr ON empr.empId = emp.empEmpresa
+            INNER JOIN Ubicacion ubi ON ubi.ubiId = per.perUbicacionPrincipal
+            WHERE
+                (:primerNombre IS NULL OR LOWER(per.perPrimerNombre) LIKE LOWER(CONCAT('%', :primerNombre, '%')))
+                AND (:segundoNombre IS NULL OR LOWER(per.perSegundoNombre) LIKE LOWER(CONCAT('%', :segundoNombre, '%')))
+                AND (:primerApellido IS NULL OR LOWER(per.perPrimerApellido) LIKE LOWER(CONCAT('%', :primerApellido, '%')))
+                AND (:segundoApellido IS NULL OR LOWER(per.perSegundoApellido) LIKE LOWER(CONCAT('%', :segundoApellido, '%')))
+        </query>
+    </named-native-query>
+
+	<named-native-query name="Consultar.datos.persona.por.numero.documento.y.tipo.documento">
+        <description>Consulta datos de una persona por su numero de documento y tipo documento</description>
+        <query>
+            select per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido, ubi.ubiemail,
+            roafi.roaTipoAfiliado , emp.empId
+			from Persona per
+            inner join Afiliado afi on per.perId = afi.afiPersona
+            inner join RolAfiliado roafi on afi.afiId = roafi.roaAfiliado
+            left join Empleador emp on roafi.roaEmpleador = emp.empId
+            left join Empresa empr on empr.empId = emp.empEmpresa
+			inner join Ubicacion ubi on ubi.ubiId = per.perUbicacionPrincipal
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+
+	<!-- GLPI 82800 Actualizar Email Persona -->
+	<named-native-query name="Actualizar.email.persona.por.numero.documento">
+        <description>Actualizar email de una persona por su numero de documento</description>
+        <query>
+            UPDATE ubi
+			SET ubi.ubiEmail = :email
+			FROM Ubicacion ubi
+			INNER JOIN Persona per ON ubi.ubiId = per.perUbicacionPrincipal
+			WHERE per.perNumeroIdentificacion = :numIdentificacion
+        </query>
+    </named-native-query>
+
+    <!-- GLPI 82800 Insertar Datos Auditoria al actualizar Persona -->
+	<named-native-query name="Insertar.datos.auditoria.actualizar.usuario.persona">
+        <description>Insertar Datos Auditoria al actualizar Persona</description>
+        <query>
+            INSERT INTO aud.GestionUsuariosTrabajador_aud 
+            (gutUsuarioEditado, gutCampoModificado, gutValorAnterior, gutNuevoValor, gutFechaModificacion, gutModificadoPor, REV)
+            SELECT :usuarioEditado, :campoModificado, :valorAnterior, :nuevoValor, :fechaModificacion, :modificadoPor, (SELECT ISNULL(MAX(REV), 0) + 1 FROM aud.GestionUsuariosTrabajador_aud)
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Insertar.datos.auditoria.actualizar.usuario.ccf">
+        <description>Insertar Datos Auditoria al actualizar CCF</description>
+        <query>
+            INSERT INTO aud.GestionUsuariosCcf_aud
+            (gucUsuarioEditado, gucCampoModificado, gucValorAnterior, gucNuevoValor, gucFechaModificacion, gucModificadoPor, REV)
+            SELECT :usuarioEditado, :campoModificado, :valorAnterior, :nuevoValor, :fechaModificacion, :modificadoPor, (SELECT ISNULL(MAX(REV), 0) + 1 FROM aud.GestionUsuariosCcf_aud)
+        </query>
+    </named-native-query>
+
+	<!-- GLPI 82800 Consultar Datos Tercero -->
+	<named-native-query name="Consultar.datos.tercero.por.nombre.convenio">
+        <description>Consulta datos de un tercero por nombre convenio</description>
+        <query>
+            select con.conId, con.conNombre, 
+			con.conMedioDePago, con.conEstado,
+			ubi.ubiEmail from ConvenioTerceroPagador con
+			inner join Ubicacion ubi on ubi.ubiId = con.conUbicacion
+			where ubi.ubiEmail = :nombreUsuario
+            and (:nombreConvenio IS NULL OR con.conNombre = :nombreConvenio)
+            and (:estadoConvenio IS NULL OR con.conEstado = :estadoConvenio)
+        </query>
+    </named-native-query>
+	<named-native-query name="Consultar.datos.tercero.por.nombre.email">
+        <description>Consulta datos de un tercero por nombre email</description>
+        <query>
+            select con.conId, con.conNombre, 
+			con.conMedioDePago, con.conEstado,
+			ubi.ubiEmail from ConvenioTerceroPagador con
+			inner join Ubicacion ubi on ubi.ubiId = con.conUbicacion
+			where ubi.ubiEmail = :email
+        </query>
+    </named-native-query>
+
+    <!-- GLPI 82800 Insertar Datos Auditoria al actualizar Terceros -->
+    <named-native-query name="Insertar.datos.auditoria.actualizar.usuario.tercero">
+        <description>Insertar Datos Auditoria al actualizar Terceros</description>
+        <query>
+            INSERT INTO aud.GestionUsuariosTerceros_aud
+            (gutrUsuarioEditado, gutrCampoModificado, gutrValorAnterior, gutrNuevoValor, gutrFechaModificacion, gutrModificadoPor, REV)
+            SELECT :usuarioEditado, :campoModificado, :valorAnterior, :nuevoValor, :fechaModificacion, :modificadoPor, (SELECT ISNULL(MAX(REV), 0) + 1 FROM aud.GestionUsuariosTerceros_aud)
+        </query>
+    </named-native-query>
+
+    <!-- GLPI 82800 Actualizar Email Tercero -->
+    <named-native-query name="Actualizar.email.tercero.por.nombre.convenio">
+        <description>Actualizar email de un tercero por su nombre convenio</description>
+        <query>
+            UPDATE ubi
+			SET ubi.ubiEmail = :email
+			FROM Ubicacion ubi
+			INNER JOIN ConvenioTerceroPagador con ON ubi.ubiId = con.conUbicacion
+			WHERE SET ubi.ubiEmail = :nombreUsuario
+        </query>
+    </named-native-query>
+	<named-native-query name="Actualizar.email.tercero.por.nombre.email">
+        <description>Actualizar email de un tercero por su nombre email</description>
+        <query>
+            UPDATE ubi
+			SET ubi.ubiEmail = :email
+			FROM Ubicacion ubi
+			INNER JOIN ConvenioTerceroPagador con ON ubi.ubiId = con.conUbicacion
+			WHERE con.conNombre = :nombreConvenio
+        </query>
+    </named-native-query>
+
+    <!-- GLPI 82800 Actividad Usuario en keycloak -->
+    <named-native-query name="Contar.actividad.sesion.usuario.keycloak">
+        <description>Contar actividad de la sesion de un usuario en keycloak</description>
+        <query>
+            SELECT gaukIdUsuarioKeycloak, gaukUltimoInicioSesion 
+            FROM GestionActividadUsuarioKeycloak
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Actualizar.actividad.sesion.usuario.keycloak">
+        <description>Actualizar actividad de la sesion de un usuario en keycloak</description>
+        <query>
+            UPDATE GestionActividadUsuarioKeycloak 
+            SET gaukUltimoInicioSesion = :fechaHora, 
+            gaukDireccionIpUsuario = :direccionIp 
+            WHERE gaukIdUsuarioKeycloak = :idUsuario
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Insertar.actividad.sesion.usuario.keycloak">
+        <description>Insertar actividad de la sesion de un usuario en keycloak</description>
+        <query>
+            MERGE GestionActividadUsuarioKeycloak AS target
+            USING (VALUES (:idUsuario, :fechaHora, :direccionIp)) AS source (idUsuario, fechaHora, direccionIp)
+            ON target.gaukIdUsuarioKeycloak = source.idUsuario
+            WHEN MATCHED THEN
+                UPDATE SET gaukUltimoInicioSesion = source.fechaHora, 
+                        gaukDireccionIpUsuario = source.direccionIp
+            WHEN NOT MATCHED THEN
+                INSERT (gaukIdUsuarioKeycloak, gaukUltimoInicioSesion, gaukDireccionIpUsuario) 
+                VALUES (source.idUsuario, source.fechaHora, source.direccionIp);
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Consultar.actividad.sesion.usuario.keycloak">
+        <description>Consultar actividad de la sesion de un usuario en keycloak</description>
+        <query>
+            SELECT gaukUltimoInicioSesion 
+            FROM GestionActividadUsuarioKeycloak 
+            WHERE gaukIdUsuarioKeycloak = :idUsuario
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Consultar.dias.festivos">
+        <description>Consultar dias festivos</description>
+        <query>
+            SELECT pifFecha 
+            FROM DiasFestivos
+        </query>
+    </named-native-query>
+
+</entity-mappings>

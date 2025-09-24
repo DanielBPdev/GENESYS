@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>archivos-pila</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>archivos-pila-service</artifactId>
+	<packaging>war</packaging>
+	<name>Servicio Archivos PILA</name>
+	<description>Aplicación Web que implementa los servicios backend de archivosPILA-service</description>
+
+	<properties>
+		<configuracion.servidor>wildfly-swarm-pila</configuracion.servidor>
+
+		<docker.cmd>java -Xms3g -Xmx3g -XX:+UseG1GC -jar /opt/$TIPO_SERVIDOR -s/opt/conf/${configuracion.servidor}.yaml /maven/${project.build.finalName}.war -Dswarm.context.path=${project.build.finalName} -Dinfinispan.service.host=$INFINISPAN_SERVICE_HOST -DLionConfigurationImpl=com.asopagos.lion.config.LionConfigurationAsopagosImpl</docker.cmd>
+		<resourceDir.path>../../../util-develop/plantillas-despliegue/src/main/resources/kubernetes-definitions-archivos-pila</resourceDir.path>	
+		<fabric8.skip>false</fabric8.skip>			
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>archivos-pila-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+		</dependency>
+        <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>aportes-composite-api</artifactId>
+                <version>${project.version}</version>
+        </dependency>
+        <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>aportes-api</artifactId>
+                <version>${project.version}</version>
+        </dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>novedades-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<!-- Maven will append the version to the finalName (which is the name 
+			given to the generated war, and hence the context root) -->
+		<finalName>ArchivosPilaService</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+	</profiles>
+
+</project>

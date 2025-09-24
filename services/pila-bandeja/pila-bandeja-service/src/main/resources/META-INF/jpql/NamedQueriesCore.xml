@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<!-- CONSULTAS HU 403 -->
+
+	<named-query
+		name="PilaBandejaService.Empleador.BusquedaEmpleadorRetiradoConAportes">
+		<description>Busca empleadores retirados con aportes</description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.EmpAporPendientesPorAfiliarDTO
+			(
+        		empl.empresa.persona.tipoIdentificacion, 
+        		empl.empresa.persona.numeroIdentificacion, 
+        		empl.empresa.persona.razonSocial, 
+        		'NO_FORMALIZADO_RETIRADO_CON_APORTES',
+        		(SELECT MAX(apor.fechaRecaudo) 
+        			FROM AporteGeneral apor 
+        			WHERE apor.idEmpresa = empl.empresa.idEmpresa) AS fechaAporte,
+        		cast(empl.fechaCambioEstadoAfiliacion as date),	
+        		empl.empresa.persona.digitoVerificacion,
+        		empl.empresa.persona.primerNombre,
+        		empl.empresa.persona.segundoNombre,
+        		empl.empresa.persona.primerApellido,
+        		empl.empresa.persona.segundoApellido
+			)
+			FROM Empleador empl		
+			WHERE (SELECT MAX(apor.fechaRecaudo) 
+        			FROM AporteGeneral apor 
+        			WHERE apor.idEmpresa = empl.empresa.idEmpresa) &gt; empl.fechaRetiro
+ 			AND ( :fechaEntradaBandeja IS NULL OR cast(empl.fechaCambioEstadoAfiliacion as date) = :fechaEntradaBandeja )
+			AND ( :numeroIdentificacion IS NULL OR empl.empresa.persona.numeroIdentificacion = :numeroIdentificacion )
+			AND ( :tipoIdentificacion IS NULL OR empl.empresa.persona.tipoIdentificacion = :tipoIdentificacion )	
+			AND ( :digitoVerificacion IS NULL OR empl.empresa.persona.digitoVerificacion = :digitoVerificacion )
+ 			ORDER BY fechaAporte DESC		
+		</query>
+		<hint name="tipoId" value="per.tipoId"></hint>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.Empleador.BusquedaEmpleadorSinAfiliacionConAportes">
+		<description> Busca empresas sin afiliar que tienen aportes </description>
+		<query>		
+			SELECT DISTINCT new com.asopagos.bandejainconsistencias.dto.EmpAporPendientesPorAfiliarDTO
+			(
+				empr.persona.tipoIdentificacion,
+        		empr.persona.numeroIdentificacion, 
+        		empr.persona.razonSocial, 
+        		'NO_FORMALIZADO_SIN_AFILIACION_CON_APORTES',
+        		(SELECT MAX(apor.fechaRecaudo) 
+        			FROM AporteGeneral apor 
+        			WHERE apor.idEmpresa = empr.idEmpresa) AS fechaAporte,
+        		(SELECT MIN(apor.fechaRecaudo) 
+        			FROM AporteGeneral apor 
+        			WHERE apor.idEmpresa = empr.idEmpresa) AS fechaIngresoBandeja,
+        		empr.persona.digitoVerificacion,
+        		empr.persona.primerNombre,
+        		empr.persona.segundoNombre,
+        		empr.persona.primerApellido,
+        		empr.persona.segundoApellido
+			)
+			FROM Empresa empr
+			, AporteGeneral apor
+			WHERE empr.idEmpresa = apor.idEmpresa
+			AND empr.idEmpresa NOT IN ( SELECT empl.empresa.idEmpresa FROM Empleador empl )
+ 			AND ( :fechaEntradaBandeja IS NULL OR cast(apor.fechaRecaudo as date) = :fechaEntradaBandeja )
+			AND ( :numeroIdentificacion IS NULL OR empr.persona.numeroIdentificacion = :numeroIdentificacion )
+			AND ( :tipoIdentificacion IS NULL OR empr.persona.tipoIdentificacion = :tipoIdentificacion )	
+			AND ( :digitoVerificacion IS NULL OR empr.persona.digitoVerificacion = :digitoVerificacion )
+			ORDER BY fechaAporte DESC 
+		</query>
+	</named-query>
+
+	<!-- FIN CONSULTAS 403 -->
+
+	<!-- INICIO CONSULTAS 404 -->
+	<named-query
+		name="PilaBandejaService.Empleador.BusquedaEmpleadorCeroTrabajadoresActivos">
+		<description>Busca empleadores con 0 afiliados (Sin parametros)</description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.EmpCeroTrabajadoresActivosDTO
+			(
+        		empl.empresa.persona.tipoIdentificacion, 
+        		empl.empresa.persona.numeroIdentificacion, 
+        		empl.empresa.persona.razonSocial,        		
+        		empl.empresa.persona.digitoVerificacion,
+        		empl.fechaCambioEstadoAfiliacion,
+        		empl.idEmpleador,
+        		<!-- AL_DIA ó MOROSO --> 
+				<!--  empl.estadoAportesEmpleador,-->
+				empl.cantIngresoBandejaCeroTrabajadores,
+				<!-- fecha ingreso a bandeja -->
+				empl.fechaRetiroTotalTrabajadores, 
+				<!-- NULL es No gestionado -->
+				empl.fechaGestionDesafiliacion, 
+				
+				<!-- Fecha ultimo recaudo -->
+        		(SELECT MAX(apor.fechaRecaudo) 
+        			FROM AporteGeneral apor 
+        			WHERE apor.idEmpresa = empl.empresa.idEmpresa ) AS fechaUltimorecaudo,
+        			
+        	    <!-- Periodo ultimo recaudo -->
+        		(SELECT MAX(apor.periodoAporte) 
+        			FROM AporteGeneral apor	WHERE apor.idEmpresa = empl.empresa.idEmpresa
+        			AND apor.fechaRecaudo = (SELECT MAX(apor.fechaRecaudo) 
+        			FROM AporteGeneral apor 
+        			WHERE apor.idEmpresa = empl.empresa.idEmpresa ) ) AS peridoUltimoRecaudo,
+        			
+				<!-- Historico de aportes -->
+				( SELECT COUNT(*) FROM AporteGeneral apor 
+				  WHERE apor.idEmpresa = empl.empresa.idEmpresa
+				  AND apor.fechaRecaudo > empl.fechaCambioEstadoAfiliacion ) AS historicoAportes,
+				  
+				<!-- Historico de afiliaciones -->  
+				( SELECT COUNT(*) FROM RolAfiliado roa
+				  WHERE roa.empleador.idEmpleador = empl.empresa.idEmpresa
+				  AND roa.fechaAfiliacion > empl.fechaCambioEstadoAfiliacion) AS historicoAfiliaciones,
+
+				<!-- Cantidad trabajadores activos (siempre será 0) pero se requiere al recorrer el resulset -->
+				(SELECT COUNT(*) FROM RolAfiliado roa
+				 WHERE roa.estadoAfiliado = 'ACTIVO'
+				 AND roa.empleador.idEmpleador = empl.empresa.idEmpresa) AS cantidadActivos,
+
+				<!-- Cantidad de roles afiliados que tiene el empleador se requiere al recorrer el resulset -->
+				(SELECT COUNT(*) FROM RolAfiliado roa
+				 WHERE roa.empleador.idEmpleador = empl.empresa.idEmpresa) AS cantidadRolafiliados
+			)
+			FROM Empleador empl		
+			WHERE empl.estadoEmpleador IN (com.asopagos.enumeraciones.personas.EstadoEmpleadorEnum.ACTIVO)
+			AND ( SELECT COUNT(*) FROM RolAfiliado roa WHERE roa.estadoAfiliado = 'ACTIVO'
+				  AND roa.empleador.idEmpleador = empl.idEmpleador ) = 0 	
+			AND (:nombreEmpresa IS NULL OR empl.empresa.persona.razonSocial = :nombreEmpresa) 
+			AND (:numeroIdentificacion IS NULL OR empl.empresa.persona.numeroIdentificacion = :numeroIdentificacion )
+			AND (:tipoIdentificacion IS NULL OR empl.empresa.persona.tipoIdentificacion = :tipoIdentificacion )	
+			AND (:digitoVerificacion IS NULL OR empl.empresa.persona.digitoVerificacion = :digitoVerificacion )
+			
+			AND (:fechaInicioIngresoBandeja IS NULL OR empl.fechaRetiroTotalTrabajadores &gt;= :fechaInicioIngresoBandeja )
+			AND (:fechaFinIngresoBandeja IS NULL OR empl.fechaRetiroTotalTrabajadores &lt;= :fechaFinIngresoBandeja )
+									
+ 			ORDER BY fechaRetiroTotalTrabajadores DESC		
+		</query>
+		<hint name="tipoId" value="per.tipoId"></hint>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.Empleador.BusquedaRolAfiliadoRetiradoPorPila">
+		<description> Busca el canal con el cual fue retirado el ultimo trabajador que no esta activo </description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.ConsultaCanalDeRetiroEmpleadorDTO 
+			( roa.idRolAfiliado, sol.canalRecepcion )
+			FROM RolAfiliado roa, SolicitudNovedadPersona snp, SolicitudNovedad sn, Solicitud sol
+			WHERE roa.idRolAfiliado = snp.idRolAfiliado
+			AND snp.idSolicitudNovedad = sn.idSolicitudNovedad
+			AND sn.solicitudGlobal = sol.idSolicitud
+			AND roa.empleador.idEmpleador = :idEmpleador
+			AND roa.fechaRetiro = 
+			( SELECT MAX(roa2.fechaRetiro) 
+				FROM RolAfiliado roa2
+				WHERE roa.empleador.idEmpleador = :idEmpleador
+			)
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.Empleador.ActualizarFechaGestionEmpleador">
+		<description>Actualiza la fecha de gestion en bandeja cero, NULL es no gestionada, NOT NULL es gestionada</description>
+		<query>
+			UPDATE Empleador empl
+           	SET empl.fechaGestionDesafiliacion = :fechaGestion
+           	WHERE empl.idEmpleador IN (:idEmpleadores) 
+        </query>
+	</named-query>
+
+
+	<named-query
+		name="PilaBandejaService.Empleador.ConsultarEmpleadoresBandejaGestionada">
+		<description>Retorna los empleadores de la bandeja gestionada</description>
+		<query>
+			SELECT empl
+			FROM Empleador empl
+			WHERE empl.idEmpleador IN (:idEmpleadores)
+        </query>
+	</named-query>
+	<!-- FIN CONSULTAS 404 -->
+
+	<named-query
+		name="PilaBandejaService.ActualizacionDatosEmpleador.BusquedaPorId">
+		<query>
+			SELECT registro FROM ActualizacionDatosEmpleador registro
+			WHERE registro.id = :id
+		</query>
+	</named-query>
+
+	<named-query name="Empleador.Persona.consultarPersona">
+		<query>
+			SELECT per FROM Persona per
+			WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-query>
+
+	<named-query name="Ubicacion.Municipio.consultarMunicipio">
+		<query>
+			SELECT mun FROM Municipio mun
+			WHERE mun.codigo = :codCiudad
+		</query>
+	</named-query>
+
+	<named-query name="PilaBandejaService.CrearAportante.BuscarEmpresaPersona">
+		<description>Consultar empresas creadas a partir de una persona</description>
+		<query>
+			SELECT e 
+			FROM Empresa e, Persona p 
+			WHERE e.persona.idPersona = p.idPersona
+			AND p.idPersona = :idPersona
+		</query>
+	</named-query>
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+</entity-mappings>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+                 version="2.1">
+
+    <!-- ESPACIO PARA NAMED QUERIES JPA -->
+    <named-query name="Afiliaciones.afiliacion.buscarSolicitud">
+        <query>
+            SELECT sol FROM SolicitudAfiliacionEmpleador sol  left join fetch sol.solicitudGlobal
+            WHERE sol.idSolicitudAfiliacionEmpleador =:solicitudAfiliacion
+        </query>
+    </named-query>
+	
+    <named-query name="Afiliaciones.afiliacion.buscarSolicitudEstado">
+        <query>
+            SELECT sol FROM SolicitudAfiliacionEmpleador sol
+            WHERE sol.idSolicitudAfiliacionEmpleador =:solicitudAfiliacion
+        </query>
+    </named-query>
+
+    <named-query name="Afiliaciones.solictud.empleador">
+        <query>
+            SELECT e FROM Empleador e
+            WHERE e.empresa.persona.numeroIdentificacion =:numeroIdentificacion and e.empresa.persona.tipoIdentificacion
+            like :tipoIdentificacion
+        </query>
+    </named-query>
+
+    <named-query name="Afiliaciones.solictud.empleadorID">
+        <query>
+            SELECT e FROM Empleador e
+            WHERE e.idEmpleador =:idEmpleador
+        </query>
+    </named-query>
+        
+    <named-query name="Empleador.consultar.empresa.descentralizada">
+        <query>
+            SELECT pred 
+            FROM PreRegistroEmpresaDesCentralizada pred
+            WHERE pred.numeroIdentificacionSerial = :numeroDocumentoConSerial
+        </query>
+    </named-query>
+
+
+    <!-- 	<named-query name="Afiliaciones.empleadores.solicitud.actualizarEstado"> -->
+    <!-- 		<query> -->
+    <!--             UPDATE SolicitudAfiliacionEmpleador sol SET sol.estadoSolicitud = :nuevoEstado -->
+    <!--             WHERE sol.idSolicitudAfiliacionEmpleador = :idSolicitudAfiliacionEmpleador -->
+    <!--         </query> -->
+    <!-- 	</named-query> -->
+
+    <named-query
+        name="Afiliaciones.empleadores.solicitud.pendientesAprobacion">
+        <description>Lista las solicitudes de afiliación de empleadores pendientes 
+            de aprobación del consejo, 
+            se determina si el estado de la solicitud es aprobada, 
+            y en el caso de que su estado sea cerrada se valida el 
+            estado anterior haya sido aprobado para descargar una
+            solicitud que este en estado cerrada pero haya sido descartada</description>
+        <query>
+            SELECT solEmp 
+            FROM SolicitudAfiliacionEmpleador solEmp
+            LEFT JOIN FETCH solEmp.solicitudGlobal sol,
+            Empleador emp
+            WHERE solEmp.fechaAprobacionConsejo IS NULL 
+            AND solEmp.numeroActoAdministrativo IS NULL
+            AND solEmp.estadoSolicitud = 'CERRADA'
+            AND sol.resultadoProceso = 'APROBADA'
+            AND solEmp.idEmpleador = emp.idEmpleador
+            AND emp.estadoEmpleador = :estado
+        </query>
+    </named-query>
+
+    <!-- 	<named-query -->
+    <!-- 		name="Afiliaciones.empleadores.solicitud.fechaAprobacion.numeroActoAdmin"> -->
+    <!-- 		<description>Asctualiza la fecha de la aprovación del consejo y el  -->
+    <!-- 		número de acta administrativo</description> -->
+    <!-- 		<query> -->
+    <!-- 			UPDATE SolicitudAfiliacionEmpleador solEmp -->
+    <!--            	SET solEmp.fechaAprobacionConsejo = :fechaAprobacionConsejo,  -->
+    <!--            	solEmp.numeroActoAdministrativo = :numeroActoAdministrativo -->
+    <!--            	WHERE solEmp.idSolicitudAfiliacionEmpleador IN (:solicitudes)  -->
+    <!--         </query> -->
+    <!-- 	</named-query> -->
+
+    <!-- 	<named-query name="Afiliaciones.productoNoConforme.eliminar"> -->
+    <!-- 		<query> -->
+    <!-- 			DELETE FROM ProductoNoConforme pnc -->
+    <!--             WHERE pnc.idProductoNoConformeNoResuelto = :idProductoNoConforme -->
+    <!--         </query> -->
+    <!-- 	</named-query> -->
+
+    <named-query name="Afiliaciones.empleadores.consultar.solicitud">
+        <query>
+            SELECT sae
+            FROM SolicitudAfiliacionEmpleador sae 
+            JOIN FETCH sae.solicitudGlobal 
+            WHERE sae.solicitudGlobal.numeroRadicacion = :numeroRadicado
+            AND sae.idEmpleador = (
+            SELECT e.idEmpleador FROM Empleador e   
+            WHERE e.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+            AND e.empresa.persona.numeroIdentificacion = :numeroIdentificacion
+            ) 
+            AND (:canalRecepcion IS NULL OR sae.solicitudGlobal.canalRecepcion = :canalRecepcion)
+        </query>
+    </named-query>
+	
+    <named-query name="Afiliaciones.empleadores.consultar.solicitud.numeroRadicado">
+        <query>
+            SELECT sae
+            FROM SolicitudAfiliacionEmpleador sae
+            LEFT JOIN FETCH sae.solicitudGlobal
+            WHERE sae.solicitudGlobal.numeroRadicacion = :numeroRadicado
+        </query>
+    </named-query>
+
+    <named-query name="Afiliaciones.empleadores.consultar.solicitud.instanciaProceso">
+        <query>
+            SELECT sol
+            FROM Solicitud sol
+            WHERE sol.idInstanciaProceso = :instanciaProceso
+        </query>
+    </named-query>
+
+    <named-query name="Afiliaciones.empleadores.consultar.solicitud_numeroID_numeroRadicado">
+        <query>
+            SELECT sae
+            FROM SolicitudAfiliacionEmpleador sae 
+            JOIN FETCH sae.solicitudGlobal 
+            WHERE sae.solicitudGlobal.numeroRadicacion = :numeroRadicado
+            AND sae.idEmpleador = (
+            SELECT e.idEmpleador FROM Empleador e WHERE   
+            e.empresa.persona.numeroIdentificacion = :numeroIdentificacion
+            ) 
+			
+        </query>
+    </named-query>
+    <named-query name="Afiliaciones.empleadores.consultar.solicitud_numeroID_sinRadicado">
+        <query>
+            SELECT sae
+            FROM SolicitudAfiliacionEmpleador sae 
+            JOIN FETCH sae.solicitudGlobal WHERE
+            sae.idEmpleador = (
+            SELECT e.idEmpleador FROM Empleador e WHERE   
+            e.empresa.persona.numeroIdentificacion = :numeroIdentificacion
+            ) 
+			
+        </query>
+    </named-query>
+	
+    <named-query name="Afiliaciones.empleadores.consultar.solicitud_sinRadicado">
+        <query>
+            SELECT sae
+            FROM SolicitudAfiliacionEmpleador sae 
+            JOIN FETCH sae.solicitudGlobal WHERE
+            sae.idEmpleador = (
+            SELECT e.idEmpleador FROM Empleador e   
+            WHERE e.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+            AND e.empresa.persona.numeroIdentificacion = :numeroIdentificacion
+            ) 
+			
+        </query>
+    </named-query>
+	
+    <named-query name="SolicitudAfiliacionEmpleador.buscarPorEmpleador">
+        <query>
+            SELECT sol FROM SolicitudAfiliacionEmpleador sol,Empleador emp 
+            JOIN FETCH sol.solicitudGlobal
+            WHERE sol.idEmpleador = :idEmpleador
+            AND sol.estadoSolicitud NOT IN :estadosSolicitud               
+        </query>
+    </named-query>
+	
+    <named-query name="SolicitudAfiliacionEmpleador.buscarPorPersona">
+        <query>
+            SELECT sol FROM SolicitudAfiliacionEmpleador sol,Empleador emp 
+            JOIN FETCH sol.solicitudGlobal
+            WHERE sol.idEmpleador = emp.idEmpleador
+            AND sol.estadoSolicitud NOT IN :estadosSolicitud
+            AND emp.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+            AND emp.empresa.persona.numeroIdentificacion = :numeroIdentificacion               
+        </query>
+    </named-query>
+
+
+    <named-query name="SolicitudAfiliacionEmpleador.buscarPorEmpleador.by.empleador">
+        <query>
+            SELECT sol FROM SolicitudAfiliacionEmpleador sol,Empleador emp 
+            JOIN FETCH sol.solicitudGlobal
+            WHERE sol.idEmpleador = :idEmpleador
+            ORDER BY sol.idEmpleador DESC
+        </query>
+    </named-query>
+    <named-query name="SolicitudAfiliacionEmpleador.buscar.solicitudes.afiliacion.empleador">
+        <query>
+            SELECT sol FROM SolicitudAfiliacionEmpleador sol,Empleador emp 
+            JOIN FETCH sol.solicitudGlobal
+            WHERE sol.idEmpleador = emp.idEmpleador
+            and emp.empresa.persona.numeroIdentificacion =:numeroIdentificacion
+            and emp.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+            ORDER BY sol.idSolicitudAfiliacionEmpleador DESC
+        </query>
+    </named-query>
+    <named-native-query name="Afiliaciones.id_dpto">
+        <query>
+            select depid from departamento 
+            where depnombre = :dpto
+        </query>
+    </named-native-query> 
+    
+    <!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+</entity-mappings>

@@ -1,0 +1,1772 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="Notificaciones.plantillaComunicado.porEtiqueta">
+		<query>
+            SELECT pc FROM PlantillaComunicado pc 
+            WHERE pc.etiqueta = :etiqueta
+        </query>
+	</named-query>
+	<named-query name="Notificaciones.plantillaComunicado.conModulo">
+		<query>
+            SELECT mpc FROM ModuloPlantillaComunicado mpc 
+            WHERE mpc.plantillaComunicado.id = :idPlantillaComunicado
+        </query>
+	</named-query>
+	<named-query name="Notificaciones.variableComunicado.porPlantillaComunicado">
+		<query>
+            SELECT vpc FROM VariableComunicado vpc 
+            WHERE vpc.idPlantillaComunicado = :idPlantillaComunicado
+        </query>
+	</named-query>
+	<named-query name="Notificaciones.destinatario.grupo.id">
+		<query>
+    		SELECT dgr FROM DestinatarioGrupo dgr WHERE dgr.idGrupoPrioridad=:idGrupoPrioridad
+    	</query>
+	</named-query>
+	<named-query
+		name="Notificaciones.prioridades.proceso.etiqueta.destinatario.comunicado">
+		<query>
+    		SELECT pdt FROM PrioridadDestinatario pdt 
+    		WHERE pdt.idDestinatarioComunicado IN 
+    			(SELECT des.idDestinatarioComunicado FROM DestinatarioComunicado des
+    			WHERE des.proceso =:proceso
+    			AND des.etiqueta =:etiqueta )  
+    			AND pdt.prioridad not in (0)
+    			ORDER BY pdt.prioridad ASC
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.destinatario.por.grupo">
+		<query>
+    			SELECT dgr FROM DestinatarioGrupo dgr 
+    			WHERE dgr.idGrupoPrioridad =:grupoPrioridad
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.empleador.responsable.caja.uno.novedad">
+		<query>
+			SELECT arem.nombreUsuario, arem.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM AsesorResponsableEmpleador arem, SolicitudNovedadEmpleador sne, SolicitudNovedad sno,
+				UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr, Empleador empl	
+			WHERE arem.idEmpleador = sne.idEmpleador
+			AND sne.idEmpleador = empl.idEmpleador
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND arem.primario=TRUE
+			AND sno.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.empleador.responsable.caja.uno.afiliacion">
+		<query>
+			SELECT arem.nombreUsuario, arem.idEmpleador
+			FROM AsesorResponsableEmpleador arem, SolicitudAfiliacionEmpleador sae, Empleador empl,Empresa empr, UbicacionEmpresa ube
+			WHERE arem.idEmpleador = sae.idEmpleador
+			AND arem.idEmpleador = empl.idEmpleador
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.autorizacionEnvioEmail=TRUE
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND arem.primario=TRUE
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.empleador.responsable.caja.dos.novedad">
+		<query>
+			SELECT arem.nombreUsuario, arem.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM AsesorResponsableEmpleador arem, SolicitudNovedadEmpleador sne, SolicitudNovedad sno,
+				UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr, Empleador empl	
+			WHERE arem.idEmpleador = sne.idEmpleador
+			AND sne.idEmpleador = empl.idEmpleador
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND arem.primario=FALSE
+			AND sno.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.empleador.responsable.caja.dos.afiliacion">
+		<query>
+			SELECT arem.nombreUsuario, arem.idEmpleador
+			FROM AsesorResponsableEmpleador arem, SolicitudAfiliacionEmpleador sae, Empleador empl,Empresa empr, UbicacionEmpresa ube
+			WHERE arem.idEmpleador = sae.idEmpleador
+			AND arem.idEmpleador = empl.idEmpleador
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.autorizacionEnvioEmail=TRUE
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND arem.primario=FALSE
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.ubicacion.empresa.id.ubicacion.principal.afiliacion">
+		<query>    		
+    		SELECT ubi.email, per.idPersona, empl.idEmpleador, ube.ubicacion.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, Empleador empl, SolicitudAfiliacionEmpleador sae
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empr.idEmpresa
+			AND per.idPersona = empr.persona.idPersona
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = sae.idEmpleador
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud					
+    	</query>
+	</named-query>
+		<named-query name="Notificaciones.ubicacion.empresa.id.ubicacion.principal.novedad">
+		<query>
+    		SELECT ubi.email, per.idPersona, empl.idEmpleador 
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, SolicitudNovedadEmpleador sne, SolicitudNovedad sno, Empleador empl
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND per.idPersona = empr.persona.idPersona
+			AND empl.idEmpleador = sne.idEmpleador
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL 
+			AND ube.ubicacion.autorizacionEnvioEmail=TRUE
+			AND sno.solicitudGlobal.idSolicitud=:idSolicitud						
+    	</query>
+	</named-query>
+   <named-query name="Notificaciones.ubicacion.empresa.id.ubicacion.principal.novedad.persona">
+        <query>
+            SELECT ubi.email, per.idPersona, empl.idEmpleador, ubi.autorizacionEnvioEmail
+            FROM SolicitudNovedad sno,
+            SolicitudNovedadPersona snp,
+            RolAfiliado roa
+            JOIN roa.empleador empl
+            JOIN empl.empresa emp
+            JOIN emp.persona per,
+            UbicacionEmpresa ube
+            JOIN ube.ubicacion ubi
+            WHERE snp.idSolicitudNovedad = sno.idSolicitudNovedad
+            AND snp.idRolAfiliado = roa.idRolAfiliado
+            AND emp.idEmpresa = ube.idEmpresa
+            AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+            AND sno.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+    </named-query>
+	<named-query name="Notificaciones.afiliacion.ubicacion.empresa.id.envio.correspondencia">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, Empleador empl, SolicitudAfiliacionEmpleador sae
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empr.idEmpresa
+			AND per.idPersona = empr.persona.idPersona
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = sae.idEmpleador
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.ENVIO_CORRESPONDENCIA
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud 
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.novedad.ubicacion.empresa.id.envio.correspondencia">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empleador empl, SolicitudNovedadEmpleador sne, SolicitudNovedad sno
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empl.empresa.idEmpresa
+			AND per.idPersona = empl.empresa.persona.idPersona
+			AND empl.idEmpleador = sne.idEmpleador
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.ENVIO_CORRESPONDENCIA
+			AND sno.solicitudGlobal.idSolicitud=:idSolicitud 
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.ubicacion.empresa.id.notificacion.judicial.afiliacion">
+		<query>
+		 	SELECT ubi.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empleador empl, SolicitudAfiliacionEmpleador sae, Empresa empr
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empr.idEmpresa
+			AND per.idPersona = empr.persona.idPersona
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = sae.idEmpleador
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.NOTIFICACION_JUDICIAL
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.autorizacion.empresa.afiliacion">
+		<query>
+		 	SELECT ubem.ubicacion.autorizacionEnvioEmail
+			FROM Ubicacion ubi, UbicacionEmpresa ubem, Empresa empre, Empleador emple, SolicitudAfiliacionEmpleador saem, Persona per
+			WHERE ubi.idUbicacion = ubem.ubicacion.idUbicacion
+			AND ubem.idEmpresa = empre.idEmpresa
+			AND per.idPersona = empre.persona.idPersona 
+			AND empre.idEmpresa = emple.empresa.idEmpresa
+			AND emple.idEmpleador = saem.idEmpleador
+			AND saem.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ubem.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.ubicacion.empresa.id.notificacion.judicial.novedad">
+		<query>
+    		SELECT ubi.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, Empleador empl, SolicitudNovedadEmpleador sne, SolicitudNovedad sno
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empr.idEmpresa
+			AND per.idPersona = empr.persona.idPersona 
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = sne.idEmpleador
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.NOTIFICACION_JUDICIAL
+			AND sno.solicitudGlobal.idSolicitud=:idSolicitud 
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.responsable.afiliaciones.afiliacion">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, SolicitudAfiliacionEmpleador sae,
+			UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.idEmpleador = sae.idEmpleador
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud 
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.responsable.afiliaciones.novedad">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, SolicitudNovedadEmpleador sne, SolicitudNovedad sno,
+			UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.idEmpleador = sne.idEmpleador
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+			AND sno.solicitudGlobal.idSolicitud=:idSolicitud	
+		</query>
+	</named-query>
+    <named-query name="Notificaciones.responsable.afiliaciones.novedad.persona.empleador">
+        <query>
+            SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, RolAfiliado roa, SolicitudNovedadPersona snp, 
+			SolicitudNovedad sno, UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr, Empleador empl
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion 
+			AND per.idPersona = rce.persona.idPersona 
+			AND rce.idEmpleador = roa.empleador.idEmpleador 
+			AND roa.idRolAfiliado = snp.idRolAfiliado
+			AND snp.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sno.solicitudGlobal.idSolicitud = :idSolicitud
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+        </query>
+    </named-query>
+	<named-query name="Notificaciones.empleador.solicitud.novedad.rol.afiliado.principal">
+		<query>
+		SELECT new com.asopagos.notificaciones.dto.DetalleDestinatarioDTO(per, empl.idEmpleador, ubi, ubiEmp.autorizacionEnvioEmail) 
+		FROM Persona per, Ubicacion ubi, Empresa empr, Empleador empl, SolicitudNovedadEmpleador sne, 
+			SolicitudNovedad sno, UbicacionEmpresa ube, Ubicacion ubiEmp
+		WHERE per.ubicacionPrincipal.idUbicacion = ubi.idUbicacion
+		AND per.idPersona = empr.persona.idPersona
+		AND empr.idEmpresa = empl.empresa.idEmpresa
+		AND empl.idEmpleador = sne.idEmpleador
+		AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+		AND empr.idEmpresa = ube.idEmpresa
+		AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+		AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+		AND sno.solicitudGlobal.idSolicitud=:idSolicitud						
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.empleador.solicitud.novedad.rol.afiliado">
+		<query>
+    		SELECT emp FROM Empleador emp 
+    		JOIN FETCH emp.empresa empr
+    		JOIN FETCH empr.persona per
+    		JOIN FETCH per.ubicacionPrincipal ubi
+    		WHERE emp.idEmpleador IN (SELECT sne.idEmpleador FROM SolicitudNovedadEmpleador sne 
+    									WHERE sne.idSolicitudNovedad IN (SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+    																		WHERE sno.solicitudGlobal.idSolicitud=:idSolicitud))
+    		AND emp.idEmpleador IN (SELECT roa.empleador.idEmpleador FROM RolAfiliado roa 
+    									WHERE roa.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.TRABAJADOR_DEPENDIENTE)
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.empleador.solicitud.afiliacion.rol.afiliado.principal">
+		<query>
+			SELECT new com.asopagos.notificaciones.dto.DetalleDestinatarioDTO(per, empl.idEmpleador, ubi, ubiEmp.autorizacionEnvioEmail) 
+			FROM Persona per, Ubicacion ubi, Empresa empr, Empleador empl, SolicitudAfiliacionEmpleador sae, 
+				UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE per.ubicacionPrincipal.idUbicacion = ubi.idUbicacion
+			AND per.idPersona = empr.persona.idPersona
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = sae.idEmpleador
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud   										
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.empleador.solicitud.afiliacion.rol.afiliado">
+		<query>
+    		SELECT emp FROM Empleador emp 
+    		JOIN FETCH emp.empresa empr
+    		JOIN FETCH empr.persona per
+    		JOIN FETCH per.ubicacionPrincipal ubi
+    		WHERE emp.idEmpleador IN (SELECT sae.idEmpleador FROM SolicitudAfiliacionEmpleador sae    
+    									WHERE sae.solicitudGlobal.idSolicitud=:idSolicitud)
+    		AND emp.idEmpleador IN (SELECT roa.empleador.idEmpleador FROM RolAfiliado roa 
+    									WHERE roa.tipoAfiliado=com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.TRABAJADOR_DEPENDIENTE) 	
+    	</query>
+	</named-query>
+	<!-- GLPI 29357: Consulta para obtención de correo principal del empleador -->
+	<named-query name="Notificaciones.certificado.correo.prioridad.persona">
+		<query>
+		SELECT new com.asopagos.notificaciones.dto.CorreoPrioridadPersonaDTO(ubi.email, per.idPersona, empl.idEmpleador, empr.idEmpresa, ubi.autorizacionEnvioEmail) 
+		FROM Persona per, Ubicacion ubi, Empresa empr, Empleador empl, UbicacionEmpresa ube,  Certificado cer
+		WHERE per.idPersona = empr.persona.idPersona
+		AND empr.idEmpresa = empl.empresa.idEmpresa
+		AND empr.idEmpresa = ube.idEmpresa
+		AND ube.ubicacion.idUbicacion = ubi.idUbicacion
+		AND cer.idPersona = per.idPersona
+		AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+		AND cer.idCertificado =:idCertificado
+    	</query>
+	</named-query>
+
+	<named-query name="Notificaciones.persona.solicitud.novedad.rol.afiliado.principal">
+		<query>
+    		SELECT per FROM Persona per
+			JOIN FETCH per.ubicacionPrincipal ubi	
+			WHERE per.idPersona IN (SELECT snp.idPersona FROM SolicitudNovedadPersona snp 
+			WHERE snp.idSolicitudNovedad IN(SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+			WHERE sno.solicitudGlobal.idSolicitud=:idSolicitud))	
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.persona.solicitud.novedad.rol.afiliado.dependiente">
+		<query>
+    		SELECT per FROM Persona per 
+    		JOIN FETCH per.ubicacionPrincipal ubi
+    		WHERE per.idPersona IN (SELECT snp.idPersona FROM SolicitudNovedadPersona snp 
+    									WHERE snp.idSolicitudNovedad IN (SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+    																		WHERE sno.solicitudGlobal.idSolicitud=:idSolicitud))
+    		AND per.idPersona IN (SELECT roa.afiliado.persona.idPersona FROM RolAfiliado roa 
+    									WHERE roa.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.TRABAJADOR_DEPENDIENTE)
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.persona.solicitud.afiliacion.rol.afiliado.principal">
+		<query>			
+			SELECT per FROM Persona per
+			JOIN FETCH per.ubicacionPrincipal ubi
+			WHERE per.idPersona IN (SELECT sap.rolAfiliado.afiliado.persona.idPersona FROM SolicitudAfiliacionPersona sap    
+			WHERE sap.solicitudGlobal.idSolicitud=:idSolicitud)
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.persona.solicitud.afiliacion.rol.afiliado.dependiente">
+		<query>
+    		SELECT per FROM Persona per 
+    		JOIN FETCH per.ubicacionPrincipal ubi
+    		WHERE per.idPersona IN (SELECT sap.rolAfiliado.afiliado.persona.idPersona FROM SolicitudAfiliacionPersona sap    
+    									WHERE sap.solicitudGlobal.idSolicitud=:idSolicitud
+    									AND sap.rolAfiliado.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.TRABAJADOR_DEPENDIENTE)
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.persona.solicitud.novedad.rol.afiliado">
+		<query>
+    		SELECT per FROM Persona per 
+    		JOIN FETCH per.ubicacionPrincipal ubi
+    		WHERE per.idPersona IN (SELECT snp.idPersona FROM SolicitudNovedadPersona snp 
+    									WHERE snp.idSolicitudNovedad IN (SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+    																		WHERE sno.solicitudGlobal.idSolicitud=:idSolicitud))
+    		AND per.idPersona IN (SELECT roa.afiliado.persona.idPersona FROM RolAfiliado roa 
+    									WHERE roa.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.TRABAJADOR_INDEPENDIENTE)
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.persona.solicitud.afiliacion.rol.afiliado">
+		<query>
+    		SELECT per FROM Persona per 
+    		JOIN FETCH per.ubicacionPrincipal ubi
+    		WHERE per.idPersona IN (SELECT sap.rolAfiliado.afiliado.persona.idPersona FROM SolicitudAfiliacionPersona sap    
+    									WHERE sap.solicitudGlobal.idSolicitud=:idSolicitud
+    									AND sap.rolAfiliado.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.TRABAJADOR_INDEPENDIENTE)
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.persona.solicitud.novedad.rol.afiliado.pensionado">
+		<query>
+    		SELECT per FROM Persona per 
+    		JOIN FETCH per.ubicacionPrincipal ubi
+    		WHERE per.idPersona IN (SELECT snp.idPersona FROM SolicitudNovedadPersona snp 
+    									WHERE snp.idSolicitudNovedad IN (SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+    																		WHERE sno.solicitudGlobal.idSolicitud=:idSolicitud))
+    		AND per.idPersona IN (SELECT roa.afiliado.persona.idPersona FROM RolAfiliado roa 
+    									WHERE roa.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.PENSIONADO)
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.persona.solicitud.afiliacion.rol.afiliado.pensionado">
+		<query>
+    		SELECT per FROM Persona per 
+    		JOIN FETCH per.ubicacionPrincipal ubi
+    		WHERE per.idPersona IN (SELECT sap.rolAfiliado.afiliado.persona.idPersona FROM SolicitudAfiliacionPersona sap    
+    									WHERE sap.solicitudGlobal.idSolicitud=:idSolicitud
+    									AND sap.rolAfiliado.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.PENSIONADO)
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.responsable.aportes.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per 
+				WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce 
+				WHERE per.idPersona = rce.persona.idPersona AND rce.persona.idPersona IN (SELECT snp.idPersona FROM SolicitudNovedadPersona snp
+				WHERE snp.idSolicitudNovedad IN(SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+				WHERE sno.solicitudGlobal.idSolicitud=:idSolicitud))
+				AND rce.persona.idPersona IN (SELECT per.idPersona FROM Persona per
+				WHERE per.ubicacionPrincipal.autorizacionEnvioEmail=TRUE)
+				AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES)	
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.responsable.aportes.empleador">
+		<query>
+   			SELECT ubi.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, SolicitudNovedadEmpleador sne, SolicitudNovedad sno
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.idEmpleador = sne.idEmpleador
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES
+			AND sno.solicitudGlobal.idSolicitud=:idSolicitud	
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.responsable.subsidios.persona">
+		<query>
+    		SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per 
+    			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce 
+				WHERE per.idPersona = rce.persona.idPersona AND rce.persona.idPersona IN (SELECT snp.idPersona FROM SolicitudNovedadPersona snp
+				WHERE snp.idSolicitudNovedad IN(SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+				WHERE sno.solicitudGlobal.idSolicitud=:idSolicitud))
+				AND rce.persona.idPersona IN (SELECT per.idPersona FROM Persona per
+				WHERE per.ubicacionPrincipal.autorizacionEnvioEmail=TRUE)
+				AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_SUBSIDIOS)	
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.responsable.subsidios.empleador">
+		<query>
+   			SELECT ubi.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, SolicitudNovedadEmpleador sne, SolicitudNovedad sno
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.idEmpleador = sne.idEmpleador
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_SUBSIDIOS
+			AND sno.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query
+		name="Notificaciones.persona.solicitud.novedad.empleador.rol.afiliado.pensionado">
+		<query>  	
+       	SELECT emp FROM Empleador emp LEFT JOIN FETCH emp.empresa em LEFT JOIN FETCH em.persona per LEFT JOIN FETCH per.ubicacionPrincipal ubi
+     	WHERE emp.idEmpleador IN (SELECT sne.idEmpleador FROM SolicitudNovedadEmpleador sne 
+    							WHERE sne.idSolicitudNovedad IN (SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+    																WHERE sno.solicitudGlobal.idSolicitud =:idSolicitud))
+    	AND emp.idEmpleador IN (SELECT roa.empleador.idEmpleador FROM RolAfiliado roa 
+    									WHERE roa.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.PENSIONADO)
+     	</query>
+	</named-query>
+	<named-query
+		name="Notificaciones.persona.solicitud.novedad.empleador.rol.afiliado.trabajador.independiente">
+		<query>  	
+       	SELECT emp FROM Empleador emp LEFT JOIN FETCH emp.empresa em LEFT JOIN FETCH em.persona per LEFT JOIN FETCH per.ubicacionPrincipal ubi
+     	WHERE emp.idEmpleador IN (SELECT sne.idEmpleador FROM SolicitudNovedadEmpleador sne 
+    							WHERE sne.idSolicitudNovedad IN (SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+    																WHERE sno.solicitudGlobal.idSolicitud =:idSolicitud))
+    	AND emp.idEmpleador IN (SELECT roa.empleador.idEmpleador FROM RolAfiliado roa 
+    									WHERE roa.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.TRABAJADOR_INDEPENDIENTE)															
+     	</query>
+	</named-query>
+	<named-query name="Notificaciones.persona.id">
+		<query>
+    		SELECT per FROM Persona per WHERE per.id=:idPersona
+    	</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.entidada.pagadora">
+		<query>
+			SELECT enp FROM EntidadPagadora enp 
+			JOIN FETCH enp.empresa empr
+    		JOIN FETCH empr.persona per
+    		JOIN FETCH per.ubicacionPrincipal ubi
+			WHERE enp.idEntidadPagadora IN(SELECT roa.pagadorAportes FROM RolAfiliado roa 
+											WHERE roa.empleador.idEmpleador=:idEmpleador
+											AND roa.tipoAfiliado= com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.PENSIONADO)
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.grupo.prioridad">
+		<query>
+			SELECT gup FROM GrupoPrioridad gup
+			WHERE gup.idGrupoPrioridad=:idGrupoPrioridad
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.actualizar.prioridad.destinatario">
+		<query>
+			UPDATE PrioridadDestinatario pdt SET pdt.prioridad =:prioridad
+    		WHERE pdt.idDestinatarioComunicado IN 
+    			(SELECT des.idDestinatarioComunicado FROM DestinatarioComunicado des
+    			WHERE des.proceso =:proceso
+    			AND des.etiqueta =:etiqueta)
+    			AND pdt.idGrupoPrioridad=:idGrupoPrioridad
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.actualizar.prioridad.cero">
+		<query>
+			UPDATE PrioridadDestinatario pdt SET pdt.prioridad = 0
+    		WHERE pdt.idDestinatarioComunicado IN 
+    			(SELECT des.idDestinatarioComunicado FROM DestinatarioComunicado des
+    			WHERE des.proceso =:proceso
+    			AND des.etiqueta =:etiqueta )
+    			AND pdt.idGrupoPrioridad NOT IN (:idsGrupoPrioridad)
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.etiqueta.por.proceso">
+		<query>
+			SELECT des.etiqueta FROM DestinatarioComunicado des 
+			WHERE des.proceso=:proceso 
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.prioridades.proceso.destinatario.comunicado">
+		<query>
+			SELECT pdt FROM PrioridadDestinatario pdt
+    		WHERE pdt.idDestinatarioComunicado IN 
+    			(SELECT des.idDestinatarioComunicado FROM DestinatarioComunicado des
+    			WHERE des.proceso =:proceso 
+    			AND des.etiqueta=:etiqueta) 
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.actualizar.grupos.prioridad.cero">
+		<query>
+			UPDATE PrioridadDestinatario pdt SET pdt.prioridad = 0
+    		WHERE pdt.idDestinatarioComunicado IN 
+    			(SELECT des.idDestinatarioComunicado FROM DestinatarioComunicado des
+    			WHERE des.proceso =:proceso
+    			AND des.etiqueta =:etiqueta )
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.tipo.transaccion">
+		<query>
+			SELECT sol.tipoTransaccion FROM Solicitud sol 
+			WHERE sol.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.envio.correspondencia.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona FROM UbicacionEmpresa ube, Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE ube.ubicacion.idUbicacion = ubi.idUbicacion
+			AND ube.idEmpresa = emp.idEmpresa
+			AND emp.persona.idPersona = per.idPersona
+			AND emp.idEmpresa = apg.idEmpresa  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.ENVIO_CORRESPONDENCIA
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.autorizacion.correspondencia.empleador">
+		<query>
+			SELECT ubi.autorizacionEnvioEmail FROM UbicacionEmpresa ube, Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE ube.ubicacion.idUbicacion = ubi.idUbicacion
+			AND ube.idEmpresa = emp.idEmpresa
+			AND emp.persona.idPersona = per.idPersona
+			AND emp.idEmpresa = apg.idEmpresa  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.envio.correspondencia.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM UbicacionEmpresa ube, Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE ube.ubicacion.idUbicacion = ubi.idUbicacion
+			AND ube.idEmpresa = emp.idEmpresa
+			AND emp.persona.idPersona = per.idPersona
+			AND per.idPersona = apg.idPersona  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.ENVIO_CORRESPONDENCIA
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.autorizacion.correspondencia.persona">
+		<query>
+			SELECT ubi.autorizacionEnvioEmail FROM UbicacionEmpresa ube, Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE ube.ubicacion.idUbicacion = ubi.idUbicacion
+			AND ube.idEmpresa = emp.idEmpresa
+			AND emp.persona.idPersona = per.idPersona
+			AND per.idPersona = apg.idPersona  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.novedad.representante.legal.ubicacion">
+		<query>
+			SELECT ubi.email, per.idPersona,empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Persona per, Ubicacion ubi, Empresa empr, Empleador empl,SolicitudNovedadEmpleador sne,
+				SolicitudNovedad sno, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ubi.idUbicacion = empr.idUbicacionRepresentanteLegal
+			AND per.idPersona =  empr.idPersonaRepresentanteLegal
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = sne.idEmpleador
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sno.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+    <named-query name="Notificaciones.consultar.representante.legal.ubicacion.novedad.depweb">
+        <query>
+            SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, Empresa emp, Empleador empl, RolAfiliado roa, SolicitudNovedadPersona snp, 
+				SolicitudNovedad sno, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ubi.idUbicacion = emp.idUbicacionRepresentanteLegal
+			AND per.idPersona = emp.idPersonaRepresentanteLegal
+			AND empl.idEmpleador = roa.empleador.idEmpleador
+			AND emp.idEmpresa = ube.idEmpresa
+			AND emp.idEmpresa = empl.empresa.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND snp.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND snp.idRolAfiliado = roa.idRolAfiliado
+			AND sno.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+    </named-query>
+		<named-query name="Notificaciones.consultar.afiliacion.representante.legal.ubicacion">
+		<query>
+			SELECT ubi.email, per.idPersona, emp.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Persona per, Ubicacion ubi, Empresa empr, Empleador emp, SolicitudAfiliacionEmpleador sae,
+				UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE sae.idEmpleador = emp.idEmpleador
+			AND per.idPersona = empr.idPersonaRepresentanteLegal
+			AND emp.empresa = empr.idEmpresa
+			AND empr.idUbicacionRepresentanteLegal = ubi.idUbicacion
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud   	
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.novedad.representante.legal.suplente.ubicacion">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Persona per, Ubicacion ubi, Empresa empr, Empleador empl,SolicitudNovedadEmpleador sne,
+			SolicitudNovedad sno, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ubi.idUbicacion = empr.idUbicacionRepresentanteLegalSuplente
+			AND per.idPersona =  empr.idPersonaRepresentanteLegalSuplente
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = sne.idEmpleador
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sno.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.afiliacion.representante.legal.suplente.ubicacion">
+		<query>
+			SELECT ubi.email, per.idPersona, emp.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Persona per, Ubicacion ubi, Empresa empr, Empleador emp, SolicitudAfiliacionEmpleador sae,
+			UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE sae.idEmpleador = emp.idEmpleador
+			AND per.idPersona = empr.idPersonaRepresentanteLegalSuplente
+			AND emp.empresa = empr.idEmpresa
+			AND empr.idUbicacionRepresentanteLegalSuplente = ubi.idUbicacion
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.consultar.aportante.devolucion.representante.legal">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, Empresa empr, SolicitudDevolucionAporte sda, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ubi.idUbicacion = empr.idUbicacionRepresentanteLegal
+			AND per.idPersona = empr.idPersonaRepresentanteLegal
+			AND empr.persona.idPersona = sda.persona
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sda.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.correccion.representante.legal">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per,Empresa empr,SolicitudCorreccionAporte sca, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ubi.idUbicacion = empr.idUbicacionRepresentanteLegal
+			AND per.idPersona = empr.idPersonaRepresentanteLegal 
+			AND empr.persona.idPersona = sca.idPersona
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sca.solicitudGlobal.idSolicitud =:idSolicitud
+			AND sca.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.representante.legal.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, emp.idEmpresa, ubi.autorizacionEnvioEmail FROM Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE emp.idUbicacionRepresentanteLegal = ubi.idUbicacion
+			AND emp.idPersonaRepresentanteLegal = per.idPersona
+			AND emp.idEmpresa = apg.idEmpresa
+			AND emp.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.representante.legal.persona">
+		<query>
+			SELECT ubi.email, per.idPersona, ubi.autorizacionEnvioEmail FROM Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE emp.idUbicacionRepresentanteLegal = ubi.idUbicacion
+			AND emp.idPersonaRepresentanteLegal = per.idPersona
+			AND  per.idPersona = apg.idPersona  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.consultar.aportante.representante.legal.suplente.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE emp.idUbicacionRepresentanteLegalSuplente = ubi.idUbicacion
+			AND emp.persona.idPersona = per.idPersona
+			AND emp.idEmpresa = apg.idEmpresa  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.representante.legal.suplente.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE emp.idUbicacionRepresentanteLegalSuplente = ubi.idUbicacion
+			AND emp.persona.idPersona = per.idPersona
+			AND  per.idPersona = apg.idPersona  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.devolucion.responsable.afiliaciones.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail 
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, SolicitudDevolucionAporte sda,
+				UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.persona.idPersona = sda.persona
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sda.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+			AND sda.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.consultar.aportante.devolucion.responsable.afiliaciones.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per 
+			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce
+			WHERE per.idPersona = rce.persona.idPersona AND rce.persona.idPersona IN (SELECT sda.persona FROM SolicitudDevolucionAporte sda 
+			WHERE sda.solicitudGlobal.idSolicitud =:idSolicitud
+			AND (sda.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.INDEPENDIENTE 
+			OR sda.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.PENSIONADO))
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES)
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.correccion.responsable.afiliaciones.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, SolicitudCorreccionAporte sca
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.persona.idPersona = sca.idPersona
+			AND sca.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+			AND sca.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.consultar.aportante.correccion.responsable.afiliaciones.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per
+			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce
+			WHERE per.idPersona = rce.persona.idPersona AND rce.persona.idPersona IN (SELECT sca.idPersona FROM SolicitudCorreccionAporte sca 
+			WHERE sca.solicitudGlobal.idSolicitud =:idSolicitud
+			AND (sca.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.INDEPENDIENTE 
+			OR sca.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.PENSIONADO))
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES)
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.responsable.afiliaciones.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador FROM Empleador empl, RolContactoEmpleador rce,
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE rce.ubicacion.idUbicacion = ubi.idUbicacion
+			AND rce.persona.idPersona = per.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.idEmpresa = apg.idEmpresa  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.consultar.aportante.responsable.afiliaciones.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Empleador empl, RolContactoEmpleador rce,
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE rce.ubicacion.idUbicacion = ubi.idUbicacion
+			AND rce.persona.idPersona = per.idPersona
+			AND rce.persona.idPersona = apg.idPersona  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.devolucion.responsable.aportes.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, SolicitudDevolucionAporte sda,
+				UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.persona.idPersona = sda.persona
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sda.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES
+			AND sda.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.consultar.aportante.devolucion.responsable.aportes.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per 
+			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce
+			WHERE per.idPersona = rce.persona.idPersona AND rce.persona.idPersona IN (SELECT sda.persona FROM SolicitudDevolucionAporte sda 
+			WHERE sda.solicitudGlobal.idSolicitud =:idSolicitud
+			AND (sda.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.INDEPENDIENTE 
+			OR sda.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.PENSIONADO))
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES)
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.correccion.responsable.aportes.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, SolicitudCorreccionAporte sca,
+				UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.persona.idPersona = sca.idPersona
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sca.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES
+			AND sca.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.correccion.responsable.aportes.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per 
+			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce
+			WHERE per.idPersona = rce.persona.idPersona AND rce.persona.idPersona IN (SELECT sca.idPersona FROM SolicitudCorreccionAporte sca 
+			WHERE sca.solicitudGlobal.idSolicitud =:idSolicitud
+			AND (sca.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.INDEPENDIENTE 
+			OR sca.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.PENSIONADO))
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES)
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.responsable.aportes.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Empleador empl, RolContactoEmpleador rce,Persona per, Ubicacion ubi, AporteGeneral apg,
+			SolicitudAporte sa, UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr
+			WHERE rce.ubicacion.idUbicacion = ubi.idUbicacion
+			AND rce.persona.idPersona = per.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.idEmpresa = apg.idEmpresa
+			AND apg.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.responsable.aportes.persona">
+		<query>
+			SELECT ubi.email, per.idPersona, ubi.autorizacionEnvioEmail FROM Empleador empl, RolContactoEmpleador rce,
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE rce.ubicacion.idUbicacion = ubi.idUbicacion
+			AND rce.persona.idPersona = per.idPersona
+			AND rce.persona.idPersona = apg.idPersona  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.devolucion.entidad.pagadora">
+		<query>
+			SELECT ep FROM EntidadPagadora ep
+			WHERE ep.empresa.idEmpresa IN (SELECT empr.idEmpresa FROM Empresa empr
+			WHERE empr.persona.idPersona IN(SELECT sda.persona FROM SolicitudDevolucionAporte sda 
+			WHERE sda.solicitudGlobal.idSolicitud =:idSolicitud
+			AND (sda.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.INDEPENDIENTE 
+			OR sda.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.PENSIONADO))
+			AND empr.persona.idPersona IN (SELECT per.idPersona FROM Persona per))
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.correccion.entidad.pagadora">
+		<query>
+			SELECT ep FROM EntidadPagadora ep 
+			WHERE ep.empresa.idEmpresa IN (SELECT empr.idEmpresa FROM Empresa empr
+			WHERE empr.persona.idPersona IN (SELECT sca.idPersona FROM SolicitudCorreccionAporte sca 
+			WHERE sca.solicitudGlobal.idSolicitud =:idSolicitud
+			AND (sca.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.INDEPENDIENTE 
+			OR sca.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.PENSIONADO))
+			AND empr.persona.idPersona IN (SELECT per.idPersona FROM Persona per))
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.entidad.pagadora.empleador">
+		<query>
+			SELECT ep, ubiEmp.autorizacionEnvioEmail 
+			FROM EntidadPagadora ep, AporteGeneral apg, SolicitudAporte sa, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ep.empresa.idEmpresa = apg.idEmpresa
+			AND apg.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral 
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.consultar.aportante.entidad.pagadora.persona">
+		<query>
+			SELECT ep FROM EntidadPagadora ep 
+			WHERE ep.empresa.idEmpresa IN (SELECT empr.idEmpresa FROM Empresa empr 
+			WHERE empr.persona.idPersona IN (SELECT apg.idPersona FROM AporteGeneral apg 
+			WHERE apg.idRegistroGeneral IN (SELECT sa.idRegistroGeneral FROM SolicitudAporte sa 
+			WHERE sa.solicitudGlobal.idSolicitud=:idSolicitud))
+			AND empr.persona.idPersona IN (SELECT per.idPersona FROM Persona per))
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.socios.novedad.empleador">
+		<query>
+			SELECT new com.asopagos.notificaciones.dto.DetalleDestinatarioDTO(per,empl.idEmpleador,ubi)
+			FROM Persona per, SocioEmpleador soc, Empleador empl, SolicitudNovedadEmpleador sne, SolicitudNovedad sno, Ubicacion ubi
+			WHERE per.ubicacionPrincipal.idUbicacion = ubi.idUbicacion
+			AND per.idPersona = soc.persona.idPersona
+			AND soc.idEmpleador = empl.idEmpleador
+			AND empl.idEmpleador = sne.idEmpleador
+			AND sne.idSolicitudNovedad = sno.idSolicitudNovedad
+			AND sno.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.afiliacion.persona.ubicacion.empresa.id.envio.correspondencia">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, Empleador empl, RolAfiliado roa, SolicitudAfiliacionPersona sap
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion 
+			AND ube.idEmpresa = empr.idEmpresa 
+			AND per.idPersona = empr.persona.idPersona 
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = roa.empleador.idEmpleador
+			AND roa.idRolAfiliado = sap.rolAfiliado.idRolAfiliado
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.ENVIO_CORRESPONDENCIA
+			AND sap.solicitudGlobal.idSolicitud=:idSolicitud 
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.afiliacion.persona.ubicacion.empresa.notificacion.judicial">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, Empleador empl, RolAfiliado roa, SolicitudAfiliacionPersona sap
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empr.idEmpresa 
+			AND per.idPersona = empr.persona.idPersona 
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = roa.empleador.idEmpleador
+			AND roa.idRolAfiliado = sap.rolAfiliado.idRolAfiliado
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.NOTIFICACION_JUDICIAL
+			AND sap.solicitudGlobal.idSolicitud=:idSolicitud  
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.afiliacion.persona.ubicacion.empresa.ubicacion.principal">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa, ubi.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, Empleador empl, RolAfiliado roa, SolicitudAfiliacionPersona sap
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empr.idEmpresa 
+			AND per.idPersona = empr.persona.idPersona 
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = roa.empleador.idEmpleador
+			AND roa.idRolAfiliado = sap.rolAfiliado.idRolAfiliado
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sap.solicitudGlobal.idSolicitud=:idSolicitud  
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.afiliacion.persona.autorizacion.empresa.id.envio.correspondencia">
+		<query>
+			SELECT ubi.autorizacionEnvioEmail FROM Ubicacion ubi, Persona per
+				WHERE ubi.idUbicacion IN (SELECT ube.ubicacion.idUbicacion FROM UbicacionEmpresa ube 
+				WHERE ube.idEmpresa IN (SELECT empr.idEmpresa FROM Empresa empr 
+				WHERE per.idPersona = empr.persona.idPersona AND empr.idEmpresa IN (SELECT empl.empresa.idEmpresa FROM Empleador empl
+				WHERE empl.idEmpleador IN (SELECT roa.empleador.idEmpleador FROM RolAfiliado roa 
+				WHERE roa.idRolAfiliado IN(SELECT sap.rolAfiliado.idRolAfiliado FROM SolicitudAfiliacionPersona sap
+				WHERE sap.solicitudGlobal.idSolicitud=:idSolicitud))))
+				AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL) 
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.afiliacion.persona.representante.legal.ubicacion">
+		<query>
+			SELECT ubi.email, per.idPersona, ubi.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, Empresa empr, Empleador empl, RolAfiliado roa, SolicitudAfiliacionPersona sap
+			WHERE ubi.idUbicacion = per.ubicacionPrincipal.idUbicacion
+			AND per.idPersona = empr.idPersonaRepresentanteLegal
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = roa.empleador.idEmpleador
+			AND roa.idRolAfiliado = sap.rolAfiliado.idRolAfiliado
+			AND sap.solicitudGlobal.idSolicitud=:idSolicitud   	
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.responsable.afiliaciones.afiliacion.persona">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail 
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, RolAfiliado roa, SolicitudAfiliacionPersona sap,
+			UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion 
+			AND per.idPersona = rce.persona.idPersona 
+			AND rce.idEmpleador = empl.idEmpleador 
+			AND empl.idEmpleador = roa.empleador.idEmpleador 
+			AND roa.idRolAfiliado = sap.rolAfiliado.idRolAfiliado
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+			AND sap.solicitudGlobal.idSolicitud=:idSolicitud 
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.correccion.aportes">
+		<query>
+			SELECT empr.idEmpresa
+			FROM Persona per, SolicitudCorreccionAporte sca, Empresa empr
+			WHERE per.idPersona = sca.idPersona 
+			AND per.idPersona = empr.persona.idPersona
+			AND sca.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.aportes">
+		<query>
+			SELECT emp.idEmpresa FROM SolicitudAporte soa, Persona per, Empresa emp
+			WHERE (per.tipoIdentificacion=soa.tipoIdentificacion AND soa.numeroIdentificacion=per.numeroIdentificacion) 
+			AND soa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND emp.persona.idPersona = per.idPersona
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.aportante.responsable.subsidios.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail 
+			FROM Empleador empl, RolContactoEmpleador rce, Persona per, 
+				Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa, UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr
+			WHERE rce.ubicacion.idUbicacion = ubi.idUbicacion
+			AND rce.persona.idPersona = per.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.idEmpresa = apg.idEmpresa 
+			AND apg.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_SUBSIDIOS
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.devolucion.aportes">
+		<query>
+			SELECT empr.idEmpresa 
+			FROM Persona per, SolicitudDevolucionAporte sda, Empresa empr
+			WHERE per.idPersona = sda.persona 
+			AND per.idPersona = empr.persona.idPersona 
+			AND sda.solicitudGlobal.idSolicitud =:idSolicitud
+			</query>
+	</named-query>
+		<named-query name="Notificaciones.aportante.responsable.subsidios.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Empleador empl, RolContactoEmpleador rce,
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE rce.ubicacion.idUbicacion = ubi.idUbicacion
+			AND rce.persona.idPersona = per.idPersona
+			AND rce.persona.idPersona = apg.idPersona  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_SUBSIDIOS
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.oficina.principal.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona FROM UbicacionEmpresa ube, Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE ube.ubicacion.idUbicacion = ubi.idUbicacion
+			AND ube.idEmpresa = emp.idEmpresa
+			AND emp.persona.idPersona = per.idPersona
+			AND emp.idEmpresa = apg.idEmpresa  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.oficina.principal.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM UbicacionEmpresa ube, Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE ube.ubicacion.idUbicacion = ubi.idUbicacion
+			AND ube.idEmpresa = emp.idEmpresa
+			AND emp.persona.idPersona = per.idPersona
+			AND per.idPersona = apg.idPersona  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.notificacion.judicial.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona FROM UbicacionEmpresa ube, Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE ube.ubicacion.idUbicacion = ubi.idUbicacion
+			AND ube.idEmpresa = emp.idEmpresa
+			AND emp.persona.idPersona = per.idPersona
+			AND emp.idEmpresa = apg.idEmpresa  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.NOTIFICACION_JUDICIAL
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.aportante.notificacion.judicial.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM UbicacionEmpresa ube, Empresa emp, 
+			Persona per, Ubicacion ubi, AporteGeneral apg,SolicitudAporte sa
+			WHERE ube.ubicacion.idUbicacion = ubi.idUbicacion
+			AND ube.idEmpresa = emp.idEmpresa
+			AND emp.persona.idPersona = per.idPersona
+			AND per.idPersona = apg.idPersona  
+			AND apg.idRegistroGeneral = sa.idRegistroGeneral
+			AND sa.solicitudGlobal.idSolicitud=:idSolicitud
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.NOTIFICACION_JUDICIAL
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.gestion.preventiva.responsable.afiliaciones.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail  
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, SolicitudPreventiva spr,
+				UbicacionEmpresa ube, Ubicacion ubiEmp, Empresa empr
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona 
+			AND rce.idEmpleador = empl.idEmpleador 
+			AND empl.empresa.persona.idPersona = spr.idPersona
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+			AND spr.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.gestion.preventiva.responsable.afiliaciones.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per 
+			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce
+			WHERE per.idPersona = rce.persona.idPersona AND rce.persona.idPersona IN (SELECT spr.idPersona FROM SolicitudPreventiva spr
+			WHERE spr.solicitudGlobal.idSolicitud =:idSolicitud
+			AND (spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.INDEPENDIENTE 
+			OR spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.PENSIONADO))
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES)
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.consultar.gestion.preventiva.responsable.aportes.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ube.ubicacion.autorizacionEnvioEmail 
+			FROM Ubicacion ubi, Persona per,RolContactoEmpleador rce, Empleador empl,
+				 UbicacionEmpresa ube, SolicitudPreventiva spr
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona 
+			AND rce.idEmpleador = empl.idEmpleador 
+			AND ube.idEmpresa = empl.empresa.idEmpresa
+			AND empl.empresa.persona.idPersona = spr.idPersona
+			AND spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR 
+			AND ube.tipoUbicacion=com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES
+			AND spr.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.gestion.preventiva.responsable.aportes.persona">
+		<query>
+			SELECT ubi.email FROM Ubicacion ubi 
+			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce
+			WHERE rce.persona.idPersona IN (SELECT spr.idPersona FROM SolicitudPreventiva spr 
+			WHERE spr.solicitudGlobal.idSolicitud =:idSolicitud
+			AND (spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.INDEPENDIENTE 
+			OR spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.PENSIONADO))
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES)
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.gestion.preventiva.responsable.subsidios.empleador">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubi, Persona per,SolicitudPreventiva spr, RolContactoEmpleador rce,Empleador empl
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona 
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.persona.idPersona = spr.idPersona
+			AND spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_SUBSIDIOS
+			AND spr.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.gestion.preventiva.responsable.subsidios.persona">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per 
+			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce
+			WHERE per.idPersona = rce.persona.idPersona AND rce.persona.idPersona IN (SELECT spr.idPersona FROM SolicitudPreventiva spr 
+			WHERE spr.solicitudGlobal.idSolicitud =:idSolicitud
+			AND (spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.INDEPENDIENTE 
+			OR spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.PENSIONADO))
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_SUBSIDIOS)
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.gestion.preventiva.representante.legal">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, Empresa empr, SolicitudPreventiva spr, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ubi.idUbicacion = empr.idUbicacionRepresentanteLegal 
+			AND per.idPersona = empr.idPersonaRepresentanteLegal 
+			AND empr.persona.idPersona = spr.idPersona
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND spr.solicitudGlobal.idSolicitud =:idSolicitud
+			AND spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR
+		</query>
+	</named-query>
+		<named-query name="Notificaciones.consultar.gestion.preventiva.representante.legal.suplente">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa, ubiEmp.autorizacionEnvioEmail 
+			FROM Ubicacion ubi, Persona per, Empresa empr, SolicitudPreventiva spr, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ubi.idUbicacion = empr.idUbicacionRepresentanteLegalSuplente 
+			AND per.idPersona = empr.persona.idPersona 
+			AND empr.persona.idPersona = spr.idPersona
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND spr.tipoSolicitante = com.asopagos.enumeraciones.aportes.TipoSolicitanteMovimientoAporteEnum.EMPLEADOR
+			AND spr.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.gestion.preventiva.ubicacion.principal">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa, ubi.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, SolicitudPreventiva spr
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND ube.idEmpresa = empr.idEmpresa
+			AND per.idPersona=empr.persona.idPersona 
+			AND empr.persona.idPersona = spr.idPersona 
+			AND spr.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.gestion.preventiva.envio.correspondencia">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa  
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr,SolicitudPreventiva spr
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.ENVIO_CORRESPONDENCIA
+			AND ube.idEmpresa = empr.idEmpresa 
+			AND per.idPersona = empr.persona.idPersona 
+			AND empr.persona.idPersona = spr.idPersona 
+			AND spr.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.gestion.preventiva.notificacion.judicial">
+		<query>
+			SELECT ubi.email, per.idPersona, empr.idEmpresa 
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, SolicitudPreventiva spr
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.NOTIFICACION_JUDICIAL
+			AND ube.idEmpresa = empr.idEmpresa
+			AND per.idPersona=empr.persona.idPersona 
+			AND empr.persona.idPersona = spr.idPersona 
+			AND spr.solicitudGlobal.idSolicitud =:idSolicitud
+		</query>
+	</named-query>	
+	<named-query name="Notificaciones.consultar.notificacion.postulacion.fovis">
+		<query>
+            SELECT per FROM Persona per
+            JOIN FETCH per.ubicacionPrincipal ubi  
+			WHERE per.idPersona IN (SELECT afi.persona.idPersona FROM Afiliado afi 
+			WHERE afi.idAfiliado IN (SELECT jeh.idAfiliado FROM JefeHogar jeh 
+			WHERE jeh.idJefeHogar IN (SELECT pof.jefeHogar FROM PostulacionFOVIS pof
+			WHERE pof.idPostulacion IN (SELECT spo.idPostulacionFOVIS FROM SolicitudPostulacion spo
+			WHERE spo.solicitudGlobal.idSolicitud =:idSolicitud))))
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+    <named-query name="Notificaciones.consultar.notificacion.postulacion.fovis.verificacion">
+        <query>
+            SELECT per FROM Persona per
+            JOIN FETCH per.ubicacionPrincipal ubi 
+            WHERE per.idPersona IN (SELECT afi.persona.idPersona FROM Afiliado afi 
+            WHERE afi.idAfiliado IN (SELECT jeh.idAfiliado FROM JefeHogar jeh 
+            WHERE jeh.idJefeHogar IN (SELECT pof.jefeHogar FROM PostulacionFOVIS pof
+            WHERE pof.idPostulacion IN (SELECT svf.idPostulacionFOVIS FROM SolicitudVerificacionFovis svf
+            WHERE svf.solicitudGlobal.idSolicitud =:idSolicitud))))
+            AND ubi.autorizacionEnvioEmail=TRUE
+        </query>
+    </named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.cartera">
+		<query>
+			SELECT ubi.email, per.idPersona, emp.idEmpresa, ubiEmp.autorizacionEnvioEmail 
+			FROM Ubicacion ubi, Persona per, Empresa emp, UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ubi.idUbicacion = emp.idUbicacionRepresentanteLegal 
+			AND per.idPersona = emp.persona.idPersona 
+			AND emp.persona.idPersona = per.idPersona 
+			AND emp.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND per.tipoIdentificacion=:tipoIdentificacion 
+			AND per.numeroIdentificacion=:numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.cartera.afiliado">
+		<query>
+			SELECT per FROM Persona per
+			JOIN FETCH per.ubicacionPrincipal ubi	
+			WHERE per.tipoIdentificacion=:tipoIdentificacion AND per.numeroIdentificacion=:numeroIdentificacion
+		</query>
+	</named-query>
+    <named-query name="Notificaciones.consultar.notificacion.novedad.fovis">
+        <query>
+            SELECT per FROM Persona per
+            JOIN FETCH per.ubicacionPrincipal ubi 
+            WHERE per.idPersona IN (SELECT afi.persona.idPersona FROM Afiliado afi 
+            WHERE afi.idAfiliado IN (SELECT jeh.idAfiliado FROM JefeHogar jeh 
+            WHERE jeh.idJefeHogar IN (SELECT pof.jefeHogar FROM PostulacionFOVIS pof
+            WHERE pof.idPostulacion IN (SELECT spf.idPostulacionFovis FROM SolicitudNovedadFovis snf, SolicitudNovedadPersonaFovis spf
+            WHERE spf.idSolicitudNovedadFovis = snf.idSolicitudNovedadFovis
+            AND snf.solicitudGlobal.idSolicitud =:idSolicitud))))
+            AND ubi.autorizacionEnvioEmail=TRUE
+        </query>
+    </named-query>
+    
+    <named-query name="Notificaciones.consultar.notificacion.legalizacion.fovis">
+		<query>
+            SELECT per FROM Persona per
+            JOIN FETCH per.ubicacionPrincipal ubi 
+			WHERE per.idPersona IN (SELECT afi.persona.idPersona FROM Afiliado afi 
+			WHERE afi.idAfiliado IN (SELECT jeh.idAfiliado FROM JefeHogar jeh 
+			WHERE jeh.idJefeHogar IN (SELECT pof.jefeHogar FROM PostulacionFOVIS pof
+			WHERE pof.idPostulacion IN (SELECT sld.idPostulacionFOVIS FROM SolicitudLegalizacionDesembolso sld
+			WHERE sld.solicitudGlobal.idSolicitud =:idSolicitud))))
+			AND ubi.autorizacionEnvioEmail=TRUE
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.cartera.aportes">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per 
+			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce 
+			WHERE per.idPersona = rce.persona.idPersona AND rce.idEmpleador IN (SELECT empl.idEmpleador FROM Empleador empl
+			WHERE empl.empresa.persona.idPersona IN(SELECT per.idPersona FROM Persona per 
+			WHERE per.tipoIdentificacion=:tipoIdentificacion AND per.numeroIdentificacion=:numeroIdentificacion)
+			AND empl.empresa.idEmpresa IN (SELECT ubiE.idEmpresa FROM UbicacionEmpresa ubiE
+			WHERE ubiE.ubicacion.idUbicacion IN (SELECT ubiOP.idUbicacion FROM Ubicacion ubiOP 
+			WHERE ubiOP.autorizacionEnvioEmail=true)
+			AND ubiE.tipoUbicacion=com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL))
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_APORTES)
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.cartera.subsidios">
+		<query>
+			SELECT ubi.email, per.idPersona FROM Ubicacion ubi, Persona per 
+			WHERE ubi.idUbicacion IN (SELECT rce.ubicacion.idUbicacion FROM RolContactoEmpleador rce 
+			WHERE per.idPersona= rce.persona.idPersona AND rce.idEmpleador IN (SELECT empl.idEmpleador FROM Empleador empl
+			WHERE empl.empresa.persona.idPersona IN(SELECT per.idPersona FROM Persona per 
+			WHERE per.tipoIdentificacion=:tipoIdentificacion AND per.numeroIdentificacion=:numeroIdentificacion)
+			AND empl.empresa.idEmpresa IN (SELECT ubiE.idEmpresa FROM UbicacionEmpresa ubiE
+			WHERE ubiE.ubicacion.idUbicacion IN (SELECT ubiOP.idUbicacion FROM Ubicacion ubiOP 
+			WHERE ubiOP.autorizacionEnvioEmail=true)
+			AND ubiE.tipoUbicacion=com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL))
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_SUBSIDIOS)
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.cartera.suplente">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiOP.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, Empresa emp, UbicacionEmpresa ubiE, Ubicacion ubiOP, Empleador empl
+			WHERE ubi.idUbicacion = emp.idUbicacionRepresentanteLegalSuplente
+			AND per.idPersona = emp.persona.idPersona 
+			AND emp.persona.idPersona = per.idPersona  
+			AND emp.idEmpresa = ubiE.idEmpresa
+			AND empl.empresa.idEmpresa = emp.idEmpresa
+			AND ubiE.ubicacion.idUbicacion = ubiOP.idUbicacion 
+			AND ubiE.tipoUbicacion=com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND per.tipoIdentificacion=:tipoIdentificacion 
+			AND per.numeroIdentificacion=:numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.cartera.afiliaciones">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiOP.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl,
+				UbicacionEmpresa ubiE, Ubicacion ubiOP 
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion 
+			AND per.idPersona = rce.persona.idPersona 
+			AND rce.idEmpleador = empl.idEmpleador 
+			AND empl.empresa.persona.idPersona = per.idPersona  
+			AND per.tipoIdentificacion=:tipoIdentificacion 
+			AND per.numeroIdentificacion=:numeroIdentificacion
+			AND empl.empresa.idEmpresa = ubiE.idEmpresa 
+			AND ubiE.ubicacion.idUbicacion = ubiOP.idUbicacion
+			AND ubiE.tipoUbicacion=com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND rce.tipoRolContactoEmpleador = com.asopagos.enumeraciones.personas.TipoRolContactoEnum.ROL_RESPONSABLE_AFILIACIONES
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.cartera.principal">
+		<query>
+			SELECT ubiEnv.email, per.idPersona, empl.idEmpleador, ubiEnv.autorizacionEnvioEmail
+			FROM Ubicacion ubiEnv, Persona per, UbicacionEmpresa ubiE, Empresa emp, Empleador empl
+			WHERE ubiEnv.idUbicacion = ubiE.ubicacion.idUbicacion
+			AND ubiE.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND empl.empresa.idEmpresa = emp.idEmpresa
+			AND ubiE.idEmpresa = emp.idEmpresa
+			AND per.idPersona = emp.persona.idPersona 
+			AND emp.persona.idPersona = per.idPersona 
+			AND per.tipoIdentificacion=:tipoIdentificacion 
+			AND per.numeroIdentificacion=:numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.cartera.correspondencia">
+		<query>
+			SELECT ubiEnv.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubiEnv, Persona per, UbicacionEmpresa ubiE, Empresa emp, Empleador empl
+			WHERE ubiEnv.idUbicacion = ubiE.ubicacion.idUbicacion
+			AND ubiE.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.ENVIO_CORRESPONDENCIA
+			AND ubiE.idEmpresa = emp.idEmpresa
+			AND empl.empresa.idEmpresa = emp.idEmpresa
+			AND per.idPersona = emp.persona.idPersona 
+			AND per.tipoIdentificacion=:tipoIdentificacion 
+			AND per.numeroIdentificacion=:numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.envio.cartera.correspondencia">
+		<query>
+			SELECT ubiEnv.autorizacionEnvioEmail
+			FROM Ubicacion ubiEnv, Persona per, UbicacionEmpresa ubiE, Empresa emp
+			WHERE ubiEnv.idUbicacion = ubiE.ubicacion.idUbicacion
+			AND ubiE.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND ubiE.idEmpresa = emp.idEmpresa
+			AND per.idPersona = emp.persona.idPersona 
+			AND per.tipoIdentificacion=:tipoIdentificacion 
+			AND per.numeroIdentificacion=:numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.cartera.judicial">
+		<query>
+			SELECT ubiEnv.email, per.idPersona, empl.idEmpleador
+			FROM Ubicacion ubiEnv, Persona per, UbicacionEmpresa ubiE, Empresa emp, Empleador empl
+			WHERE ubiEnv.idUbicacion = ubiE.ubicacion.idUbicacion
+			AND ubiE.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.NOTIFICACION_JUDICIAL
+			AND ubiE.idEmpresa = emp.idEmpresa
+			AND empl.empresa.idEmpresa = emp.idEmpresa
+			AND per.idPersona = emp.persona.idPersona 
+			AND per.tipoIdentificacion=:tipoIdentificacion 
+			AND per.numeroIdentificacion=:numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.correspondencia.empleador">
+		<query>
+			SELECT ubi.autorizacionEnvioEmail 
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, Empleador empl, SolicitudAfiliacionEmpleador sae
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empr.idEmpresa
+			AND per.idPersona = empr.persona.idPersona
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND empl.idEmpleador = sae.idEmpleador
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND sae.solicitudGlobal.idSolicitud=:idSolicitud 
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.novedad.empleador">
+		<query>
+		SELECT ubi.autorizacionEnvioEmail FROM Ubicacion ubi
+		WHERE ubi.idUbicacion IN (SELECT ube.ubicacion.idUbicacion FROM UbicacionEmpresa ube 
+				WHERE ube.idEmpresa IN (SELECT empr.idEmpresa FROM Empresa empr 
+				WHERE empr.idEmpresa IN (SELECT empl.empresa.idEmpresa FROM Empleador empl
+				WHERE empl.idEmpleador IN (SELECT sne.idEmpleador FROM SolicitudNovedadEmpleador sne 
+				WHERE sne.idSolicitudNovedad IN(SELECT sno.idSolicitudNovedad FROM SolicitudNovedad sno 
+				WHERE sno.solicitudGlobal.idSolicitud=:idSolicitud))))
+				AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL)
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.autorizacion.gestion.preventiva">
+		<query>
+			SELECT ubi.autorizacionEnvioEmail FROM Ubicacion ubi 
+			WHERE ubi.idUbicacion IN (SELECT per.ubicacionPrincipal.idUbicacion FROM Persona per 
+			WHERE per.idPersona IN(SELECT spr.idPersona FROM SolicitudPreventiva spr 
+			WHERE spr.solicitudGlobal.idSolicitud =:idSolicitud)
+			AND per.idPersona IN (SELECT empr.persona.idPersona FROM Empresa empr 
+			WHERE empr.idEmpresa IN (SELECT ube.idEmpresa FROM UbicacionEmpresa ube 
+			WHERE ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL)))
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.empleador.afiliacion">
+		<query>
+			SELECT sae.idEmpleador
+			FROM SolicitudAfiliacionEmpleador sae
+			WHERE sae.solicitudGlobal.idSolicitud=:idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.responsable.PILA">
+		<query>
+			SELECT ubi.email, empr.idEmpresa, ubiEmp.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, RolContactoEmpleador rce, Empleador empl, Empresa empr, Persona perEmpl,
+				UbicacionEmpresa ube, Ubicacion ubiEmp
+			WHERE ubi.idUbicacion = rce.ubicacion.idUbicacion
+			AND per.idPersona = rce.persona.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empl.empresa.idEmpresa = empr.idEmpresa
+			AND empr.persona.idPersona = perEmpl.idPersona
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND rce.tipoRolContactoEmpleador =:tipoResponsabe
+			AND perEmpl.tipoIdentificacion =:tipoIdentificacion 
+			AND perEmpl.numeroIdentificacion =:numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.ubicacion.PILA">
+		<query>
+			SELECT ubi.email, empr.idEmpresa, ubiPpal.autorizacionEnvioEmail
+			FROM Ubicacion ubi, Persona per, UbicacionEmpresa ube, Empresa empr, UbicacionEmpresa ubePpal, Ubicacion ubiPpal
+			WHERE ubi.idUbicacion = ube.ubicacion.idUbicacion
+			AND ube.idEmpresa = empr.idEmpresa 
+			AND per.idPersona = empr.persona.idPersona
+			AND ubePpal.idEmpresa = empr.idEmpresa
+			AND ubePpal.ubicacion.idUbicacion = ubiPpal.idUbicacion
+			AND ubePpal.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND per.tipoIdentificacion =:tipoIdentificacion
+			AND per.numeroIdentificacion =:numeroIdentificacion
+			AND ube.tipoUbicacion =:tipoUbicacion 
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.representanteLegalSuplente.PILA">
+		<query>
+			SELECT ubi.email, empr.idEmpresa, ubiEmp.autorizacionEnvioEmail
+			FROM Persona per, Ubicacion ubi, Empresa empr, UbicacionEmpresa ube, Ubicacion ubiEmp, Persona perEmp
+			WHERE per.idPersona = empr.idPersonaRepresentanteLegalSuplente
+			AND empr.idUbicacionRepresentanteLegalSuplente = ubi.idUbicacion
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND empr.persona.idPersona = perEmp.idPersona
+			AND perEmp.tipoIdentificacion =:tipoIdentificacion 
+			AND perEmp.numeroIdentificacion =:numeroIdentificacion		
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+		</query>
+	</named-query>
+	<named-query name="Notificaciones.consultar.rolResponsable.gestionCobroManual">
+		<query>
+			SELECT ubi.email, per.idPersona, empl.idEmpleador, ubiEmp.autorizacionEnvioEmail
+			FROM Empleador empl, RolContactoEmpleador rce,Persona per, Ubicacion ubi, UbicacionEmpresa ube, Ubicacion ubiEmp, 
+				Empresa empr, Persona perEmp
+			WHERE rce.ubicacion.idUbicacion = ubi.idUbicacion
+			AND rce.persona.idPersona = per.idPersona
+			AND rce.idEmpleador = empl.idEmpleador
+			AND empr.idEmpresa = ube.idEmpresa
+			AND ube.ubicacion.idUbicacion = ubiEmp.idUbicacion
+			AND empr.persona.idPersona = perEmp.idPersona
+			AND empr.idEmpresa = empl.empresa.idEmpresa
+			AND perEmp.tipoIdentificacion =:tipoIdentificacion
+			AND perEmp.numeroIdentificacion =:numeroIdentificacion
+			AND ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+			AND rce.tipoRolContactoEmpleador =:rol
+		</query>
+	</named-query>
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="Notificaciones.consultar.tipoTransaccionPorSolicitud">
+		<description></description>
+		<query>
+			SELECT sol.solTipoTransaccion FROM Solicitud sol where sol.solId = :idSolicitud
+		</query>
+	</named-native-query>
+	<named-native-query name="Notificaciones.consultar.aportante.empleador">
+         <description>Se consulta el correo y ubicación del aportante si su solicitud es de aporte</description>
+         <query>
+			 SELECT
+				ubiEmpr.ubiEmail,
+				per.perId AS idPersona,
+				ubiEmpr.ubiAutorizacionEnvioEmail AS autorizacionEnvioEmail,
+			    empr.empId AS idEmpresa
+			FROM Persona per
+			INNER JOIN SolicitudAporte soa ON soa.soaNumeroIdentificacion = per.perNumeroIdentificacion AND soa.soaTipoIdentificacion = per.perTipoIdentificacion
+			INNER JOIN VW_EstadoAfiliacionEmpleadorCaja eac ON per.perId = eac.perId
+			LEFT JOIN Empresa empr ON empr.empPersona = per.perId
+			LEFT JOIN UbicacionEmpresa ube ON ube.ubeEmpresa = empr.empId
+			LEFT JOIN Ubicacion ubiEmpr ON ube.ubeUbicacion = ubiEmpr.ubiId
+			WHERE soa.soaSolicitudGlobal = :idSolicitud
+				AND (ube.ubeTipoUbicacion = 'UBICACION_PRINCIPAL' OR eac.empEstadoEmpleador = 'NO_FORMALIZADO_SIN_AFILIACION_CON_APORTES')
+         </query>
+     </named-native-query>
+     <named-native-query name="Notificaciones.consultar.aportante.correccion.empleador">
+         <description>Se consulta el correo y ubicación del aportante si su solicitud es de corrección de aportes</description>
+         <query>
+			SELECT
+				ubiEmpr.ubiEmail,
+				per.perId AS idPersona,
+				ubiEmpr.ubiAutorizacionEnvioEmail AS autorizacionEnvioEmail,
+			    empr.empId AS idEmpresa
+			FROM Persona per
+			INNER JOIN SolicitudCorreccionAporte sca ON sca.scaPersona = per.perId
+			INNER JOIN VW_EstadoAfiliacionEmpleadorCaja eac ON per.perId = eac.perId
+			LEFT JOIN Empresa empr ON empr.empPersona = per.perId
+			LEFT JOIN UbicacionEmpresa ube ON ube.ubeEmpresa = empr.empId
+			LEFT JOIN Ubicacion ubiEmpr ON ube.ubeUbicacion = ubiEmpr.ubiId
+			WHERE sca.scaSolicitudGlobal = :idSolicitud
+				AND (ube.ubeTipoUbicacion = 'UBICACION_PRINCIPAL' OR eac.empEstadoEmpleador = 'NO_FORMALIZADO_SIN_AFILIACION_CON_APORTES')
+         </query>
+     </named-native-query>
+     <named-native-query name="Notificaciones.consultar.aportante.devolucion.empleador">
+         <description>Se consulta el correo y ubicación del aportante si su solicitud es de devolución de aportes</description>
+         <query>
+			SELECT
+				ubiEmpr.ubiEmail,
+				per.perId AS idPersona,
+			    ubiEmpr.ubiAutorizacionEnvioEmail AS autorizacionEnvioEmail,
+			    empr.empId AS idEmpresa
+			FROM Persona per
+			INNER JOIN SolicitudDevolucionAporte sda ON sda.sdaPersona = per.perId
+			INNER JOIN VW_EstadoAfiliacionEmpleadorCaja eac ON per.perId = eac.perId
+			LEFT JOIN Empresa empr ON empr.empPersona = per.perId
+			LEFT JOIN UbicacionEmpresa ube ON ube.ubeEmpresa = empr.empId
+			LEFT JOIN Ubicacion ubiEmpr ON ube.ubeUbicacion = ubiEmpr.ubiId
+			WHERE sda.sdaSolicitudGlobal = :idSolicitud
+				AND (ube.ubeTipoUbicacion = 'UBICACION_PRINCIPAL' OR eac.empEstadoEmpleador = 'NO_FORMALIZADO_SIN_AFILIACION_CON_APORTES')
+         </query>
+     </named-native-query>
+     <named-native-query name="Notificaciones.consultar.estado.afiliacion.persona">
+		<description>Se consulta el estado de afiliacion de una persona</description>
+		<query>
+			SELECT
+				eapi.roaEstadoAfiliado AS estadoIndependiente,
+				eapp.roaEstadoAfiliado AS estadoPensionado
+			FROM Persona per
+			LEFT JOIN VW_EstadoAfiliacionPersonaIndependiente eapi ON eapi.perId = per.perId
+			LEFT JOIN VW_EstadoAfiliacionPersonaPensionado eapp ON eapp.perId = per.perId
+			WHERE per.perId = :idPersona
+		</query>
+	 </named-native-query>
+	 <named-native-query name="Notificaciones.consultar.estado.afiliacion.empleador">
+		<description>Se consulta el estado de afiliacion de un empleador</description>
+		<query>
+			SELECT
+				empEstadoEmpleador
+			FROM VW_EstadoAfiliacionEmpleadorCaja
+			WHERE perId = :idPersona
+		</query>
+	 </named-native-query>
+	 <named-native-query name="Notificaciones.consultar.aportante.persona">	
+		<query>
+			SELECT DISTINCT
+				ubi.ubiEmail,
+				per.perId AS idPersona,
+			    ubi.ubiAutorizacionEnvioEmail AS autorizacionEnvioEmail
+			FROM Persona per
+			INNER JOIN SolicitudAporte soa ON soa.soaTipoIdentificacion = per.perTipoIdentificacion AND soa.soaNumeroIdentificacion = per.perNumeroIdentificacion
+			LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+			WHERE soa.soaSolicitudGlobal = :idSolicitud
+		</query>
+	 </named-native-query>
+	 <named-native-query name="Notificaciones.consultar.aportante.correccion.persona">
+		<query>
+			SELECT DISTINCT
+				ubi.ubiEmail,
+				per.perId AS idPersona,
+				ubi.ubiAutorizacionEnvioEmail AS autorizacionEnvioEmail
+			FROM Persona per
+			INNER JOIN SolicitudCorreccionAporte sca ON sca.scaPersona = per.perId
+			LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+			WHERE sca.scaSolicitudGlobal = :idSolicitud
+				AND sca.scaTipoSolicitante = 'INDEPENDIENTE' OR sca.scaTipoSolicitante = 'PENSIONADO'
+		</query>
+	 </named-native-query>
+	 <named-native-query name="Notificaciones.consultar.aportante.devolucion.persona">
+		<query>
+			SELECT DISTINCT
+				ubi.ubiEmail,
+				per.perId AS idPersona,
+				ubi.ubiAutorizacionEnvioEmail AS autorizacionEnvioEmail
+			FROM Persona per
+			INNER JOIN SolicitudDevolucionAporte sda ON sda.sdaPersona = per.perId
+			LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+			WHERE sda.sdaSolicitudGlobal = :idSolicitud
+				AND sda.sdaTipoSolicitante = 'INDEPENDIENTE' OR sda.sdaTipoSolicitante = 'PENSIONADO'
+		</query>
+	</named-native-query>
+	<named-native-query name="Notificaciones.consultar.texto.auditoria.respuesta.seven">
+		<query>
+			SELECT  COUNT(*) as total,(select COUNT(*) from seven.RegistroAuditoriaERP where CONVERT(date,raeFechaEnvioERP) = CONVERT(date,dbo.GetLocalDate()) and raeResultadoEjecucionERP=0) as correctos,
+			(select COUNT(*) from seven.RegistroAuditoriaERP where CONVERT(date,raeFechaEnvioERP) = CONVERT(date,(dbo.GetLocalDate())) and raeResultadoEjecucionERP =1) as errores
+			 from seven.RegistroAuditoriaERP where CONVERT(date,raeFechaEnvioERP) = CONVERT(date, dbo.GetLocalDate())
+		</query>
+	</named-native-query>
+	<named-native-query name="Notificaciones.consultar.archivo.adjunto">
+		<query>
+			SELECT pcoArchivoAdjunto FROM PlantillaComunicado
+			WHERE pcoEtiqueta = :pcoEtiqueta
+		</query>
+	</named-native-query>
+	<named-native-query name="Notificaciones.obtener.numero.identificacion.empresa.cartera">
+		<query>
+			SELECT per.perNumeroIdentificacion FROM Empleador empl
+			INNER JOIN Empresa emp ON emp.empId = empl.empEmpresa
+			INNER JOIN Persona per ON per.perId = emp.empPersona
+			WHERE empl.empId = :idEmpleador
+		</query>
+	</named-native-query>
+</entity-mappings>

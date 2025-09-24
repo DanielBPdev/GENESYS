@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<!-- ESPACIO PARA NATIVE QUERIES -->	
+	<named-native-query name="Afiliados.transversal.aud.buscarValorSalarioMinimoEnPeriodo">
+		<query>
+			select top(1)
+				prmValor, 
+				prmNombre 
+			from parametro_aud prm
+			join revision on prm.rev = revId
+			where prmNombre = 'SMMLV'
+			and revTimeStamp &lt;= :periodo
+			order by revTimeStamp desc
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Historicos.Consultar.EstadosBeneficiario">
+		<query>
+			SELECT CONVERT(VARCHAR,DATEADD(SECOND, revTimeStamp / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time',23), benEstadoBeneficiarioAfiliado
+			FROM Beneficiario_aud
+			JOIN Revision ON revId = rev
+			WHERE benId IN (:idBeneficiario)
+			ORDER BY revId ASC
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Historicos.consultarFechaCreacionCertificadoEscolar">
+		<query>
+			SELECT TOP 1 CONVERT(VARCHAR,DATEADD(SECOND, revTimeStamp / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time',23)
+			FROM CertificadoEscolarBeneficiario_aud
+			JOIN Revision ON revId = rev
+			WHERE cebId = :idCertificado
+			ORDER BY revId ASC
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliaciones.Consultar.RolesAfiliados.Auditoria">
+		<query>
+			SELECT CONVERT(VARCHAR,DATEADD(SECOND, revTimeStamp / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time',21) fechaAuditoria, roaEstadoAfiliado
+			FROM RolAfiliado_aud
+			JOIN revision on rev=revid
+		 	WHERE roaId = :rolAfiliadoId
+			ORDER BY revid ASC
+		</query>
+	</named-native-query>
+</entity-mappings>

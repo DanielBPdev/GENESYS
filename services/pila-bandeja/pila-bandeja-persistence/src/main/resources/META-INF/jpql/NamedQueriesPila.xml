@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<!-- Consultas con #planilla -->
+	<named-query name="PilaBandejaService.PilaErrorValidacionLog.BusquedaConArgumentosIPlanilla">
+		<description>Busca todas las planillas con inconvenientes que sean de tipo I restringidas por numero de planilla</description>
+		<query>
+             SELECT new com.asopagos.bandejainconsistencias.dto.InconsistenciaDTO(
+             	registro.fechaProceso, 
+             	registro.idPlanilla, 
+             	registro.nombreArchivo,
+             	registro.tipoArchivo,
+             	COUNT(registro),
+             	registro.estadoArchivo,
+             	registro.id,
+				(	SELECT f.nombreArchivo 
+					FROM IndicePlanillaOF f, PilaArchivoFRegistro6 f6
+					WHERE f.id = f6.indicePlanilla
+					AND f6.numeroPlanilla = registro.idPlanilla
+					AND f.fechaProceso = ( SELECT MAX(f1.fechaProceso) 
+						FROM IndicePlanillaOF f1, PilaArchivoFRegistro6 f61
+						WHERE f1.id = f61.indicePlanilla
+						AND f61.numeroPlanilla = registro.idPlanilla )					
+				),
+				(	SELECT f9.valorTotalRecaudo
+					FROM IndicePlanillaOF f, PilaArchivoFRegistro9 f9, PilaArchivoFRegistro6 f6
+					WHERE f.id = f9.indicePlanilla
+					AND f.id = f6.indicePlanilla
+					AND f6.numeroPlanilla = registro.idPlanilla
+					AND f.fechaProceso = ( SELECT MAX(f1.fechaProceso) 
+						FROM IndicePlanillaOF f1, PilaArchivoFRegistro6 f61
+						WHERE f1.id = f61.indicePlanilla
+						AND f61.numeroPlanilla = registro.idPlanilla  )					
+				) 
+            ) 
+            FROM IndicePlanilla registro ,ErrorValidacionLog error
+            WHERE  registro.id = error.idIndicePlanilla 
+            AND error.estadoInconsistencia = com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION
+            AND error.bloqueValidacion != com.asopagos.enumeraciones.pila.BloqueValidacionEnum.BLOQUE_4_OI
+            AND registro.idPlanilla = :numeroPlanilla
+            GROUP BY registro.fechaProceso, registro.idPlanilla, registro.nombreArchivo,
+            	registro.tipoArchivo,registro.estadoArchivo,registro.id
+        </query>
+	</named-query>
+
+	<!-- Consulta para establecer las pestañas del detalle -->
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.PestanasDetalle">
+		<description>Consulta para determinar las pestañas que estaran activas en la vista de detalle de la bandeja de inconsistencias</description>
+		<query>
+            SELECT error.bloqueValidacion
+            FROM IndicePlanilla indice ,ErrorValidacionLog error
+            WHERE  error.idIndicePlanilla = indice.id
+            AND indice.id = :idIndicePlanilla
+            AND error.estadoInconsistencia = :estadoInconsistencia
+            GROUP BY error.bloqueValidacion
+        </query>
+	</named-query>
+
+	<!-- Consulta para la lista de errores por cada tipo de inconsistencias -->
+    <named-query
+        name="PilaBandejaService.PilaErrorValidacionLog.PestañasInconsistenciasDetalle.total">
+        <description>Busca todos los tipos de ciertos errores de una planilla </description>
+        <query>
+            SELECT COUNT(*)
+            FROM IndicePlanilla indice, ErrorValidacionLog error
+            WHERE error.idIndicePlanilla = indice.id
+            AND indice.id = :idIndicePlanilla
+            AND error.bloqueValidacion IN (:bloque)
+            AND error.tipoError != com.asopagos.enumeraciones.pila.TipoErrorValidacionEnum.TIPO_0
+            AND error.estadoInconsistencia != com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.INCONSISTENCIA_GESTIONADA
+        </query>
+    </named-query>
+    
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.PestañasInconsistenciasDetalle">
+		<description>Busca todos los tipos de ciertos errores de una planilla </description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.InconsistenciaDTO(
+				error.id,indice.nombreArchivo,error.numeroLinea,
+				error.nombreCampo,error.posicionInicial,error.posicionFinal,error.valorCampo,
+				error.tipoError,error.codigoError,indice.id,indice.tipoArchivo,
+				indice.idPlanilla,error.bloqueValidacion,
+				error.mensajeError,error.estadoInconsistencia)
+			FROM IndicePlanilla indice, ErrorValidacionLog error
+			WHERE error.idIndicePlanilla = indice.id
+			AND indice.id = :idIndicePlanilla
+			AND error.bloqueValidacion IN (:bloque)
+			AND error.tipoError != com.asopagos.enumeraciones.pila.TipoErrorValidacionEnum.TIPO_0
+			AND error.estadoInconsistencia != com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.INCONSISTENCIA_GESTIONADA
+        </query>
+        <hint name="idError" value="error.id" />
+	</named-query>
+
+	<!-- Consulta para establecer las pestañas del detalle -->
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.PestanasDetalleF">
+		<description>Consulta para determinar las pestañas que estaran activas en la vista de detalle de la bandeja de inconsistencias</description>
+		<query>
+              SELECT error.bloqueValidacion
+            FROM IndicePlanillaOF indice ,ErrorValidacionLog error
+            WHERE  error.idIndicePlanillaOF = indice.id
+            AND indice.id = :idIndicePlanilla
+            GROUP BY error.bloqueValidacion
+          
+        </query>
+	</named-query>
+
+
+	<!-- Consulta para la lista de errores por cada tipo de inconsistencias -->
+    <named-query
+        name="PilaBandejaService.PilaErrorValidacionLog.PestañasInconsistenciasDetalleF.total">
+        <description>Busca todos los tipos de ciertos errores de una planilla </description>
+        <query>
+			SELECT COUNT(*)
+			FROM IndicePlanillaOF indice ,ErrorValidacionLog error
+			WHERE error.idIndicePlanillaOF = indice.id
+			AND indice.id = :idIndicePlanilla
+			AND error.bloqueValidacion = :bloque
+			AND error.tipoError != com.asopagos.enumeraciones.pila.TipoErrorValidacionEnum.TIPO_0
+			AND error.estadoInconsistencia != com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.INCONSISTENCIA_GESTIONADA
+        </query>
+    </named-query>
+    
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.PestañasInconsistenciasDetalleF">
+		<description>Busca todos los tipos de ciertos errores de una planilla </description>
+		<query>
+              SELECT new com.asopagos.bandejainconsistencias.dto.InconsistenciaDTO(error.id,indice.nombreArchivo,error.numeroLinea,
+              error.nombreCampo,error.posicionInicial,error.posicionFinal,error.valorCampo,error.tipoError,error.codigoError,indice.id,indice.tipoArchivo,error.bloqueValidacion,error.mensajeError)
+            FROM IndicePlanillaOF indice ,ErrorValidacionLog error
+            WHERE  error.idIndicePlanillaOF = indice.id
+            AND indice.id = :idIndicePlanilla
+            AND error.bloqueValidacion = :bloque
+            AND error.tipoError != com.asopagos.enumeraciones.pila.TipoErrorValidacionEnum.TIPO_0
+            AND error.estadoInconsistencia != com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.INCONSISTENCIA_GESTIONADA
+        </query>
+        <hint name="idError" value="error.id" />
+	</named-query>
+
+	<!-- Consulta para obtener el nombre del archivo -->
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ListarArchivosAsociadosOF">
+		<description>Busca un archivo OF asociado a una planilla </description>
+		<query>
+            SELECT indice
+            FROM IndicePlanillaOF indice
+            WHERE  indice.id= :idIndicePlanilla        
+        </query>
+	</named-query>
+
+	<!-- Consulta para obtener el nombre del archivo de los archivos -->
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ListarArchivosAsociados">
+		<description>Busca una planilla asociada al tipo y numero de planilla </description>
+		<query>
+            SELECT indice
+            FROM IndicePlanilla indice
+            WHERE  indice.idPlanilla= :numeroPlanilla
+            AND indice.tipoArchivo= :tipoArchivo
+			AND indice.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+			AND indice.codigoOperadorInformacion = :operadorInformacion
+  
+          
+        </query>
+	</named-query>
+		<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ListarArchivosAsociados.2">
+		<description>Busca una planilla asociada al tipo y numero de planilla </description>
+		<query>
+            SELECT indice
+            FROM IndicePlanilla indice
+            WHERE  indice.idPlanilla= :numeroPlanilla
+            AND indice.tipoArchivo= :tipoArchivo
+			AND indice.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+			AND (indice.nombreArchivo = :nombreArchivo
+				OR indice.nombreArchivo = :nombreArchivoPar)
+  
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ListarArchivosAsociadosNombreA">
+		<description>Busca una planilla asociada al tipo y numero de planilla </description>
+		<query>
+            SELECT indice.nombreArchivo
+            FROM IndicePlanilla indice
+            WHERE  indice.idPlanilla= :numeroPlanilla
+            AND indice.tipoArchivo IN (
+            	com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_A,
+            	com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_AR,
+            	 com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_APR,
+            	 com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_AP)
+            AND indice.registroActivo = true
+  
+          
+        </query>
+	</named-query>
+
+	<!-- Consulta para anular una planilla -->
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ObtenerIdPlanillas">
+		<description>obtiene todos los id asociados a un numero de planilla </description>
+		<query>
+            SELECT indice.id
+            FROM IndicePlanilla indice 
+            WHERE indice.idPlanilla= :numeroPlanilla
+            AND indice.registroActivo = true
+			AND indice.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+        </query>
+	</named-query>
+		<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ObtenerIdPlanillas.por.operadorInformacion">
+		<description>obtiene todos los id asociados a un numero de planilla </description>
+		<query>
+            SELECT indice.id
+            FROM IndicePlanilla indice 
+            WHERE indice.idPlanilla= :numeroPlanilla
+            AND indice.registroActivo = true
+			AND indice.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+			AND codigoOperadorInformacion = :operadorInformacion
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ObtenerIndicePlanillas">
+		<description>Obtiene la planilla segun su id </description>
+		<query>
+            SELECT indice
+            FROM IndicePlanilla indice 
+            WHERE indice.id=:idIndicePlanilla
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaIndicePlanilla.AnularIndicePlanilla">
+		<description>Anular indices de planilla</description>
+		<query>
+			UPDATE IndicePlanilla i
+			SET i.registroActivo = :registroActivo,
+				i.estadoArchivo = :estado,
+				i.fechaEliminacion = :fechaEliminacion,
+				i.usuarioEliminacion = :usuarioEliminacion
+			WHERE i.id IN (
+				SELECT DISTINCT i1.id
+				FROM IndicePlanilla i1, ErrorValidacionLog e
+				WHERE i1.id = e.idIndicePlanilla				
+				AND e.bloqueValidacion IN ( :bloquesValidacion )
+				AND e.estadoInconsistencia IN (
+					com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION )
+				AND i1.idPlanilla = :numeroPlanilla
+			)
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ActualizarErrorValidacionLog">
+		<description>Actualizar el error validacion al anular una planilla</description>
+		<query>
+			UPDATE ErrorValidacionLog e
+			SET e.estadoInconsistencia = :estadoInconsistencia
+			WHERE e.id IN (
+				SELECT DISTINCT e1.id
+				FROM IndicePlanilla i, ErrorValidacionLog e1
+				WHERE i.id = e1.idIndicePlanilla
+				AND e1.bloqueValidacion IN ( :bloquesValidacion )
+				AND e1.estadoInconsistencia IN (
+					com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION )					
+				AND i.id = :idIndicePlanilla				
+			)
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ActualizarErrorValidacionLogOF">
+		<description>Actualizar el error validacion al anular una planilla OF</description>
+		<query>
+			UPDATE ErrorValidacionLog e
+			SET e.estadoInconsistencia = :estadoInconsistencia
+			WHERE e.id IN (
+				SELECT DISTINCT e1.id
+				FROM IndicePlanillaOF i, ErrorValidacionLog e1
+				WHERE i.id = e1.idIndicePlanillaOF
+				AND e1.bloqueValidacion IN ( :bloquesValidacion )
+				AND e1.estadoInconsistencia IN (
+					com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION )					
+				AND i.id = :idPlanillaOF				
+			)
+		</query>
+	</named-query>
+
+
+	<named-query name="PilaBandejaService.PilaEstadoBloque.BuscarEstadoBloqueIdPlanilla">
+		<description></description>
+		<query>
+			SELECT b
+			FROM EstadoArchivoPorBloque b LEFT JOIN FETCH b.indicePlanilla i
+			WHERE i.id IN (:idIndicePlanilla)
+			AND i.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+		</query>
+	</named-query>
+
+	<!-- Consulta para anular una planillaOF -->
+	<named-query
+		name="PilaBandejaService.PilaArchivoFRegistro6.ObtenerIdPlanillasOF">
+		<description>Se obtienen el id de las planillas por medio de el numero de planilla </description>
+		<query>
+			SELECT fr6.indicePlanilla.id
+			FROM PilaArchivoFRegistro6 fr6
+			WHERE fr6.numeroPlanilla = :numeroPlanilla
+            AND fr6.estadoConciliacion = com.asopagos.enumeraciones.pila.EstadoConciliacionArchivoFEnum.REGISTRO_6_CONCILIADO
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaArchivoFRegistro6.ObtenerTotalRegistro6ArchivoF">
+		<description></description>
+		<query>
+			SELECT COUNT(fr6)
+			FROM PilaArchivoFRegistro6 fr6
+			WHERE fr6.numeroPlanilla = :numeroPlanilla
+			AND fr6.idAportante = :idAportante
+			AND fr6.codOperadorInformacion = :codigoOI
+			AND fr6.periodoPago = :periodo
+			AND fr6.estadoConciliacion NOT IN (:estadoConciliacion)
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaArchivoFRegistro6.ConsultarRegistros6">
+		<query>
+			SELECT fr6
+			FROM PilaArchivoFRegistro6 fr6
+			WHERE fr6.indicePlanilla IN (
+				SELECT pr6.indicePlanilla
+				FROM PilaArchivoFRegistro6 pr6
+				WHERE pr6.numeroPlanilla = :numeroPlanilla
+				AND CAST(pr6.codOperadorInformacion AS java.lang.Short) = :codigoOI
+				AND pr6.periodoPago = :periodo
+				AND pr6.estadoConciliacion != com.asopagos.enumeraciones.pila.EstadoConciliacionArchivoFEnum.REGISTRO_6_ANULADO
+			)
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ObtenerIndicePlanillasOF">
+		<description>obtiene todos los indices OF segun su id </description>
+		<query>
+            SELECT indice
+            FROM IndicePlanillaOF indice 
+            WHERE indice.id=:idIndicePlanilla
+        </query>
+	</named-query>
+
+	<!-- Consultas para HU 411 -->
+	<named-query
+		name="PilaBandejaService.PilaArchivoAPRegistro1.BusquedaConIdPlanillaAP">
+		<description>Busca todas las planillas que sean AP</description>
+		<query>
+             SELECT registroap
+             FROM PilaArchivoAPRegistro1 registroap
+             WHERE registroap.indicePlanilla.id= :idIndicePlanilla
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaArchivoARegistro1.BusquedaConIdPlanillaA">
+		<description>Busca todas las planillas que sean A</description>
+		<query>
+             SELECT registroa
+             FROM PilaArchivoARegistro1 registroa
+             WHERE registroa.indicePlanilla.id= :idIndicePlanilla
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaArchivoIPRegistro1.BusquedaConIdPlanillaIP">
+		<description>Busca todas las planillas que sean IP</description>
+		<query>
+             SELECT registroip
+             FROM PilaArchivoIPRegistro1 registroip
+             WHERE registroip.indicePlanilla.id= :idIndicePlanilla
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaArchivoIRegistro1.BusquedaConIdPlanillaI">
+		<description>Busca todas las planillas que sean I</description>
+		<query>
+             SELECT registroi
+             FROM PilaArchivoIRegistro1 registroi
+             WHERE registroi.indicePlanilla.id= :idIndicePlanilla
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaArchivoFRegistro6.BusquedaConIdPlanillaF">
+		<description>Busca todas las planillas que sean F asociadas a una planilla</description>
+		<query>
+             SELECT registrof
+             FROM PilaArchivoFRegistro6 registrof
+             WHERE registrof.indicePlanilla.id= :idIndicePlanilla
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaArchivoFRegistro6.BusquedaConPlanillaF">
+		<description>Busca todas las planillas que sean F</description>
+		<query>
+             SELECT registrof
+             FROM PilaArchivoFRegistro6 registrof LEFT JOIN FETCH registrof.indicePlanilla
+             WHERE registrof.numeroPlanilla= :numeroPlanilla
+             AND CAST(registrof.codOperadorInformacion AS java.lang.Short) = :codOperadorInformacion
+             AND registrof.periodoPago = :periodoPago
+             AND (
+             	registrof.estadoConciliacion IS NULL 
+             	OR registrof.estadoConciliacion = com.asopagos.enumeraciones.pila.EstadoConciliacionArchivoFEnum.REGISTRO_6_CONCILIADO
+             )
+        </query>
+	</named-query>
+
+	<named-query name="PilaBandejaService.PilaEstadoBloque.BusquedaBloqueIndice">
+		<description>Busca el bloque asociado a una planilla</description>
+		<query>
+             SELECT bloqueInformacion 
+             FROM EstadoArchivoPorBloque bloqueInformacion
+             WHERE bloqueInformacion.indicePlanilla.id= :idIndicePlanilla
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaEstadoBloqueOF.BusquedaBloqueIndiceOF">
+		<description>Busca los bloques asociados a una planilla financiera</description>
+		<query>
+             SELECT bloqueInformacion 
+             FROM EstadoArchivoPorBloqueOF bloqueInformacion
+             WHERE bloqueInformacion.indicePlanillaOF.id= :idIndicePlanilla
+        </query>
+	</named-query>
+
+	<!-- Espacio para pantalla de busqueda de HU 411 -->
+
+	<named-query
+		name="PilaBandejaService.Solicitud.BusquedaSolicitudPlanillaFechaInicioFechaFin">
+		<description>Busca todas las solicitudes restringidas por el numero de planilla,fecha inicio y fin</description>
+		<query>
+             SELECT solicitud 
+             FROM SolicitudCambioNumIdentAportante solicitud
+             WHERE solicitud.fechaSolicitud &gt;= :fechaInicio
+             AND solicitud.fechaSolicitud &lt;= :fechaFin
+             AND solicitud.indicePlanilla.idPlanilla= :numeroPlanilla
+          
+        </query>
+	</named-query>
+
+
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.BusquedaErrorValidacion">
+		<description>Busca un error por su id</description>
+		<query>
+            SELECT error 
+            FROM ErrorValidacionLog error
+            WHERE error.id= :idErrorValidacion
+            AND error.estadoInconsistencia IN ( 
+            	com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION,
+            	com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_POR_APROBACION
+           	)
+           	AND (:bloque IS NULL OR error.bloqueValidacion = :bloque)
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaArchivoARegistro1.BusquedaRegistroA">
+		<description>Busca un registro A por su id de planilla</description>
+		<query>
+			SELECT ar1
+			FROM PilaArchivoARegistro1 ar1, IndicePlanilla i
+			WHERE  i.id = ar1.indicePlanilla.id
+			AND i.idPlanilla = :numeroPlanilla
+			AND i.tipoArchivo = :tipoArchivoA
+			AND i.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+			AND i.codigoOperadorInformacion =  :operadorInformacion
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaArchivoARegistro1.BusquedaRegistroAP">
+		<description>Busca un registro AP por su id de planilla</description>
+		<query>
+			SELECT apr1
+			FROM PilaArchivoAPRegistro1 apr1, IndicePlanilla i
+			WHERE  i.id = apr1.indicePlanilla.id
+			AND i.idPlanilla = :numeroPlanilla
+			AND i.tipoArchivo = :tipoArchivoA  
+			AND i.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO        
+        </query>
+	</named-query>
+
+	<named-query name="PilaBandejaService.PilaIndicePlanilla.EliminarVariablesDePaso">
+		<description>Sentencia para solicitar el borrado de las variables almacenadas para paso entre bloques</description>
+		<query>
+			DELETE FROM PasoValores var 
+			WHERE var.idPlanilla = :numeroPlanilla
+		</query>
+	</named-query>
+
+	<named-query name="PilaBandejaService.CrearAportante.BusquedaIdArchivoI">
+		<description>Busca el id de la pareja de un archivo a partir del número de 
+		planilla y el tipo de archivo deseado</description>
+		<query>
+			SELECT i 
+			FROM IndicePlanilla i
+			WHERE i.id = :idPlanilla
+			AND i.tipoArchivo = :tipoArchivo
+			AND i.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.CrearAportante.BuscarErrorValidacionLogPlanilla">
+		<description>Buscar el error log validacion asociado al id de planilla</description>
+		<query>
+			SELECT e
+			FROM ErrorValidacionLog e
+			WHERE e.bloqueValidacion IN (
+				com.asopagos.enumeraciones.pila.BloqueValidacionEnum.BLOQUE_5_OI )
+			AND e.idIndicePlanilla = :idPlanilla
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.CrearAportante.BuscarEstadoBloquePlanilla">
+		<description> Buscar el estado por bloque para un archivo </description>
+		<query>
+			SELECT b
+			FROM EstadoArchivoPorBloque b
+			WHERE b.estadoBloque5 IN (
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.APORTANTE_NO_CREADO_EN_BD,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_APROBAR, 
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECHAZADO)
+			AND b.indicePlanilla.id = :idPlanilla
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.SolicitudCambioNumIdentAportante.ConteoReprocesos">
+		<description>retorna el conteo de reprocesos sobre una planilla</description>
+		<query>
+             SELECT count(registro.indicePlanilla) 
+             FROM SolicitudCambioNumIdentAportante registro
+             WHERE registro.indicePlanilla.id= :idPlanilla
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.SolicitudCambioNumIdentAportante.BusquedaFechaInicioFinPlanilla">
+		<description>Busca todas las solicitudes de cambio de identificacion</description>
+		<query>
+             SELECT registro 
+             FROM SolicitudCambioNumIdentAportante registro LEFT JOIN FETCH registro.indicePlanilla indice
+             WHERE indice.idPlanilla= :numeroPlanilla
+             AND registro.fechaSolicitud &gt;= :fechaInicio
+             AND registro.fechaSolicitud &lt;= :fechaFin
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.SolicitudCambioNumIdentAportante.BusquedaFechaInicioFin">
+		<description>Busca todas las solicitudes de cambio de identificacion</description>
+		<query>
+             SELECT registro 
+             FROM SolicitudCambioNumIdentAportante registro LEFT JOIN FETCH registro.indicePlanilla indice
+             WHERE registro.fechaSolicitud &gt;= :fechaInicio
+             AND registro.fechaSolicitud &lt;= :fechaFin
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.SolicitudCambioNumIdentAportante.BusquedaFechaFinPlanilla">
+		<description>Busca todas las solicitudes de cambio de identificacion</description>
+		<query>
+             SELECT registro 
+             FROM SolicitudCambioNumIdentAportante registro LEFT JOIN FETCH registro.indicePlanilla indice
+             WHERE indice.idPlanilla= :numeroPlanilla
+             AND registro.fechaSolicitud &lt;= :fechaFin
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.SolicitudCambioNumIdentAportante.BusquedaFechaFin">
+		<description>Busca todas las solicitudes de cambio de identificacion</description>
+		<query>
+             SELECT registro 
+             FROM SolicitudCambioNumIdentAportante registro LEFT JOIN FETCH registro.indicePlanilla indice
+             WHERE indice.idPlanilla= :numeroPlanilla
+             AND registro.fechaSolicitud &lt;= :fechaFin
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.SolicitudCambioNumIdentAportante.BusquedaPlanilla">
+		<description>Busca todas las solicitudes de cambio de identificacion</description>
+		<query>
+             SELECT registro 
+             FROM SolicitudCambioNumIdentAportante registro 
+             LEFT JOIN FETCH registro.indicePlanilla indice
+             WHERE indice.idPlanilla= :numeroPlanilla
+        </query>
+	</named-query>
+
+	<named-native-query name="PilaBandejaService.PilaErrorValidacionLog.ConteoInconsistencias">
+		<description>retorna el conteo de reprocesos sobre una planilla</description>
+		<query>
+            SELECT SUM(cantidad)
+			FROM (
+			    SELECT COUNT(*) cantidad
+			    FROM PilaIndicePlanilla
+			    INNER JOIN (
+			        SELECT pevIndicePlanilla, count(*) registros
+			        FROM PilaErrorValidacionLog 
+			        WHERE pevBloqueValidacion != 'BLOQUE_4_OI'
+			        AND pevTipoError != 'TIPO_0'
+                    AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+			        GROUP BY pevIndicePlanilla
+			    ) AS inc ON inc.pevIndicePlanilla = pipId
+			    WHERE pipEstadoArchivo IN (:estadosOI)
+			    UNION
+			    SELECT COUNT(*) cantidad
+			    FROM PilaIndicePlanillaOF
+			    LEFT JOIN PilaArchivoFRegistro6 ON pf6IndicePlanillaOF = pioId
+			    WHERE pioEstadoArchivo IN (:estadosOF)
+			        OR pf6EstadoConciliacion IN (:estadosF6)
+			) AS T
+        </query>
+	</named-native-query>
+
+	<named-native-query name="PilaBandejaService.PilaErrorValidacionLog.ConteoInconsistenciasTotal">
+		<description>retorna el conteo de reprocesos sobre una planilla</description>
+		<query>
+			SELECT SUM(cantidad)from(
+				SELECT count(*) cantidad FROM PilaIndicePlanilla
+					INNER JOIN (
+						SELECT pevIndicePlanilla, pevBloqueValidacion, count(*) registros
+						FROM (
+							SELECT MAX(pevId) ultId, pevIndicePlanilla, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+							FROM PilaErrorValidacionLog 
+							WHERE pevBloqueValidacion != 'BLOQUE_4_OI'
+							AND pevTipoError != 'TIPO_0'
+			    	        AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+							GROUP BY pevIndicePlanilla, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+						) AS T
+						GROUP BY pevIndicePlanilla, pevBloqueValidacion
+					) AS inc ON inc.pevIndicePlanilla = pipId
+					LEFT JOIN (
+						SELECT CAST(f6.pf6NumeroPlanilla AS BIGINT) numPlanilla, f.pioNombreArchivo, f9.pf9ValorTotalRecaudo 
+						FROM PilaIndicePlanillaOF f
+						INNER JOIN PilaArchivoFRegistro6 f6 ON f.pioId = f6.pf6IndicePlanillaOF 
+						INNER JOIN PilaArchivoFRegistro9 f9 ON f.pioId = f9.pf9IndicePlanillaOF
+						INNER JOIN (SELECT MAX(f1.pioFechaProceso) maxPio,CAST(f61.pf6NumeroPlanilla AS BIGINT) pf6NumeroPlanilla
+							FROM PilaIndicePlanillaOF f1, PilaArchivoFRegistro6 f61
+							WHERE f1.pioId = f61.pf6IndicePlanillaOF
+							GROUP BY CAST(f61.pf6NumeroPlanilla AS BIGINT)) maxPl ON maxPl.maxPio = f.pioFechaProceso
+																				AND maxPl.pf6NumeroPlanilla = CAST(f6.pf6NumeroPlanilla AS BIGINT)
+					) AS fin ON fin.numPlanilla = CAST(pipIdPlanilla AS BIGINT)
+				WHERE 1 = 1 
+				AND pipEstadoArchivo IN (:estados)
+				UNION 
+				SELECT COUNT(*)cantidad FROM PilaIndicePlanillaOF
+				INNER JOIN (
+				    SELECT pevIndicePlanillaOF, pevBloqueValidacion, COUNT(*) registros
+				    FROM (
+				        SELECT MAX(pevId) ultId, pevIndicePlanillaOF, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+				        FROM PilaErrorValidacionLog 
+				        WHERE pevTipoError != 'TIPO_0'
+				        AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+				        GROUP BY pevIndicePlanillaOF, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+				    ) AS T
+				    GROUP BY pevIndicePlanillaOF, pevBloqueValidacion
+				) AS inc ON inc.pevIndicePlanillaOF = pioId
+				LEFT JOIN PilaArchivoFRegistro6 ON pf6IndicePlanillaOF = pioId
+				WHERE 1 = 1
+				AND (pioEstadoArchivo IN (:estadosOF)
+				    OR pf6EstadoConciliacion IN (:estadosF6)))AS T 		   
+        </query>
+	</named-native-query>
+
+	<named-query name="PilaBandejaService.SolicitudCambioNumIdentAportante.ConteoInconsistenciasIdentificacion">
+		<description>retorna el conteo de reprocesos sobre una planilla</description>
+		<query>
+             SELECT count(registro) 
+             FROM SolicitudCambioNumIdentAportante registro
+             WHERE registro.accionCorreccion = com.asopagos.enumeraciones.pila.AccionCorreccionPilaEnum.REGISTRAR_SOLICITUD_CAMBIO_IDENTIFICACION
+          
+        </query>
+	</named-query>
+
+	<!-- CONSULTAS HU 399 -->
+	<named-query
+		name="PilaBandejaService.EstadoArchivoPorBloque.consultarEstadoArchivoPorBloqueConIdPlanilla">
+		<description>Consulta el registro de EstadoArchivoPorBloque de planilla</description>
+		<query>
+			SELECT estadoArchivoBloque
+            FROM EstadoArchivoPorBloque estadoArchivoBloque 
+            WHERE EstadoArchivoBloque.indicePlanilla.id = :idIndicePlanilla
+        </query>
+	</named-query>
+	<!-- FIN CONSULTAS HU 399 -->
+
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.ValidarRespuestaCambioId">
+		<description>Consulta el registro de EstadoArchivoPorBloque de planilla</description>
+		<query>
+			 SELECT new com.asopagos.bandejainconsistencias.dto.InconsistenciaDTO(solicitud.razonRechazo,solicitud.comentarios,solicitud.accionCorreccion,indice.idPlanilla) 
+            FROM SolicitudCambioNumIdentAportante solicitud,IndicePlanilla indice
+            WHERE solicitud.indicePlanilla.id = indice.id 
+            AND solicitud.idErrorValidacionLog = :idError
+            order by solicitud.fechaRespuesta desc
+            
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.BusquedaPorIdIndice">
+		<description>Consulta el registro de EstadoArchivoPorBloque de planilla</description>
+		<query>
+			 SELECT error.id  
+            FROM ErrorValidacionLog error
+            WHERE error.idIndicePlanilla = :idIndice
+            
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaErrorValidacionLog.BusquedaPorIdIndiceOF">
+		<description>Consulta el registro de EstadoArchivoPorBloque de planilla</description>
+		<query>
+			SELECT error.id  
+            FROM ErrorValidacionLog error
+            WHERE error.idIndicePlanillaOF = :idIndice
+        </query>
+	</named-query>
+	
+	<named-query name="PilaBandejaService.ConsultarAportanteI.PilaArchivoIRegistro1">
+		<description>Obtener el nombre del aportante a partir del id del registro IndicePlanilla </description>
+		<query>
+			SELECT ir1.razonSocial
+			FROM PilaArchivoIRegistro1 ir1 
+			WHERE ir1.indicePlanilla.id = :idIndicePlanilla
+		</query>
+	</named-query>
+	
+	<named-query name="PilaBandejaService.ConsultarAportanteIP.PilaArchivoIPRegistro1">
+		<description>Obtener el nombre del aportante a partir del id del registro IndicePlanilla (Pensionados)</description>
+		<query>
+			SELECT ir1.nombrePagador
+			FROM PilaArchivoIPRegistro1 ir1 
+			WHERE ir1.indicePlanilla.id = :idIndicePlanilla
+		</query>
+	</named-query>
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query
+		name="PilaBandejaService.PilaErrorValidacionLog.BusquedaConArgumentosIIdentificacion">
+		<description>Busqueda para HU 392 con argumentos de identificacion</description>
+		<query>
+		SELECT registro.pipFechaProceso, registro.pipIdPlanilla, registro.pipNombreArchivo,
+             registro.pipTipoArchivo,COUNT(registro.pipId),registro.pipEstadoArchivo 
+            FROM PilaIndicePlanilla registro JOIN PilaErrorValidacionLog error ON registro.pipId = error.pevIndicePlanilla 
+            AND error.pevEstadoInconsistencia = 'PENDIENTE_GESTION'
+            AND error.pevBloqueValidacion not like 'BLOQUE_4_OI'
+            AND :tipoIdentificacion IN (SELECT value FROM STRING_SPLIT(registro.pipNombreArchivo, '_'))
+            AND :numeroIdentificacion IN (SELECT value FROM STRING_SPLIT(registro.pipNombreArchivo, '_'))
+            GROUP BY registro.pipFechaProceso, registro.pipIdPlanilla, registro.pipNombreArchivo,
+             registro.pipTipoArchivo,registro.pipEstadoArchivo
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaErrorValidacionLog.BusquedaConArgumentosIIdentificacionPlanilla">
+		<description>Realiza la busqueda por numero de identificacion y planilla</description>
+		<query>
+		SELECT registro.pipFechaProceso, registro.pipIdPlanilla, registro.pipNombreArchivo,
+             registro.pipTipoArchivo,COUNT(registro.pipId),registro.pipEstadoArchivo 
+            FROM PilaIndicePlanilla registro JOIN PilaErrorValidacionLog error ON registro.pipId = error.pevIndicePlanilla 
+            AND error.pevEstadoInconsistencia = 'PENDIENTE_GESTION'
+            AND error.pevBloqueValidacion not like 'BLOQUE_4_OI'
+            AND :tipoIdentificacion IN (SELECT value FROM STRING_SPLIT(registro.pipNombreArchivo, '_'))
+            AND :numeroIdentificacion IN (SELECT value FROM STRING_SPLIT(registro.pipNombreArchivo, '_'))
+            AND registro.pipIdPlanilla = :numeroPlanilla
+            GROUP BY registro.pipFechaProceso, registro.pipIdPlanilla, registro.pipNombreArchivo,
+             registro.pipTipoArchivo,registro.pipEstadoArchivo
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaErrorValidacionLog.BusquedaConArgumentosIIdentificacionfechas">
+		<description>Realiza la busqueda por numero de identificacion y fechas</description>
+		<query>
+		SELECT registro.pipFechaProceso, registro.pipIdPlanilla, registro.pipNombreArchivo,
+             registro.pipTipoArchivo,COUNT(registro.pipId),registro.pipEstadoArchivo 
+            FROM PilaIndicePlanilla registro JOIN PilaErrorValidacionLog error ON registro.pipId = error.pevIndicePlanilla 
+            AND error.pevEstadoInconsistencia = 'PENDIENTE_GESTION'
+            AND error.pevBloqueValidacion not like 'BLOQUE_4_OI'
+            AND :tipoIdentificacion IN (SELECT value FROM STRING_SPLIT(registro.pipNombreArchivo, '_'))
+            AND :numeroIdentificacion IN (SELECT value FROM STRING_SPLIT(registro.pipNombreArchivo, '_'))
+            AND registro.pipFechaProceso BETWEEN :fechaInicio AND :fechaFin
+            GROUP BY registro.pipFechaProceso, registro.pipIdPlanilla, registro.pipNombreArchivo,
+             registro.pipTipoArchivo,registro.pipEstadoArchivo
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaErrorValidacionLog.BusquedaConArgumentosIIdentificacionfechasPlanilla">
+		<description>Realiza la busqueda por numero de identificacion,fechas y planilla</description>
+		<query>
+		SELECT registro.pipFechaProceso, registro.pipIdPlanilla, registro.pipNombreArchivo,
+             registro.pipTipoArchivo,COUNT(registro.pipId),registro.pipEstadoArchivo 
+            FROM PilaIndicePlanilla registro JOIN PilaErrorValidacionLog error ON registro.pipId = error.pevIndicePlanilla 
+            AND error.pevEstadoInconsistencia = 'PENDIENTE_GESTION'
+            AND error.pevBloqueValidacion not like 'BLOQUE_4_OI'
+            AND :tipoIdentificacion IN (SELECT value FROM STRING_SPLIT(registro.pipNombreArchivo, '_'))
+            AND :numeroIdentificacion IN (SELECT value FROM STRING_SPLIT(registro.pipNombreArchivo, '_'))
+            AND registro.pipIdPlanilla = :numeroPlanilla
+            AND registro.pipFechaProceso BETWEEN :fechaInicio AND :fechaFin
+            GROUP BY registro.pipFechaProceso, registro.pipIdPlanilla, registro.pipNombreArchivo,
+             registro.pipTipoArchivo,registro.pipEstadoArchivo
+        </query>
+	</named-native-query>
+	
+    <named-native-query name="PilaBandejaService.PilaErrorValidacionLog.BusquedaI"
+        result-set-mapping="PilaBandejaService.PilaErrorValidacionLog.BusquedaI.mapping">
+        <description>Consulta de planillas para bandeja de inconsistencia de OI</description>
+        <query>
+				SELECT pipFechaProceso, pipIdPlanilla, pipNombreArchivo, pipTipoArchivo, registros registros, pipEstadoArchivo, pipId
+					, fin.pioNombreArchivo, fin.pf9ValorTotalRecaudo, inc.pevBloqueValidacion
+				FROM PilaIndicePlanilla 
+				INNER JOIN (
+					SELECT pevIndicePlanilla, pevBloqueValidacion, count(*) registros
+					FROM (
+						SELECT MAX(pevId) ultId, pevIndicePlanilla, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+						FROM PilaErrorValidacionLog 
+						WHERE pevBloqueValidacion != 'BLOQUE_4_OI'
+						AND pevTipoError != 'TIPO_0'
+			            AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+						GROUP BY pevIndicePlanilla, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+					) AS T
+					GROUP BY pevIndicePlanilla, pevBloqueValidacion
+				) AS inc ON inc.pevIndicePlanilla = pipId
+				LEFT JOIN (
+					SELECT CAST(f6.pf6NumeroPlanilla AS BIGINT) numPlanilla, f.pioNombreArchivo, f9.pf9ValorTotalRecaudo 
+					FROM PilaIndicePlanillaOF f
+					INNER JOIN PilaArchivoFRegistro6 f6 ON f.pioId = f6.pf6IndicePlanillaOF 
+					INNER JOIN PilaArchivoFRegistro9 f9 ON f.pioId = f9.pf9IndicePlanillaOF
+					INNER JOIN (SELECT MAX(f1.pioFechaProceso) maxPio,CAST(f61.pf6NumeroPlanilla AS BIGINT) pf6NumeroPlanilla
+						FROM PilaIndicePlanillaOF f1, PilaArchivoFRegistro6 f61
+						WHERE f1.pioId = f61.pf6IndicePlanillaOF
+						GROUP BY CAST(f61.pf6NumeroPlanilla AS BIGINT)) maxPl ON maxPl.maxPio = f.pioFechaProceso
+																			AND maxPl.pf6NumeroPlanilla = CAST(f6.pf6NumeroPlanilla AS BIGINT)
+				) AS fin ON fin.numPlanilla = CAST(pipIdPlanilla AS BIGINT)
+			WHERE 1 = 1 
+			AND pipEstadoArchivo IN (:estadosOI)
+			AND (:tipoIdentificacion IS NULL OR pipNombreArchivo LIKE '%_' + ISNULL(CONVERT(VARCHAR, :tipoIdentificacion), '') + '_%') 
+			AND (:numeroIdentificacion IS NULL OR pipNombreArchivo LIKE '%_' + ISNULL(CONVERT(VARCHAR, :numeroIdentificacion), '') + '_%') 
+			AND (:numeroPlanilla IS NULL OR pipIdPlanilla = :numeroPlanilla)
+			AND (:fechaInicio IS NULL OR CAST(pipFechaProceso AS DATE) &gt;= :fechaInicio)
+			AND (:fechaFin IS NULL OR CAST(pipFechaProceso AS DATE) &lt;= :fechaFin)
+			AND (:bloqueValidacion IS NULL OR inc.pevBloqueValidacion = :bloqueValidacion)
+        </query>
+    </named-native-query>
+
+    <named-native-query name="PilaBandejaService.PilaErrorValidacionLog.BusquedaI.SinBlq5"
+        result-set-mapping="PilaBandejaService.PilaErrorValidacionLog.BusquedaI.mapping">
+        <description>Consulta de planillas para bandeja de inconsistencia de OI sin bloque 5</description>
+        <query>
+				SELECT pipFechaProceso, pipIdPlanilla, pipNombreArchivo, pipTipoArchivo, registros registros, pipEstadoArchivo, pipId
+					, fin.pioNombreArchivo, fin.pf9ValorTotalRecaudo, inc.pevBloqueValidacion
+				FROM PilaIndicePlanilla 
+				INNER JOIN (
+					SELECT pevIndicePlanilla, pevBloqueValidacion, count(*) registros
+					FROM (
+						SELECT MAX(pevId) ultId, pevIndicePlanilla, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+						FROM PilaErrorValidacionLog 
+						WHERE pevBloqueValidacion != 'BLOQUE_4_OI'
+						AND pevTipoError != 'TIPO_0'
+			            AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+						GROUP BY pevIndicePlanilla, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+					) AS T
+					GROUP BY pevIndicePlanilla, pevBloqueValidacion
+				) AS inc ON inc.pevIndicePlanilla = pipId
+				LEFT JOIN (
+					SELECT CAST(f6.pf6NumeroPlanilla AS BIGINT) numPlanilla, f.pioNombreArchivo, f9.pf9ValorTotalRecaudo 
+					FROM PilaIndicePlanillaOF f
+					INNER JOIN PilaArchivoFRegistro6 f6 ON f.pioId = f6.pf6IndicePlanillaOF 
+					INNER JOIN PilaArchivoFRegistro9 f9 ON f.pioId = f9.pf9IndicePlanillaOF
+					INNER JOIN (SELECT MAX(f1.pioFechaProceso) maxPio,CAST(f61.pf6NumeroPlanilla AS BIGINT) pf6NumeroPlanilla
+						FROM PilaIndicePlanillaOF f1, PilaArchivoFRegistro6 f61
+						WHERE f1.pioId = f61.pf6IndicePlanillaOF
+						GROUP BY CAST(f61.pf6NumeroPlanilla AS BIGINT)) maxPl ON maxPl.maxPio = f.pioFechaProceso
+																			AND maxPl.pf6NumeroPlanilla = CAST(f6.pf6NumeroPlanilla AS BIGINT)
+				) AS fin ON fin.numPlanilla = CAST(pipIdPlanilla AS BIGINT)
+			WHERE 1 = 1 
+			AND pipEstadoArchivo IN (:estadosOI)
+			AND (:tipoIdentificacion IS NULL OR pipNombreArchivo LIKE '%_' + ISNULL(CONVERT(VARCHAR, :tipoIdentificacion), '') + '_%') 
+			AND (:numeroIdentificacion IS NULL OR pipNombreArchivo LIKE '%_' + ISNULL(CONVERT(VARCHAR, :numeroIdentificacion), '') + '_%') 
+			AND (:numeroPlanilla IS NULL OR pipIdPlanilla = :numeroPlanilla)
+			AND (:fechaInicio IS NULL OR CAST(pipFechaProceso AS DATE) &gt;= :fechaInicio)
+			AND (:fechaFin IS NULL OR CAST(pipFechaProceso AS DATE) &lt;= :fechaFin)
+			AND (:bloqueValidacion IS NULL OR inc.pevBloqueValidacion = :bloqueValidacion)
+			AND (inc.pevBloqueValidacion &lt;&gt; 'BLOQUE_5_OI')
+        </query>
+    </named-native-query>
+    
+    <named-native-query name="PilaBandejaService.PilaErrorValidacionLog.BusquedaF"
+        result-set-mapping="PilaBandejaService.PilaErrorValidacionLog.BusquedaF.mapping">
+        <description>Consulta de planillas para bandeja de inconsistencia de OF</description>
+        <query>
+            SELECT pioFechaProceso, pioNombreArchivo, pioTipoArchivo, registros, pioEstadoArchivo, pioFechaRecibo, pioId, inc.pevBloqueValidacion
+			FROM PilaIndicePlanillaOF
+			INNER JOIN (
+			    SELECT pevIndicePlanillaOF, pevBloqueValidacion, COUNT(*) registros
+			    FROM (
+			        SELECT MAX(pevId) ultId, pevIndicePlanillaOF, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+			        FROM PilaErrorValidacionLog 
+			        WHERE pevTipoError != 'TIPO_0'
+			        AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+			        GROUP BY pevIndicePlanillaOF, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+			    ) AS T
+			    GROUP BY pevIndicePlanillaOF, pevBloqueValidacion
+			) AS inc ON inc.pevIndicePlanillaOF = pioId
+			LEFT JOIN PilaArchivoFRegistro6 ON pf6IndicePlanillaOF = pioId
+			WHERE 1 = 1
+			AND (pioEstadoArchivo IN (:estadosOF)
+			    OR pf6EstadoConciliacion IN (:estadosF6))
+			AND (:numeroIdentificacion IS NULL OR (pf6IdAportante IS NOT NULL AND pf6IdAportante = :numeroIdentificacion)) 
+			AND (:numeroPlanilla IS NULL OR (pf6NumeroPlanilla IS NOT NULL AND CAST(pf6NumeroPlanilla AS BIGINT) = CAST(:numeroPlanilla AS BIGINT)))
+			AND (:fechaInicio IS NULL OR CAST(pioFechaProceso AS DATE) &gt;= :fechaInicio)
+			AND (:fechaFin IS NULL OR CAST(pioFechaProceso AS DATE) &lt;= :fechaFin)
+			AND (:bloqueValidacion IS NULL OR inc.pevBloqueValidacion = :bloqueValidacion)
+        </query>
+    </named-native-query>
+    
+<named-native-query name="PilaBandejaService.IndicePlanilla.datosAdicionalesInconsistencia">
+        <description>Consulta que lista los datos adicionales de planilla en bandeja de inconsistencias</description>
+        <query>
+            SELECT pipIdPlanilla, (select case when count(*) &gt; 2 then 1 else 0 end from pilaindiceplanilla pipp
+			where pipp.pipidplanilla = pip.pipidplanilla
+			and pipp.pipcodigooperadorinformacion = pip.pipcodigooperadorinformacion
+			)
+			reprocesos, pipNombreArchivo, ISNULL(cantidad, 0) cantidad, MAX(pipId) pipId
+			FROM (
+			    SELECT 
+			    numPlanilla = JSON_VALUE(j.[value],'$.numPlanilla'), 
+			    clave = JSON_VALUE(j.[value],'$.clave')
+			    FROM OPENJSON (:parametros) J
+			) AS base
+			INNER JOIN PilaIndicePlanilla pip ON base.numPlanilla = pipIdPlanilla
+			<!-- LEFT JOIN (
+			    SELECT pscPilaIndicePlanilla, COUNT(*) reprocesos
+			    FROM PilaSolicitudCambioNumIdentAportante 
+			    GROUP BY pscPilaIndicePlanilla
+			) AS rep ON rep.pscPilaIndicePlanilla = pipId -->
+			LEFT JOIN (
+			    SELECT CAST(CAST(pf6NumeroPlanilla AS BIGINT) AS VARCHAR(15)) + '_' + CAST(CAST(pf6CodOperadorInformacion AS SMALLINT) AS VARCHAR(2)) + '_' + pf6PeriodoPago clave, COUNT(*) cantidad
+			    FROM PilaArchivoFRegistro6
+			    WHERE ISNULL(pf6EstadoConciliacion, '') != 'ANULADO'
+			    GROUP BY CAST(CAST(pf6NumeroPlanilla AS BIGINT) AS VARCHAR(15)) + '_' + CAST(CAST(pf6CodOperadorInformacion AS SMALLINT) AS VARCHAR(2)) + '_' + pf6PeriodoPago
+			) AS pf6 ON base.clave = pf6.clave
+			WHERE pipEstadoArchivo != 'ANULADO'
+			GROUP BY pipIdPlanilla, pipNombreArchivo, ISNULL(cantidad, 0), pipcodigooperadorinformacion
+        </query>
+    </named-native-query>
+    
+    <!-- Mapeo de named queries nativos -->
+    <sql-result-set-mapping name="PilaBandejaService.PilaErrorValidacionLog.BusquedaI.mapping">
+        <constructor-result target-class="com.asopagos.bandejainconsistencias.dto.InconsistenciaDTO">
+            <column name="pipFechaProceso" class="java.util.Date"/>
+            <column name="pipIdPlanilla" class="java.lang.Long"/>
+            <column name="pipNombreArchivo" class="java.lang.String"/>
+            <column name="pipTipoArchivo" class="java.lang.String"/>
+            <column name="registros" class="java.lang.Long"/>
+            <column name="pipEstadoArchivo" class="java.lang.String"/>
+            <column name="pipId" class="java.lang.Long"/>
+            <column name="pioNombreArchivo" class="java.lang.String"/>
+            <column name="pf9ValorTotalRecaudo" class="java.math.BigDecimal"/>
+            <column name="pevBloqueValidacion" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+    
+    <sql-result-set-mapping name="PilaBandejaService.PilaErrorValidacionLog.BusquedaF.mapping">
+        <constructor-result target-class="com.asopagos.bandejainconsistencias.dto.InconsistenciaDTO">
+            <column name="pioFechaProceso" class="java.util.Date"/>
+            <column name="pioNombreArchivo" class="java.lang.String"/>
+            <column name="pioTipoArchivo" class="java.lang.String"/>
+            <column name="registros" class="java.lang.Long"/>
+            <column name="pioEstadoArchivo" class="java.lang.String"/>
+            <column name="pioFechaRecibo" class="java.util.Date"/>
+            <column name="pioId" class="java.lang.Long"/>
+            <column name="pevBloqueValidacion" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+    
+    
+    <named-query name="PilaBandejaService.IndicePlanilla.Buscar">
+		<description>Consultar una lista de indice planilla de pila</description>
+		<query>
+			SELECT pip
+			FROM IndicePlanilla pip 
+			WHERE pip.id IN (:listaIds)
+		</query>
+	</named-query>
+	
+	<named-query
+		name="PilaBandejaService.TemNovedad.ConsultarPorRegistroGeneral">
+		<description>Consulta de novedades temporales en staging asociadas a una planilla</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.TemNovedadModeloDTO(tnv)
+			FROM TemNovedad tnv 
+			WHERE tnv.registroGeneral = :idRegistroGeneral
+		</query>
+	</named-query>
+	
+	<named-native-query name="PilaBandejaService.BandejaTransitoriaGestion.actualizarEstadoEnProcesoAportes">
+    	<query>
+    		UPDATE tem 
+			SET tem.temEnProceso = 0
+			FROM TemAporte tem
+			JOIN staging.RegistroGeneral reg ON reg.regId = tem.temRegistroGeneral
+			WHERE reg.regRegistroControl = :indicePlanilla
+    	</query>
+    </named-native-query>
+
+	<named-native-query name="PilaBandejaService.BandejaTransitoriaGestion.consultarEstadoIndcePlanillaB2">
+		<query>
+			select pebEstadoBloque2
+			from 
+			PilaIndicePlanilla 
+			inner join PilaEstadoBloque on pebIndicePlanilla = pipId
+			where pipId = :indicePlanilla
+		</query>
+	</named-native-query>
+	
+</entity-mappings>

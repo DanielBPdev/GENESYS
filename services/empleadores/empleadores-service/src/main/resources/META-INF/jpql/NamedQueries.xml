@@ -1,0 +1,1062 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+                 version="2.1">
+
+    <!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+    <named-query name="Empleadores.buscar.persona">
+        <description>Busca a un empleador a partir de los datos de identificación de la persona</description>
+        <query>
+            SELECT empl 
+            FROM Empleador empl 
+            JOIN FETCH empl.empresa e
+            JOIN FETCH e.persona p
+            WHERE p.tipoIdentificacion =:tipoIdentificacion
+            AND p.numeroIdentificacion =:numeroIdentificacion
+        </query>
+    </named-query>
+
+    <named-query name="Empleadores.persona.buscarTodos">
+        <query>
+            SELECT persona FROM Persona persona
+            LEFT JOIN FETCH persona.ubicacionPrincipal u
+            WHERE persona.numeroIdentificacion =:numeroIdentificacion
+            AND persona.tipoIdentificacion =:tipoIdentificacion
+        </query>
+    </named-query>
+    <named-query name="Empleadores.buscarTodos">
+        <query>
+            SELECT empl FROM Empleador empl
+        </query>
+    </named-query>
+    <named-query name="Empleadores.id.buscarTodos">
+        <query>
+            SELECT empl FROM Empleador empl 
+            JOIN FETCH empl.empresa e
+            JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+            WHERE empl.idEmpleador =:idEmpleador
+        </query>
+    </named-query>
+	
+    <named-query name="Empresa.id.buscarTodos">
+        <query>
+            SELECT emp FROM Empresa emp
+            WHERE emp.idEmpresa =:idEmpresa
+        </query>
+    </named-query>
+    <named-query
+        name="Empleador.tipoIdentificacion.numIdentificacion.buscarTodos">
+        <query>
+            SELECT empl FROM Empleador empl 
+            JOIN FETCH empl.empresa e
+            JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+            WHERE p.tipoIdentificacion =:tipoIdentificacion 
+            AND p.numeroIdentificacion =:numeroIdentificacion
+            ORDER BY p.numeroIdentificacion
+        </query>
+    </named-query>
+    <named-query
+        name="Empleador.tipoIdentificacion.numIdentificacion.buscarTodos_pre">
+        <query>
+            SELECT empl FROM Empleador empl 
+            LEFT JOIN FETCH empl.empresa e
+            LEFT JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+            WHERE p.tipoIdentificacion =:tipoIdentificacion 
+            AND p.numeroIdentificacion =:numeroIdentificacion
+            ORDER BY p.numeroIdentificacion
+        </query>
+    </named-query>
+    <named-query
+        name="Empleador.tipoIdentificacion.numIdentificacion.DV.buscarTodos">
+        <query>
+            SELECT empl FROM Empleador empl
+            JOIN FETCH empl.empresa e
+            JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+            WHERE p.tipoIdentificacion =:tipoIdentificacion 
+            AND p.numeroIdentificacion =:numeroIdentificacion 
+            AND p.digitoVerificacion =:digitoVerificacion
+            ORDER BY p.numeroIdentificacion
+        </query>
+    </named-query>
+
+    <named-query
+        name="Empleadores.FechaInicio.FechaFin.Empleadores.GenerarLista">
+        <description>Lista los empleadores afiliados, 
+            se determina si el estado de la solicitud es aprobada, 
+            y en el caso de que su estado sea cerrada se valida el 
+            estado anterior haya sido aprobado para descargar una
+            solicitud que este en estado cerrada pero haya sido descartada</description>
+        <query>
+            SELECT emp, mun.idMunicipio FROM
+            Empleador emp 
+            LEFT JOIN FETCH emp.empresa e
+            LEFT JOIN FETCH e.codigoCIIU cod
+            LEFT JOIN FETCH e.persona per
+            LEFT JOIN FETCH per.ubicacionPrincipal ubi,
+            UbicacionEmpresa ube 
+            LEFT JOIN ube.ubicacion ubi
+            LEFT JOIN ubi.municipio mun
+            WHERE e.idEmpresa = ube.idEmpresa
+            AND emp.estadoEmpleador = :estado
+            AND emp.idEmpleador IN (
+            SELECT solEmp.idEmpleador 
+            FROM SolicitudAfiliacionEmpleador solEmp
+            WHERE solEmp.fechaAprobacionConsejo IS NULL 
+            AND solEmp.numeroActoAdministrativo IS NULL
+            AND solEmp.solicitudGlobal.resultadoProceso = 'APROBADA' 
+            AND solEmp.estadoSolicitud = 'CERRADA'
+            )
+            AND ube.tipoUbicacion = 'UBICACION_PRINCIPAL'
+        </query>
+    </named-query>
+    <named-query name="SocioEmpleador.idEmpleador.buscarTodos">
+        <query>
+            SELECT SocioEmp FROM SocioEmpleador socioEmp 
+            JOIN FETCH socioEmp.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal upp
+            LEFT JOIN FETCH socioEmp.conyugue c
+            LEFT JOIN FETCH c.ubicacionPrincipal upc
+            WHERE socioEmp.idEmpleador =:idEmpleador
+        </query>
+    </named-query>
+
+    <named-query name="Empleador.rolesContacto.buscarTodos">
+        <query>
+            SELECT rce FROM RolContactoEmpleador rce
+            JOIN FETCH rce.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal up
+            LEFT JOIN FETCH up.municipio
+            JOIN FETCH rce.ubicacion
+            LEFT JOIN FETCH rce.sucursales s
+            LEFT JOIN FETCH s.codigoCIIU 
+            LEFT JOIN FETCH s.ubicacion 
+            WHERE rce.idEmpleador = :idEmpleador  
+        </query>
+    </named-query>
+
+
+    <named-query name="Empleador.representanteLegal.buscarTodos">
+        <query>
+            SELECT per FROM Persona per, Empleador empl   
+            LEFT JOIN FETCH per.ubicacionPrincipal up 
+            WHERE empl.idEmpleador =:idEmpleador 
+            AND per.idPersona = empl.empresa.idPersonaRepresentanteLegal            
+        </query>
+    </named-query>
+    <named-query name="Empleador.representanteLegalSupl.buscarTodos">
+        <query>
+            SELECT per FROM Persona per, Empleador empl  
+            LEFT JOIN FETCH per.ubicacionPrincipal up  
+            WHERE empl.idEmpleador =:idEmpleador 
+            AND per.idPersona = empl.empresa.idPersonaRepresentanteLegalSuplente            
+        </query>
+    </named-query>
+
+    <named-query name="Empleador.ubicacionRepresentanteLegal.buscarTodos">
+        <query>
+            SELECT ubi FROM Ubicacion ubi, Empleador empl
+            WHERE empl.idEmpleador =:idEmpleador 
+            AND ubi.idUbicacion = empl.empresa.idUbicacionRepresentanteLegal            
+        </query>
+    </named-query>
+    <named-query name="Empleador.ubicacionRepresentanteLegalSupl.buscarTodos">
+        <query>
+            SELECT ubi FROM Ubicacion ubi, Empleador empl
+            WHERE empl.idEmpleador =:idEmpleador 
+            AND ubi.idUbicacion = empl.empresa.idUbicacionRepresentanteLegalSuplente            
+        </query>
+    </named-query>
+
+    <!-- Se crea este query en remplazo de Empleador.eliminarSociosEmpleador.noPresentes para soportar envers -->
+    <!-- solo se actualiza la relación pues no se borran datos -->
+    <named-query name="Empleador.consultar.eliminarSociosEmpleador.noPresentes">
+        <query>
+            SELECT se FROM SocioEmpleador se
+            WHERE se.idEmpleador = :idEmpleador 
+            AND se.idSocioEmpleador NOT IN (:idsSocios)
+        </query>
+    </named-query>
+
+    <!-- Se crea este query en remplazo de Empleador.eliminarSociosEmpleador.porEmpleador para soportar envers -->
+    <!-- solo se actualiza la relación pues no se borran datos -->
+    <named-query name="Empleador.consultar.eliminarSociosEmpleador.porEmpleador">
+        <query>
+            SELECT se FROM SocioEmpleador se
+            WHERE se.idEmpleador = :idEmpleador
+        </query>
+    </named-query>
+
+    <named-query name="Empleador.consulta.sucursalRolContacto.buscarTodos">
+        <query>
+            SELECT srce FROM SucursalRolContactoEmpleador srce
+            JOIN FETCH srce.rolContactoEmpleador rce
+            JOIN FETCH srce.sucursalEmpleador sre
+            WHERE rce.persona.idPersona =:idPersona 
+            AND rce.tipoRolContactoEmpleador =:tipoRol 
+            AND rce.idRolContactoEmpleador = srce.rolContactoEmpleador
+            AND sre.idSucursalEmpresa =:idSucursalEmpleador
+        </query>
+    </named-query>
+
+    <named-query
+        name="Empleador.consulta.sociosEmpleador.porEmpleadorPorPersona">
+        <query>
+            SELECT se FROM SocioEmpleador se
+            WHERE se.idEmpleador = :idEmpleador 
+            AND se.persona.idPersona = :idPersona
+        </query>
+    </named-query>
+
+    <!-- Reemplaza Empleador.actualizar.responsableCajaCompensacion para permitir la auditoria de envers -->
+    <named-query name="Empleador.consultar.actualizar.responsableCajaCompensacion">
+        <query>
+            SELECT are FROM AsesorResponsableEmpleador are
+            WHERE are.idEmpleador = :idEmpleador AND primario = :primario
+        </query>
+    </named-query>
+
+    <named-query name="Empleador.consultar.responsableCajaCompensacion">
+        <query>
+            SELECT are.nombreUsuario 
+            FROM AsesorResponsableEmpleador are
+            WHERE are.idEmpleador = :idEmpleador ORDER BY are.primario DESC
+        </query>
+    </named-query>
+    <named-query name="Empleador.consultar.informacionContacto">
+        <query>
+            SELECT ic
+            FROM RolContactoEmpleador ic 
+            JOIN FETCH ic.persona p 
+            JOIN FETCH p.ubicacionPrincipal u
+            WHERE ic.idEmpleador = :idEmpleador
+        </query>
+    </named-query>
+    <named-query name="Empleador.consultar.datosTemporales">
+        <query>
+            SELECT dts
+            FROM DatoTemporalSolicitud dts            
+            WHERE dts.Solicitud = :idSolicitud
+        </query>
+    </named-query>
+
+    <named-query name="Empleador.consultar.ultimaClasificacion">
+        <query>
+            SELECT sol, sae
+            FROM Solicitud sol,
+            SolicitudAfiliacionEmpleador sae,
+            Empleador e
+            WHERE sae.solicitudGlobal = sol.idSolicitud
+            AND sae.idEmpleador = e.idEmpleador
+            AND sae.idEmpleador = :idEmpleador
+            AND sol.resultadoProceso = com.asopagos.enumeraciones.afiliaciones.ResultadoProcesoEnum.APROBADA
+            AND (sol.anulada IS NULL
+            OR sol.anulada != TRUE)
+            ORDER BY sol.fechaRadicacion DESC
+        </query>
+    </named-query>
+
+    <named-query name="Novedades.Empleador.consultarEmpleadoresInactivar1429">
+        <description>Consulta los empleadores que se inactivarán Masivamente por Ley 1429.</description>
+        <query>
+            SELECT benEmp.idEmpleador FROM BeneficioEmpleador benEmp, Beneficio  ben 
+            WHERE benEmp.idBeneficio = ben.idBeneficio
+            AND benEmp.beneficioActivo =:empBeneficioActivo 
+            AND year(benEmp.fechaDesvinculacion) &lt; :anioActualSistema 
+            AND ben.tipoBeneficio =:tipoBeneficio
+        </query>
+    </named-query>
+
+    <named-query name="Novedades.Empleador.consultarEmpleadoresInactivar590">
+        <description>Consulta los empleadores que se inactivarán Masivamente por Ley 590.</description>
+        <query>
+            SELECT benEmp.idEmpleador FROM BeneficioEmpleador benEmp, Beneficio  ben 
+            WHERE benEmp.idBeneficio = ben.idBeneficio
+            AND benEmp.beneficioActivo =:empBeneficioActivo 
+            AND FUNCTION('DATEDIFF', MONTH, benEmp.fechaDesvinculacion, :fechaActual) &gt;= :mesesAnio 
+            AND ben.tipoBeneficio =:tipoBeneficio
+        </query>
+    </named-query>
+
+    <named-query name="Novedades.Empleador.consultarBeneficiosInactivar">
+        <description>Consulta los Beneficios Empleadoresa actualizar en Batch.</description>
+        <query>
+            SELECT benEmp 
+            FROM BeneficioEmpleador benEmp, Beneficio  ben 
+            WHERE benEmp.idBeneficio = ben.idBeneficio
+            AND benEmp.idEmpleador IN (:idEmpleadores) 
+            AND ben.tipoBeneficio =:tipoBeneficio
+        </query>
+    </named-query>
+
+    <named-query name="Empleador.beneficio.consultarPorTipo">
+        <description>Consulta Beneficio por Tipo de Beneficio</description>
+        <query>
+            SELECT ben 
+            FROM Beneficio ben
+            WHERE ben.tipoBeneficio =:tipoBeneficio
+        </query>
+    </named-query>
+
+    <named-query name="Novedades.Empleador.consultarEmpleadoresInactivarCtaWeb">
+        <description>Consulta los empleadores que se encuentran inactivos y tienen una fecha de Retiro asociada.</description>
+        <query>
+            SELECT emp.idEmpleador, emp.fechaRetiro 
+            FROM Empleador emp 
+            WHERE emp.estadoEmpleador =:estadoEmpleador
+            AND emp.fechaRetiro IS NOT NULL
+        </query>
+    </named-query>
+    <named-query
+        name="Empleador.consultar.por.tipo.identificacion.numero.discriminado">
+        <query>
+            SELECT empl FROM Empleador empl 
+            INNER JOIN FETCH empl.empresa e
+            INNER JOIN FETCH e.persona p 
+            LEFT JOIN FETCH p.ubicacionPrincipal
+            LEFT JOIN FETCH e.codigoCIIU codigoCIIU
+            WHERE p.tipoIdentificacion =:tipoIdentificacion 
+            AND p.numeroIdentificacion =:numeroIdentificacion 
+        </query>
+    </named-query>
+
+
+    <named-query
+        name="Empresa.consultar.por.tipo.identificacion.numero.discriminado">
+        <query>
+            SELECT empr FROM Empresa empr 
+            INNER JOIN FETCH empr.persona p 
+            LEFT JOIN FETCH p.ubicacionPrincipal
+            LEFT JOIN FETCH empr.codigoCIIU codigoCIIU
+            WHERE p.tipoIdentificacion =:tipoIdentificacion 
+            AND p.numeroIdentificacion =:numeroIdentificacion 
+            AND empr.idEmpresa NOT IN (SELECT emp.empresa.idEmpresa FROM Empleador emp)
+        </query>
+    </named-query>
+
+    <named-query
+        name="Empresa.consultar.por.tipo.identificacion.numero">
+        <query>            
+            SELECT empr FROM Empresa empr 
+            INNER JOIN FETCH empr.persona p 
+            LEFT JOIN FETCH p.ubicacionPrincipal 
+            LEFT JOIN FETCH empr.codigoCIIU codigoCIIU
+            WHERE p.tipoIdentificacion =:tipoIdentificacion 
+            AND p.numeroIdentificacion =:numeroIdentificacion 
+            AND empr.idEmpresa NOT IN (SELECT emp.empresa.idEmpresa FROM Empleador emp)
+        </query>
+    </named-query>
+	
+    <named-native-query name="Empresa.consultar.por.tipo.identificacion.numero.nativa"
+                            result-set-mapping="Empresa.consultar.por.tipo.identificacion.numero.nativa.Mapping">
+        <description>Consulta una Persona por tipo y número de Identificación dado un empleador</description>
+        <query>
+            SELECT emp.*,
+            per.*,
+            ubi.*,
+            cii.*,
+            est.empEstadoEmpleador estadoEmpleador
+            FROM Empresa emp
+            INNER JOIN Persona per ON per.perId = emp.empPersona
+            LEFT JOIN Ubicacion ubi ON ubi.ubiId = per.perUbicacionPrincipal
+            LEFT JOIN CodigoCIIU cii ON cii.ciiId = emp.empCodigoCIIU			
+            LEFT JOIN VW_EstadoAfiliacionEmpleadorCaja est ON est.perId = per.perId
+            LEFT JOIN Empleador empl ON empl.empEmpresa = emp.empId
+            WHERE empl.empId IS NULL
+            AND per.perTipoIdentificacion = :tipoIdentificacion
+            AND per.perNumeroIdentificacion = :numeroIdentificacion
+        </query>
+    </named-native-query>
+	
+    <named-query name="Empleador.consultar.por.tipo.identificacion.numero">
+        <query>
+            SELECT empl FROM Empleador empl 
+            INNER JOIN FETCH empl.empresa e
+            LEFT JOIN FETCH e.codigoCIIU codigoCIIU
+            INNER JOIN FETCH e.persona p 
+            LEFT JOIN FETCH P.ubicacionPrincipal 
+            WHERE p.tipoIdentificacion =:tipoIdentificacion 
+            AND p.numeroIdentificacion =:numeroIdentificacion
+        </query>
+    </named-query>
+	
+    <named-native-query name="Empleador.consultar.por.tipo.identificacion.numero.nativa"
+                            result-set-mapping="Empleador.consultar.por.tipo.identificacion.numero.nativa.Mapping">
+        <description>Consulta una Persona por tipo y número de Identificación dado un empleador</description>
+        <query>
+            SELECT per.*,
+            emp.*, 
+            empl.*,         		
+            ubi.*,
+            cii.*,
+            est.empEstadoEmpleador estadoEmpleador,
+            empl.empId idEmpleador,
+            empl.empTrasladoCajasCompensacion trasladoCajasCompensacion
+            FROM Persona per
+            INNER JOIN Empresa emp ON emp.empPersona = per.perId			 
+            INNER JOIN Empleador empl ON emp.empId = empl.empEmpresa			
+            LEFT JOIN Ubicacion ubi ON ubi.ubiId = per.perUbicacionPrincipal
+            LEFT JOIN CodigoCIIU cii ON cii.ciiId = emp.empCodigoCIIU			
+            LEFT JOIN VW_EstadoAfiliacionEmpleadorCaja est ON est.perId = per.perId
+            WHERE per.perTipoIdentificacion = :tipoIdentificacion
+            AND per.perNumeroIdentificacion = :numeroIdentificacion
+        </query>
+    </named-native-query>
+    <named-query name="Empleador.consultar.empresa.persona.id">
+        <query> 
+            Select emp FROM Empresa emp  
+            LEFT JOIN FETCH emp.arl arl 
+            LEFT JOIN FETCH emp.codigoCIIU
+            INNER JOIN FETCH emp.persona per 
+            INNER JOIN FETCH per.ubicacionPrincipal ubi 
+            WHERE per.idPersona= :idPersona 
+        </query>
+    </named-query>
+    <named-query name="Empleador.razonSocial.buscarTodos_pre">
+        <query>
+            SELECT empl FROM Empleador empl 
+            INNER JOIN FETCH empl.empresa e
+            INNER JOIN FETCH e.persona p 
+            LEFT JOIN FETCH p.ubicacionPrincipal
+            LEFT JOIN FETCH e.codigoCIIU codigoCIIU
+            WHERE p.razonSocial LIKE :razonSocial ORDER BY p.razonSocial
+        </query>
+    </named-query>
+    <named-query name="Empleador.razonSocial.buscarTodos">
+        <query>
+            SELECT empl FROM Empleador empl INNER 
+            JOIN FETCH empl.empresa e
+            INNER JOIN FETCH e.persona p 
+            LEFT JOIN FETCH p.ubicacionPrincipal 
+            LEFT JOIN FETCH e.codigoCIIU codigoCIIU
+            WHERE p.razonSocial LIKE :razonSocial 
+            ORDER BY p.razonSocial
+        </query>
+    </named-query>
+
+    <named-query name="Empresa.razonSocial.buscarTodos_pre">
+        <query>
+            SELECT empr FROM Empresa empr 
+            INNER JOIN FETCH empr.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal
+            LEFT JOIN FETCH empr.codigoCIIU codigoCIIU
+            WHERE empr.idEmpresa NOT IN (SELECT emp.empresa.idEmpresa FROM Empleador emp)
+            AND p.razonSocial LIKE :razonSocial 
+            ORDER BY p.razonSocial
+            
+        </query>
+    </named-query>
+    <named-query name="Empresa.razonSocial.buscarTodos">
+        <query>
+            SELECT empr FROM Empresa empr 
+            INNER JOIN FETCH empr.persona p 
+            LEFT JOIN FETCH p.ubicacionPrincipal
+            LEFT JOIN FETCH empr.codigoCIIU codigoCIIU
+            WHERE 
+            empr.idEmpresa NOT IN (SELECT emp.empresa.idEmpresa FROM Empleador emp)
+            AND p.razonSocial LIKE :razonSocial 
+            ORDER BY p.razonSocial
+	        
+        </query>
+    </named-query>
+	
+    <!-- <named-query name="Empleador.empleador.asociado.empresa.existe">
+            <query> SELECT empl FROM Empleador empl WHERE empl.empresa.persona.tipoIdentificacion 
+                    = :tipoIdentificacion AND empl.empresa.persona.numeroIdentificacion = :numeroIdentificacion 
+                    AND empl.empresa.persona.digitoVerificacion = :digitoVerificacion </query>
+            <query>
+                    SELECT empl FROM Empleador empl JOIN FETCH empl.empresa e
+                    JOIN FETCH e.persona p
+                    WHERE p.tipoIdentificacion = :tipoIdentificacion
+                    AND p.numeroIdentificacion = :numeroIdentificacion
+            </query>
+    </named-query> -->
+	
+    <named-query name="Empleador.consultarEmpleadoresId">
+        <query>
+            SELECT empl FROM Empleador empl
+            WHERE empl.idEmpleador IN (:idEmpleadores)
+        </query>
+    </named-query>
+    <named-query name="Empleador.consultarEmpleadorId">
+        <query>
+            SELECT empl FROM Empleador empl
+            WHERE empl.idEmpleador = :idEmpleador
+        </query>
+    </named-query>
+    <named-query name="Empleador.consultarRolContactoEmpleador">
+        <query>
+            SELECT roCon FROM RolContactoEmpleador roCon
+            WHERE roCon.idRolContactoEmpleador = :idRolContacto
+        </query>
+    </named-query>
+    <named-query name="Empresa.consultarSucursalEmpresaId">
+        <query>
+            SELECT suEm FROM SucursalEmpresa suEm
+            WHERE suEm.idSucursalEmpresa = :idSucursalEmpresa
+        </query>
+    </named-query>
+    <named-query name="Empresa.consultarSucursalEmpresaEmpleadorId">
+        <query>
+            SELECT suEm FROM SucursalEmpresa suEm,Empresa emp,Empleador empl  WHERE emp.idEmpresa=suEm.idEmpresa AND
+            emp.idEmpresa=empl.empresa.idEmpresa AND empl.idEmpleador= :idEmpleador
+        </query> 
+    </named-query>
+    <named-query name="Empleador.consultar.ubicacion.empresa.por.tipo.ubicacion">
+        <query> 
+            SELECT new com.asopagos.dto.UbicacionDTO(ubi,ube.tipoUbicacion) FROM Empresa emp LEFT JOIN emp.persona per,UbicacionEmpresa ube LEFT JOIN ube.ubicacion ubi
+            WHERE ube.idEmpresa=emp.idEmpresa AND per.idPersona= :idPersona AND ube.tipoUbicacion IN (:tipoUbicacion)
+        </query> 
+    </named-query>
+	
+    <named-query name="Empleador.consultarBeneficio.beneficioEmpleador">
+        <query>
+            SELECT ben.tipoBeneficio
+            FROM BeneficioEmpleador bef, Beneficio ben
+            WHERE bef.idBeneficio = ben.idBeneficio
+            AND bef.idEmpleador = :idEmpleador
+        </query>
+    </named-query>
+        
+    <named-query name="Empleador.consultar.empresa.descentralizada">
+        <query>
+            SELECT pred 
+            FROM PreRegistroEmpresaDesCentralizada pred
+            WHERE pred.numeroIdentificacionSerial = :numeroDocumentoConSerial
+        </query>
+    </named-query>
+	
+    <named-query name="Empleador.consultarBeneficios.beneficioEmpleador">
+        <query>
+            SELECT 
+            new com.asopagos.dto.modelo.BeneficioEmpleadorModeloDTO(bef, ben)
+            FROM BeneficioEmpleador bef, Beneficio ben
+            WHERE bef.idBeneficio = ben.idBeneficio
+            AND bef.idEmpleador = :idEmpleador
+            ORDER BY bef.fechaVinculacion DESC
+            <!-- SELECT bef
+            FROM BeneficioEmpleador bef, Beneficio ben
+            WHERE bef.idBeneficio = ben.idBeneficio
+            AND bef.idEmpleador = :idEmpleador
+            ORDER BY bef.fechaVinculacion DESC -->
+        </query>
+    </named-query>	
+	
+    <named-query name="Empleador.consultarVariablesCabeceraVista360.empleador">
+        <description>CC Vista 360: Variables nuevas en la cabecera</description>
+        <query>
+            SELECT new com.asopagos.dto.modelo.EmpleadorModeloDTO
+            (
+            (SELECT bef.tipoBeneficio FROM BeneficioEmpleador bem, Beneficio bef 
+            WHERE bem.idBeneficio = bef.idBeneficio
+            AND bem.idEmpleador = empl.idEmpleador  
+            AND bem.beneficioActivo = TRUE) AS tipoBeneficio,
+            <!-- Define si es entidad pagadora -->
+            (SELECT epa.aportante FROM EntidadPagadora epa				 
+            WHERE epa.empresa.idEmpresa = empr.idEmpresa) AS entidadPagadora,
+            empl.estadoEmpleador,
+            empl.trasladoCajasCompensacion
+            ) 
+            FROM Empleador empl
+            JOIN empl.empresa empr 
+            JOIN empr.persona per
+            WHERE per.tipoIdentificacion = :tipoIdentificacion
+            AND per.numeroIdentificacion = :numeroIdentificacion
+        </query>
+    </named-query>
+	
+    <named-query name="Novedades.Empleador.consultarCodigoCIIU.id">
+        <query>
+            Select cod FROM CodigoCIIU cod
+            where cod.id=:idCodigoCIIU
+        </query>
+    </named-query>
+    <named-query name="Novedades.Empleador.consultarARL.id">
+        <query>
+            Select arl FROM ARL arl
+            where arl.id=:idARL
+        </query>
+    </named-query>
+
+    <named-query name="Beneficios.empleadores.por.id">
+        <query>
+            Select new com.asopagos.dto.modelo.BeneficioEmpleadorModeloDTO(benEmpleador,ben) FROM 
+            BeneficioEmpleador benEmpleador, Beneficio ben
+            where benEmpleador.idEmpleador in (:idEmpleador) 
+            and benEmpleador.idBeneficio = ben.idBeneficio
+            and benEmpleador.beneficioActivo = :estado
+        </query>
+    </named-query>
+	
+    <named-query name="Empresa.consultarEmpresaPorPersona">
+        <query>
+            SELECT emp FROM Empresa emp 
+            WHERE emp.persona.tipoIdentificacion= :tipoIdentificacion
+            AND emp.persona.numeroIdentificacion= :numeroIdentificacion
+        </query>
+    </named-query>
+	
+    <named-query name="Empleador.consultar.ubicacion.rol.contacto.empleador">
+        <query>
+            SELECT ubi FROM Empleador empl LEFT JOIN empl.empresa emp LEFT JOIN emp.persona per,
+            RolContactoEmpleador rce LEFT JOIN rce.ubicacion ubi
+            WHERE rce.idEmpleador=empl.idEmpleador AND per.idPersona= :idPersona
+            AND rce.tipoRolContactoEmpleador = :tipoRolContactoEmpleador
+        </query>
+    </named-query>
+	
+    <named-query name="Empleador.consultar.tipo.numero.identificacion.ultimaClasificacion">
+        <query>
+            SELECT sol.clasificacion
+            FROM Solicitud sol,
+            SolicitudAfiliacionEmpleador sae,
+            Empleador e LEFT JOIN e.empresa emp LEFT JOIN emp.persona per
+            WHERE sae.solicitudGlobal = sol.idSolicitud
+            AND sae.idEmpleador = e.idEmpleador
+            AND per.numeroIdentificacion = :numeroIdentificacion 
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND sol.resultadoProceso = com.asopagos.enumeraciones.afiliaciones.ResultadoProcesoEnum.APROBADA
+            ORDER BY sol.fechaRadicacion DESC
+        </query>
+    </named-query>
+    <named-query name="consultar.entidad.pagadora">
+        <query>
+            SELECT epa.aportante FROM EntidadPagadora epa,Empresa empr				 
+            WHERE epa.empresa.idEmpresa= empr.idEmpresa
+            and empr.persona.tipoIdentificacion = :tipoIdentificacion
+            AND empr.persona.numeroIdentificacion = :numeroIdentificacion 
+        </query>
+    </named-query>
+	
+	
+    <!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	
+    <named-native-query name="Novedades.Empleador.consultarEmailEmpleadores">
+        <query>
+            Select u.ubiEmail FROM Empleador emp
+            JOIN Empresa e ON e.empId = emp.empEmpresa
+            JOIN Persona p ON p.perId = e.empPersona
+            JOIN Ubicacion u ON u.ubiId = p.perUbicacionPrincipal
+            where emp.empId IN (:idEmpleadores)
+        </query>
+    </named-native-query>
+
+    <named-native-query
+        name="Empleador.empleador.consultarActivoCeroTrabajadores">
+        <query>
+            Select e.empId, e.empFechaGestionDesafiliacion FROM Empleador e
+            WHERE e.empEstadoEmpleador =:estadoEmpleador
+            AND e.empFechaGestionDesafiliacion IS NOT NULL
+        </query>
+    </named-native-query>
+	
+    <named-native-query name="Empleador.consultar.variablesAdicionalesRestantesCabeceraVista360">
+        <description>consulta los valores para la clasificación y el estado de la solicitud de un empleador dado</description>
+        <query>
+            SELECT 
+            (SELECT TOP(1) sae.saeEstadoSolicitud FROM SolicitudAfiliaciEmpleador sae 
+            WHERE sae.saeEmpleador = empl.empId ORDER BY sae.saeId DESC) AS estadoSolicitud,
+            (SELECT TOP(1) sol.solClasificacion FROM SolicitudAfiliaciEmpleador sae 
+            JOIN Solicitud sol ON sae.saeSolicitudGlobal = sol.solId
+            WHERE sae.saeEmpleador = empl.empId ORDER BY sae.saeId DESC) AS	clasificacion,
+            empl.empTrasladoCajasCompensacion
+            FROM Empleador empl
+            JOIN Empresa emp ON empl.empEmpresa = emp.empId
+            JOIN Persona per ON emp.empPersona = per.perId
+            WHERE per.perTipoIdentificacion = :tipoIdentificacion
+            AND per.perNumeroIdentificacion = :numeroIdentificacion
+        </query>
+    </named-native-query>
+
+    <named-native-query
+        name="Novedades.Empleador.consultarEmpleadoresTipoNumeroId">
+        <description>Consultar los datos de tipo y número de identificación de una lista de Empleadores.</description>
+        <query>
+            SELECT per.perTipoIdentificacion, per.perNumeroIdentificacion 
+            FROM Empleador epl
+            JOIN Empresa epr ON epr.empId = epl.empEmpresa
+            JOIN Persona per ON per.perId = epr.empPersona 
+            WHERE epl.empId IN (:idEmpleadores)
+        </query>
+    </named-native-query>
+    <named-native-query name="Empleador.consultar.ubicacion.empresa">
+        <query> 
+            Select ubi.ubiId, ubi.ubiAutorizacionEnvioEmail, ubi.ubiCodigoPostal, 
+            ubi.ubiDireccionFisica, ubi.ubiEmail, ubi.ubiIndicativoTelFijo, 
+            ubi.ubiTelefonoCelular, ubi.ubiTelefonoFijo, ubi.ubiMunicipio, 
+            ubi.ubiDescripcionIndicacion,ube.ubeTipoUbicacion 
+            FROM Empresa emp 
+            JOIN Persona per ON emp.empPersona=per.perid
+            JOIN UbicacionEmpresa ube ON ube.ubeEmpresa=emp.empId
+            JOIN Ubicacion ubi ON  ubi.ubiId = ube.ubeUbicacion
+            WHERE
+            ube.ubeTipoUbicacion=:tipoUbicacion  
+            AND per.perId = :idPersona
+        </query> 
+    </named-native-query>
+	
+    <named-native-query name="Empleador.consultarSolicitudesAfiliacion.vista360">
+        <description>Solicitudes de afiliacion empleador Vista 360</description>
+        <query>
+            SELECT  
+            sol.solId, 
+            sol.solNumeroRadicacion, 
+            sol.solFechaRadicacion, 
+            sae.saeEstadoSolicitud, 
+            sol.solTipoTransaccion
+            FROM SolicitudAfiliaciEmpleador sae
+            JOIN Solicitud sol ON sae.saeSolicitudGlobal = sol.solId
+            JOIN Empleador empl ON sae.saeEmpleador = empl.empId
+            JOIN Empresa empr ON empl.empEmpresa = empr.empId
+            JOIN Persona per ON empr.empPersona = per.perId
+            WHERE per.perTipoIdentificacion =:tipoIdentificacion
+            AND per.perNumeroIdentificacion  =:numeroIdentificacion
+            AND (sol.solTipoTransaccion =:tipoTransaccion OR :tipoTransaccion IS NULL )
+            AND (sae.saeEstadoSolicitud =:estadoAfiliacion OR :estadoAfiliacion IS NULL)
+            AND (:fechaRadicacion IS NULL OR CAST(sol.solFechaRadicacion AS DATE)=CAST(:fechaRadicacion AS DATE))
+            AND ( (CAST(sol.solFechaRadicacion AS DATE) &gt;= CAST(:fechaInicioRadicacion AS DATE) OR :fechaInicioRadicacion IS NULL) AND
+            (CAST(sol.solFechaRadicacion AS DATE) &lt; CAST(:fechaFinRadicacion AS DATE) OR :fechaFinRadicacion IS NULL)
+            )
+					
+        </query>
+        <hint name="fechaRadicado" value="sol.solFechaRadicacion"/>
+    </named-native-query>
+	
+    <named-native-query name="Empleador.consultarSolicitudesNovedad.vista360">
+        <description>Solicitudes de novedades empleador Vista 360</description>
+        <query>
+            SELECT 
+            sol.solId, 
+            sol.solNumeroRadicacion, 
+            sol.solFechaRadicacion, 
+            sno.snoEstadoSolicitud, 
+            sol.solTipoTransaccion
+            FROM SolicitudNovedadEmpleador sne
+            JOIN SolicitudNovedad sno ON sne.sneIdSolicitudNovedad = sno.snoId
+            JOIN Solicitud sol ON sno.snoSolicitudGlobal = sol.solId
+            JOIN Empleador empl ON sne.sneIdEmpleador = empl.empId
+            JOIN Empresa empr ON empl.empEmpresa = empr.empId
+            JOIN Persona per ON empr.empPersona = per.perId
+            WHERE per.perTipoIdentificacion =:tipoIdentificacion
+            AND per.perNumeroIdentificacion =:numeroIdentificacion
+            AND (sol.solTipoTransaccion =:tipoTransaccion OR :tipoTransaccion IS NULL )
+            AND (sno.snoEstadoSolicitud =:estadoAfiliacion OR :estadoAfiliacion IS NULL)
+            AND (:fechaRadicacion IS NULL OR CAST(sol.solFechaRadicacion AS DATE)=CAST(:fechaRadicacion AS DATE))
+            AND ( (CAST(sol.solFechaRadicacion AS DATE) &gt;= CAST(:fechaInicioRadicacion AS DATE) OR :fechaInicioRadicacion IS NULL) AND
+            (CAST(sol.solFechaRadicacion AS DATE) &lt; CAST(:fechaFinRadicacion AS DATE) OR :fechaFinRadicacion IS NULL)
+            )						
+        </query>
+        <hint name="fechaRadicado" value="sol.solFechaRadicacion"/>
+    </named-native-query>
+	
+    <named-native-query name="Empleador.consultarSolicitudesAportes.vista360">
+        <description>Solicitudes de aportes empleador Vista 360</description>
+        <query>
+            SELECT 
+            sol.solId, 
+            sol.solNumeroRadicacion, 
+            sol.solFechaRadicacion, 
+            soa.soaEstadoSolicitud, 
+            sol.solTipoTransaccion 
+            FROM SolicitudAporte soa
+            JOIN Solicitud sol ON soa.soaSolicitudGlobal = sol.solId
+            WHERE soa.soaTipoIdentificacion =:tipoIdentificacion
+            AND soa.soaNumeroIdentificacion =:numeroIdentificacion
+            AND (sol.solTipoTransaccion =:tipoTransaccion OR :tipoTransaccion IS NULL )
+            AND (soa.soaEstadoSolicitud =:estadoAfiliacion OR :estadoAfiliacion IS NULL)
+            AND (:fechaRadicacion IS NULL OR CAST(sol.solFechaRadicacion AS DATE)=CAST(:fechaRadicacion AS DATE))
+            AND ( (CAST(sol.solFechaRadicacion AS DATE) &gt;= CAST(:fechaInicioRadicacion AS DATE) OR :fechaInicioRadicacion IS NULL) AND
+            (CAST(sol.solFechaRadicacion AS DATE) &lt; CAST(:fechaFinRadicacion AS DATE) OR :fechaFinRadicacion IS NULL)
+            )			
+            AND soa.soaTipoSolicitante = 'EMPLEADOR'
+            ORDER BY sol.solFechaRadicacion DESC
+        </query>
+    </named-native-query>
+	
+    <named-native-query name="Empleador.consultarComunicadosSolicitudesEmpleador.vista360">
+        <description></description>
+        <query>
+            SELECT 
+            pco.pcoAsunto, 
+            com.comFechaComunicado, 
+            com.comDestinatario, 
+            com.comEstadoEnvio 
+            FROM dbo.Comunicado com
+            JOIN dbo.PlantillaComunicado pco ON  com.comPlantillaComunicado = pco.pcoId
+            WHERE com.comSolicitud = :idSolicitud		
+        </query>
+    </named-native-query>
+	
+    <named-native-query name="Empleador.consultarCantidadTrabajadoresActivosEmpleador">
+        <description>Consulta la cantidad de trabajdores activos que tiene un empleador dado su id </description>
+        <query>
+            SELECT count(roa.roaId) as cantidadTrabajadores 
+            FROM RolAfiliado roa
+            WHERE roa.roaEstadoAfiliado = 'ACTIVO'
+            AND roa.roaEmpleador = :idEmpleador
+        </query>
+    </named-native-query>
+
+    <named-native-query
+        name="consultar.empleador.by.estado.caja.tipo.nro.identificacion.razon.social"
+        result-set-mapping="consultar.empleador.by.estado.caja.tipo.nro.identificacion.razon.social.mapping">
+        <query>
+            SELECT *
+            FROM (
+            SELECT *, CONCAT(dato.tipoIdentificacion,'|',dato.numeroIdentificacion,'|',dato.razonSocial,'|',dato.estadoEmpleador) AS filtroTexto
+            FROM (
+            SELECT empl.empId AS idEmpleador,
+            emp.empId AS idEmpresa,
+            per.perId AS idPersona,
+            per.perTipoIdentificacion AS tipoIdentificacion,
+            per.perNumeroIdentificacion AS  numeroIdentificacion,
+            per.perDigitoVerificacion AS digitoVerificacion,
+            CASE WHEN per.perRazonSocial IS NULL
+            THEN RTrim(Coalesce(per.perPrimerNombre + ' ','') 
+            + Coalesce(per.perSegundoNombre + ' ', '')
+            + Coalesce(per.perPrimerApellido + ' ', '')
+            + Coalesce(per.perSegundoApellido, ''))
+            ELSE per.perRazonSocial 
+            END AS razonSocial, 
+            CASE WHEN est.empEstadoEmpleador IS NULL
+            THEN 'NO_FORMALIZADO_CON_INFORMACION'
+            ELSE est.empEstadoEmpleador
+            END AS estadoEmpleador
+            FROM Empresa emp
+            LEFT JOIN Empleador empl ON (empl.empEmpresa = emp.empId)
+            JOIN Persona per ON (emp.empPersona  = per.perId)
+            JOIN VW_EstadoAfiliacionEmpleadorCaja est ON (per.perId = est.perId)
+            ) dato
+            ) empresas
+            WHERE empresas.estadoEmpleador = :estadoEmpleadorCaja
+            AND empresas.tipoIdentificacion = :tipoIdentificacion
+            AND (1 = (CASE WHEN :numeroIdentificacion IS NULL THEN 1 ELSE 0 END) OR (empresas.numeroIdentificacion = :numeroIdentificacion))
+            AND (1 = (CASE WHEN :razonSocial IS NULL THEN 1 ELSE 0 END) OR (empresas.razonSocial LIKE :razonSocial))
+            AND (1 = (CASE WHEN :textoFiltro IS NULL THEN 1 ELSE 0 END) OR (empresas.filtroTexto LIKE :textoFiltro))
+        </query>
+        <hint name="tipoIdentificacion" value="tipoIdentificacion" />
+        <hint name="numeroIdentificacion" value="numeroIdentificacion" />
+        <hint name="razonSocial" value="razonSocial" />
+        <hint name="estado" value="estadoEmpleador" />
+    </named-native-query>
+    
+    <named-native-query name="Empresa.razonSocial.buscarTodos.nativa"
+                        result-set-mapping="Empresa.consultar.por.tipo.identificacion.numero.nativa.Mapping">
+        <description>Consulta una Persona por tipo y número de Identificación dado un empleador</description>
+        <query>
+            SELECT emp.*,
+            per.*,
+            ubi.*,
+            cii.*,
+            est.empEstadoEmpleador estadoEmpleador
+            FROM Empresa emp
+            INNER JOIN Persona per ON per.perId = emp.empPersona
+            LEFT JOIN Ubicacion ubi ON ubi.ubiId = per.perUbicacionPrincipal
+            LEFT JOIN CodigoCIIU cii ON cii.ciiId = emp.empCodigoCIIU			
+            LEFT JOIN VW_EstadoAfiliacionEmpleadorCaja est ON est.perId = per.perId
+            LEFT JOIN Empleador empl ON empl.empEmpresa = emp.empId
+            WHERE empl.empId IS NULL
+            AND per.perRazonSocial like :razonSocial
+            ORDER BY per.perRazonSocial
+        </query>
+    </named-native-query>
+	
+    <named-native-query name="Empleador.razonSocial.buscarTodos.nativa"
+                            result-set-mapping="Empleador.razonSocial.buscarTodos.nativa.Mapping">
+        <description>Consulta una Persona por tipo y número de Identificación dado un empleador</description>
+        <query>
+            SELECT per.*,
+            emp.*,
+            empl.empEstadoEmpleador,
+            empl.empExpulsionSubsanada,
+            empl.empFechaCambioEstadoAfiliacion,
+            empl.empMotivoDesafiliacion,
+            empl.empNumeroTotalTrabajadores,
+            empl.empPeriodoUltimaNomina,
+            empl.empValorTotalUltimaNomina,
+            empl.empEmpresa,
+            empl.empFechaRetiro,
+            empl.empFechaSubsanacionExpulsion,
+            empl.empMotivoSubsanacionExpulsion,
+            empl.empCantIngresoBandejaCeroTrabajadores,
+            empl.empFechaRetiroTotalTrabajadores,
+            empl.empFechaGestionDesafiliacion,
+            empl.empMedioPagoSubsidioMonetario,
+            empl.empValidarSucursalPila,
+            empl.empDiaHabilVencimientoAporte,
+            empl.empMarcaExpulsion,
+            empl.empRetencionSubsidioActiva,
+            empl.empMotivoRetencionSubsidio,
+            empl.empMotivoInactivaRetencionSubsidio,
+            empl.empCanalReingreso,
+            empl.empReferenciaAporteReingreso,
+            empl.empTrasladoCajasCompensacion,
+            ubi.*,
+            cii.*,
+            est.empEstadoEmpleador estadoEmpleador,
+            empl.empId idEmpleador,
+            empl.empTrasladoCajasCompensacion trasladoCajasCompensacion
+            FROM Persona per
+            INNER JOIN Empresa emp ON emp.empPersona = per.perId			 
+            INNER JOIN Empleador empl ON emp.empId = empl.empEmpresa			
+            LEFT JOIN Ubicacion ubi ON ubi.ubiId = per.perUbicacionPrincipal
+            LEFT JOIN CodigoCIIU cii ON cii.ciiId = emp.empCodigoCIIU			
+            LEFT JOIN VW_EstadoAfiliacionEmpleadorCaja est ON est.perId = per.perId
+            WHERE per.perRazonSocial like :razonSocial
+            ORDER BY per.perRazonSocial
+        </query>
+    </named-native-query>
+
+    <named-query name="Empresa.consultar.persona.por.empleador">
+        <description>Consulta una Persona por la id del empleador</description>
+        <query>
+            SELECT p 
+            FROM Persona p,Empleador empl, Empresa e
+            WHERE empl.idEmpleador = :idEmpleador
+            and p.idPersona = e.persona.idPersona
+            and e.idEmpresa = empl.empresa.idEmpresa
+        </query>
+    </named-query>
+
+    <!-- certificados masivos -->
+
+    <named-native-query name="empleador.consultar.afiliados.certificadoMasivo" 
+        result-set-mapping="empleador.consultar.afiliados.certificadoMasivo.mapping">
+        <query>
+            select
+                min(p.perTipoIdentificacion) as tipoIdentificacion,
+                p.perNumeroIdentificacion as numeroIdentificacion,
+                concat(
+                    min(p.perPrimerNombre),
+                    ' ',
+                    min(p.perSegundoNombre),
+                    ' ',
+                    min(p.perPrimerApellido),
+                    ' ',
+                    min(p.perSegundoApellido)
+                ) as nombreCompleto,
+                convert(date,max(roaFechaAfiliacion)) as fechaAfiliacion,
+                max(r.roaId) as rolId
+            from
+                Solicitud s
+                join SolicitudAfiliacionPersona sap on s.solid = sap.sapsolicitudGlobal
+                join RolAfiliado r on r.roaid = sap.sapRolAfiliado
+                join Afiliado a on a.afiId = r.roaAfiliado
+                join Persona p on p.perId = a.afiPersona
+            where
+                (
+                    s.solResultadoProceso = 'APROBADA'
+                    AND sap.sapEstadoSolicitud = 'CERRADA'
+                )
+                and roaFechaAfiliacion between :fechaDesde
+                and :fechaHasta
+                and roaEmpleador = :idEmpleador
+            group by
+                perNumeroIdentificacion
+        </query>
+    </named-native-query>
+
+    <named-native-query name = "empleador.consultar.certificcados.masivos" 
+        result-set-mapping ="empleador.consultar.certificcados.masivos.mapping">
+        <query>
+            select ccmId as controlId, 
+                ccmIdArchivoECM  as identificacionArchivo, 
+                ccmFechaGeneracion as fechaCargue, 
+                ccmTipoCertificado as tipoCertificado,
+                'Exitoso' as estado,
+                '100' as porcentaje,
+                ccmNombreCargue as nombreCargue
+            from ControlCertificadosMasivos 
+                where ccmIdEmpleador = :idEmpleador
+        </query>
+    </named-native-query>
+    
+    <named-native-query name="Empleador.buscar.fecha.actualizacion">
+        <query>
+        SELECT TOP 1 ee.eecFechaCambioEstado FROM Empleador empl 
+        JOIN empresa e on e.empId = empl.empEmpresa
+        JOIN persona p on p.perId = e.empPersona
+        JOIN EstadoAfiliacionEmpleadorCaja ee on (ee.eecPersona = p.perid and  eecEstadoAfiliacion = empl.empEstadoEmpleador)
+        WHERE empl.empId = :idEmp
+        order by ee.eecFechaCambioEstado desc
+        </query>
+    </named-native-query>
+
+    <!-- Result Mapping -->
+    <sql-result-set-mapping name="consultar.empleador.by.estado.caja.tipo.nro.identificacion.razon.social.mapping">
+        <constructor-result target-class="com.asopagos.dto.modelo.EmpleadorModeloDTO">
+            <column name="idEmpleador" class="java.lang.Long"/>
+            <column name="idEmpresa" class="java.lang.Long"/>
+            <column name="idPersona" class="java.lang.Long"/>
+            <column name="tipoIdentificacion" class="java.lang.String"/>
+            <column name="numeroIdentificacion" class="java.lang.String"/>
+            <column name="razonSocial" class="java.lang.String"/>
+            <column name="digitoVerificacion" class="java.lang.Short"/>
+            <column name="estadoEmpleador"  class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+    
+    <sql-result-set-mapping name="Empleador.consultar.por.tipo.identificacion.numero.nativa.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Empresa"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Empleador"></entity-result>       
+        <entity-result entity-class="com.asopagos.entidades.ccf.core.Ubicacion"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.transversal.core.CodigoCIIU"></entity-result>
+        <column-result name="estadoEmpleador" class="java.lang.String" />
+        <column-result name="idEmpleador" class="java.lang.Long" />     
+        <column-result name="trasladoCajasCompensacion" class="java.lang.Boolean" />     
+    </sql-result-set-mapping>
+    
+    <sql-result-set-mapping name="Empresa.consultar.por.tipo.identificacion.numero.nativa.Mapping">                
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Empresa"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.core.Ubicacion"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.transversal.core.CodigoCIIU"></entity-result>
+        <column-result name="estadoEmpleador" class="java.lang.String" />     
+    </sql-result-set-mapping>
+    
+    <sql-result-set-mapping name="Empleador.razonSocial.buscarTodos.nativa.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Empresa"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Empleador"></entity-result>       
+        <entity-result entity-class="com.asopagos.entidades.ccf.core.Ubicacion"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.transversal.core.CodigoCIIU"></entity-result>
+        <column-result name="estadoEmpleador" class="java.lang.String" />   
+        <column-result name="idEmpleador" class="java.lang.Long" />
+        <column-result name="trasladoCajasCompensacion" class="java.lang.Boolean" />     
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="empleador.consultar.afiliados.certificadoMasivo.mapping">
+        <column-result name="tipoIdentificacion" class="java.lang.String"/>
+        <column-result name="numeroIdentificacion" class="java.lang.String"/>
+        <column-result name="nombreCompleto" class="java.lang.String"/>
+        <column-result name="fechaAfiliacion" class="java.util.Date"/>
+        <column-result name="rolId" class="java.lang.Long"/>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="empleador.consultar.certificcados.masivos.mapping">
+        <constructor-result target-class="com.asopagos.dto.ControlCertificadosMasivosDTO">
+            <column name="controlId" class="java.lang.Long"/>
+            <column name="identificacionArchivo" class="java.lang.String"/>
+            <column name="fechaCargue" class="java.util.Date"/>
+            <column name="tipoCertificado" class="java.lang.String"/>
+            <column name="estado" class="java.lang.String"/>
+            <column name="porcentaje" class="java.lang.String"/>
+            <column name="nombreCargue" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+    
+</entity-mappings>

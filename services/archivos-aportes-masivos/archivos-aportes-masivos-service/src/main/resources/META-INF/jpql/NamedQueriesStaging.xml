@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+<named-query name="Aportes.masivos.Consultar.RegistroGeneral.listadoIds">
+	   <description>Consulta de registros generales por listado de IDs</description>
+	   <query>
+	       SELECT new com.asopagos.dto.modelo.RegistroGeneralModeloDTO(reg)
+	       FROM RegistroGeneral reg
+	       WHERE reg.id IN (:idsRegistrosGeneral)
+	   </query>
+	</named-query>
+
+<named-native-query name="Aportes.Consultar.RegistroGeneral.datosPlanillaAporteMasivo">
+		<description>Consulta de datos de planilla para información de aporte original en vistas 360</description>
+		<query>
+			SELECT reg.regRegistroControl, reg.regOUTEstadoArchivo
+			FROM staging.RegistroGeneral reg			
+			WHERE reg.regId = :idRegistroGeneral
+		</query>
+</named-native-query>
+</entity-mappings>

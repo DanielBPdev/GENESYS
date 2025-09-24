@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<!-- INICIO CONSULTAS 404 -->
+	<named-query
+		name="PilaBandejaService.Empleador.BusquedaEmpleadorCeroTrabajadoresActivos">
+		<description>Busca empleadores con 0 afiliados (Sin parametros)</description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.EmpCeroTrabajadoresActivosDTO
+			(
+        		empl.empresa.persona.tipoIdentificacion, 
+        		empl.empresa.persona.numeroIdentificacion, 
+        		empl.empresa.persona.razonSocial,        		
+        		empl.empresa.persona.digitoVerificacion,
+        		empl.fechaCambioEstadoAfiliacion,
+        		empl.idEmpleador,
+				empl.cantIngresoBandejaCeroTrabajadores, 
+				
+				<!-- fecha ingreso a bandeja -->
+				empl.fechaRetiroTotalTrabajadores, 
+				<!-- NULL es No gestionado -->
+				empl.fechaGestionDesafiliacion, 
+				
+				<!-- Fecha ultimo recaudo -->
+        		(SELECT MAX(apor.fechaRecaudo) 
+        			FROM AporteGeneral apor 
+        			WHERE apor.idEmpresa = empl.empresa.idEmpresa ) AS fechaUltimorecaudo,
+        			
+        	    <!-- Periodo ultimo recaudo -->
+        		(SELECT MAX(apor.periodoAporte) 
+        			FROM AporteGeneral apor	WHERE apor.idEmpresa = empl.empresa.idEmpresa
+        			AND apor.fechaRecaudo = (SELECT MAX(apor.fechaRecaudo) 
+        			FROM AporteGeneral apor 
+        			WHERE apor.idEmpresa = empl.empresa.idEmpresa ) ) AS peridoUltimoRecaudo,
+        			
+				<!-- Historico de aportes -->
+				( SELECT COUNT(*) FROM AporteGeneral apor 
+				  WHERE apor.idEmpresa = empl.empresa.idEmpresa
+				  AND apor.fechaRecaudo &gt;= CAST(empl.fechaCambioEstadoAfiliacion AS date)) AS historicoAportes,
+				  
+				<!-- Historico de afiliaciones -->  
+				( SELECT COUNT(*) FROM RolAfiliado roa
+				  WHERE roa.empleador.idEmpleador = empl.idEmpleador
+				  AND roa.fechaAfiliacion &gt;= CAST(empl.fechaCambioEstadoAfiliacion AS date)) AS historicoAfiliaciones,
+
+				<!-- Cantidad trabajadores activos (siempre será 0) pero se requiere al recorrer el resulset -->
+				(SELECT COUNT(*) FROM RolAfiliado roa
+				 WHERE roa.estadoAfiliado = 'ACTIVO'
+				 AND roa.empleador.idEmpleador = empl.idEmpleador) AS cantidadActivos,
+
+				<!-- Cantidad de roles afiliados que tiene el empleador se requiere al recorrer el resulset -->
+				(SELECT COUNT(*) FROM RolAfiliado roa
+				 WHERE roa.empleador.idEmpleador = empl.idEmpleador) AS cantidadRolafiliados,
+				 
+				<!-- Estado de cartera -->
+				(CASE WHEN  
+					 EXISTS (
+						SELECT car FROM Cartera car
+						WHERE car.idPersona = empl.empresa.persona.idPersona
+						AND car.estadoCartera = 'MOROSO'
+						AND car.estadoOperacion = 'VIGENTE'
+					) THEN 'MOROSO' ELSE 'AL_DIA' END 
+				) AS estadoCarteraEmpleador 
+			)
+			FROM Empleador empl		
+			WHERE empl.estadoEmpleador = :estado
+			AND ( SELECT COUNT(*) FROM RolAfiliado roa WHERE roa.estadoAfiliado = 'ACTIVO'
+				  AND roa.empleador.idEmpleador = empl.idEmpleador ) = 0 	
+			AND (:nombreEmpresa IS NULL OR empl.empresa.persona.razonSocial = :nombreEmpresa) 
+			AND (:numeroIdentificacion IS NULL OR empl.empresa.persona.numeroIdentificacion = :numeroIdentificacion )
+			AND (:tipoIdentificacion IS NULL OR empl.empresa.persona.tipoIdentificacion = :tipoIdentificacion )	
+			AND (:digitoVerificacion IS NULL OR empl.empresa.persona.digitoVerificacion = :digitoVerificacion )
+			
+			AND (:fechaInicioIngresoBandeja IS NULL OR empl.fechaRetiroTotalTrabajadores &gt;= :fechaInicioIngresoBandeja )
+			AND (:fechaFinIngresoBandeja IS NULL OR empl.fechaRetiroTotalTrabajadores &lt;= :fechaFinIngresoBandeja )
+									
+ 			ORDER BY fechaRetiroTotalTrabajadores DESC		
+		</query>
+		<hint name="tipoId" value="per.tipoId"></hint>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.Empleador.BusquedaRolAfiliadoRetiradoPorPila">
+		<description> Busca el canal con el cual fue retirado el ultimo trabajador que no esta activo </description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.ConsultaCanalDeRetiroEmpleadorDTO 
+			( roa.idRolAfiliado, sol.canalRecepcion )
+			FROM RolAfiliado roa, SolicitudNovedadPersona snp, SolicitudNovedad sn, Solicitud sol
+			WHERE roa.idRolAfiliado = snp.idRolAfiliado
+			AND snp.idSolicitudNovedad = sn.idSolicitudNovedad
+			AND sn.solicitudGlobal = sol.idSolicitud
+			AND roa.empleador.idEmpleador = :idEmpleador
+			AND roa.fechaRetiro = 
+			( SELECT MAX(roa2.fechaRetiro) 
+				FROM RolAfiliado roa2
+				WHERE roa2.empleador.idEmpleador = :idEmpleador
+			)
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.Empleador.ActualizarFechaGestionEmpleador">
+		<description>Actualiza la fecha de gestion en bandeja cero, NULL es no gestionada, NOT NULL es gestionada</description>
+		<query>
+			UPDATE Empleador empl
+           	SET empl.fechaGestionDesafiliacion = :fechaGestion
+           	WHERE empl.idEmpleador IN (:idEmpleadores) 
+        </query>
+	</named-query>
+
+
+	<named-query
+		name="PilaBandejaService.Empleador.ConsultarEmpleadoresBandejaGestionada">
+		<description>Retorna los empleadores de la bandeja gestionada</description>
+		<query>
+			SELECT empl
+			FROM Empleador empl
+			WHERE empl.idEmpleador IN (:idEmpleadores)
+        </query>
+	</named-query>
+	<!-- FIN CONSULTAS 404 -->
+
+
+	<named-query
+		name="PilaBandejaService.ActualizacionDatosEmpleador.BusquedaTodosArgumentos">
+		<description>Busca los registros de actualizacionDatosEmpleador con todos los argumento incluido el DV</description>
+		<query>
+              SELECT new com.asopagos.dto.aportes.ActualizacionDatosEmpleadorModeloDTO(registro, emp, per)
+              FROM ActualizacionDatosEmpleador registro, Empresa emp, Persona per
+              WHERE registro.estadoInconsistencia =com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION 
+              AND (:tipoDocumento IS NULL OR per.tipoIdentificacion = :tipoDocumento)
+              AND (:numeroIdentificacion IS NULL OR per.numeroIdentificacion = :numeroIdentificacion)
+              AND (:fechaIngresoInicio IS NULL OR registro.fechaIngreso BETWEEN :fechaIngresoInicio AND :fechaIngresoFin)
+              AND (:digitoVerificacion IS NULL OR per.digitoVerificacion = :digitoVerificacion)
+              AND registro.empresa = emp.idEmpresa
+              AND emp.persona.idPersona = per.idPersona
+            
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.ActualizacionDatosEmpleador.BusquedaConNit">
+		<description>Busca los registros de actualizacionDatosEmpleador con identificacio y el DV</description>
+		<query>
+              SELECT new com.asopagos.dto.aportes.ActualizacionDatosEmpleadorModeloDTO(registro.id,emp.idEmpresa,registro.tipoInconsistencia,
+               registro.canalContacto,
+			   registro.estadoInconsistencia, registro.fechaIngreso, registro.fechaRespuesta,registro.observaciones,emp.persona.tipoIdentificacion,
+			    emp.persona.numeroIdentificacion,
+			emp.persona.razonSocial)
+              FROM ActualizacionDatosEmpleador registro,Empresa emp,Persona per
+              WHERE registro.estadoInconsistencia =com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION   
+              AND per.tipoIdentificacion = :tipoDocumento
+              AND per.numeroIdentificacion = :numeroIdentificacion
+              AND per.digitoVerificacion = :digitoVerificacion
+              AND registro.empresa = emp.idEmpresa
+              AND emp.persona.idPersona = per.idPersona
+            
+          
+        </query>
+	</named-query>
+
+	<!-- Busqueda con todos los atributos -->
+	<named-query
+		name="PilaBandejaService.ActualizacionDatosEmpleador.BusquedaIdentificacionSinDV">
+		<description>Busca los registros de actualizacionDatosEmpleador con todos los argumento incluido el DV</description>
+		<query>
+              SELECT new com.asopagos.dto.aportes.ActualizacionDatosEmpleadorModeloDTO(registro.id,emp.idEmpresa,registro.tipoInconsistencia,
+               registro.canalContacto,
+			   registro.estadoInconsistencia, registro.fechaIngreso, registro.fechaRespuesta,registro.observaciones,emp.persona.tipoIdentificacion,
+			    emp.persona.numeroIdentificacion,
+			emp.persona.razonSocial)
+              FROM ActualizacionDatosEmpleador registro,Empresa emp,Persona per
+              WHERE registro.estadoInconsistencia =com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION 
+              AND per.tipoIdentificacion = :tipoDocumento
+              AND per.numeroIdentificacion = :numeroIdentificacion
+              AND registro.empresa = emp.idEmpresa
+              AND emp.persona.idPersona = per.idPersona
+            
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.ActualizacionDatosEmpleador.BusquedaFechas">
+		<description>Busca los registros de actualizacionDatosEmpleador con todos los argumento incluido el DV</description>
+		<query>
+             SELECT new com.asopagos.dto.aportes.ActualizacionDatosEmpleadorModeloDTO(registro.id,emp.idEmpresa,registro.tipoInconsistencia,
+               registro.canalContacto,
+			   registro.estadoInconsistencia, registro.fechaIngreso, registro.fechaRespuesta,registro.observaciones,emp.persona.tipoIdentificacion,
+			    emp.persona.numeroIdentificacion,
+			emp.persona.razonSocial)
+              FROM ActualizacionDatosEmpleador registro,Empresa emp,Persona per
+              WHERE registro.estadoInconsistencia =com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION
+              AND registro.fechaIngreso = :fechaIngreso
+              AND registro.empresa = emp.idEmpresa
+              AND emp.persona.idPersona = per.idPersona
+            
+          
+        </query>
+	</named-query>
+
+	<!-- Busqueda sin Periodo -->
+	<named-query
+		name="PilaBandejaService.ActualizacionDatosEmpleador.BusquedaIdentificacionSinDVFechas">
+		<description>Busca los registros de actualizacionDatosEmpleador con todos los argumento incluido el DV</description>
+		<query>
+             SELECT new com.asopagos.dto.aportes.ActualizacionDatosEmpleadorModeloDTO(registro.id,emp.idEmpresa,registro.tipoInconsistencia,
+               registro.canalContacto,
+			   registro.estadoInconsistencia, registro.fechaIngreso, registro.fechaRespuesta,registro.observaciones,emp.persona.tipoIdentificacion,
+			    emp.persona.numeroIdentificacion,
+			emp.persona.razonSocial)
+              FROM ActualizacionDatosEmpleador registro,Empresa emp,Persona per
+              WHERE registro.estadoInconsistencia =com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION 
+              AND per.tipoIdentificacion = :tipoDocumento
+              AND per.numeroIdentificacion = :numeroIdentificacion
+              AND registro.empresa = emp.idEmpresa
+              AND emp.persona.idPersona = per.idPersona
+              AND registro.fechaIngreso = :fechaIngreso
+            
+          
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.ActualizacionDatosEmpleador.BusquedaSinArgumentos">
+		<description>Busca los registros de actualizacionDatosEmpleador con todos los argumento incluido el DV</description>
+		<query>
+              SELECT new com.asopagos.dto.aportes.ActualizacionDatosEmpleadorModeloDTO(registro.id,emp.idEmpresa,registro.tipoInconsistencia,
+               registro.canalContacto,
+			   registro.estadoInconsistencia, registro.fechaIngreso, registro.fechaRespuesta,registro.observaciones,emp.persona.tipoIdentificacion,
+			    emp.persona.numeroIdentificacion,
+			emp.persona.razonSocial)
+              FROM ActualizacionDatosEmpleador registro,Empresa emp,Persona per
+              WHERE registro.estadoInconsistencia =com.asopagos.enumeraciones.pila.EstadoGestionInconsistenciaEnum.PENDIENTE_GESTION 
+              AND registro.empresa = emp.idEmpresa
+              AND emp.persona.idPersona = per.idPersona
+            
+          
+        </query>
+	</named-query>
+
+	<named-query name="Empleador.Persona.consultarPersona">
+		<query>
+			SELECT per FROM Persona per
+			WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-query>
+
+	<named-query name="Ubicacion.Municipio.consultarMunicipio">
+		<query>
+			SELECT mun 
+			FROM Municipio mun
+			WHERE mun.codigo = :codCiudad
+		</query>
+	</named-query>
+
+	<named-query name="Ubicacion.Municipio.consultarDepartamento">
+		<query>
+			SELECT dep 
+			FROM Departamento dep
+			WHERE dep.codigo = :codDpto
+		</query>
+	</named-query>
+
+	<named-query name="PilaBandejaService.CrearAportante.BuscarEmpresaPersona">
+		<description>Consultar empresas creadas a partir de una persona</description>
+		<query>
+			SELECT e 
+			FROM Empresa e, Persona p 
+			WHERE e.persona.idPersona = p.idPersona
+			AND p.idPersona = :idPersona
+		</query>
+	</named-query>
+
+	<named-query name="Empleador.Empresa.consultarEmpresa">
+		<query>
+			SELECT emp FROM Empresa emp 
+			WHERE emp.idEmpresa = :idEmpresa
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.ActualizacionDatosEmpleador.BusquedaPorId">
+		<query>
+			SELECT registro FROM ActualizacionDatosEmpleador registro
+			WHERE registro.id = :id
+		</query>
+	</named-query>
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="PilaBandejaService.Empleador.BusquedaEmpleadorRetiradoConAportes">
+		<description>Consulta de los empleadores no formalizados con aportes</description>
+		<query>
+			SELECT * 
+			FROM (
+				SELECT per.perTipoIdentificacion, 
+					per.perNumeroIdentificacion, 
+					per.perRazonSocial, 
+					eae.empEstadoEmpleador,
+					(SELECT MAX(apg.apgFechaProcesamiento) FROM dbo.AporteGeneral apg WHERE apg.apgEmpresa = emp.empId) fechaAporte,
+					CASE WHEN eml.empId IS NULL 
+						THEN (SELECT MIN(apg.apgFechaProcesamiento) FROM dbo.AporteGeneral apg WHERE apg.apgEmpresa = emp.empId) 
+						ELSE (SELECT MIN(apg.apgFechaProcesamiento) FROM dbo.AporteGeneral apg WHERE apg.apgEmpresa = emp.empId 
+							AND apg.apgPeriodoAporte > CONVERT(VARCHAR(7), eml.empFechaRetiro, 121))
+					END fechaIngresoBandeja,
+					per.perDigitoVerificacion, 
+					per.perPrimerNombre,
+					per.perSegundoNombre,
+					per.perPrimerApellido,
+					per.perSegundoApellido
+				FROM VW_EstadoAfiliacionEmpleadorCaja eae
+				INNER JOIN dbo.Empresa emp ON emp.empPersona = eae.perId
+				INNER JOIN dbo.Persona per ON per.perId = eae.perId
+				LEFT JOIN dbo.Empleador eml ON eml.empEmpresa = emp.empId
+				WHERE eae.empEstadoEmpleador IN ('NO_FORMALIZADO_SIN_AFILIACION_CON_APORTES', 'NO_FORMALIZADO_RETIRADO_CON_APORTES')
+			) AS nfa
+			WHERE fechaIngresoBandeja &gt;= :fechaEntradaBandeja 
+			AND ( :numeroIdentificacion IS NULL OR perNumeroIdentificacion = :numeroIdentificacion )
+			AND ( :tipoIdentificacion IS NULL OR perTipoIdentificacion = :tipoIdentificacion )	
+			AND ( :digitoVerificacion IS NULL OR perDigitoVerificacion = :digitoVerificacion )
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaBandejaService.Persona.existenciaPersona"
+	   result-set-mapping="PilaBandejaService.Persona.existenciaPersona.mapping">
+	   <description>Consulta de la existencia de una persona en BD</description>
+	   <query>
+	       SELECT CASE WHEN perId IS NOT NULL THEN 1 ELSE 0 END existe
+	       FROM Persona
+	       WHERE perTipoIdentificacion = :tipoId
+	       AND perNumeroIdentificacion = :numId
+	   </query>
+	</named-native-query>
+	
+	<!-- ESPACIO PARA EL MAPEO DE NAMED QUERIES NATIVOS -->
+	<sql-result-set-mapping name="PilaBandejaService.Persona.existenciaPersona.mapping">
+	   <column-result name="existe" class="java.lang.Boolean"/>
+	</sql-result-set-mapping>
+	
+	
+	<!-- Refactor PILA fase 3 -->
+	<named-query name="PilaBandejaService.BandejaTransitoriaGestion.BuscarFallido">
+		<description>Consultar la bandeja de gestion transitoria con tx fallidas</description>
+		<query>
+			SELECT pet 
+			FROM PilaEstadoTransitorio pet 
+			WHERE pet.estado = com.asopagos.enumeraciones.aportes.PilaEstadoTransitorioEnum.FALLIDO
+		</query>
+	</named-query>
+	
+	<named-query name="PilaBandejaService.BandejaTransitoriaGestion.consultarById">
+		<description>Consultar la bandeja de gestion transitoria por id</description>
+		<query>
+			SELECT pet 
+			FROM PilaEstadoTransitorio pet 
+			WHERE pet.id = :id
+		</query>
+	</named-query>
+	
+	<named-native-query name="PilaBandejaService.ExcepcionNovedadPila.ConsultarPorIdTempNovedad"
+	   result-set-mapping="PilaBandejaService.ExcepcionNovedadPila.ConsultarPorIdTempNovedad.mapping">
+	   <description>Consulta de la existencia de una persona en BD</description>
+	   <query>
+	       SELECT enpId, enpIdTempNovedad, enpExcepcion, enpFecha 
+	       FROM ExcepcionNovedadPila 
+	       WHERE enpIdTempNovedad = :idTempNovedad
+	   </query>
+	</named-native-query>
+	<sql-result-set-mapping name="PilaBandejaService.ExcepcionNovedadPila.ConsultarPorIdTempNovedad.mapping">
+		<constructor-result target-class="com.asopagos.dto.modelo.ExcepcionNovedadPilaModeloDTO">
+		   <column name="enpId" class="java.lang.Long"/>
+		   <column name="enpIdTempNovedad" class="java.lang.Long"/>
+		   <column name="enpExcepcion" class="java.lang.String"/>
+		   <column name="enpFecha" class="java.util.Date"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	
+	<named-native-query name="PilaBandejaService.BandejaTransitoriaGestion.actualizarEstadoBandejaTransitoria">
+    	<query>
+    		UPDATE pet
+			SET pet.petestado = 'FALLIDO_REANUDADO', pedFechaReanudado = dbo.GetLocalDate()
+			FROM PilaEstadoTransitorio pet 
+			WHERE pet.petestado = 'FALLIDO'
+			AND pet.petPilaIndicePlanilla = :indicePlanilla
+    	</query>
+    </named-native-query>
+
+	<!-- Fin refactor PILA fase 3 -->
+	
+</entity-mappings>

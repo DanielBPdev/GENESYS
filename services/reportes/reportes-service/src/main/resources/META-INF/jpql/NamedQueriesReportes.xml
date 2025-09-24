@@ -1,0 +1,2467 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->	
+	
+	<named-native-query name="Consultar.categoria.consultarCategoriaActualAfiliadoEnReportes">
+		<query>
+			(SELECT a.*
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta
+			         WHERE cta.ctaAfiliado = :idAfiliado and cta.ctaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliado)
+			UNION
+			(SELECT a.*
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta
+			         WHERE cta.ctaAfiliado = :idAfiliado and cta.ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliado)
+			UNION
+			(SELECT a.*
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta
+			         WHERE cta.ctaAfiliado = :idAfiliado and cta.ctaTipoAfiliado = 'PENSIONADO') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliado and a.ctaTipoAfiliado = 'PENSIONADO')
+			
+		</query>
+	</named-native-query>	
+	
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="Consultar.categoria.idCategoriaAfiliado">
+		<query>
+			select TOP(1) ctaId from CategoriaAfiliado where ctaAfiliado = :idAfiliado
+			and ctaTipoAfiliado = :tipoAfiliado
+			order by ctaFechaCambioCategoria DESC
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Insertar.categoria.datoActualizadoEstadoBeneficiario">
+		<query>
+			insert into CategoriaBeneficiario (ctbBeneficiarioDetalle, ctbTipoBeneficiario, ctbCategoriaAfiliado)
+			values (:beneficiarioDetalle, :tipoBeneficiario, :categoriaAfiliado)
+		</query>
+	</named-native-query>
+	<named-native-query name="Insertar.categoria.datoActualizadoEstadoAfiliado">
+		<query>
+			insert into CategoriaAfiliado (ctaAfiliado, ctaTipoAfiliado, ctaClasificacion, ctaTotalIngresoMesada, ctaEstadoAfiliacion, ctaFechaFinServicioSinAfiliacion, ctaCategoria, ctaMotivoCambioCategoria, ctaFechaCambioCategoria)
+			values (:afiliado, :tipoAfiliado, :clasificacion, :totalIngresoMesada, :estadoAfiliacion, :fechaFinServiciosSinAfiliacion, :categoria, :motivoCambioCategoria, dbo.GetLocalDate())
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliados.transversal.consultarCategoriasAfiliadoSrvTra">
+		<query>
+			SELECT 
+				ctaCategoria, 
+				ctaFechaCambioCategoria 
+			FROM 
+				categoriaAfiliado 
+			WHERE 
+			ctaAfiliado = :idAfiliado
+			AND ctaTipoAfiliado = :tipoAfiliado
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliados.transversal.consultarCategoriasBeneficiarioSrvTra">
+		<query>
+			select 
+				ctaCategoria, 
+				ctaFechaCambioCategoria 
+			from categoriaBeneficiario
+			join categoriaAfiliado on ctbCategoriaAfiliado = ctaId 
+			where ctbBeneficiarioDetalle = :idBeneficiarioDetalle
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.consultarCategoriasBeneficiarioPorTipoAfiliadoSrvTra">
+		<query>
+			select 
+				ctaCategoria, 
+				ctaFechaCambioCategoria 
+			from categoriaBeneficiario
+			join categoriaAfiliado on ctbCategoriaAfiliado = ctaId 
+			where ctbBeneficiarioDetalle = :idBeneficiarioDetalle
+			and ctaTipoAfiliado = :tipoAfiliado
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.actual.categoriaBeneficiarioRespectoAfiliadoPrincipal">
+		<query>
+			(SELECT a.ctaTipoAfiliado, a.ctaCategoria
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta  join categoriaBeneficiario ctb
+						on cta.ctaId = ctb.ctbCategoriaAfiliado
+			         WHERE cta.ctaAfiliado = :idAfiliado
+				and ctb.ctbBeneficiarioDetalle = :idBenDet and cta.ctaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliado)
+			UNION
+			(SELECT a.ctaTipoAfiliado, a.ctaCategoria
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta join categoriaBeneficiario ctb
+			         on cta.ctaId = ctb.ctbCategoriaAfiliado
+			         WHERE cta.ctaAfiliado = :idAfiliado
+				and ctb.ctbBeneficiarioDetalle = :idBenDet and cta.ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliado)
+			UNION
+			(SELECT a.ctaTipoAfiliado, a.ctaCategoria
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta join categoriaBeneficiario ctb
+			         on cta.ctaId = ctb.ctbCategoriaAfiliado
+			         WHERE cta.ctaAfiliado = :idAfiliado
+				and ctb.ctbBeneficiarioDetalle = :idBenDet and cta.ctaTipoAfiliado = 'PENSIONADO') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliado and a.ctaTipoAfiliado = 'PENSIONADO')
+		
+			
+		</query>
+	</named-native-query>
+	<named-native-query name="Consultar.actual.categoriaPropia">
+		<query>
+			(SELECT a.ctaTipoAfiliado, a.ctaCategoria
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta
+			         WHERE cta.ctaAfiliado = :idAfiliado
+				and cta.ctaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliado)
+			UNION
+			(SELECT a.ctaTipoAfiliado, a.ctaCategoria
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta
+			         WHERE cta.ctaAfiliado = :idAfiliado
+				and cta.ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliado)
+			UNION
+			(SELECT a.ctaTipoAfiliado, a.ctaCategoria
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta
+			         WHERE cta.ctaAfiliado = :idAfiliado
+				and cta.ctaTipoAfiliado = 'PENSIONADO') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliado and a.ctaTipoAfiliado = 'PENSIONADO')		
+		</query>
+	</named-native-query>
+	<named-native-query name="Consultar.idAfiliadoSecundario">
+		<query>
+			<!-- select afi.afiId from beneficiario ben 
+			join persona per on ben.benPersona = per.perId
+			join afiliado afi on afi.afiPersona = per.perId
+			where ben.benGrupoFamiliar = (
+				select benGrupoFamiliar from beneficiario join persona on benPersona = perId
+				where perTipoIdentificacion = :tipoIdBeneficiario
+				and perNumeroidentificacion = :numeroIdBeneficiario
+				and benAfiliado = :idAfiliado
+				group by benGrupoFamiliar
+			)
+			and ben.benTipoBeneficiario = 'CONYUGE' -->
+			
+			select benAfiliado from beneficiario join persona on benPersona = perId
+				where perTipoIdentificacion = :tipoIdBeneficiario
+				and perNumeroidentificacion = :numeroIdBeneficiario
+				and benAfiliado != :idAfiliado
+		</query>
+	</named-native-query>
+	<named-native-query name="Consultar.actual.categoriaBeneficiarioRespectoAfiliadoSecundario">
+		<query>
+		(SELECT a.ctaTipoAfiliado, a.ctaCategoria
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta  join categoriaBeneficiario ctb
+						on cta.ctaId = ctb.ctbCategoriaAfiliado
+			         WHERE cta.ctaAfiliado = :idAfiliadoSecundario
+				and ctb.ctbBeneficiarioDetalle = :idBenDet and cta.ctaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliadoSecundario)
+			UNION
+			(SELECT a.ctaTipoAfiliado, a.ctaCategoria
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta join categoriaBeneficiario ctb
+			         on cta.ctaId = ctb.ctbCategoriaAfiliado
+			         WHERE cta.ctaAfiliado = :idAfiliadoSecundario
+				and ctb.ctbBeneficiarioDetalle = :idBenDet and cta.ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliadoSecundario)
+			UNION
+			(SELECT a.ctaTipoAfiliado, a.ctaCategoria
+			  FROM categoriaAfiliado a
+			  JOIN (SELECT MAX(cta.ctaId) AS max_subkey
+			          FROM categoriaAfiliado cta join categoriaBeneficiario ctb
+			         on cta.ctaId = ctb.ctbCategoriaAfiliado
+			         WHERE cta.ctaAfiliado = :idAfiliadoSecundario
+				and ctb.ctbBeneficiarioDetalle = :idBenDet and cta.ctaTipoAfiliado = 'PENSIONADO') b ON b.max_subkey = a.ctaId
+			 WHERE a.ctaAfiliado = :idAfiliadoSecundario and a.ctaTipoAfiliado = 'PENSIONADO')
+		
+					
+		</query>
+	</named-native-query>
+	<named-native-query name="Consultar.actual.fechaYMotivoCambioCategoria">
+		<query>
+			SELECT TOP(1) ctaFechaCambioCategoria AS fechCambioCategoria, ctaMotivoCambioCategoria AS motivo 
+			FROM categoriaAfiliado 
+			WHERE ctaAfiliado = :idAfiliado 
+			ORDER BY ctaFechaCambioCategoria DESC
+		</query>
+	</named-native-query>
+	<named-native-query name="Consultar.actual.fechaYMotivoCambioCategoriaTipoNumId">
+		<query>
+			SELECT TOP(1) ctaFechaCambioCategoria AS fechCambioCategoria, ctaMotivoCambioCategoria AS motivo 
+			FROM categoriaAfiliado where ctaAfiliado = :idAfiliado 
+			<!--JOIN afiliado ON ctaAfiliado = afiId
+			JOIN persona ON afiPersona = perId 
+			WHERE perTipoIdentificacion = :tipoIdAfiliado
+			AND perNumeroidentificacion = :numeroIdAfiliado -->
+			ORDER BY ctaFechaCambioCategoria DESC
+		</query>
+	</named-native-query>
+	<named-native-query name="Consultar.historico.categoriasPropiasAfiliado">
+		<query>
+			SELECT ctaTipoAfiliado AS tipoAfiliado, ctaCategoria AS categoria, ctaFechaCambioCategoria AS fechaCambioCategoria, ctaMotivoCambioCategoria AS motivoCambioCategoria 
+			FROM categoriaAfiliado 
+			where ctaAfiliado = :idAfiliado
+			<!-- JOIN afiliado ON ctaAfiliado = afiId
+			JOIN persona ON afiPersona = perId
+			WHERE perTipoIdentificacion = :tipoIdentificacion
+			AND perNumeroidentificacion = :numeroIdentificacion -->
+			ORDER BY ctaFechaCambioCategoria
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.historico.categoriasHeredadasAfiliadoPrincipal">
+		<query>
+			select 
+				ctaTipoAfiliado AS tipoAfiliado, 
+				ctaCategoria AS categoria, 
+				ctaFechaCambioCategoria AS fechaCambioCategoria, 
+				ctaMotivoCambioCategoria AS motivoCambioCategoria
+			from categoriaBeneficiario join categoriaAfiliado 
+			on ctbCategoriaAfiliado = ctaId
+			where ctbBeneficiarioDetalle in (:idsBenDetalle)
+			and ctaAfiliado = :idAfiliado
+			order by ctaFechaCambioCategoria
+			<!-- where ctbBeneficiarioDetalle in (
+				select bedId from beneficiario join persona perBen on benPersona = perBen.perId
+				join BeneficiarioDetalle on benBeneficiarioDetalle = bedId
+				where perben.perTipoIdentificacion = :tipoIdBeneficiario
+				and perben.perNumeroIdentificacion = :numeroIdBeneficiario
+			)
+			and ctaAfiliado = (
+				select afi.afiId from afiliado afi join persona perAfi on afi.afiPersona = perAfi.perId
+				where perAfi.perTipoIdentificacion = :tipoIdAfiliado
+				and perAfi.perNumeroIdentificacion = :numeroIdAfiliado
+			) 
+			order by ctaFechaCambioCategoria-->
+		</query>
+	</named-native-query>
+	<named-native-query name="Consultar.actual.infoAfiliadoPrincipal">
+		<query>
+			select 
+				cta.ctaAfiliado as idAfiliado,
+				<!--ctb.tipoIdentificacionAfiliado as tipoIdAfiliado,-->
+				<!--ctb.numeroIdentificacionAfiliado as numeroIdAfiliado,-->
+				cta.ctaEstadoAfiliacion as estadoAfiliado,
+				ctb.ctbTipoBeneficiario as clasificacion,
+				cta.ctaTipoAfiliado as tipoAfiliado,
+				cta.ctaCategoria as categoria
+				<!--CONCAT(per.perPrimerNombre,' ',per.perSegundoNombre,' ',per.perPrimerApellido,' ',per.perSegundoApellido) as nombreCompleto,-->
+				<!--ped.pedGenero as genero-->
+			from categoriaBeneficiario ctb
+			join categoriaAfiliado cta on ctb.ctbCategoriaAfiliado = cta.ctaId
+			where ctb.ctbBeneficiarioDetalle in (:idsBenDetalle)
+			and cta.ctaEstadoAfiliacion = 'ACTIVO'
+		
+		
+			</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliados.transversal.obtenerCategoriaActualPersonaTra">
+		<query>
+			select top(1)
+			ctaClasificacion,
+			ctaCategoria
+			from categoriaAfiliado 
+			join afiliado on ctaAfiliado = afiId
+			join persona on afiPersona = perId
+			where perTipoIdentificacion = :tipoIdentificacion
+			and perNumeroIdentificacion = :numeroIdentificacion
+			order by ctaFechaCambioCategoria desc
+		</query>
+	</named-native-query>	
+<!--
+	<named-native-query name="Consultar.reporteNormativo.Afiliados">
+		<description></description>
+		<query>
+			SELECT CASE WHEN roa.roaEmpleador IS NULL THEN
+				CASE per.perTipoIdentificacion
+			            WHEN 'CEDULA_CIUDADANIA' THEN '1'
+			            WHEN 'TARJETA_IDENTIDAD' THEN '2'
+			            WHEN 'REGISTRO_CIVIL' THEN '3'
+			            WHEN 'CEDULA_EXTRANJERIA' THEN '4'
+			            WHEN 'NUIP' THEN '5'
+			            WHEN 'PASAPORTE' THEN '6'
+			            WHEN 'NIT' THEN '7'
+			            WHEN 'CARNE_DIPLOMATICO' THEN '8' 
+			    END
+		   ELSE CASE perEmp.perTipoIdentificacion 
+					    WHEN 'CEDULA_CIUDADANIA' THEN '1'
+			            WHEN 'TARJETA_IDENTIDAD' THEN '2'
+			            WHEN 'REGISTRO_CIVIL' THEN '3'
+			            WHEN 'CEDULA_EXTRANJERIA' THEN '4'
+			            WHEN 'NUIP' THEN '5'
+			            WHEN 'PASAPORTE' THEN '6'
+			            WHEN 'NIT' THEN '7'
+			            WHEN 'CARNE_DIPLOMATICO' THEN '8' 
+			    END
+			END tipoIdentificacionEmpresa,
+			CASE WHEN roa.roaEmpleador IS NULL THEN	per.perNumeroIdentificacion ELSE perEmp.perNumeroIdentificacion END numeroIdentificacion,
+			CASE per.perTipoIdentificacion
+			            WHEN 'CEDULA_CIUDADANIA' THEN '1'
+			            WHEN 'TARJETA_IDENTIDAD' THEN '2'
+			            WHEN 'REGISTRO_CIVIL' THEN '3'
+			            WHEN 'CEDULA_EXTRANJERIA' THEN '4'
+			            WHEN 'NUIP' THEN '5'
+			            WHEN 'PASAPORTE' THEN '6'
+			            WHEN 'NIT' THEN '7'
+			            WHEN 'CARNE_DIPLOMATICO' THEN '8' 
+			END AS tipoIdentificacionAfiliado,
+			per.perNumeroIdentificacion AS numeroIdentificacionAfiliado,
+			per.perPrimerNombre,
+			per.perSegundoNombre,
+			per.perPrimerApellido,
+			per.perSegundoApellido,
+			CONVERT(VARCHAR,ped.pedFechaNacimiento,112) AS pedFechaNacimiento,
+			CASE ped.pedGenero 
+				WHEN 'MASCULINO' THEN '1'
+				WHEN 'FEMENINO' THEN '2'
+				WHEN 'NO_APLICA' THEN '3'				
+				WHEN 'INDEFINIDO' THEN '4'
+			END AS genero,
+			mun.munCodigo codigoMunicipio,			
+			CASE ISNULL(ped.pedResideSectorRural,0)
+				WHEN 0 THEN '1'
+				WHEN 1 THEN '2'
+			END AS areaGeografica,
+			CASE WHEN apd.apdSalarioBasico IS NOT NULL 
+					THEN CAST(apd.apdSalarioBasico AS BIGINT)
+				ELSE 
+					CASE WHEN roa.roaValorSalarioMesadaIngresos IS NOT NULL
+						THEN CAST(roa.roaValorSalarioMesadaIngresos AS BIGINT)
+					 ELSE CASE WHEN apd.apdValorIBC IS NOT NULL 
+							THEN CAST(apd.apdValorIBC AS BIGINT) 
+						 END
+					END
+			END salarioBasico,
+			CASE WHEN roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' AND roa.roaClaseTrabajador NOT IN ('MADRE_COMUNITARIA','SERVICIO_DOMESTICO') THEN '1'
+				WHEN roa.roaClaseTrabajador = 'SERVICIO_DOMESTICO' THEN '2'
+				WHEN roa.roaClaseTrabajador = 'MADRE_COMUNITARIA' THEN '3'
+				WHEN cat.ctaTipoAfiliado = 'PENSIONADO' AND (cat.ctaClasificacion = 'MENOS_1_5_SM_0_6_POR_CIENTO' 
+															OR cat.ctaClasificacion = 'MAS_1_5_SM_0_6_POR_CIENTO') THEN '4'
+				WHEN cat.ctaTipoAfiliado = 'PENSIONADO' AND (cat.ctaClasificacion = 'MENOS_1_5_SM_2_POR_CIENTO' 
+															OR cat.ctaClasificacion = 'MAS_1_5_SM_2_POR_CIENTO') THEN '5'
+				WHEN cat.ctaTipoAfiliado = 'FACULTATIVO' THEN '6'														
+				WHEN cat.ctaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE_0_6_POR_CIENTO' AND roa.roaClaseIndependiente NOT IN ('TAXISTA') THEN '7'
+				WHEN cat.ctaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE_2_POR_CIENTO' AND roa.roaClaseIndependiente NOT IN ('TAXISTA') THEN '8'
+				WHEN cat.ctaClasificacion = 'FIDELIDAD_25_ANIOS' THEN '9'
+				WHEN cat.ctaClasificacion = 'DESAFILIADO_CON_DERECHO_TEMPORAL_A_SUBSIDIO_EN_CUOTA_MONETARIA' THEN '10'  
+				WHEN cat.ctaTipoAfiliado = 'PENSIONADO' AND cat.ctaClasificacion = 'MENOS_1_5_SM_0_POR_CIENTO' THEN '11' 
+				WHEN roa.roaClaseIndependiente IN ('TAXISTA') THEN '12'	
+				WHEN cat.ctaCategoria = 'C' THEN '13'
+				WHEN cat.ctaTipoAfiliado = 'FIDELIDAD_POR_DESEMPLEO' THEN '14' 
+			END tipoAfiliado,
+			CASE cat.ctaCategoria WHEN 'A' THEN '1' WHEN 'B' THEN '2' WHEN 'C' THEN '3' END AS categoria, 		
+			CASE WHEN MAX(dsa.dsaId) IS NOT NULL THEN '1' ELSE '2' END AS beneficiarioCuota
+			FROM Persona per 
+			LEFT JOIN PersonaDetalle ped ON ped.pedPersona = per.perId
+			LEFT JOIN Afiliado afi ON afi.afiPersona = per.perId
+			LEFT JOIN RolAfiliado roa ON roa.roaAfiliado = afi.afiId
+			LEFT JOIN Empleador empl ON empl.empId = roa.roaEmpleador
+			LEFT JOIN Empresa emp ON emp.empId = empl.empEmpresa
+			LEFT JOIN Persona perEmp ON emp.empPersona = perEmp.perId
+			LEFT JOIN Ubicacion ubi ON ubi.ubiId = per.perUbicacionPrincipal
+			LEFT JOIN Municipio mun ON mun.munId = ubi.ubiMunicipio
+			LEFT JOIN Departamento dep ON dep.depId = mun.munDepartamento
+			LEFT JOIN AporteDetallado apd ON apd.apdPersona = per.perId
+			LEFT JOIN AporteGeneral apg ON (apd.apdAporteGeneral = apg.apgId 
+											AND emp.empId = apg.apgEmpresa)   
+			LEFT JOIN DetalleSubsidioAsignado dsa ON (dsa.dsaAfiliadoPrincipal = afi.afiId 
+													AND dsa.dsaFechaHoraCreacion BETWEEN :fechaInicio AND :fechaFin)
+			LEFT JOIN (SELECT TOP 1 ctaAfiliado, ctaTipoAfiliado, ctaClasificacion, ctaCategoria 
+						FROM categoriaAfiliado 
+						WHERE ctaFechaCambioCategoria &lt;= :fechaFin) cat ON (cat.ctaAfiliado = afi.afiId)   
+			LEFT JOIN (SELECT eacEstadoAfiliacion,eacPersona
+						  FROM EstadoAfiliacionPersonaCaja
+						 WHERE eacId IN (SELECT max(eacid) FROM EstadoAfiliacionPersonaCaja						
+										WHERE eacfechacambioestado between :fechaInicio AND :fechaFin
+										group by eacPersona)
+															) act ON (act.eacPersona = per.perId)
+			WHERE apg.apgPeriodoAporte BETWEEN CAST(YEAR(:fechaInicio) AS VARCHAR) + '-' +  REPLICATE('0', 2 - DATALENGTH(CAST(MONTH(:fechaInicio) AS VARCHAR))) + CAST(MONTH(:fechaInicio) AS VARCHAR)
+			                              AND CAST(YEAR(:fechaFin) AS VARCHAR) + '-' +  REPLICATE('0', 2 - DATALENGTH(CAST(MONTH(:fechaFin) AS VARCHAR))) + CAST(MONTH(:fechaFin) AS VARCHAR)
+			   OR dsa.dsaId IS NOT NULL			   
+			   OR act.eacEstadoAfiliacion = 'ACTIVO'
+			GROUP BY roa.roaEmpleador
+			,perEmp.perTipoIdentificacion
+			,roa.roaEmpleador 
+			,perEmp.perNumeroIdentificacion
+			,per.perTipoIdentificacion
+			,per.perNumeroIdentificacion
+			,per.perPrimerNombre
+			,per.perSegundoNombre
+			,per.perPrimerApellido
+			,per.perSegundoApellido
+			,ped.pedFechaNacimiento
+			,ped.pedGenero
+			,mun.munCodigo
+			,ped.pedResideSectorRural
+			,apd.apdSalarioBasico
+			,roa.roaValorSalarioMesadaIngresos
+			,apd.apdValorIBC 
+			,roa.roaTipoAfiliado
+			,roa.roaClaseTrabajador
+			,cat.ctaTipoAfiliado
+			,cat.ctaClasificacion
+			,roa.roaClaseIndependiente
+			,cat.ctaCategoria
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.Afiliados">
+	<description></description>
+	<query>
+		SELECT COUNT(*) FROM
+		(SELECT 1 COLUMNA
+		FROM Persona per 
+		LEFT JOIN PersonaDetalle ped ON ped.pedPersona = per.perId
+		LEFT JOIN Afiliado afi ON afi.afiPersona = per.perId
+		LEFT JOIN RolAfiliado roa ON roa.roaAfiliado = afi.afiId
+		LEFT JOIN Empleador empl ON empl.empId = roa.roaEmpleador
+		LEFT JOIN Empresa emp ON emp.empId = empl.empEmpresa
+		LEFT JOIN Persona perEmp ON emp.empPersona = perEmp.perId
+		LEFT JOIN Ubicacion ubi ON ubi.ubiId = per.perUbicacionPrincipal
+		LEFT JOIN Municipio mun ON mun.munId = ubi.ubiMunicipio
+		LEFT JOIN Departamento dep ON dep.depId = mun.munDepartamento
+		LEFT JOIN AporteDetallado apd ON apd.apdPersona = per.perId
+		LEFT JOIN AporteGeneral apg ON (apd.apdAporteGeneral = apg.apgId 
+										AND emp.empId = apg.apgEmpresa)   
+		LEFT JOIN DetalleSubsidioAsignado dsa ON (dsa.dsaAfiliadoPrincipal = afi.afiId 
+												AND dsa.dsaFechaHoraCreacion BETWEEN :fechaInicio AND :fechaFin)   
+		LEFT JOIN (SELECT TOP 1 ctaAfiliado, ctaTipoAfiliado, ctaClasificacion, ctaCategoria FROM categoriaAfiliado WHERE ctaFechaCambioCategoria &lt;= :fechaFin) cat ON (cat.ctaAfiliado = afi.afiId)
+		LEFT JOIN (SELECT eacEstadoAfiliacion,eacPersona
+						  FROM EstadoAfiliacionPersonaCaja
+						 WHERE eacId IN (SELECT max(eacid) FROM EstadoAfiliacionPersonaCaja						
+										WHERE eacfechacambioestado between :fechaInicio AND :fechaFin
+										group by eacPersona)
+															) act ON (act.eacPersona = per.perId)	                 
+		WHERE apg.apgPeriodoAporte BETWEEN CAST(YEAR(:fechaInicio) AS VARCHAR) + '-' +  REPLICATE('0', 2 - DATALENGTH(CAST(MONTH(:fechaInicio) AS VARCHAR))) + CAST(MONTH(:fechaInicio) AS VARCHAR)
+		                              AND CAST(YEAR(:fechaFin) AS VARCHAR) + '-' +  REPLICATE('0', 2 - DATALENGTH(CAST(MONTH(:fechaFin) AS VARCHAR))) + CAST(MONTH(:fechaFin) AS VARCHAR)
+		  		OR dsa.dsaId IS NOT NULL			   
+			   OR act.eacEstadoAfiliacion = 'ACTIVO'
+		GROUP BY roa.roaEmpleador
+			,perEmp.perTipoIdentificacion
+			,roa.roaEmpleador 
+			,perEmp.perNumeroIdentificacion
+			,per.perTipoIdentificacion
+			,per.perNumeroIdentificacion
+			,per.perPrimerNombre
+			,per.perSegundoNombre
+			,per.perPrimerApellido
+			,per.perSegundoApellido
+			,ped.pedFechaNacimiento
+			,ped.pedGenero
+			,mun.munCodigo
+			,ped.pedResideSectorRural
+			,apd.apdSalarioBasico
+			,roa.roaValorSalarioMesadaIngresos
+			,apd.apdValorIBC 
+			,roa.roaTipoAfiliado
+			,roa.roaClaseTrabajador
+			,cat.ctaTipoAfiliado
+			,cat.ctaClasificacion
+			,roa.roaClaseIndependiente
+			,cat.ctaCategoria ) AUX
+		</query>
+	</named-native-query>
+-->
+	
+<!-- 	<named-native-query name="Consultar.reporteNormativo.Count.RegistroUnicoEmpleadores"> -->
+<!-- 		<description>Cuenta de los registros a incluir en el reporte único de empleadores de la resolución 0074</description> -->
+<!-- 		<query> -->
+<!-- 			SELECT COUNT(*) -->
+<!-- 			FROM dbo.EstadoAfiliacionEmpleadorCaja eec -->
+<!-- 			INNER JOIN dbo.Empresa emp ON emp.empPersona = eec.eecPersona -->
+<!-- 			WHERE eec.eecEstadoAfiliacion = 'ACTIVO' -->
+<!-- 			AND eec.eecFechaCambioEstado &lt;= :fechaFin -->
+<!-- 		</query> -->
+<!-- 	</named-native-query> -->
+<!-- 	<named-native-query name="Consultar.reporteNormativo.RegistroUnicoEmpleadores"> -->
+<!-- 		<description>Detalle de los registros a incluir en el reporte único de empleadores de la resolución 0074</description> -->
+<!-- 		<query> -->
+<!-- 			SELECT CASE WHEN ISNULL(per.perPrimerNombre, '') = '' THEN per.perRazonSocial -->
+<!-- 				ELSE ( -->
+<!-- 					per.perPrimerNombre +  -->
+<!-- 					CASE WHEN per.perSegundoNombre IS NULL THEN ' ' ELSE ' '+per.perSegundoNombre+' ' END + -->
+<!-- 					per.perPrimerApellido +  -->
+<!-- 					CASE WHEN per.perSegundoApellido IS NULL THEN '' ELSE ' '+per.perSegundoApellido END -->
+<!-- 				) END aportante, -->
+<!-- 				CASE WHEN per.perTipoIdentificacion = 'NIT' THEN 1 ELSE 2 END tipoDocumento, -->
+<!-- 				per.perNumeroIdentificacion, -->
+<!-- 				CASE WHEN ISNULL(prl.perPrimerNombre, '') = '' THEN prl.perRazonSocial -->
+<!-- 				ELSE ( -->
+<!-- 					prl.perPrimerNombre +  -->
+<!-- 					CASE WHEN prl.perSegundoNombre IS NULL THEN ' ' ELSE ' '+prl.perSegundoNombre+' ' END + -->
+<!-- 					prl.perPrimerApellido +  -->
+<!-- 					CASE WHEN prl.perSegundoApellido IS NULL THEN '' ELSE ' '+prl.perSegundoApellido END -->
+<!-- 				) END representanteLegal, -->
+<!-- 				ubi.ubiDireccionFisica direccion,  -->
+<!-- 				mun.munNombre municipio, dep.depNombre departamento, mun.munCodigo divipola, -->
+<!-- 				ubi.ubiTelefonoFijo telefono, ubi.ubiEmail correoElectronico, emp.empPaginaWeb paginaWeb, -->
+<!-- 				ISNULL(categorias.cantidadA, 0) trabajadoresA, -->
+<!-- 				ISNULL(categorias.cantidadB, 0) trabajadoresB, -->
+<!-- 				ISNULL(categorias.cantidadC, 0) trabajadoresC, -->
+<!-- 				ISNULL(categorias.cantidadTotal, 0) totalTrabajadores,  -->
+<!-- 				cii.ciiCodigo, -->
+<!-- 				CASE WHEN ISNULL(pce.perPrimerNombre, '') = '' THEN pce.perRazonSocial -->
+<!-- 				ELSE ( -->
+<!-- 					pce.perPrimerNombre +  -->
+<!-- 					CASE WHEN pce.perSegundoNombre IS NULL THEN ' ' ELSE ' '+pce.perSegundoNombre+' ' END + -->
+<!-- 					pce.perPrimerApellido +  -->
+<!-- 					CASE WHEN pce.perSegundoApellido IS NULL THEN '' ELSE ' '+pce.perSegundoApellido END -->
+<!-- 				) END responsableAfiliaciones,  -->
+<!-- 				uce.ubiTelefonoFijo telefonoFijoResponsable,  -->
+<!-- 				uce.ubiTelefonoCelular telefonoCelularResponsable,  -->
+<!-- 				uce.ubiEmail eMailResponsable -->
+<!-- 			FROM dbo.EstadoAfiliacionEmpleadorCaja eec -->
+<!-- 			INNER JOIN dbo.Persona per ON per.perId = eec.eecPersona -->
+<!-- 			INNER JOIN dbo.Empresa emp ON emp.empPersona = eec.eecPersona -->
+<!-- 			INNER JOIN dbo.Empleador eml ON eml.empEmpresa = emp.empId -->
+<!-- 			LEFT JOIN dbo.RolContactoEmpleador rce ON rce.rceEmpleador = eml.empId -->
+<!-- 			LEFT JOIN dbo.Persona pce ON rce.rcePersona = pce.perId -->
+<!-- 			LEFT JOIN dbo.Ubicacion uce ON rce.rceUbicacion = uce.ubiId -->
+<!-- 			LEFT JOIN dbo.CodigoCIIU cii ON emp.empCodigoCIIU = cii.ciiId -->
+<!-- 			LEFT JOIN dbo.Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId -->
+<!-- 			LEFT JOIN dbo.Municipio mun ON ubi.ubiMunicipio = mun.munId -->
+<!-- 			LEFT JOIN dbo.Departamento dep ON mun.munDepartamento = dep.depId  -->
+<!-- 			LEFT JOIN dbo.Persona prl ON emp.empRepresentanteLegal = prl.perId -->
+<!-- 			LEFT JOIN ( -->
+<!-- 				SELECT cat.empId, -->
+<!-- 					SUM(CASE WHEN cat.ctaCategoria = 'A' THEN 1 ELSE 0 END) cantidadA,  -->
+<!-- 					SUM(CASE WHEN cat.ctaCategoria = 'B' THEN 1 ELSE 0 END) cantidadB,  -->
+<!-- 					SUM(CASE WHEN cat.ctaCategoria = 'C' THEN 1 ELSE 0 END) cantidadC, -->
+<!-- 					COUNT(*) cantidadTotal -->
+<!-- 					FROM ( -->
+<!-- 						SELECT eml.empId, MAX(cta.ctaCategoria) ctaCategoria, MAX(ctaFechaCambioCategoria) ctaFechaCambioCategoria -->
+<!-- 						FROM dbo.CategoriaAfiliado cta -->
+<!-- 						INNER JOIN dbo.RolAfiliado roa ON roa.roaAfiliado = cta.ctaAfiliado -->
+<!-- 						INNER JOIN dbo.Empleador eml ON roa.roaEmpleador = eml.empId -->
+<!-- 						WHERE cta.ctaEstadoAfiliacion = 'ACTIVO' -->
+<!-- 						AND cta.ctaFechaCambioCategoria &lt;= :fechaFin -->
+<!-- 						GROUP BY eml.empId -->
+<!-- 					) AS cat -->
+<!-- 					GROUP BY cat.empId -->
+<!-- 			) AS categorias ON eml.empId = categorias.empId -->
+<!-- 			WHERE eec.eecEstadoAfiliacion = 'ACTIVO' -->
+<!-- 			AND eec.eecFechaCambioEstado &lt;= :fechaFin -->
+<!-- 		</query> -->
+<!-- 	</named-native-query> -->
+	
+<!-- 	<named-native-query name="Consultar.reporteNormativo.Count.NovedadesEstadoAfiliacion"> -->
+<!-- 		<description>Cuenta de los registros a incluir en el reporte de novedades de afiliación y al día Res. 1056</description> -->
+<!-- 		<query> -->
+<!-- 			SELECT SUM(Unificado.afiIndPen) -->
+<!-- 			FROM ( -->
+<!-- 				SELECT COUNT(1) afiIndPen -->
+<!-- 				FROM ( -->
+<!-- 					SELECT DISTINCT A.persona, A.tipoAfiliacion -->
+<!-- 					FROM ( -->
+<!-- 						SELECT afi.afiPersona persona, roa.roaTipoAfiliado tipoAfiliacion  -->
+<!-- 						FROM dbo.RolAfiliado roa -->
+<!-- 						INNER JOIN dbo.Afiliado afi ON afi.afiId = roa.roaAfiliado -->
+<!-- 						WHERE roa.roaFechaAfiliacion BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 							AND roa.roaTipoAfiliado != 'TRABAJADOR_DEPENDIENTE' -->
+<!-- 							AND roa.roaEstadoAfiliado IS NOT NULL -->
+<!-- 						UNION -->
+<!-- 						SELECT afi.afiPersona persona, roa.roaTipoAfiliado tipoAfiliacion  -->
+<!-- 						FROM dbo.RolAfiliado roa -->
+<!-- 						INNER JOIN dbo.Afiliado afi ON afi.afiId = roa.roaAfiliado -->
+<!-- 						WHERE roa.roaFechaRetiro BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 							AND roa.roaTipoAfiliado != 'TRABAJADOR_DEPENDIENTE' -->
+<!-- 							AND roa.roaEstadoAfiliado IS NOT NULL -->
+<!-- 					) AS A -->
+<!-- 				) AS T -->
+<!-- 				UNION -->
+<!-- 				SELECT COUNT(1) afiEmp -->
+<!-- 				FROM ( -->
+<!-- 					SELECT DISTINCT A.persona, A.tipoAfiliacion, A.idEmpleador, roa.roaID -->
+<!-- 					FROM ( -->
+<!-- 						SELECT emp.empPersona persona, eml.empId idEmpleador, 'EMPLEADOR' tipoAfiliacion -->
+<!-- 						FROM dbo.Empleador eml  -->
+<!-- 						INNER JOIN dbo.Empresa emp ON eml.empEmpresa = emp.empId -->
+<!-- 						WHERE eml.empEstadoEmpleador = 'ACTIVO' -->
+<!-- 							 eml.empFechaCambioEstadoAfiliacion BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						UNION -->
+<!-- 						SELECT emp.empPersona persona, eml.empId idEmpleador, 'EMPLEADOR' tipoAfiliacion -->
+<!-- 						FROM dbo.Empleador eml  -->
+<!-- 						INNER JOIN dbo.Empresa emp ON eml.empEmpresa = emp.empId -->
+<!-- 						WHERE eml.empFechaRetiro BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 					) AS A -->
+<!-- 					INNER JOIN dbo.RolAfiliado roa ON roa.roaEmpleador = A.idEmpleador -->
+<!-- 				) AS T -->
+<!-- 				UNION -->
+<!-- 				SELECT COUNT(1) carIndPen -->
+<!-- 				FROM ( -->
+<!-- 					SELECT C.persona, C.tipoAfiliacion  -->
+<!-- 					FROM ( -->
+<!-- 						SELECT car.carPersona persona, 'CARTERA' tipoAfiliacion  -->
+<!-- 						FROM dbo.Cartera car  -->
+<!-- 						WHERE car.carFechaCreacion BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						UNION -->
+<!-- 						SELECT car.carPersona persona, 'CARTERA' tipoAfiliacion  -->
+<!-- 						FROM aud.Cartera_aud car   -->
+<!-- 						INNER JOIN core_abaquero_aud.dbo.Revision rev ON rev.revId = car.REV -->
+<!-- 						WHERE 1 = 1 -->
+<!-- 							AND car.carEstadoCartera = 'AL_DIA'  -->
+<!-- 							AND car.carEstadoOperacion = 'NO_VIGENTE' -->
+<!-- 							AND car.revTime BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						GROUP BY car.carId, car.carPersona, car.REV -->
+<!-- 						HAVING car.REV = MIN(car.REV) -->
+<!-- 					) AS C -->
+<!-- 					INNER JOIN dbo.Afiliado afi ON afi.afiPersona = C.persona -->
+<!-- 					INNER JOIN dbo.RolAfiliado roa ON roa.roaAfiliado = afi.afiId -->
+<!-- 					WHERE roa.roaTipoAfiliado != 'TRABAJADOR_DEPENDIENTE' -->
+<!-- 				) AS T -->
+<!-- 				UNION  -->
+<!-- 				SELECT COUNT(1) carEmp -->
+<!-- 				FROM ( -->
+<!-- 					SELECT C.persona, C.tipoAfiliacion  -->
+<!-- 					FROM ( -->
+<!-- 						SELECT car.carPersona persona, 'CARTERA' tipoAfiliacion  -->
+<!-- 						FROM dbo.Cartera car  -->
+<!-- 						WHERE car.carFechaCreacion BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						UNION -->
+<!-- 						SELECT car.carPersona persona, 'CARTERA' tipoAfiliacion  -->
+<!-- 						FROM aud.Cartera_aud car  -->
+<!-- 						INNER JOIN core_abaquero_aud.dbo.Revision rev ON rev.revId = car.REV -->
+<!-- 						WHERE car.carEstadoCartera = 'AL_DIA'  -->
+<!-- 							AND car.carEstadoOperacion = 'NO_VIGENTE' -->
+<!-- 							AND car.revTime BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						GROUP BY car.carId, car.carPersona, car.REV -->
+<!-- 						HAVING car.REV = MIN(car.REV) -->
+<!-- 					) AS C -->
+<!-- 					INNER JOIN dbo.Empresa emp ON emp.empPersona = C.persona -->
+<!-- 					INNER JOIN dbo.Empleador eml ON eml.empEmpresa = emp.empId -->
+<!-- 					INNER JOIN dbo.RolAfiliado roa ON roa.roaEmpleador = eml.empId -->
+<!-- 				) AS T -->
+<!-- 			) AS Unificado -->
+<!-- 		</query> -->
+<!-- 	</named-native-query> -->
+<!-- 	<named-native-query name="Consultar.reporteNormativo.NovedadesEstadoAfiliacion"> -->
+<!-- 		<description>Detalle de los registros a incluir en el reporte de novedades de afiliación y al día Res. 1056</description> -->
+<!-- 		<query> -->
+<!-- 			SELECT *  -->
+<!-- 			FROM ( -->
+<!-- 				SELECT  -->
+<!-- 					2 tipoRegistro,  -->
+<!-- 					(SELECT cnsValor FROM dbo.Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO') codigoCCF,  -->
+<!-- 					per.perTipoIdentificacion,  -->
+<!-- 					per.perNumeroIdentificacion,  -->
+<!-- 					per.perPrimerApellido,  -->
+<!-- 					per.perSegundoApellido,  -->
+<!-- 					per.perPrimerNombre,  -->
+<!-- 					per.perSegundoNombre,  -->
+<!-- 					'C05' codigoNovedad,  -->
+<!-- 					roa.roaEstadoAfiliado estadoAfiliacion,  -->
+<!-- 					per.perTipoIdentificacion tipoIdApor,  -->
+<!-- 					per.perNumeroIdentificacion numIdApor, -->
+<!-- 					NULL digitoVerificacion,  -->
+<!-- 					CASE WHEN ISNULL(per.perPrimerNombre, '') = '' THEN per.perRazonSocial -->
+<!-- 					ELSE ( -->
+<!-- 						per.perPrimerNombre +  -->
+<!-- 						CASE WHEN per.perSegundoNombre IS NULL THEN ' ' ELSE ' '+per.perSegundoNombre+' ' END + -->
+<!-- 						per.perPrimerApellido +  -->
+<!-- 						CASE WHEN per.perSegundoApellido IS NULL THEN '' ELSE ' '+per.perSegundoApellido END -->
+<!-- 					) END razonSocial,  -->
+<!-- 					NULL estadoMora -->
+<!-- 				FROM dbo.Persona per  -->
+<!-- 				INNER JOIN ( -->
+<!-- 					SELECT DISTINCT A.persona, A.tipoAfiliacion -->
+<!-- 					FROM ( -->
+<!-- 						SELECT afi.afiPersona persona, roa.roaTipoAfiliado tipoAfiliacion  -->
+<!-- 						FROM dbo.RolAfiliado roa -->
+<!-- 						INNER JOIN dbo.Afiliado afi ON afi.afiId = roa.roaAfiliado -->
+<!-- 						WHERE roa.roaFechaAfiliacion BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 							AND roa.roaTipoAfiliado != 'TRABAJADOR_DEPENDIENTE' -->
+<!-- 							AND roa.roaEstadoAfiliado IS NOT NULL -->
+<!-- 						UNION -->
+<!-- 						SELECT afi.afiPersona persona, roa.roaTipoAfiliado tipoAfiliacion  -->
+<!-- 						FROM dbo.RolAfiliado roa -->
+<!-- 						INNER JOIN dbo.Afiliado afi ON afi.afiId = roa.roaAfiliado -->
+<!-- 						WHERE roa.roaFechaRetiro BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 							AND roa.roaTipoAfiliado != 'TRABAJADOR_DEPENDIENTE' -->
+<!-- 							AND roa.roaEstadoAfiliado IS NOT NULL -->
+<!-- 					) AS A -->
+<!-- 				) AS T ON T.persona = per.perId -->
+<!-- 				INNER JOIN dbo.Afiliado afi ON afi.afiPersona = per.perId  -->
+<!-- 				INNER JOIN dbo.RolAfiliado roa ON roa.roaAfiliado = afi.afiId AND roa.roaTipoAfiliado = T.tipoAfiliacion -->
+<!-- 				UNION ALL -->
+<!-- 				SELECT  -->
+<!-- 					2 tipoRegistro,  -->
+<!-- 					(SELECT cnsValor FROM dbo.Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO') codigoCCF,  -->
+<!-- 					per.perTipoIdentificacion,  -->
+<!-- 					per.perNumeroIdentificacion,  -->
+<!-- 					per.perPrimerApellido,  -->
+<!-- 					per.perSegundoApellido,  -->
+<!-- 					per.perPrimerNombre,  -->
+<!-- 					per.perSegundoNombre,  -->
+<!-- 					'C05' codigoNovedad,  -->
+<!-- 					roa.roaEstadoAfiliado estadoAfiliacion,  -->
+<!-- 					pem.perTipoIdentificacion tipoIdApor,  -->
+<!-- 					pem.perNumeroIdentificacion numIdApor, -->
+<!-- 					pem.perDigitoVerificacion digitoVerificacion,  -->
+<!-- 					CASE WHEN ISNULL(pem.perPrimerNombre, '') = '' THEN pem.perRazonSocial -->
+<!-- 					ELSE ( -->
+<!-- 						pem.perPrimerNombre +  -->
+<!-- 						CASE WHEN pem.perSegundoNombre IS NULL THEN ' ' ELSE ' '+pem.perSegundoNombre+' ' END + -->
+<!-- 						pem.perPrimerApellido +  -->
+<!-- 						CASE WHEN pem.perSegundoApellido IS NULL THEN '' ELSE ' '+pem.perSegundoApellido END -->
+<!-- 					) END razonSocial,  -->
+<!-- 					NULL estadoMora -->
+<!-- 				FROM dbo.Persona per  -->
+<!-- 				INNER JOIN dbo.Afiliado afi ON afi.afiPersona = per.perId  -->
+<!-- 				INNER JOIN dbo.RolAfiliado roa ON roa.roaAfiliado = afi.afiId  -->
+<!-- 				INNER JOIN dbo.Empleador eml ON roa.roaEmpleador = eml.empId  -->
+<!-- 				INNER JOIN dbo.Empresa emp ON eml.empEmpresa = emp.empId  -->
+<!-- 				INNER JOIN dbo.Persona pem ON emp.empPersona = pem.perId  -->
+<!-- 				INNER JOIN ( -->
+<!-- 					SELECT DISTINCT A.persona, A.tipoAfiliacion -->
+<!-- 					FROM ( -->
+<!-- 						SELECT emp.empPersona persona, 'EMPLEADOR' tipoAfiliacion -->
+<!-- 						FROM dbo.Empleador eml  -->
+<!-- 						INNER JOIN dbo.Empresa emp ON eml.empEmpresa = emp.empId -->
+<!-- 						WHERE eml.empEstadoEmpleador = 'ACTIVO' -->
+<!-- 							AND eml.empFechaCambioEstadoAfiliacion BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						UNION -->
+<!-- 						SELECT emp.empPersona persona, 'EMPLEADOR' tipoAfiliacion -->
+<!-- 						FROM dbo.Empleador eml  -->
+<!-- 						INNER JOIN dbo.Empresa emp ON eml.empEmpresa = emp.empId -->
+<!-- 						WHERE eml.empFechaRetiro BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 					) AS A -->
+<!-- 				) AS T ON T.persona = pem.perId -->
+<!-- 				UNION ALL -->
+<!-- 				SELECT  -->
+<!-- 					2 tipoRegistro,  -->
+<!-- 					(SELECT cnsValor FROM dbo.Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO') codigoCCF,  -->
+<!-- 					per.perTipoIdentificacion,  -->
+<!-- 					per.perNumeroIdentificacion,  -->
+<!-- 					per.perPrimerApellido,  -->
+<!-- 					per.perSegundoApellido,  -->
+<!-- 					per.perPrimerNombre,  -->
+<!-- 					per.perSegundoNombre,  -->
+<!-- 					'C06' codigoNovedad,  -->
+<!-- 					NULL estadoAfiliacion,  -->
+<!-- 					per.perTipoIdentificacion tipoIdApor,  -->
+<!-- 					per.perNumeroIdentificacion numIdApor, -->
+<!-- 					NULL digitoVerificacion,  -->
+<!-- 					CASE WHEN ISNULL(per.perPrimerNombre, '') = '' THEN per.perRazonSocial -->
+<!-- 					ELSE ( -->
+<!-- 						per.perPrimerNombre +  -->
+<!-- 						CASE WHEN per.perSegundoNombre IS NULL THEN ' ' ELSE ' '+per.perSegundoNombre+' ' END + -->
+<!-- 						per.perPrimerApellido +  -->
+<!-- 						CASE WHEN per.perSegundoApellido IS NULL THEN '' ELSE ' '+per.perSegundoApellido END -->
+<!-- 					) END razonSocial,  -->
+<!-- 					T.estadoCartera estadoMora -->
+<!-- 				FROM dbo.Persona per  -->
+<!-- 				INNER JOIN dbo.Afiliado afi ON afi.afiPersona = per.perId  -->
+<!-- 				INNER JOIN dbo.RolAfiliado roa ON roa.roaAfiliado = afi.afiId  -->
+<!-- 				INNER JOIN ( -->
+<!-- 					SELECT DISTINCT C.persona, C.estadoCartera -->
+<!-- 					FROM ( -->
+<!-- 						SELECT car.carPersona persona, 2 estadoCartera  -->
+<!-- 						FROM dbo.Cartera car  -->
+<!-- 						WHERE car.carFechaCreacion BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						UNION -->
+<!-- 						SELECT car.carPersona persona, 1 estadoCartera  -->
+<!-- 						FROM aud.Cartera_aud car  -->
+<!-- 						INNER JOIN core_abaquero_aud.dbo.Revision rev ON rev.revId = car.REV -->
+<!-- 						WHERE car.carEstadoCartera = 'AL_DIA'  -->
+<!-- 							AND car.carEstadoOperacion = 'NO_VIGENTE' -->
+<!-- 							AND car.revTime BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						GROUP BY car.carId, car.carPersona, car.REV -->
+<!-- 						HAVING car.REV = MIN(car.REV) -->
+<!-- 					) AS C -->
+<!-- 				) AS T ON T.persona = per.perId -->
+<!-- 				WHERE roa.roaTipoAfiliado != 'TRABAJADOR_DEPENDIENTE' -->
+<!-- 				UNION ALL -->
+<!-- 				SELECT  -->
+<!-- 					2 tipoRegistro,  -->
+<!-- 					(SELECT cnsValor FROM dbo.Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO') codigoCCF,  -->
+<!-- 					per.perTipoIdentificacion,  -->
+<!-- 					per.perNumeroIdentificacion,  -->
+<!-- 					per.perPrimerApellido,  -->
+<!-- 					per.perSegundoApellido,  -->
+<!-- 					per.perPrimerNombre,  -->
+<!-- 					per.perSegundoNombre,  -->
+<!-- 					'C06' codigoNovedad,  -->
+<!-- 					NULL estadoAfiliacion,  -->
+<!-- 					pem.perTipoIdentificacion tipoIdApor,  -->
+<!-- 					pem.perNumeroIdentificacion numIdApor, -->
+<!-- 					pem.perDigitoVerificacion digitoVerificacion,  -->
+<!-- 					CASE WHEN ISNULL(pem.perPrimerNombre, '') = '' THEN pem.perRazonSocial -->
+<!-- 					ELSE ( -->
+<!-- 						pem.perPrimerNombre +  -->
+<!-- 						CASE WHEN pem.perSegundoNombre IS NULL THEN ' ' ELSE ' '+pem.perSegundoNombre+' ' END + -->
+<!-- 						pem.perPrimerApellido +  -->
+<!-- 						CASE WHEN pem.perSegundoApellido IS NULL THEN '' ELSE ' '+pem.perSegundoApellido END -->
+<!-- 					) END razonSocial,  -->
+<!-- 					T.estadoCartera estadoMora -->
+<!-- 				FROM dbo.Persona per  -->
+<!-- 				INNER JOIN dbo.Afiliado afi ON afi.afiPersona = per.perId  -->
+<!-- 				INNER JOIN dbo.RolAfiliado roa ON roa.roaAfiliado = afi.afiId  -->
+<!-- 				INNER JOIN dbo.Empleador eml ON roa.roaEmpleador = eml.empId  -->
+<!-- 				INNER JOIN dbo.Empresa emp ON eml.empEmpresa = emp.empId  -->
+<!-- 				INNER JOIN dbo.Persona pem ON emp.empPersona = pem.perId  -->
+<!-- 				INNER JOIN ( -->
+<!-- 					SELECT DISTINCT C.persona, C.estadoCartera -->
+<!-- 					FROM ( -->
+<!-- 						SELECT car.carPersona persona, 2 estadoCartera  -->
+<!-- 						FROM dbo.Cartera car  -->
+<!-- 						WHERE car.carFechaCreacion BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						UNION -->
+<!-- 						SELECT car.carPersona persona, 1 estadoCartera  -->
+<!-- 						FROM aud.Cartera_aud car  -->
+<!-- 						INNER JOIN core_abaquero_aud.dbo.Revision rev ON rev.revId = car.REV -->
+<!-- 						WHERE car.carEstadoCartera = 'AL_DIA'  -->
+<!-- 							AND car.carEstadoOperacion = 'NO_VIGENTE' -->
+<!-- 							AND car.revTime BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 						GROUP BY car.carId, car.carPersona, car.REV -->
+<!-- 						HAVING car.REV = MIN(car.REV) -->
+<!-- 					) AS C -->
+<!-- 				) AS T ON T.persona = pem.perId -->
+<!-- 			) AS Detalle -->
+<!-- 			ORDER BY Detalle.perTipoIdentificacion, Detalle.perNumeroIdentificacion, Detalle.codigoNovedad -->
+<!-- 		</query> -->
+<!-- 	</named-native-query> 
+	
+	<named-native-query name="Consultar.reporteNormativo.MaestroAfiliados">
+		<description></description>
+		<query>
+			SELECT '2' AS tipoRegistro,
+	CASE perAfi.perTipoIdentificacion
+		WHEN 'TARJETA_IDENTIDAD' THEN 'TI'
+        WHEN 'CEDULA_CIUDADANIA' THEN 'CC'
+        WHEN 'CEDULA_EXTRANJERIA' THEN 'CE'
+        WHEN 'PASAPORTE' THEN 'PA' 
+        WHEN 'CARNE_DIPLOMATICO' THEN 'CD'  
+	END tipoIdentificacionAfiliado,
+	perAfi.perNumeroIdentificacion numeroIdentificacionAfiliado,
+	CASE perBen.perTipoIdentificacion
+		WHEN 'REGISTRO_CIVIL' THEN 'RC'
+		WHEN 'TARJETA_IDENTIDAD' THEN 'TI'
+        WHEN 'CEDULA_CIUDADANIA' THEN 'CC'
+        WHEN 'CEDULA_EXTRANJERIA' THEN 'CE'
+        WHEN 'PASAPORTE' THEN 'PA' 
+        WHEN 'CARNE_DIPLOMATICO' THEN 'CD'  
+	END tipoIdentificacionPoblacion,		
+	perBen.perNumeroIdentificacion numeroIdentificacionPoblacion,
+	CASE WHEN ben.benId IS NULL THEN 
+		CASE pedAfi.pedGenero WHEN 'MASCULINO' THEN 'M' WHEN 'FEMENINO' THEN 'F' END
+	ELSE CASE pedBen.pedGenero WHEN 'MASCULINO' THEN 'M' WHEN 'FEMENINO' THEN 'F' END
+	END codigoGenero,
+	CASE WHEN ben.benId IS NULL THEN pedAfi.pedFechaNacimiento ELSE pedBen.pedFechaNacimiento END fechaNacimiento,
+	CASE WHEN ben.benId IS NULL THEN perAfi.perPrimerApellido ELSE perBen.perPrimerApellido END primerApellido,
+	CASE WHEN ben.benId IS NULL THEN perAfi.persegundoApellido ELSE perBen.persegundoApellido END segundoApellido,
+	CASE WHEN ben.benId IS NULL THEN perAfi.perPrimerNombre ELSE perBen.perPrimerNombre END primerNombre,
+	CASE WHEN ben.benId IS NULL THEN perAfi.perSegundoNombre ELSE perBen.perSegundoNombre END segundoNombre,
+	CASE WHEN ben.benId IS NULL THEN depAfi.depCodigo ELSE depBen.depCodigo END departamentoResidencia,
+	CASE WHEN ben.benId IS NULL THEN munAfi.munCodigo ELSE munBen.munCodigo END MunicipioResidencia,
+	CASE WHEN ben.benId IS NULL THEN roa.roaFechaAfiliacion ELSE ben.benFechaAfiliacion END fechaAfiliacion,
+	cns.cnsValor AS codigoCaja, 																	
+	CASE WHEN roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' THEN '1'
+		 WHEN roa.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE' THEN '2'
+		 WHEN roa.roaTipoAfiliado = 'PENSIONADO' THEN '3'
+		 WHEN roa.roaClaseIndependiente = 'VOLUNTARIO' THEN '4'
+		 WHEN roa.roaClaseIndependiente = 'EXENCION' THEN '5'								
+		 WHEN roa.roaClaseIndependiente = 'FIDELIDAD' THEN '6'								
+	END codTipoAfiliado,
+	CASE perApo.perTipoIdentificacion
+		WHEN 'CEDULA_CIUDADANIA' THEN 'CC'       
+        WHEN 'CEDULA_EXTRANJERIA' THEN 'CE'
+        WHEN 'PASAPORTE' THEN 'PA' 
+        WHEN 'CARNE_DIPLOMATICO' THEN 'CD'  
+		WHEN 'NIT' THEN 'NI'  
+	END tipoIdentificacionAportante,
+	perApo.perNumeroIdentificacion numeroIdentificacionAportante,
+	perApo.perDigitoVerificacion digitoVerficacionAportante,
+	perApo.perRazonSocial razonSocialAportante,
+	roa.roaFechaIngreso fechaVinculacion,
+	depApo.depCodigo departamentroLaboral,
+	munApo.munCodigo municipioLaboral,	
+	CASE auxCartera.carEstadoCartera WHEN 'AL_DIA' THEN '1' WHEN 'MOROSO' THEN '2' END alDia,
+	CASE WHEN ben.benId IS NULL THEN '1'		
+		WHEN ben.benTipoBeneficiario IN ('HIJO_BIOLOGICO', 'HIJO_ADOPTIVO','HIJASTRO','HERMANO_HUERFANO_DE_PADRES','BENEFICIARIO_EN_CUSTODIA','PADRE','MADRE') THEN '2'
+		WHEN ben.benTipoBeneficiario IN ('CONYUGE') THEN '3'
+	END codigoTipoMiembro,	
+	CASE WHEN ben.benTipoBeneficiario = 'CONYUGE' THEN '1'
+		 WHEN ben.benTipoBeneficiario IN ('HIJO_BIOLOGICO','HIJO_ADOPTIVO','HIJASTRO') THEN '2'
+		 WHEN ben.benTipoBeneficiario IN ('PADRE','MADRE') THEN '3'
+		 WHEN ben.benTipoBeneficiario IN ('HERMANO_HUERFANO_DE_PADRES') THEN '4'
+	END tipoRelacionConAfiliado	
+FROM Afiliado afi 
+INNER JOIN Persona perAfi ON perAfi.perId = afi.afiPersona
+INNER JOIN PersonaDetalle pedAfi ON pedAfi.pedPersona = perAfi.perId
+INNER JOIN RolAfiliado roa ON roa.roaAfiliado = afi.afiId
+LEFT JOIN Beneficiario ben ON ben.benAfiliado = afi.afiId
+LEFT JOIN BeneficiarioDetalle bed ON bed.bedId = ben.benBeneficiarioDetalle
+LEFT JOIN CertificadoEscolarBeneficiario ceb ON ceb.cebBeneficiarioDetalle = bed.bedId
+LEFT JOIN Persona perBen ON perBen.perId = ben.benPersona
+LEFT JOIN PersonaDetalle pedBen ON pedBen.pedPersona = perBen.perId
+LEFT JOIN Ubicacion ubiAfi ON ubiAfi.ubiId = perAfi.perUbicacionPrincipal
+LEFT JOIN Municipio munAfi ON munAfi.munId = ubiAfi.ubiMunicipio
+LEFT JOIN Departamento depAfi ON depAfi.depId = munAfi.munDepartamento
+LEFT JOIN Ubicacion ubiBen ON ubiBen.ubiId = perBen.perUbicacionPrincipal
+LEFT JOIN Municipio munBen ON munBen.munId = ubiBen.ubiMunicipio
+LEFT JOIN Departamento depBen ON depBen.depId = munBen.munDepartamento
+LEFT JOIN (SELECT apd.apdPersona perAfiliado,
+		CASE WHEN emp.empPersona IS NULL THEN apg.apgPersona ELSE emp.empPersona END perAportante
+		  FROM AporteDetallado apd
+		  INNER JOIN AporteGeneral apg ON apg.apgId = apd.apdAporteGeneral
+		  LEFT JOIN Empresa emp ON emp.empId = apg.apgEmpresa
+		WHERE apg.apgPeriodoAporte = CAST(YEAR(:fechaFin) AS VARCHAR(4)) + '-' + REPLICATE('0', 2 - DATALENGTH(CAST(MONTH(:fechaFin) AS VARCHAR))) + CAST(MONTH(:fechaFin) AS VARCHAR)
+		GROUP BY apd.apdPersona,emp.empPersona,apg.apgPersona) aportantes ON aportantes.perAfiliado = perAfi.perId
+LEFT JOIN Persona perApo ON perApo.perId = aportantes.perAfiliado
+LEFT JOIN Ubicacion ubiApo ON ubiApo.ubiId = perApo.perUbicacionPrincipal
+LEFT JOIN Municipio munApo ON munApo.munId = ubiApo.ubiMunicipio
+LEFT JOIN Departamento depApo ON depApo.depId = munApo.munDepartamento
+LEFT JOIN CondicionInvalidez coi ON coi.coiPersona = perBen.perId
+LEFT JOIN (SELECT carPersona,
+			carEstadoCartera 
+			FROM Cartera car 
+			WHERE carId IN (SELECT MAX(carId) 
+				FROM Cartera 
+				WHERE carPersona = carPersona 
+				AND carEstadoOperacion = 'VIGENTE' 
+				GROUP BY carPersona)) auxCartera ON auxCartera.carPersona = aportantes.perAportante
+LEFT JOIN Constante cns ON cns.cnsNombre = 'CAJA_COMPENSACION_CODIGO'
+WHERE perAfi.perId IN (SELECT DISTINCT eaePersona 
+				FROM EstadoAfiliacionPersonaEmpresa 
+				WHERE eaeFechaCambioEstado BETWEEN :fechaInicio AND :fechaFin
+				  AND eaeEstadoAfiliacion = 'ACTIVO')
+  OR perAfi.perId IN (SELECT eapPersona FROM EstadoAfiliacionPersonaPensionado
+				WHERE eapFechaCambioEstado BETWEEN :fechaInicio AND :fechaFin
+				 )
+  OR perAfi.perId IN (SELECT eaiPersona FROM EstadoAfiliacionPersonaIndependiente
+  				WHERE eaiClaseIndependiente = 'VOLUNTARIO'
+  				  AND eaiEstadoAfiliacion = 'ACTIVO'
+  				  AND eaiFechaCambioEstado BETWEEN :fechaInicio AND :fechaFin)
+		</query>
+	</named-native-query>
+	
+<named-native-query name="Consultar.reporteNormativo.Count.MaestroAfiliados">
+		<description></description>
+		<query>
+			SELECT COUNT(*)
+	FROM Afiliado afi 
+	INNER JOIN Persona perAfi ON perAfi.perId = afi.afiPersona
+	INNER JOIN PersonaDetalle pedAfi ON pedAfi.pedPersona = perAfi.perId
+	INNER JOIN RolAfiliado roa ON roa.roaAfiliado = afi.afiId
+	LEFT JOIN Beneficiario ben ON ben.benAfiliado = afi.afiId
+	LEFT JOIN BeneficiarioDetalle bed ON bed.bedId = ben.benBeneficiarioDetalle
+	LEFT JOIN CertificadoEscolarBeneficiario ceb ON ceb.cebBeneficiarioDetalle = bed.bedId
+	LEFT JOIN Persona perBen ON perBen.perId = ben.benPersona
+	LEFT JOIN PersonaDetalle pedBen ON pedBen.pedPersona = perBen.perId
+	LEFT JOIN Ubicacion ubiAfi ON ubiAfi.ubiId = perAfi.perUbicacionPrincipal
+	LEFT JOIN Municipio munAfi ON munAfi.munId = ubiAfi.ubiMunicipio
+	LEFT JOIN Departamento depAfi ON depAfi.depId = munAfi.munDepartamento
+	LEFT JOIN Ubicacion ubiBen ON ubiBen.ubiId = perBen.perUbicacionPrincipal
+	LEFT JOIN Municipio munBen ON munBen.munId = ubiBen.ubiMunicipio
+	LEFT JOIN Departamento depBen ON depBen.depId = munBen.munDepartamento
+	LEFT JOIN (SELECT apd.apdPersona perAfiliado,
+			CASE WHEN emp.empPersona IS NULL THEN apg.apgPersona ELSE emp.empPersona END perAportante
+			  FROM AporteDetallado apd
+			  INNER JOIN AporteGeneral apg ON apg.apgId = apd.apdAporteGeneral
+			  LEFT JOIN Empresa emp ON emp.empId = apg.apgEmpresa
+			WHERE apg.apgPeriodoAporte = CAST(YEAR(:fechaFin) AS VARCHAR(4)) + '-' + REPLICATE('0', 2 - DATALENGTH(CAST(MONTH(:fechaFin) AS VARCHAR))) + CAST(MONTH(:fechaFin) AS VARCHAR)
+			GROUP BY apd.apdPersona,emp.empPersona,apg.apgPersona) aportantes ON aportantes.perAfiliado = perAfi.perId
+	LEFT JOIN Persona perApo ON perApo.perId = aportantes.perAfiliado
+	LEFT JOIN Ubicacion ubiApo ON ubiApo.ubiId = perApo.perUbicacionPrincipal
+	LEFT JOIN Municipio munApo ON munApo.munId = ubiApo.ubiMunicipio
+	LEFT JOIN Departamento depApo ON depApo.depId = munApo.munDepartamento
+	LEFT JOIN CondicionInvalidez coi ON coi.coiPersona = perBen.perId
+	LEFT JOIN (SELECT carPersona,
+				carEstadoCartera 
+				FROM Cartera car 
+				WHERE carId IN (SELECT MAX(carId) 
+					FROM Cartera 
+					WHERE carPersona = carPersona 
+					AND carEstadoOperacion = 'VIGENTE' 
+					GROUP BY carPersona)) auxCartera ON auxCartera.carPersona = aportantes.perAportante
+	WHERE perAfi.perId IN (SELECT DISTINCT eaePersona 
+					FROM EstadoAfiliacionPersonaEmpresa 
+					WHERE eaeFechaCambioEstado BETWEEN :fechaInicio AND :fechaFin
+					  AND eaeEstadoAfiliacion = 'ACTIVO')
+	  OR perAfi.perId IN (SELECT eapPersona FROM EstadoAfiliacionPersonaPensionado
+					WHERE eapFechaCambioEstado BETWEEN :fechaInicio AND :fechaFin
+					 )
+	  OR perAfi.perId IN (SELECT eaiPersona FROM EstadoAfiliacionPersonaIndependiente
+	  				WHERE eaiClaseIndependiente = 'VOLUNTARIO'
+	  				  AND eaiEstadoAfiliacion = 'ACTIVO'
+	  				  AND eaiFechaCambioEstado BETWEEN :fechaInicio AND :fechaFin)
+		</query>
+	</named-native-query>
+-->
+<!-- 	<named-native-query name="Consultar.reporteNormativo.Count.InconsistenciasUgpp"> -->
+<!-- 		<description>Cuenta de los registros a incluir en el reporte de inconsistencias UGPP</description> -->
+<!-- 		<query> -->
+<!-- 			SELECT COUNT(1) -->
+<!-- 			FROM ( -->
+<!-- 				SELECT car.carPersona, cad.cadPersona, MAX(car.revTime) fecRev -->
+<!-- 				FROM aud.Cartera_aud car -->
+<!-- 				LEFT JOIN aud.CarteraDependiente_aud cad ON car.carId = cad.cadCartera AND car.REV = cad.REV -->
+<!-- 				WHERE car.carTipoLineaCobro IN ('LC2', 'LC3', 'LC4', 'LC5') -->
+<!-- 				AND car.revTime BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 				GROUP BY car.carPersona, cad.cadPersona -->
+<!-- 			) AS T -->
+<!-- 		</query> -->
+<!-- 	</named-native-query> -->
+	
+<!-- 	<named-native-query name="Consultar.reporteNormativo.InconsistenciasUgpp"> -->
+<!-- 		<description>Detalle de los registros a incluir en el reporte de inconsistencias UGPP</description> -->
+<!-- 		<query> -->
+<!-- 			SELECT 'CCF' tipoAdmin,  -->
+<!-- 			(SELECT cnsValor FROM dbo.Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO') codAdmin,  -->
+<!-- 			(SELECT ccfNombre FROM dbo.CajaCompensacion WHERE ccfCodigo = (SELECT cnsValor FROM dbo.Constante WHERE cnsNombre = 'CAJA_COMPENSACION_CODIGO')) nomAdmin, -->
+<!-- 			per.perTipoIdentificacion tipoIdAportante,  -->
+<!-- 			per.perNumeroIdentificacion numIdAportante,  -->
+<!-- 			CASE WHEN ISNULL(per.perPrimerNombre, '') = '' THEN per.perRazonSocial -->
+<!-- 			ELSE ( -->
+<!-- 				per.perPrimerNombre +  -->
+<!-- 				CASE WHEN per.perSegundoNombre IS NULL THEN ' ' ELSE ' '+per.perSegundoNombre+' ' END + -->
+<!-- 				per.perPrimerApellido +  -->
+<!-- 				CASE WHEN per.perSegundoApellido IS NULL THEN '' ELSE ' '+per.perSegundoApellido END -->
+<!-- 			) END razonSocial,  -->
+<!-- 			dep.depCodigo codigoDep,  -->
+<!-- 			mun.munCodigo cod,  -->
+<!-- 			ubi.ubiDireccionFisica direccion,  -->
+<!-- 			CASE WHEN ptr.perTipoIdentificacion IS NOT NULL THEN ptr.perTipoIdentificacion ELSE per.perTipoIdentificacion END tipoIdCotizante,  -->
+<!-- 			CASE WHEN ptr.perNumeroIdentificacion IS NOT NULL THEN ptr.perNumeroIdentificacion ELSE per.perNumeroIdentificacion END numIdCotizante,  -->
+<!-- 			'Inexactitud' concepto,  -->
+<!-- 			DATEPART(YEAR, car.fechaInicio) anioInicio,  -->
+<!-- 			DATEPART(MONTH, car.fechaInicio) mesInicio,  -->
+<!-- 			CASE WHEN car.estado = 'VIGENTE' THEN NULL ELSE DATEPART(YEAR, car.fecRev) END anioFin, -->
+<!-- 			CASE WHEN car.estado = 'VIGENTE' THEN NULL ELSE DATEPART(MONTH, car.fecRev) END mesFin,  -->
+<!-- 			ISNULL(car.deuda, 0) deuda,  -->
+<!-- 			A.accion ultimaAccion,  -->
+<!-- 			A.fecha fechaAccion,  -->
+<!-- 			NULL observaciones  -->
+<!-- 		FROM dbo.Persona per -->
+<!-- 		INNER JOIN ( -->
+<!-- 			SELECT T.perAportante, T.perCotizante, T.estado, T.fechaInicio, T.fecRev,  -->
+<!-- 				CASE WHEN T.cadId IS NULL  -->
+<!-- 					THEN (SELECT car.carDeudaPresunta FROM aud.Cartera_aud car WHERE car.carId = T.carId and car.REV = T.rev) -->
+<!-- 					ELSE (SELECT cad.cadDeudaPresunta FROM aud.CarteraDependiente_aud cad WHERE cad.cadId = T.cadId and cad.REV = T.rev) -->
+<!-- 				END deuda, T.carId -->
+<!-- 			FROM ( -->
+<!-- 				SELECT car.carPersona perAportante, cad.cadPersona perCotizante, car.carEstadoOperacion estado, car.carFechaCreacion fechaInicio, MAX(car.revTime) fecRev, -->
+<!-- 					car.carId, cad.cadId, MAX(car.REV) rev -->
+<!-- 				FROM aud.Cartera_aud car -->
+<!-- 				LEFT JOIN aud.CarteraDependiente_aud cad ON car.carId = cad.cadCartera AND car.REV = cad.REV -->
+<!-- 				WHERE car.carTipoLineaCobro IN ('LC2', 'LC3', 'LC4', 'LC5') -->
+<!-- 				AND car.revTime BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 				GROUP BY car.carPersona, cad.cadPersona, car.carEstadoOperacion, car.carFechaCreacion, car.carId, cad.cadId -->
+<!-- 			) AS T -->
+<!-- 		) AS car ON car.perAportante = per.perId -->
+<!-- 		LEFT JOIN dbo.Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId -->
+<!-- 		LEFT JOIN dbo.Municipio mun ON ubi.ubiMunicipio = mun.munId -->
+<!-- 		LEFT JOIN dbo.Departamento dep ON mun.munDepartamento = dep.depId  -->
+<!-- 		LEFT JOIN dbo.Persona ptr ON car.perCotizante = ptr.perId -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT accion, -->
+<!-- 				MAX(fecha) fecha, carId -->
+<!-- 			FROM ( -->
+<!-- 				SELECT  -->
+<!-- 					CASE -->
+<!-- 						WHEN acrActividadCartera IN ('FISCALIZACION_TELEFONICA', 'GESTION_TELEFONICA', 'LLAMADO') THEN 'LLAMADA' -->
+<!-- 						WHEN acrActividadCartera IN ('SOLICITAR_DOCUMENTACION') THEN 'OFICIO' -->
+<!-- 						ELSE NULL -->
+<!-- 					END accion,  -->
+<!-- 					CONVERT(DATE, acrFecha, 121) fecha, acrCartera carId -->
+<!-- 				FROM ActividadCartera -->
+<!-- 				WHERE acrCartera IS NOT NULL  -->
+<!-- 					AND acrFecha BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 				UNION ALL -->
+<!-- 				SELECT  -->
+<!-- 					CASE -->
+<!-- 						WHEN agrVisitaAgenda IN ('FISCALIZACION_TELEFONICA', 'GESTION_TELEFONICA', 'LLAMADO') THEN 'LLAMADA' -->
+<!-- 						WHEN agrVisitaAgenda IN ('VISITA', 'VISITA_A_CAJA') THEN 'VISITA' -->
+<!-- 						ELSE NULL -->
+<!-- 					END accion, agrFecha fecha, agrCartera carId -->
+<!-- 				FROM AgendaCartera -->
+<!-- 				WHERE agrCartera IS NOT NULL  -->
+<!-- 					AND agrFecha BETWEEN :fechaInicio AND :fechaFin -->
+<!-- 			) AS T -->
+<!-- 			WHERE accion IS NOT NULL -->
+<!-- 			GROUP BY accion, carId -->
+<!-- 		) AS A ON A.carId = car.carId -->
+<!-- 		</query> -->
+<!-- 	</named-native-query> -->
+	
+	
+	<named-native-query name="Consultar.reporteNormativo.AfiliadosMensual">
+		<description></description>
+		<query>
+			SELECT 
+			havNitEntidad nitEntidad,
+			havNumeroDocAfiliado numeroDocAfiliado,
+			havApellidos apellidos,
+			havNombres nombres,
+			havNombreEntidad nombreEntidad,
+			havFechaAfiliacion fechaAfiliacion,
+			havSalario salario,
+			havTipoDocAfiliado tipoDocAfiliado
+			FROM rno.HistoricoAfiliadosVivienda
+			WHERE havFechaHistorico = (SELECT MAX(ernFechaFin)
+										FROM rno.EjecucionReporteNormativo ern
+										JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																		AND rno.rnoNombre = 'HistoricoAfiliadosVivienda'
+										WHERE ern.ernFechaFin &lt;= :fechaFin)		
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.AfiliadosMensual">
+		<description></description>
+		<query>
+			SELECT count(*)
+			FROM rno.HistoricoAfiliadosVivienda
+			WHERE havFechaHistorico = (SELECT MAX(ernFechaFin)
+										FROM rno.EjecucionReporteNormativo ern
+										JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																		AND rno.rnoNombre = 'HistoricoAfiliadosVivienda'
+										WHERE ern.ernFechaFin &lt;= :fechaFin)		
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.afiliaciones.empleadores.giass">
+		<description>Consulta informacion sobre afiliaciones de empleadores a la CCF</description>
+		<query>
+		SELECT 
+			per.perId,
+			per.perTipoIdentificacion,
+			per.perNumeroIdentificacion,
+			est.eecFechaCambioEstado
+		FROM EMPLEADOR emp 
+		INNER JOIN EMPRESA empr ON empr.empId = emp.empEmpresa 
+		INNER JOIN PERSONA per ON per.perId = empr.empPersona
+		INNER JOIN EstadoAfiliacionEmpleadorCaja est ON per.perId = est.eecPersona
+		ORDER BY per.perId, eecFechaCambioEstado
+		
+		</query>
+	</named-native-query>
+	
+	
+	
+	
+	<!-- QUERIES NUEVO MODELO REPORTES HISTORICO -->
+	<named-native-query
+		name="Consultar.reporteNormativo.desagregado.cartera.aportante">
+		<description>Consulta la cartera desagregada por aportante cuyo incumplimiento sea superior a treinta (30) días, contados a partir de la fecha límite de pago, informando la fecha y detalle de las acciones de cobro realizadas</description>
+		<query>
+			SELECT 
+				hdcCodAdministradora codAdministradora,
+				hdcNombreAdministradora nombreAdministradora,
+				hdcNombreRazonSocial nombreRazonSocial,
+				hdcTipoDocumento tipoDocumento,
+				hdcNumeroDocumento numeroDocumento,
+				hdcDigitoVerificacion digitoVerificacion,
+				hdcTipoDeuda tipoDeuda,
+				hdcOrigenCartera origenCartera,
+				hdcTotalDeuda totalDeuda,
+				hdcAnioCartera anioCartera,
+				hdcNumeroPeriodos numeroPeriodos,
+				hdcUltimaAccion ultimaAccion,
+				hdcFechaUltimaAccion fechaUltimaAccion,
+				hdcEstadoAportante estadoAportante,
+				hdcClasificacion clasificacion,
+				hdcConvenioCobro convenioCobro
+			FROM rno.HistoricoDesagregadoCarteraAportante
+			WHERE hdcFechaHistorico = (SELECT MAX(ernFechaFin)
+										FROM rno.EjecucionReporteNormativo ern
+										JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																		AND rno.rnoNombre = 'HistoricoDesagregadoCarteraAportante'
+										WHERE ern.ernFechaFin &lt;= :fecha)		
+		</query>
+	</named-native-query>
+	
+	<named-native-query
+		name="Consultar.reporteNormativo.desagregado.cartera.aportante.valorTotal">
+		<description>Consulta la cartera desagregada por aportante cuyo incumplimiento sea superior a treinta (30) días, contados a partir de la fecha límite de pago, informando la fecha y detalle de las acciones de cobro realizadas</description>
+		<query>
+			SELECT 
+				SUM(hdcTotalDeuda)
+			FROM rno.HistoricoDesagregadoCarteraAportante
+			WHERE hdcFechaHistorico = (SELECT MAX(ernFechaFin)
+										FROM rno.EjecucionReporteNormativo ern
+										JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																		AND rno.rnoNombre = 'HistoricoDesagregadoCarteraAportante'
+										WHERE ern.ernFechaFin &lt;= :fecha)	
+		</query>
+	</named-native-query>
+	
+	<named-native-query
+		name="Consultar.reporteNormativo.desagregado.cartera.aportante.count">
+		<description>Consulta la cartera desagregada por aportante cuyo incumplimiento sea superior a treinta (30) días, contados a partir de la fecha límite de pago, informando la fecha y detalle de las acciones de cobro realizadas</description>
+		<query>
+			SELECT count(*)
+			FROM rno.HistoricoDesagregadoCarteraAportante
+			WHERE hdcFechaHistorico = (SELECT MAX(ernFechaFin)
+										FROM rno.EjecucionReporteNormativo ern
+										JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																		AND rno.rnoNombre = 'HistoricoDesagregadoCarteraAportante'
+										WHERE ern.ernFechaFin &lt;= :fecha)	
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.empresas.aportantes">
+		<description>
+			
+		</description>
+		<query>
+		SELECT  heptipoIdentificaicon as tipoIdentificaicon,
+		hepperNumeroIdentificacion as perNumeroIdentificacion,
+		hepNombre as Nombre,
+		hepmunCodigo as munCodigo,
+		hepubiDireccionFisica as ubiDireccionFisica,
+		hepestadoVinculacion as estadoVinculacion,
+		heptipoDeAportante as tipoDeAportante,
+		heptipoDeSector as tipoDeSector,
+		hepactEconomicaPpl as actEconomicaPpl,
+		hepsituacion1429 as situacion1429,
+		hepprogresividad1429 as progresividad1429,
+		hepsituacion590 as situacion590,
+		hepprogresividad590 as progresividad590,
+		ISNULL(hepaporteTotalMensual,0) as aporteTotalMensual,
+		hepinteresesMora as interesesMora,
+		hepvalorReintegros  as valorReintegros 
+		FROM rno.HistoricoEmpresasAportantes
+		WHERE hepFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoEmpresasAportantes'
+									WHERE ern.ernFechaFin &lt;= :fecha)	
+		
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.empresas.aportantes.count">
+		<description>
+		
+		</description>
+		<query>		
+		SELECT COUNT(*)
+		FROM rno.HistoricoEmpresasAportantes
+		WHERE hepFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoEmpresasAportantes'
+									WHERE ern.ernFechaFin &lt;= :fecha)	
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.aviso.incumplimiento">
+		<description>
+			
+		</description>
+		<query>
+		SELECT haiRazonSocial razonSocial,
+			   haiTipoDocumento  tipoDocumento ,
+			   haiNumeroDocumento numeroDocumento,
+			   haiDigitoVerificacion digitoVerificacion,
+			   haiMetodoEnvio metodoEnvio,
+			   haiVacio vacio,
+			   haiFecha fecha
+		FROM rno.HistoricoAvisoIncumplimiento	
+		WHERE haiFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAvisoIncumplimiento'
+									WHERE ern.ernFechaFin &lt;= :fecha)	
+		
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.aviso.incumplimiento.count">
+		<description>
+		
+		</description>
+		<query>		
+		SELECT COUNT(*)
+		FROM rno.HistoricoAvisoIncumplimiento	
+		WHERE haiFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAvisoIncumplimiento'
+									WHERE ern.ernFechaFin &lt;= :fecha)	
+		</query>
+	</named-native-query>
+		
+		<named-native-query name="Consultar.reporteNormativo.afiliados.cargo">
+		<description>
+			
+		</description>
+		<query>
+		SELECT hacTipoIdentificacionEmpresa AS tipoIdentificacionEmpresa,
+				hacNumeroIdentificacionEmpresa AS numeroIdentificacionEmpresa,
+				hacTipoIdentificacionAfiliado AS tipoIdentificacionAfiliado,
+				hacNumeroIdentificacionAfiliado AS numeroIdentificacionAfiliado,
+				hacTipoIdentificacionPersonaACargo AS tipoIdentificacionPersonaACargo,
+				hacNumeroIdentificacionPersonaACargo AS numeroIdentificacionPersonaACargo,
+				hacPrimerNombrePersonaACargo AS primerNombrePersonaACargo,
+				hacSegundoNombrePersonaACargo AS segundoNombrePersonaACargo,
+				hacPrimerApellidoPersonaACargo  AS primerApellidoPersonaACargo ,
+				hacSegundoApellidoPersonaACargo AS segundoApellidoPersonaACargo,
+				hacFechaNacimientoPersonaACargo AS fechaNacimientoPersonaACargo,
+				hacGeneroPersonaACargo AS generoPersonaACargo,
+				hacBenParentesco AS benParentesco,
+				hacMunicipioResidencia AS municipioResidencia,
+				hacAreaGeografica AS areaGeografica,
+				hacCondicionDiscapacidad AS condicionDiscapacidad,
+				hacTipoCuotaMonetariaPagadoPersonaCargo AS tipoCuotaMonetariaPagadoPersonaCargo,
+				hacValorTotal AS valorTotal,
+				hacNumeroCuotasPagadas AS numeroCuotasPagadas,
+				hacNumeroPeriodosPagados AS numeroPeriodosPagados				
+		FROM rno.HistoricoAfiliadosACargo	
+		WHERE hacFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAfiliadosACargo'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.afiliados.cargo.count">
+		<description>
+		
+		</description>
+		<query>		
+		SELECT COUNT(*)
+		FROM rno.HistoricoAfiliadosACargo	
+		WHERE hacFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAfiliadosACargo'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+		
+	<named-native-query name="Consultar.reporteNormativo.EmpresaEnMora">
+		<description>
+			
+		</description>
+		<query>
+		SELECT  hemTipoIdentificacion tipoIdentificacion,
+		hemPerNumeroIdentificacion perNumeroIdentificacion,
+		hemNombreEmpresa nombreEmpresa,
+		hemMunCodigo munCodigo,
+		hemUbiDireccionFisica ubiDireccionFisica,
+		hemNombreRepreLegal nombreRepreLegal,
+		hemFechaCreacion fechaCreacion,
+		hemSaldoMora saldoMora,
+		hemPeriodoMora periodoMora,
+		hemGestionProcesoCobro gestionProcesoCobro,
+		hemAcuerdoPago acuerdoPago,
+		hemCarteraRecuperada carteraRecuperada,
+		hemEmailEmpresa_repLegal emailEmpresa_repLegal
+		FROM rno.HistoricoEmpresasMora
+		WHERE hemFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoEmpresasMora'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.EmpresaEnMora">
+		<description>
+		
+		</description>
+		<query>		
+		SELECT  count(*)
+		FROM rno.HistoricoEmpresasMora
+		WHERE hemFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoEmpresasMora'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.UbicacionContacto">
+		<description>
+			
+		</description>
+		<query>
+		SELECT  hucCodAdministradora codAdministradora,
+		hucNombreAdministradora nombreAdministradora,
+		hucNombreRazonSocialAportante nombreRazonSocialAportante,
+		hucTipoDocumento tipoDocumento,
+		hucNumeroDocumento numeroDocumento,
+		hucNumeroDigitoVerificacion numeroDigitoVerificacion,
+		hucDireccion1 direccion1,
+		hucCodDepartamento1 codDepartamento1,
+		hucCodMunicipio1 codMunicipio1,
+		hucNombreDepartamento1 nombreDepartamento1,
+		hucNombreMunicipio1 nombreMunicipio1,
+		hucDireccion2 direccion2,
+		hucCodDepartamento2 codDepartamento2,
+		hucCodMunicipio2 codMunicipio2,
+		hucNombreDepartamento2 nombreDepartamento2,
+		hucNombreMunicipio2 nombreMunicipio2,
+		hucTelefono1 telefono1,
+		hucIndTelefono1 indTelefono1,
+		hucTelefono2 telefono2,
+		hucIndTelefono2 indTelefono2,
+		hucCelular1 celular1,
+		hucCelular2 celular2,
+		hucEmail1 email1,
+		hucEmail2 email2,
+		hucUltimaFechaActualizacion ultimaFechaActualizacion
+		FROM rno.HistoricoUbicacionYContacto
+		WHERE hucFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoUbicacionYContacto'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.UbicacionContacto">
+		<description>
+		
+		</description>
+		<query>		
+		SELECT  count(*)
+		FROM rno.HistoricoUbicacionYContacto
+		WHERE hucFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoUbicacionYContacto'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.consolidado.cartera">
+		<description>
+			
+		</description>
+		<query>
+		SELECT  hccCodAdministradora codAdministradora,
+		hccNombreAdministradora nombreAdministradora,
+		hccTipoDeuda tipoDeuda,
+		hccOrigenCartera origenCartera,
+		hccAnioCartera anioCartera,
+		hccNumeroPeriodos numeroPeriodos,
+		hccTotalDeuda totalDeuda
+		FROM rno.HistoricoConsolidadoCartera
+		WHERE hccFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoConsolidadoCartera'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.consolidado.cartera.count">
+		<description>
+		
+		</description>
+		<query>		
+		SELECT  count(*)
+		FROM rno.HistoricoConsolidadoCartera
+		WHERE hccFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoConsolidadoCartera'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.consolidado.cartera.total">
+		<description>
+			
+		</description>
+		<query>
+		SELECT  sum(hccTotalDeuda) totalDeuda
+		FROM rno.HistoricoConsolidadoCartera
+		WHERE hccFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoConsolidadoCartera'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.DevolucionesUgpp">
+		<description>
+			
+		</description>
+		<query>
+		SELECT hduTipoDocumento tipoDocumento,
+		hduNumeroDocumento numeroDocumento,
+		hduRazonSocial razonSocial,
+		hduDireccion direccion,
+		hduMunicipio municipio,
+		hduDepartamento departamento,
+		hduConcepto concepto,
+		hduAnio anio,
+		hduMes mes,
+		hduSubsistemaDevolucion subsistemaDevolucion,
+		hduNombreActo nombreActo,
+		hduNumeroActo numeroActo,
+		hduFechaActo fechaActo,
+		hduValor valor,
+		hduNombreAdministradora nombreAdministradora,
+		hduCodigoAdministradora codigoAdministradora
+		FROM rno.HistoricoDevolucionesUGPP
+		WHERE hduFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoDevolucionesUGPP'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.DevolucionesUgpp">
+		<description>
+		
+		</description>
+		<query>
+		SELECT COUNT(*)
+		FROM rno.HistoricoDevolucionesUGPP
+		WHERE hduFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoDevolucionesUGPP'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.UnicoEmpleadores">
+		<description>
+			
+		</description>
+		<query>
+		SELECT hruAportante aportante,
+		hruTipoDocumento tipoDocumento,
+		hruPerNumeroIdentificacion perNumeroIdentificacion,
+		hruRepresentanteLegal representanteLegal,
+		hruDireccion direccion,
+		hruMunicipio municipio,
+		hruDepartamento departamento,
+		hruDivipola divipola,
+		hruTelefono telefono,
+		hruCorreoElectronico correoElectronico,
+		hruPaginaWeb paginaWeb,
+		hruTrabajadoresA trabajadoresA,
+		hruTrabajadoresB trabajadoresB,
+		hruTrabajadoresC trabajadoresC,
+		hruTotalTrabajadores totalTrabajadores,
+		hruCiiCodigo ciiCodigo,
+		hruResponsableAfiliaciones responsableAfiliaciones,
+		hruTelefonoFijoResponsable telefonoFijoResponsable,
+		hruTelefonoCelularResponsable telefonoCelularResponsable,
+		hruEMailResponsable eMailResponsable
+		FROM rno.HistoricoRegistroUnicoEmpleadores
+		WHERE hruFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoRegistroUnicoEmpleadores'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.UnicoEmpleadores">
+		<description>
+		
+		</description>
+		<query>
+		SELECT count(*)
+		FROM rno.HistoricoRegistroUnicoEmpleadores
+		WHERE hruFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoRegistroUnicoEmpleadores'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.MaestroAfiliados">
+		<description>
+			
+		</description>
+		<query>
+		SELECT hmaTipoRegistro tipoRegistro,
+		hmaTipoIdentificacionAfiliado tipoIdentificacionAfiliado,
+		hmaNumeroIdentificacionAfiliado numeroIdentificacionAfiliado,
+		hmaTipoIdentificacionPoblacion tipoIdentificacionPoblacion,
+		hmaNumeroIdentificacionPoblacion numeroIdentificacionPoblacion,
+		hmaCodigoGenero codigoGenero,
+		hmaFechaNacimiento fechaNacimiento,
+		hmaPrimerApellido primerApellido,
+		hmaSegundoApellido segundoApellido,
+		hmaPrimerNombre primerNombre,
+		hmaSegundoNombre segundoNombre,
+		hmaDepartamentoResidencia departamentoResidencia,
+		hmaMunicipioResidencia municipioResidencia,
+		hmaFechaAfiliacion fechaAfiliacion,
+		hmaCodigoCaja codigoCaja,
+		hmaCodTipoAfiliado codTipoAfiliado,
+		hmaTipoIdentificacionAportante tipoIdentificacionAportante,
+		hmaNumeroIdentificacionAportante numeroIdentificacionAportante,
+		hmaDigitoVerficacionAportante digitoVerficacionAportante,
+		hmaRazonSocialAportante razonSocialAportante,
+		hmaFechaVinculacion fechaVinculacion,
+		hmaDepartamentroLaboral departamentroLaboral,
+		hmaMunicipioLaboral municipioLaboral,
+		hmaAlDia alDia,
+		hmaCodigoTipoMiembro codigoTipoMiembro,
+		hmaCondicionBeneficiario condicionBeneficiario,
+		hmaTipoRelacionConAfiliado tipoRelacionConAfiliado
+		FROM rno.HistoricoMaestroAfiliados
+		WHERE hmaFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoMaestroAfiliados'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.MaestroAfiliados">
+		<description>
+		
+		</description>
+		<query>
+		SELECT count(*)
+		FROM rno.HistoricoMaestroAfiliados
+		WHERE hmaFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoMaestroAfiliados'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.ArchivoMaestroSubsidios">
+		<description>
+			
+		</description>
+		<query>
+				SELECT hmsTipoRegistro tipoRegistro,
+			hmsIdentificadorUnicoSubsidio identificadorUnicoSubsidio,
+			hmsCodigoCCF codigoCCF,
+			hmsAQuienSeOtorgoSubsidio aQuienSeOtorgoSubsidio,
+			hmsTipoIdAfiliado tipoIdAfiliado,
+			hmsNumeroIdAfiliado numeroIdAfiliado,
+			hmsPrimerApellidoAfiliado primerApellidoAfiliado,
+			hmsSegundoApellidoAfiliado segundoApellidoAfiliado,
+			hmsPrimerNombreAfiliado primerNombreAfiliado,
+			hmsSegundoNombreAfiliado segundoNombreAfiliado,
+			CAST(hmsFechaAsignacionSubsidio AS DATE) as fechaAsignacionSubsidio,
+			hmsValorSubsidio valorSubsidio,
+			hmsCodigoTipoSubsidio codigoTipoSubsidio,
+			hmsEstadoSubsidio estadoSubsidio,
+			hmsDepartamentoSubsidio departamentoSubsidio,
+			hmsMunicipioSubsidio municipioSubsidio,
+			hmsFechaEntregaUltimoSubsidio fechaEntregaUltimoSubsidio,
+			hmsTipoIdbeneficiario tipoIdbeneficiario,
+			hmsNumeroIdBeneficiario numeroIdBeneficiario,
+			hmsCodigoGeneroBeneficiario codigoGeneroBeneficiario,
+			hmsFechaNacimientoBeneficiario fechaNacimientoBeneficiario,
+			hmsPrimerApellidoBeneficiario primerApellidoBeneficiario,
+			hmsSegundoApellidoBeneficiario segundoApellidoBeneficiario,
+			hmsPrimerNombreBeneficiario primerNombreBeneficiario,
+			hmsSegundoNombreBeneficiario segundoNombreBeneficiario,
+			hmsTipoIdEmpresaRecibeSubsidio tipoIdEmpresaRecibeSubsidio,
+			hmsNumeroIdEmpresaRecibeSubsidio numeroIdEmpresaRecibeSubsidio,
+			hmsDigitoVerificacionIdEmpresaSubsidio digitoVerificacionIdEmpresaSubsidio,
+			hmsRazonSocialEmpresaSubsidio razonSocialEmpresaSubsidio
+		FROM rno.HistoricoArchivoMaestroSubsidios
+		WHERE hmsFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoArchivoMaestroSubsidios'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.ArchivoMaestroSubsidios">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+		FROM rno.HistoricoArchivoMaestroSubsidios
+		WHERE hmsFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoArchivoMaestroSubsidios'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.NovedadesAfiliadosSubsidios">
+		<description>
+			
+		</description>
+		<query>
+	SELECT hnaTipoRegistro,
+				hnaCodigoCCF,
+				hnaTipoIdAfiliado,
+				hnaNumeroIdAfiliado,				
+				hnaPrimerApellidoAfiliado,
+				hnaSegundoApellidoAfiliado,
+				hnaPrimerNombreAfiliado,
+				hnaSegundoNombreAfiliado,
+				hnaCodigoNovedad,
+				hnaTipoIdAfiliado2,
+				hnaNumeroIdAfiliado2,
+				hnaCodigoGeneroAfiliado2,
+				hnaFechaNacimientoAfiliado2,
+				hnaPrimerApellidoAfiliado2,
+				hnaSegundoApellidoAfiliado2,
+				hnaPrimerNombreAfiliado2,
+				hnaSegundoNombreAfiliado2,
+				hnaDepartamentoAfiliado,
+				hnaMunicipioAfiliado,
+				hnaFechaAfiliacion,
+				hnaVARIABLE12,
+				hnaCodigoTipoAfiliado,
+				hnaTipoIdAportante,
+				hnaNumeroIdAportante,
+				hnaDigitoVerificacionAportante,
+				hnaRazonSocialAportante,
+				hnaFechaVinculacionAportante,
+				hnaDepartamentoUbicacion,
+				hnaMunicipioUbicacion,
+				hnaVARIABLE21,
+				hnaVARIABLE22,
+				hnaCodigoTipoMiembroPoblacionCubierta,
+				hnaTipoIdMiembroPoblacionCubierta,
+				hnaNumeroIdMiembroPoblacionCubierta,
+				hnaCodigoCondicionBeneficiario,
+				hnaCodigoTipoRelacionConAfiliadoBen,
+				hnaFechaAsignacionSubsidio,
+				hnaValorSubsidio,
+				hnaCodigoTipoSubsidio,
+				hnaEstadoSubsidio,
+				hnaDepartamentoSubsidio,
+				hnaMunicipioSubsidio,
+				hnaFechaEntregaUltimoSubsidio,
+				hnaFechaDesvinculacionAportante,
+				hnaFechaRetiroAfiliado,
+				hnaFechaFallecimiento,
+				hnaTipoIdbeneficiario,
+				hnaNumeroIdBeneficiario,
+				hnaVARIABLE40,
+				hnaVARIABLE41,
+				hnaVARIABLE42,
+				hnaVARIABLE43,
+				hnaVARIABLE44,
+				hnaVARIABLE45,
+				hnaVARIABLE46,
+				hnaVARIABLE47,
+				hnaVARIABLE48,
+				hnaVARIABLE49,
+				hnaVARIABLE50,
+				hnaVARIABLE51,
+				hnaVARIABLE52,
+				hnaVARIABLE53,
+				hnaVARIABLE54,
+				hnaIdentificadorUnicoSubsidio,
+				hnaNuevoTipoIdMiembrePoblacionCubierta,
+				hnaNuevoNumeroIdMiembroPoblacionCubierta,
+				hnaCausaRetiro
+		FROM rno.HistoricoNovedadesAfiliadosYSubsidios
+		WHERE hnaFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoNovedadesAfiliadosYSubsidios'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.NovedadesAfiliadosSubsidios">
+		<description>
+		
+		</description>
+		<query>
+				SELECT COUNT(*)
+		FROM rno.HistoricoNovedadesAfiliadosYSubsidios
+		WHERE hnaFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoNovedadesAfiliadosYSubsidios'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.NovedadesEstadoAfiliacion">
+		<description>
+			
+		</description>
+		<query>
+		SELECT hneTipoRegistro tipoRegistro,
+			hneCodigoCCF codigoCCF,
+			hnePerTipoIdentificacion perTipoIdentificacion,
+			hnePerNumeroIdentificacion perNumeroIdentificacion,
+			hnePerPrimerApellido perPrimerApellido,
+			hnePerSegundoApellido perSegundoApellido,
+			hnePerPrimerNombre perPrimerNombre,
+			hnePerSegundoNombre perSegundoNombre,
+			hneCodigoNovedad codigoNovedad,
+			hneEstadoAfiliacion estadoAfiliacion,
+			hneTipoIdApor tipoIdApor,
+			hneNumIdApor numIdApor,
+			hneDigitoVerificacion digitoVerificacion,
+			hneRazonSocial razonSocial,
+			hneEstadoMora estadoMora
+		FROM rno.HistoricoNovedadesEstadoAfiliacion
+		WHERE hneFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoNovedadesEstadoAfiliacion'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.NovedadesEstadoAfiliacion">
+		<description>
+		
+		</description>
+		<query>
+		SELECT count(*)
+		FROM rno.HistoricoNovedadesEstadoAfiliacion
+		WHERE hneFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoNovedadesEstadoAfiliacion'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.Afiliados">
+		<description>
+			
+		</description>
+		<query>
+			SELECT hraTipoIdentificacionEmpresa tipoIdentificacionEmpresa,
+			hraNumeroIdentificacion numeroIdentificacion,
+			hraTipoIdentificacionAfiliado tipoIdentificacionAfiliado,
+			hraNumeroIdentificacionAfiliado numeroIdentificacionAfiliado,
+			hraPerPrimerNombre perPrimerNombre,
+			hraPerSegundoNombre perSegundoNombre,
+			hraPerPrimerApellido perPrimerApellido,
+			hraPerSegundoApellido perSegundoApellido,
+			hraPedFechaNacimiento pedFechaNacimiento,
+			hraGenero genero,
+			hraOrientacionSexual orientacionSexual,
+			hraNivelEducativo nivelEducativo,
+			hraOcupacionProfesional ocupacionProfesional,
+			hraFactorVulnerabilidad factorVulnerabilidad,
+			hraEstadoCivil estadoCivil,
+			hraPertenenciaEtnica pertenenciaEtnica,
+			hraPaisResidencia paisResidencia,
+			hraCodigoMunicipio codigoMunicipio,
+			hraAreaGeografica areaGeografica,
+			hraSalarioBasico salarioBasico,
+			hraTipoAfiliado tipoAfiliado,
+			hraCategoria categoria,
+			hraBeneficiarioCuota beneficiarioCuota
+		FROM rno.HistoricoAfiliados
+		WHERE hraFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAfiliados'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.Afiliados">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+		FROM rno.HistoricoAfiliados
+		WHERE hraFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAfiliados'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.AsignacionEntregaReFOVIS">
+		<description>
+			
+		</description>
+		<query>
+				SELECT hapAnioVigencia anioVigencia, 
+				hapFuenteFinanciamiento fuenteFinanciamiento,
+				hapTipoPlanVivienda tipoPlanVivienda,
+				hapCodigoMunicipio codigoMunicipio,
+				hapGenero genero,
+				hapRangoEdad rangoEdad,
+				hapNivelIngreso nivelIngreso,
+				hapComponente componente,
+				hapEstadoSubsidio estadoSubsidio,				
+				hapCantidadSubsidios cantidadSubsidios,
+				hapValorSubsidios valorSubsidios
+		FROM rno.HistoricoAsignacionEntregaReintegroFOVIS
+		WHERE hapFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAsignacionEntregaReintegroFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.AsignacionEntregaReFOVIS">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+		FROM rno.HistoricoAsignacionEntregaReintegroFOVIS
+		WHERE hapFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAsignacionEntregaReintegroFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.PagosFueraDePilaUgpp">
+		<description>
+			
+		</description>
+		<query>
+		SELECT hpfTipoDocumento tipoDocumento,
+			hpfNumeroDocumento numeroDocumento,
+			hpfRazonSocial razonSocial,
+			hpfDireccion direccion,
+			hpfMunicipio municipio,
+			hpfDepartamento departamento,
+			hpfAnio anio,
+			hpfMes mes,
+			hpfSubsistema subsistema,
+			hpfDiasCotizados diasCotizados,
+			hpfIngresoBaseDeCotizacion ingresoBaseDeCotizacion,
+			hpfCedulaCotizante cedulaCotizante,
+			hpfNombreCotizante nombreCotizante,
+			hpfNovedad novedad,
+			hpfPlanilla planilla,
+			hpfFechaPago fechaPago,
+			hpfValor valor,
+			hpfNombreAdministradora nombreAdministradora,
+			hpfCodigoAdministradora codigoAdministradora
+		FROM rno.HistoricoPagoPorFueraPila
+		WHERE hpfFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoPagoPorFueraPila'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.PagosFueraDePilaUgpp">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+		FROM rno.HistoricoPagoPorFueraPila
+		WHERE hpfFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoPagoPorFueraPila'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.InconsistenciasUGPP">
+		<description>
+			
+		</description>
+		<query>
+			SELECT hinTipoAdmin tipoAdmin,
+			hinCodAdmin codAdmin,
+			hinNomAdmin nomAdmin,
+			hinTipoIdAportante tipoIdAportante,
+			hinNumIdAportante numIdAportante,
+			hinRazonSocial razonSocial,
+			hinCodigoDep codigoDep,
+			hinCod cod,
+			trim(hinDireccion) direccion,
+			hinTipoIdCotizante tipoIdCotizante,
+			hinNumIdCotizante numIdCotizante,
+			hinConcepto concepto,
+			hinAnioInicio anioInicio,
+			RIGHT('0'+RTRIM(hinMesInicio),2) mesInicio,
+			hinAnioFin anioFin,
+			RIGHT('0'+RTRIM(hinMesFin),2) mesFin,
+			hinDeuda deuda,
+			hinUltimaAccion ultimaAccion,
+			hinFechaAccion fechaAccion,
+			hinObservaciones observaciones
+		FROM rno.HistoricoInconsistenciasUGPP
+		WHERE hinFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoInconsistenciasUGPP'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.InconsistenciasUGPP">
+		<description>
+		
+		</description>
+		<query>
+		SELECT count(*)
+		FROM rno.HistoricoInconsistenciasUGPP
+		WHERE hinFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoInconsistenciasUGPP'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.EmpleadoresMorosos">
+		<description>
+			
+		</description>
+		<query>
+		SELECT hesNombreEmpresa nombreEmpresa,
+			hesPerNumeroIdentificacion perNumeroIdentificacion,
+			hesUbiDireccionFisica ubiDireccionFisica,
+			hesMunNombre munNombre,
+			hesNombreRepreLegal nombreRepreLegal,			
+			hesPeriodosSinPago periodosSinPago,
+			hesPresuntoValorCartera presuntoValorCartera
+		FROM rno.HistoricoEmpleadoresMorosos
+		WHERE hesFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoEmpleadoresMorosos'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.Count.EmpleadoresMorosos">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+		FROM rno.HistoricoEmpleadoresMorosos
+		WHERE hesFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoEmpleadoresMorosos'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.reporteNormativo.registroAfiliadosFovis">
+		<description>
+			
+		</description>
+		<query>
+			SELECT habValor valor,
+			habNumeroIdentificacion1 numeroIdentificacion1,
+			habApellido apellido,
+			habNombre nombre,
+			habValor2 valor2,
+			habSafFechaAceptacion safFechaAceptacion,
+			habValorAsignadoSFV valorAsignadoSFV,
+			'6' tipoVivienda,
+			habNumeroResolucion numeroResolucion,
+			habVacio vacio,
+			habTipoIdentificacion tipoIdentificacion
+		FROM rno.HistoricoAfiliadosBeneficiariosFOVIS
+		WHERE habFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAfiliadosBeneficiariosFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.count.registroAfiliadosFovis">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+		FROM rno.HistoricoAfiliadosBeneficiariosFOVIS
+		WHERE habFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAfiliadosBeneficiariosFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.numeroCuotas">
+		<description>
+			
+		</description>
+		<query>
+			SELECT  
+				hncCodigoDepartamento codigoDepartamento,
+				hncAnio anio,
+				CAST(hncValor AS INT) valor
+			FROM rno.HistoricoNumeroCuotas
+			WHERE hncFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoNumeroCuotas'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.numeroCuotas.count">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+			FROM rno.HistoricoNumeroCuotas
+			WHERE hncFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoNumeroCuotas'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.numeroPersonasACargo">
+		<description>
+			
+		</description>
+		<query>
+			SELECT  
+				hpcCodigoDepartamento codigoDepartamento,
+				hpcNumeroPersonasMes numeroPersonasMes,
+				hpcNumeroPersonasRetroactivo numeroPersonasRetroactivo
+			FROM rno.HistoricoNumeroPersonasACargo
+			WHERE hpcFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoNumeroPersonasACargo'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.numeroPersonasACargo.count">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+			FROM rno.HistoricoNumeroPersonasACargo
+			WHERE hpcFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoNumeroPersonasACargo'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.aportantesProcesoEnUnidad">
+		<description>
+			
+		</description>
+		<query>
+			SELECT  
+				hauTipoDocumento,
+				hauNumeroDocumento,
+				hauRazonSocial,
+				CONVERT(VARCHAR(10),hauPeriodoInicio,103) periodoInicio,
+				CONVERT(VARCHAR(10),hauPeriodoFin,103) periodoFin,
+				CASE hauAdelantadoAccion WHEN 1 THEN '1' ELSE '0' END adelantadoAccion,
+				hauTipoAccion,
+				hauCodigoAdmin,
+				hauNombreAdmin
+			FROM rno.HistoricoAportantesProcesoEnUnidad
+			WHERE hauFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAportantesProcesoEnUnidad'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.aportantesProcesoEnUnidad.count">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+			FROM rno.HistoricoAportantesProcesoEnUnidad
+			WHERE hauFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAportantesProcesoEnUnidad'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.aportantesProcesoEnUnidad.valorTotal">
+		<description>
+			
+		</description>
+		<query>
+			SELECT SUM(hauValorDeuda)
+			FROM rno.HistoricoAportantesProcesoEnUnidad
+			WHERE hauFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAportantesProcesoEnUnidad'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>	
+	
+	<named-native-query name="Consultar.reporteNormativo.seguimientosTrasladosMora.update.periodosDesagregados">
+		<description>			
+		</description>
+		<query>
+			UPDATE hst
+			SET hst.hstUltimaGestionAdra = CASE WHEN periodosDesagregados.cantPeriodos IS NULL THEN hst.hstUltimaGestionAdra ELSE '1' END,
+				hst.hstFechaUltimaGestion = CASE WHEN periodosDesagregados.fecha IS NULL THEN hst.hstFechaUltimaGestion ELSE periodosDesagregados.fecha END						
+			FROM rno.HistoricoSeguimientosTrasladosMora hst
+			LEFT JOIN (SELECT count(*) cantPeriodos,max(hdcFechaHistorico)fecha, hdcNumeroDocumento 
+						FROM rno.HistoricoDesagregadoCarteraAportante
+						where hdcFechaHistorico = eomonth(hdcFechaHistorico)
+						group by hdcNumeroDocumento
+						having count(*) = :perDesargegados
+						) periodosDesagregados ON periodosDesagregados.hdcNumeroDocumento = hst.hstNumeroDocumento
+			WHERE hst.hstFechaHistorico = :fechaFin
+		</query>
+	</named-native-query>	
+	
+	<named-native-query name="Consultar.reporteNormativo.seguimientosTrasladosMora.oficial">
+		<description>			
+		</description>
+		<query>
+			SELECT  
+			hstFechaCorteReporte,
+			hstNumeroAsignadoUnidad,
+			hstFechaAsignadaUnidad,
+			hstProcesoTraslado,
+			hstTipoDocumento,
+			hstNumeroDocumento,
+			hstRazonSocial,
+			hstTipoSubsistema,
+			hstCodigoAdmin,
+			hstNombreAdmin,
+			hstNumComunicacionSalida,
+			hstFechaSalidaUnidad,
+			CASE WHEN periodosDesagregados.cantPeriodos IS NULL THEN hstUltimaGestionAdra ELSE '1' END ultimaGestionAdra,
+			hstFechaUltimaGestion,
+			hstObservaciones			
+			FROM rno.HistoricoSeguimientosTrasladosMora
+			LEFT JOIN (SELECT count(*) cantPeriodos,hdcNumeroDocumento FROM 
+						rno.HistoricoDesagregadoCarteraAportante
+						where hdcFechaHistorico = eomonth(hdcFechaHistorico)
+						group by hdcNumeroDocumento
+						having count(*) = :perDesargegados
+						) periodosDesagregados ON periodosDesagregados.hdcNumeroDocumento = rno.HistoricoSeguimientosTrasladosMora.hstNumeroDocumento
+			WHERE hstFechaHistorico = :fechaFin
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.AsignacionEntregaPagosFOVIS">
+		<description>
+			
+		</description>
+		<query>
+				SELECT hprAnioVigenciaAsignacionSubsidio anioVigencia, 
+				hprCodigoTipoPlanVivienda tipoPlanVivienda,
+				hprEstadoSubsidio estadoSubsidio,
+				hprCantidadSubsidios cantidadSubsidios,
+				hprValorSubsidios valorSubsidios
+		FROM rno.HistoricoConsolidadoPagosReintegroFOVIS
+		WHERE hprFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoConsolidadoPagosReintegroFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.count.AsignacionEntregaPagosFOVIS">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+		FROM rno.HistoricoConsolidadoPagosReintegroFOVIS
+		WHERE hprFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoConsolidadoPagosReintegroFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.AsignacionConsolidadoMicroDatoFOVIS">
+		<description>
+			
+		</description>
+		<query>
+				SELECT 
+				hcmTipoIdentificacion tipoIdentificacion,
+				hcmNumeroIdentificacion numeroIdentificacion,
+				hcmAnioVigenciaAsignacionSubsidio anioVigencia, 
+				hcmCodigoTipoPlanVivienda tipoPlanVivienda,
+				hcmEstadoSubsidio estadoSubsidio,
+				hcmValorSubsidios valorSubsidios
+		FROM rno.HistoricoConsolidadoPagosReintegroMicroDatoFOVIS
+		WHERE hcmFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoConsolidadoPagosReintegroMicroDatoFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.count.AsignacionConsolidadoMicroDatoFOVIS">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+		FROM rno.HistoricoConsolidadoPagosReintegroMicroDatoFOVIS
+		WHERE hcmFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoConsolidadoPagosReintegroMicroDatoFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.AsignacionPagoReintegroMicroDatoFOVIS">
+		<description>
+			
+		</description>
+		<query>
+				SELECT 
+				hamTipoIdentificacion,
+				hamNumeroIdentificacion,
+				hamComponenteHogar,
+				hamTipoIdIntegrante,
+				hamNumeroIdIntegrante,
+				hamAfiliadoACaja,
+				hamPrimerNombre,
+				hamSegundoNombre,
+				hamPrimerApellido,
+				hamSegundoApellido,
+				hamParentezcoIntegrante,
+				hamIngresosIntegrante,
+				hamNivelIngreso,
+				hamComponente,
+				hamAnioVigenciaAsignacionSubsidio,
+				hamEstadoSubsidio, 
+				hamValorSubsidios
+		FROM rno.HistoricoAsignacionEntregaReintegroMicrodatoFOVIS
+		WHERE hamFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAsignacionEntregaReintegroMicrodatoFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.count.AsignacionPagoReintegroMicroDatoFOVIS">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+		FROM rno.HistoricoAsignacionEntregaReintegroMicrodatoFOVIS
+		WHERE hamFechaHistorico = (SELECT MAX(ernFechaFin)
+									FROM rno.EjecucionReporteNormativo ern
+									JOIN rno.ReportesNormativos rno ON rno.rnoId = ern.ernReporteNormativo 
+																	AND rno.rnoNombre = 'HistoricoAsignacionEntregaReintegroMicrodatoFOVIS'
+									WHERE ern.ernFechaFin &lt;= :fechaFin)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.seguimientosTrasladosMora">
+		<description>			
+		</description>
+		<query>
+			SELECT  
+			hstFechaCorteReporte,
+			hstNumeroAsignadoUnidad,
+			hstFechaAsignadaUnidad,
+			hstProcesoTraslado,
+			hstTipoDocumento,
+			hstNumeroDocumento,
+			hstRazonSocial,
+			hstTipoSubsistema,
+			hstCodigoAdmin,
+			hstNombreAdmin,
+			hstNumComunicacionSalida,
+			hstFechaSalidaUnidad,
+			hstUltimaGestionAdra,
+			hstFechaUltimaGestion,
+			hstObservaciones			
+			FROM rno.HistoricoSeguimientosTrasladosMora
+			WHERE hstFechaHistorico = :fechaFin
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Consultar.reporteNormativo.seguimientosTrasladosMora.count">
+		<description>
+		
+		</description>
+		<query>
+			SELECT count(*)
+				FROM rno.HistoricoSeguimientosTrasladosMora
+			WHERE hstFechaHistorico = :fechaFin
+		</query>
+	</named-native-query>
+	
+	<!-- ESPACIO PARA STORED PROCEDURE QUERIES -->
+	<named-stored-procedure-query
+		name="USP_ExecuteConsultarHistoricoEstadoAportante"
+		procedure-name="dbo.USP_ExecuteConsultarHistoricoEstadoAportante">
+		<parameter class="java.lang.Long" mode="IN" name="idPersona"/>
+		<parameter class="java.lang.String" mode="IN" name="tipoAportante"/>
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query
+		name="USP_ExecuteConsultarHistoricoAfiliacionPersona"
+		procedure-name="USP_ExecuteConsultarHistoricoAfiliacionPersona">
+		<parameter class="java.lang.String" mode="IN" name="tipoIdentificacion"/>
+		<parameter class="java.lang.String" mode="IN" name="numeroIdentificacion"/>
+		<parameter class="java.lang.String" mode="IN" name="tipoAfiliado"/>
+		<parameter class="java.lang.String" mode="IN" name="tipoIdentificacionEmpleador"/>
+		<parameter class="java.lang.String" mode="IN" name="numeroIdentificacionEmpleador"/>
+	</named-stored-procedure-query>		
+</entity-mappings>

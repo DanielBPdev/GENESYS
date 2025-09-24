@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<named-query name="Aportes.masivos.Consultar.IndicePlanilla.listadoIds">
+	   <description>Consulta de índice de planilla por listado de IDs</description>
+	   <query>
+	       SELECT new com.asopagos.dto.modelo.IndicePlanillaModeloDTO(pip)
+	       FROM IndicePlanilla pip
+	       WHERE pip.id IN (:idsPlanilla)
+	   </query>
+	</named-query>
+	<named-native-query name="Aportes.masivos.Consultar.ClaseAportante.apgId">
+	   <description>consulta la clase del aportante basado en la id del aporte general</description>
+	   <query>
+	       select rg.regClaseAportante from core.AporteGeneral ag
+			join staging.RegistroGeneral rg on rg.regId = ag.apgRegistroGeneral
+			where ag.apgId = :apgId
+	   </query>
+	</named-native-query>
+
+    <!-- ESPACIO PARA NAMED NATIVE QUERIES JPA -->
+
+	<named-native-query name="Masivos.Prueba.Pila">
+		<query>
+            SELECT TOP 1 * from PilaIndicePlanilla
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Archivos.Aportes.Masivos.Detalle.Reporte.Devolucion.Masiva"
+		result-set-mapping="Archivos.Aportes.Masivos.Detalle.Reporte.Devolucion.Masiva.Result.Set.Mapping">
+		<query>
+			select
+			ROW_NUMBER() OVER(partition by apd.perNumeroIdentificacion order by apd.perNumeroIdentificacion) AS numeroRegistro,
+			apd.apgFechaRecaudo fechaRecaudo,
+			apd.apgModalidadRecaudoAporte modalidadRecaudo,
+			apd.apgApoConDetalle aporteConDetalle,
+			apd.estadoArchivo estadoArchivo,
+			apd.perTipoIdentificacion tipoIdentificacionAportante,
+			apd.perNumeroIdentificacion numeroIdentificacionAportante,
+			apd.perRazonSocial razonSocialAportante,
+			'EMPLEADOR' tipoAportante,
+			apd.pipIdPlanilla indicePlanilla,
+			apd.apgPeriodoAporte periodoAporte,
+			red.redAporteObligatorio monto,
+			red.redOUTValorMoraCotizante intereses,
+			(red.redAporteObligatorio + red.redOUTValorMoraCotizante) totalAporte,
+			apdet.perTipoIdentificacion tipoIdentificacionCotizante,
+			apdet.perNumeroIdentificacion numeroIdentificacionCotizante,
+			apdet.perPrimerNombre primerNombre,
+			apdet.perSegundoNombre segundoNombre,
+			apdet.perPrimerApellido primerApellido,
+			apdet.perSegundoApellido  segundoApellido,
+			reg.regFechaPagoAporte fechaDePago,
+			red.redValorIBC ibc,
+			apdet.redNovIngreso ing,
+			apdet.redNovRetiro ret,
+			apdet.redNovLMA lma,
+			apdet.redNovIGE ige,
+			apdet.redDiasIRL irl,
+			apdet.redNovSLN sln,
+			apdet.redNovVACLR vac,
+			apdet.redNovVSP vsp,
+			apdet.redNovVST vst,
+			apdet.apdDiasCotizados diasTrabajados,
+			apdet.apdSalarioBasico salario,
+			red.redAporteObligatorio valorAporte
+			from masivos.aportesDevolucion apd
+			left join masivos.aportesDevolucionDetalle apdet on apdet.apgId = apd.apgId
+			inner join masivos.aportesDevolucionGeneralSimular as dgen on apdet.apgId = dgen.apgId and apdet.apgPeriodoAporte = dgen.apgPeriodoAporte and apdet.numeroRadicado = dgen.numeroRadicado
+			inner join staging.RegistroDetallado red on red.redId = apdet.apdRegistroDetallado
+			inner join staging.RegistroGeneral reg on reg.regId = red.redRegistroGeneral
+			where apd.numeroRadicado = :numeroRadicado
+			order by apd.perNumeroIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.Masivos.Consultar.Tipo.Cotizante">
+		<query>
+			select redTipoCotizante from staging.RegistroDetallado rd
+			where rd.redId = :apdId
+
+		</query>
+	</named-native-query>
+
+<!-- ESPACIO PARA STORE PROCEDURES -->
+
+	<named-stored-procedure-query 
+		name ="Aportes.masivos.StoredProcedures.ASP_Execute_Validacion_Inicial" 
+		procedure-name="masivos.ASP_Execute_Validacion_Inicial">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="nombreArchivo"/>
+					
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query 
+		name ="Aportes.masivos.StoredProcedures.ASP_Execute_pila2FaseInicial" 
+		procedure-name="masivos.ASP_Execute_pila2FaseInicial">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="nombreArchivo"/>
+					
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query 
+		name ="Aportes.masivos.StoredProcedures.masivos.crearPersonas" 
+		procedure-name="masivos.crearPersonas">			
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query 
+		name ="ASP_ConsultarAportesDevolucionMasivos" 
+		procedure-name="ASP_ConsultarAportesDevolucionMasivos">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="solicitud"/>
+					
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name ="ASP_ConsultarAportesDevolucionMasivosDetalle" 
+		procedure-name="ASP_ConsultarAportesDevolucionMasivosDetalle">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="numeroRadicado"/>
+					
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name ="ASP_SimularAportesDevolucionMasivos" 
+		procedure-name="ASP_SimularAportesDevolucionMasivos">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="numeroRadicado"/>
+					
+	</named-stored-procedure-query>
+
+		<named-stored-procedure-query 
+		name ="ASP_SimularAportesDevolucionMasivosSolicitud" 
+		procedure-name="ASP_SimularAportesDevolucionMasivosSolicitud">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="numeroRadicado"/>
+					
+	</named-stored-procedure-query>
+
+	<sql-result-set-mapping name="Archivos.Aportes.Masivos.Detalle.Reporte.Devolucion.Masiva.Result.Set.Mapping">
+		<constructor-result target-class="com.asopagos.aportes.masivos.dto.ReporteDevolucionDetallado">
+			<column name="numeroRegistro" class="java.lang.Long"/>
+			<column name="fechaRecaudo" class="java.lang.String" />
+			<column name="modalidadRecaudo" class="java.lang.String" />
+			<column name="aporteConDetalle" class="java.lang.String" />
+			<column name="estadoArchivo" class="java.lang.String" />
+			<column name="tipoIdentificacionAportante" class="java.lang.String" />
+			<column name="numeroIdentificacionAportante" class="java.lang.String" />
+			<column name="razonSocialAportante" class="java.lang.String" />
+			<column name="tipoAportante" class="java.lang.String" />
+			<column name="indicePlanilla" class="java.lang.Long" />
+			<column name="periodoAporte" class="java.lang.String" />
+			<column name="monto" class="java.math.BigDecimal" />
+			<column name="intereses" class="java.math.BigDecimal" />
+			<column name="totalAporte" class="java.math.BigDecimal" />
+			<column name="tipoIdentificacionCotizante" class="java.lang.String" />
+			<column name="numeroIdentificacionCotizante" class="java.lang.String" />
+			<column name="primerNombre" class="java.lang.String" />
+			<column name="segundoNombre" class="java.lang.String" />
+			<column name="primerApellido" class="java.lang.String" />
+			<column name="segundoApellido" class="java.lang.String" />
+			<column name="fechaDePago" class="java.lang.String" />
+			<column name="ibc" class="java.math.BigDecimal" />
+			<column name="ing" class="java.lang.String" />
+			<column name="ret" class="java.lang.String" />
+			<column name="lma" class="java.lang.String" />
+			<column name="ige" class="java.lang.String" />
+			<column name="irl" class="java.lang.String" />
+			<column name="sln" class="java.lang.String" />
+			<column name="vac" class="java.lang.String" />
+			<column name="vsp" class="java.lang.String" />
+			<column name="vst" class="java.lang.String" />
+			<column name="diasTrabajados" class="java.lang.Integer" />
+			<column name="salario" class="java.math.BigDecimal" />
+			<column name="valorAporte" class="java.math.BigDecimal" />
+		</constructor-result>
+
+	</sql-result-set-mapping>
+
+	
+	
+	
+</entity-mappings>

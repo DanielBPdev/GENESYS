@@ -1,0 +1,138 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>solicitud-composite</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>solicitud-composite-service</artifactId>
+	<packaging>war</packaging>
+	<name>Solicitudes Composite</name>
+	<description>Aplicación Web que implementa los servicios backend de Solicitudes Composite</description>
+
+	<properties>
+		<fabric8.skip>false</fabric8.skip>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>solicitud-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.model</groupId>
+			<artifactId>model-core-entities</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>correspondencia-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>solicitudes-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>asignar-solicitudes-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>afiliacion-empleadores-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>afiliacion-personas-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>novedades-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>novedades-composite-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>afiliacion-personas-web-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>   
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>fovis-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>afiliaciones-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>aportes-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>  
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>cartera-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>entidades-pagadoras-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.asopagos.coreaas.services</groupId>
+		  <artifactId>novedades-fovis-api</artifactId>
+		  <version>${project.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.asopagos.coreaas.services</groupId>
+		  <artifactId>legalizacion-fovis-api</artifactId>
+		  <version>${project.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.asopagos.coreaas.services</groupId>
+		  <artifactId>afiliacion-personas-api</artifactId>
+		  <version>${project.version}</version>
+		</dependency>
+		<!-- Validar si este modelo sí debe ir -->
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>tareas-humanas-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>  
+	</dependencies>
+
+	<build>
+		<!-- Maven will append the version to the finalName (which is the name 
+			given to the generated war, and hence the context root) -->
+		<finalName>SolicitudCompositeService</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+	</profiles>
+
+</project>

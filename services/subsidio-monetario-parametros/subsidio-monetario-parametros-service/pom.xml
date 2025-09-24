@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>subsidio-monetario-parametros</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>subsidio-monetario-parametros-service</artifactId>
+	<packaging>war</packaging>
+	<name>Servicio de Subsidio Monetario parametros</name>
+	<description>Aplicación Web que implementa los servicios de gestión de subsidio monetario parametros</description>
+
+	<properties>
+		<base.servidor>wildfly-swarm-messaging</base.servidor>
+		<configuracion.servidor>wildfly-swarm-topic</configuracion.servidor>
+		<fabric8.skip>false</fabric8.skip>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>subsidio-monetario-parametros-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<finalName>SubsidioMonetarioParametrosService</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

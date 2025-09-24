@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	<named-native-query name="Historicos.Consultar.RolAfiliado.PeriodoActivo">
+		<query>		
+			SELECT DISTINCT( roaId )
+			FROM (
+				SELECT activoPeriodo.roaid 
+				FROM rolafiliado_aud activoPeriodo,(
+					SELECT DISTINCT( roa.roaId )
+					FROM RolAfiliado_aud roa 
+					JOIN Revision rev ON roa.rev = rev.revid 
+					WHERE roa.roaEmpleador = :idEmpleador
+						AND roa.roaEstadoAfiliado = :estadoAfiliado
+						AND revTimestamp &lt; :endDate
+						AND revTimestamp &gt;= :startDate
+					) sub
+				WHERE activoPeriodo.roaid=sub.roaid
+				UNION
+				SELECT anterior.roaid 
+				FROM rolAfiliado_aud anterior 
+				JOIN Revision revAnterior on anterior.rev = revAnterior.revid 
+				JOIN (
+					SELECT max(revtimeStamp) AS FECHA, roa.roaId
+					FROM rolafiliado_aud roa 
+					JOIN revision rev on roa.rev = rev.revid 
+					WHERE roaEmpleador = :idEmpleador
+						AND revtimestamp &lt; :startDate 
+					GROUP BY roa.roaId
+				) ultimoAnterior ON ultimoAnterior.FECHA = revAnterior.revtimestamp 
+					AND ultimoAnterior.roaId = anterior.roaId
+				WHERE anterior.roaEstadoAfiliado = :estadoAfiliado
+			) trabajadoresActivosPeriodo
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Historicos.Consultar.consultarUbicacionRepresentanteLegalEmpleador">
+		<query>   
+		SELECT TOP 1 ubi.ubiId, ubi.ubiAutorizacionEnvioEmail, ubi.ubiCodigoPostal, 
+        ubi.ubiDireccionFisica, ubi.ubiEmail, ubi.ubiIndicativoTelFijo, 
+        ubi.ubiTelefonoCelular, ubi.ubiTelefonoFijo, ubi.ubiMunicipio, 
+        ubi.ubiDescripcionIndicacion, ube.ubeTipoUbicacion
+        FROM Empleador_aud empl LEFT JOIN Empresa_aud emp ON emp.empId=empl.empEmpresa
+  		LEFT JOIN Persona_aud per ON per.perId=emp.empPersona
+  		LEFT JOIN UbicacionEmpresa_aud ube ON ube.ubeEmpresa=emp.empId
+  		LEFT JOIN Ubicacion_aud ubi ON ubi.ubiId=ube.ubeUbicacion,Revision revision
+  		WHERE per.perid= :idPersona AND revision.revId=ubi.rev 
+  		AND ube.ubeTipoUbicacion = :tipoUbicacion
+  		AND revision.revTimeStamp &lt;=:fechaRevision
+  		order by ubi.rev DESC
+		</query> 
+	</named-native-query>
+	<named-native-query name="Historicos.Consultar.consultarUbicacionRepresentanteLegalPersona">
+		<query> 
+	    SELECT TOP 1 ubi.ubiId, ubi.ubiAutorizacionEnvioEmail, ubi.ubiCodigoPostal, 
+        	   ubi.ubiDireccionFisica, ubi.ubiEmail, ubi.ubiIndicativoTelFijo, 
+        	   ubi.ubiTelefonoCelular, ubi.ubiTelefonoFijo, ubi.ubiMunicipio, 
+               ubi.ubiDescripcionIndicacion
+  		FROM Persona_aud per LEFT JOIN Ubicacion_aud ubi ON 
+        per.perUbicacionPrincipal=ubi.ubiId,Revision revision
+  		WHERE per.perid= :idPersona 
+  		AND revision.revId=ubi.rev 
+  		AND revision.revTimeStamp &lt;=:fechaRevision
+  		order by ubi.rev DESC
+  		</query>  
+	</named-native-query>
+	<named-native-query name="Historicos.Consultar.ubicacion.rol.contacto.empleador">
+		<query>
+		SELECT ubi.ubiId, ubi.ubiAutorizacionEnvioEmail, ubi.ubiCodigoPostal, 
+        	   ubi.ubiDireccionFisica, ubi.ubiEmail, ubi.ubiIndicativoTelFijo, 
+        	   ubi.ubiTelefonoCelular, ubi.ubiTelefonoFijo, ubi.ubiMunicipio, 
+               ubi.ubiDescripcionIndicacion,ube.ubeTipoUbicacion
+        FROM Empleador_aud empl LEFT JOIN Empresa_aud emp ON emp.empId=empl.empEmpresa
+        LEFT JOIN UbicacionEmpresa_aud ube ON ube.ubeEmpresa=emp.empId 
+        LEFT JOIN Persona_aud per ON per.perId=emp.empPersona,
+        RolContactoEmpleador_aud rce LEFT JOIN Ubicacion_aud ubi ON rce.rceUbicacion=ubi.ubiId,
+        Revision revision WHERE rce.rceEmpleador=empl.empId AND per.perId= :idPersona
+		AND rce.rceTipoRolContactoEmpleador= :tipoRolContactoEmpleador
+		AND revision.revId=ubi.rev   
+		AND revision.revTimeStamp &lt;=:fechaRevision    
+	  	order by ubi.rev ASC
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Historicos.Consultar.HistoricoAfiliacionesPersona">
+		<query>
+		  // USP_ExecuteConsultarHistoricoAfiliacionEmpleador
+		
+			DECLARE	@bTieneSubsidio BIT
+			EXEC	[dbo].[USP_SM_GET_CotizanteConSubsidioPeriodo]
+					@sTipoDocumentoCotizante = 'CEDULA_CIUDADANIA',
+					@sNumeroIdentificacionCotizante = '883090568',
+					@sPeriodoAporte = '2018-05',
+					@bTieneSubsidio = @bTieneSubsidio OUTPUT
+			select @bTieneSubsidio
+						
+		</query>
+	</named-native-query>
+	<named-native-query name="Historicos.Consultar.HistoricoAfiliacionesPersonaCertificado">
+		<query>
+			
+		</query>
+	</named-native-query>
+	
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	
+	
+		
+	<!-- ESPACIO PARA STORED PROCEDURES-->
+	<named-stored-procedure-query 
+		name ="Personas.StoredProcedures.USP_ExecuteConsultarHistoricoContactoPersona" 
+		procedure-name="dbo.USP_ExecuteConsultarHistoricoContactoPersona">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="tipoIdentificacion"/>
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="numeroIdentificacion"/>			
+	</named-stored-procedure-query>
+</entity-mappings>

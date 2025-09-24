@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+        version="2.1">
+    
+    <!--
+        ESPACIO PARA NAMED QUERIES JPA
+    -->
+    <named-query name="ProcessSchedule.ParametrizacionEjecucionProgramada.buscarPorTipoTransaccion">
+		<description>Busca la parametrización para la Ejecución Programada por Tipo de Transacción.</description>
+		<query>
+			SELECT pep 
+			FROM ParametrizacionEjecucionProgramada pep 
+			WHERE pep.proceso =:proceso
+        </query>
+	</named-query>
+	<!-- Actualizacion bloque 9 id plantillas -->
+	<named-query
+		name="Parametrizacion.Programacion.consultarProgramacionPorProcesos">
+		<description>Busca la parametrización de progamacion por procesos</description>
+		<query>
+			SELECT pejep 
+			FROM ParametrizacionEjecucionProgramada pejep
+			WHERE pejep.proceso IN :procesos
+        </query>
+	</named-query>
+
+	<named-query name="ProcessSchedule.resultadoEjecucionProgramada.buscarPorProceso">
+		<description>Busca la parametrización para la Ejecución Programada por Tipo de Transacción.</description>
+		<query>
+			SELECT rep
+			FROM ResultadoEjecucionProgramada rep
+			WHERE rep.proceso =:proceso and rep.tipoResultadoProceso =:resultadoProceso
+			ORDER BY rep.idResultadoEjecucion DESC
+		</query>
+	</named-query>
+
+<!-- Actualizacion bloque 9 id plantillas -->
+<named-native-query
+name="Parametrizacion.Programacion.liberarPlanillasBloque9">
+<description>Consulta los id de planillas con pendiente en bloque 9 , para liberarcion</description>
+<query>
+
+	SELECT  pipId FROM  PilaIndicePlanilla pila
+	WHERE  pila.pipEstadoArchivo in ('PROCESADO_SIN_NOVEDADES', 'PROCESADO_NOVEDADES')
+	AND  pila.pipTipoArchivo like 'ARCHIVO_OI_I%'
+</query>
+</named-native-query>
+
+
+    <!--
+        ESPACIO PARA NAMED QUERIES NATIVOS
+    -->    
+    
+    
+    <!-- ESPACIO PARA NAMED STORED PROCEDURES -->
+	<named-stored-procedure-query name="Aportes.ejecutar.SP.FACLIEN" procedure-name="seven.USP_GestionarPersonasERP">
+	</named-stored-procedure-query>
+      
+    <named-stored-procedure-query name="Aportes.ejecutar.SP.POPVDOR" procedure-name="seven.USP_GestionarPOPVDOREmpresasERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.SP.GNTERCE.EMPRESAS" procedure-name="seven.USP_GestionarGNTERCEEmpresaERP">
+	</named-stored-procedure-query>
+      
+    <named-stored-procedure-query name="Aportes.ejecutar.SP.GNTERCE.PERSONAS" procedure-name="seven.USP_GestionarGNTERCEPersonaERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Subsidios.ejecutar.SP.RCNMCONT.RPOCXPAG.SUBSIDIOS" procedure-name="seven.USP_GestionarSubsidiosRcnMcontYRpoXPagERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.GESTIONAR.APORTES.CORRECCIONES.ERP" procedure-name="seven.USP_GestionarAportesCorreccionesERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.GESTIONAR.APORTES.DEVOLUCIONES.ERP" procedure-name="seven.USP_GestionarAportesDevolucionesERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.GESTIONAR.APORTES.EMPRESAS.ERP" procedure-name="seven.USP_GestionarAportesEmpresasERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.GESTIONAR.APORTES.ERP" procedure-name="seven.USP_GestionarAportesERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.GESTIONAR.CARTERA.ERP" procedure-name="seven.USP_GestionarCarteraERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.GESTIONAR.RCNMCONT.AFILIA.PERSONAS" procedure-name="seven.USP_GestionarRcnmContAfiliaPersonas">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.GESTIONAR.ASIGNACION.SUBSIDIO.FOVIS.ERP" procedure-name="seven.USP_GestionarAsignacionSubsidioFOVISERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.GESTIONAR.SUBSIDIO.FOVIS.ERP" procedure-name="seven.USP_GestionarSubsidioFOVISERP">
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query name="Aportes.ejecutar.GESTIONAR.APORTES.PILA.RTSCONSD.ERP" procedure-name="seven.USP_GestionarAportesPILARtsConsdERP">
+	</named-stored-procedure-query>
+</entity-mappings>

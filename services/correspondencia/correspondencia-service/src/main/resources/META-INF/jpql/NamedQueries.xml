@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+        version="2.1">
+    
+    <!--
+        ESPACIO PARA NAMED QUERIES JPA
+    -->
+    
+    <named-query name="Correspondencia.CajaCorrespondencia.buscarAbiertaPorSede">
+		<query>
+            SELECT cc FROM CajaCorrespondencia cc
+            WHERE cc.sedeRemitente = :sedeRemitente 
+            AND cc.estado = :estado
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Solicitudes.buscarSolicitudesPorCajaCorrespondencia">
+		<query>
+            SELECT sol.numeroRadicacion 
+            FROM Solicitud sol, CajaCorrespondencia cc
+            WHERE sol.idCajaCorrespondencia = cc.idCajaCorrespondencia
+            AND cc.codigoEtiqueta = :codigoEtiqueta
+        </query>
+	</named-query>
+	
+<!-- 	<named-query name="Correspondencia.etiquetaPreimpresa.actualizar.estado"> -->
+<!-- 		<query> -->
+<!--             UPDATE EtiquetaCorrespondenciaRadicado e SET e.asignada = :asignada -->
+<!--             WHERE e.codigo = :codigo  -->
+<!--         </query> -->
+<!-- 	</named-query> -->
+	
+	<named-query name="Correspondencia.etiquetaPreimpresa.consultar.actualizar.estado">
+		<query>
+            SELECT e FROM EtiquetaCorrespondenciaRadicado e
+            WHERE e.codigo = :codigo 
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.etiquetaPreimpresa.ultimaGenerada.porTipo">
+		<query>
+            SELECT e FROM EtiquetaCorrespondenciaRadicado e 
+            WHERE e.tipoEtiqueta = :tipo 
+            AND e.codigo LIKE :prefijo 
+            ORDER BY e.codigo DESC
+        </query>
+	</named-query>
+	
+	<!-- TRA-428 -->
+	<named-query name="Correspondencia.etiquetaPreimpresa.disponible.porTipo">
+		<query>
+            SELECT e FROM EtiquetaCorrespondenciaRadicado e 
+            WHERE e.asignada = :asignada
+            AND e.tipoEtiqueta = :tipo
+            AND e.codigo LIKE :prefijo 
+            ORDER BY e.codigo ASC
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Consulta.Resumen.Remision">
+		<query>
+		SELECT solAfi, sol, per, sede
+			FROM SolicitudAfiliacionEmpleador solAfi, Solicitud sol, 
+			Empleador emp, Persona per, SedeCajaCompensacion sede
+            WHERE solAfi.solicitudGlobal.idSolicitud = sol.idSolicitud
+            AND (solAfi.solicitudGlobal.sedeDestinatario = sede.idSedeCajaCompensacion)
+            AND sol.fechaRadicacion &gt;= :fechaInicial 
+            AND sol.fechaRadicacion &lt;= :fechaFinal
+            AND sol.tipoTransaccion IN(:proceso)
+            AND solAfi.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND solAfi.solicitudGlobal.metodoEnvio = :metodoEnvio
+            AND solAfi.estadoSolicitud = :estadoSolicitud
+            AND solAfi.idEmpleador = emp.idEmpleador
+            AND emp.empresa.persona.idPersona = per.idPersona
+            order by solAfi.solicitudGlobal.destinatario
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Consulta.Resumen.Remision.Personas">
+		<query>
+		SELECT solAfi, solAfi.solicitudGlobal, solAfi.rolAfiliado.afiliado.persona, sede
+			FROM SolicitudAfiliacionPersona solAfi,SedeCajaCompensacion sede            
+            WHERE (solAfi.solicitudGlobal.sedeDestinatario = sede.idSedeCajaCompensacion)
+            AND solAfi.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND solAfi.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND solAfi.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND solAfi.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND solAfi.solicitudGlobal.metodoEnvio = :metodoEnvio
+            AND solAfi.estadoSolicitud = :estadoSolicitud            
+            order by solAfi.solicitudGlobal.destinatario
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Consulta.Resumen.Remision.NovedadesEmpleador">
+		<query>
+		SELECT solNov, solNov.solicitudGlobal, persona, sede
+			FROM SolicitudNovedad solNov, SedeCajaCompensacion sede, SolicitudNovedadEmpleador solNovEmp, Empleador emp, Persona persona             
+            WHERE (solNov.solicitudGlobal.sedeDestinatario = sede.idSedeCajaCompensacion)
+            AND solNovEmp.idSolicitudNovedad = solNov.idSolicitudNovedad 
+            AND solNovEmp.idEmpleador = emp.idEmpleador 
+            AND emp.empresa.persona.idPersona = persona.idPersona
+            AND solNov.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND solNov.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND solNov.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND solNov.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND solNov.solicitudGlobal.metodoEnvio = :metodoEnvio
+            AND solNov.estadoSolicitud = :estadoSolicitud            
+            order by solNov.solicitudGlobal.destinatario
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Consulta.Resumen.Remision.NovedadesPersona">
+		<query>
+		SELECT solNov, solNov.solicitudGlobal, persona, sede
+			FROM SolicitudNovedad solNov, SedeCajaCompensacion sede, SolicitudNovedadPersona solNovPer, Persona persona            
+            WHERE (solNov.solicitudGlobal.sedeDestinatario = sede.idSedeCajaCompensacion)
+            AND solNovPer.idSolicitudNovedad = solNov.idSolicitudNovedad 
+            AND solNovPer.idPersona = persona.idPersona
+            AND solNov.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND solNov.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND solNov.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND solNov.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND solNov.solicitudGlobal.metodoEnvio = :metodoEnvio
+            AND solNov.estadoSolicitud = :estadoSolicitud            
+            order by solNov.solicitudGlobal.destinatario
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Consulta.Documento.Remision">
+		<query>
+			SELECT req, iC.persona
+			FROM SolicitudAfiliacionEmpleador solAfi, Solicitud sol, 
+			Empleador emp, Persona per, ItemChequeo iC, Requisito req
+            WHERE solAfi.solicitudGlobal.idSolicitud = sol.idSolicitud
+            AND sol.fechaRadicacion &gt;= :fechaInicial 
+            AND sol.fechaRadicacion &lt;= :fechaFinal
+            AND sol.tipoTransaccion IN(:proceso)
+            AND solAfi.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND solAfi.estadoSolicitud = :estadoSolicitud
+            AND solAfi.idEmpleador = emp.idEmpleador
+            AND emp.empresa.persona.idPersona = per.idPersona
+			AND iC.solicitudGlobal.idSolicitud = sol.idSolicitud
+			AND iC.requisito.idRequisito = req.idRequisito
+			AND iC.persona.idPersona = per.idPersona
+			AND iC.formatoEntregaDocumento = :formatoDocumento       
+            AND solAfi.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>
+	<named-query name="Correspondencia.Consulta.Documento.Remision.Personas">
+		<query>
+			SELECT req, iC.persona
+			FROM SolicitudAfiliacionPersona solAfi,
+			ItemChequeo iC, Requisito req
+            WHERE solAfi.solicitudGlobal.idSolicitud = iC.solicitudGlobal.idSolicitud
+            AND solAfi.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND solAfi.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND solAfi.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND solAfi.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND solAfi.estadoSolicitud = :estadoSolicitud			
+			AND iC.requisito.idRequisito = req.idRequisito			
+			AND iC.formatoEntregaDocumento = :formatoDocumento       
+            AND solAfi.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>
+	<named-query name="Correspondencia.Consulta.Documento.Remision.Novedades">
+		<query>
+			SELECT req, iC.persona
+			FROM SolicitudNovedad solNov,
+			ItemChequeo iC, Requisito req
+            WHERE solNov.solicitudGlobal.idSolicitud = iC.solicitudGlobal.idSolicitud
+            AND solNov.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND solNov.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND solNov.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND solNov.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND solNov.estadoSolicitud = :estadoSolicitud			
+			AND iC.requisito.idRequisito = req.idRequisito			
+			AND iC.formatoEntregaDocumento = :formatoDocumento       
+            AND solNov.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Consulta.Resumen.Remision.PostulacionFOVIS">
+		<query>
+		SELECT solPos, solPos.solicitudGlobal, persona, sede
+			FROM SolicitudPostulacion solPos, SedeCajaCompensacion sede, PostulacionFOVIS posFOV, JefeHogar jh, Afiliado afi, Persona persona             
+            WHERE (solPos.solicitudGlobal.sedeDestinatario = sede.idSedeCajaCompensacion)
+            AND posFOV.idPostulacion = solPos.idPostulacionFOVIS 
+            AND posFOV.jefeHogar = jh.idJefeHogar 
+            AND afi.idAfiliado = jh.idAfiliado
+            AND persona.idPersona = afi.persona.idPersona
+            AND solPos.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND solPos.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND solPos.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND solPos.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND solPos.solicitudGlobal.metodoEnvio = :metodoEnvio
+            AND solPos.estadoSolicitud = :estadoSolicitud            
+            order by solPos.solicitudGlobal.destinatario
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Consulta.Documento.Remision.Postulaciones">
+		<query>
+			SELECT req, iC.persona
+			FROM SolicitudPostulacion solPos,
+			ItemChequeo iC, Requisito req
+            WHERE solPos.solicitudGlobal.idSolicitud = iC.solicitudGlobal.idSolicitud
+            AND solPos.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND solPos.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND solPos.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND solPos.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND solPos.estadoSolicitud = :estadoSolicitud			
+			AND iC.requisito.idRequisito = req.idRequisito			
+			AND iC.formatoEntregaDocumento = :formatoDocumento       
+            AND solPos.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Consulta.Resumen.Remision.LegalizacionFOVIS">
+		<query>
+		SELECT sld, sld.solicitudGlobal, persona, sede
+			FROM SolicitudLegalizacionDesembolso sld, SedeCajaCompensacion sede, PostulacionFOVIS pof, JefeHogar jh, Afiliado afi, Persona persona             
+            WHERE (sld.solicitudGlobal.sedeDestinatario = sede.idSedeCajaCompensacion)
+            AND pof.idPostulacion = sld.idPostulacionFOVIS 
+            AND pof.jefeHogar = jh.idJefeHogar 
+            AND afi.idAfiliado = jh.idAfiliado
+            AND persona.idPersona = afi.persona.idPersona
+            AND sld.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND sld.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND sld.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND sld.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND sld.solicitudGlobal.metodoEnvio = :metodoEnvio
+            AND sld.estadoSolicitud = :estadoSolicitud            
+            order by sld.solicitudGlobal.destinatario
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.Consulta.Documento.Remision.Legalizacion">
+		<query>
+			SELECT req, iC.persona
+			FROM SolicitudLegalizacionDesembolso sld,
+			ItemChequeo iC, Requisito req
+            WHERE sld.solicitudGlobal.idSolicitud = iC.solicitudGlobal.idSolicitud
+            AND sld.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND sld.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND sld.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND sld.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND sld.estadoSolicitud = :estadoSolicitud			
+			AND iC.requisito.idRequisito = req.idRequisito			
+			AND iC.formatoEntregaDocumento = :formatoDocumento       
+            AND sld.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>
+	
+<!-- 	<named-query name="Correspondencia.solicitudes.asociarACajaCorrespondencia"> -->
+<!-- 		<query> -->
+<!--             UPDATE Solicitud sol SET sol.idCajaCorrespondencia = :idCajaCorrespondencia -->
+<!--             WHERE sol.numeroRadicacion IN (:numerosRadicacion) -->
+<!-- 		</query> -->
+<!-- 	</named-query> -->
+	
+	<named-query name="Correspondencia.consultar.solicitud">
+		<query>
+		SELECT sol
+			FROM Solicitud sol
+            WHERE sol.numeroRadicacion = :numeroRadicado
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.consultar.solicitudes">
+		<query>
+		SELECT sol
+			FROM Solicitud sol
+            WHERE sol.numeroRadicacion in (:numerosRadicado)
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.consultar.solicitudPersona">
+		<query>
+		SELECT sol
+			FROM SolicitudAfiliacionPersona sol
+            WHERE sol.solicitudGlobal.idSolicitud =:idSolicitud
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.consultar.solicitudEmpleador">
+		<query>
+		SELECT sol
+			FROM SolicitudAfiliacionEmpleador sol
+            WHERE sol.solicitudGlobal.idSolicitud =:idSolicitud
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.consultar.solicitudNovedad">
+		<query>
+		SELECT sol
+			FROM SolicitudNovedad sol
+            WHERE sol.solicitudGlobal.idSolicitud =:idSolicitud
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.consultar.solicitudPostulacion">
+		<query>
+		SELECT sol
+			FROM SolicitudPostulacion sol
+            WHERE sol.solicitudGlobal.idSolicitud =:idSolicitud
+        </query>
+	</named-query>
+	
+	<named-query name="Correspondencia.consultar.solicitudLegalizacion">
+		<query>
+		SELECT sol
+			FROM SolicitudLegalizacionDesembolso sol
+            WHERE sol.solicitudGlobal.idSolicitud =:idSolicitud
+        </query>
+	</named-query>
+   
+    <named-query name="Correspondencia.Consulta.Resumen.Remision.NovedadFOVIS">
+        <query>
+        SELECT snf, snf.solicitudGlobal, persona, sede
+            FROM SolicitudNovedadFovis snf, SolicitudNovedadPersonaFovis spf, SedeCajaCompensacion sede, PostulacionFOVIS pof, JefeHogar jh, Afiliado afi, Persona persona             
+            WHERE (snf.solicitudGlobal.sedeDestinatario = sede.idSedeCajaCompensacion)
+            AND spf.idSolicitudNovedadFovis = snf.idSolicitudNovedadFovis
+            AND pof.idPostulacion = spf.idPostulacionFovis 
+            AND pof.jefeHogar = jh.idJefeHogar 
+            AND afi.idAfiliado = jh.idAfiliado
+            AND persona.idPersona = afi.persona.idPersona
+            AND snf.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND snf.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND snf.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND snf.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND snf.solicitudGlobal.metodoEnvio = :metodoEnvio
+            AND snf.estadoSolicitud = :estadoSolicitud            
+            ORDER BY snf.solicitudGlobal.destinatario
+        </query>
+    </named-query>
+    
+    <named-query name="Correspondencia.Consulta.Documento.Remision.NovedadFOVIS">
+        <query>
+            SELECT req, iC.persona
+            FROM SolicitudNovedadFovis snf,
+            ItemChequeo iC, Requisito req
+            WHERE snf.solicitudGlobal.idSolicitud = iC.solicitudGlobal.idSolicitud
+            AND snf.solicitudGlobal.fechaRadicacion &gt;= :fechaInicial 
+            AND snf.solicitudGlobal.fechaRadicacion &lt;= :fechaFinal
+            AND snf.solicitudGlobal.tipoTransaccion IN(:proceso)
+            AND snf.solicitudGlobal.estadoDocumentacion= :estadoDocumento
+            AND snf.estadoSolicitud = :estadoSolicitud          
+            AND iC.requisito.idRequisito = req.idRequisito          
+            AND iC.formatoEntregaDocumento = :formatoDocumento       
+            AND snf.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+    </named-query>
+    
+    
+    <named-query name="Correspondencia.Consulta.Documento.Remision.Back">
+        <query>
+			SELECT NEW com.asopagos.correspondencia.dto.RemisionDocumento 
+			(sccf.nombre, sol.destinatario, sol.tipoTransaccion, sol.numeroRadicacion, 
+				sol.fechaRadicacion, req.descripcion, sol.usuarioRadicacion, sol.idInstanciaProceso)
+			FROM ItemChequeo ich, Solicitud sol, Requisito req, SedeCajaCompensacion sccf
+			WHERE ich.solicitudGlobal = sol.idSolicitud
+			AND ich.formatoEntregaDocumento = 'FISICO'
+			AND sol.estadoDocumentacion = 'PENDIENTE_POR_ENVIAR'
+			AND sol.fechaRadicacion &gt;= :fechaInicial
+			AND sol.fechaRadicacion &lt;= :fechaFinal
+			AND sol.tipoTransaccion IN (:tipoTransaccion)
+			AND req.idRequisito = ich.requisito.idRequisito
+			AND sol.sedeDestinatario = sccf.idSedeCajaCompensacion
+        </query>
+    </named-query>
+    
+    <named-query name="Correspondencia.Consulta.Solicitudes.AfiEmp.DocRec.AsigBack">
+    	<query>
+    		SELECT sol FROM SolicitudAfiliacionEmpleador sae
+    		JOIN sae.solicitudGlobal sol
+    		WHERE sol.estadoDocumentacion = 'RECIBIDA_EN_EL_BACK'
+    		AND sae.estadoSolicitud = 'ASIGNADA_AL_BACK'
+    		AND sol.tipoTransaccion = 'AFILIACION_EMPLEADORES_PRESENCIAL_NUEVA_AFILIACION'
+    	</query>
+    </named-query>
+    
+    <!--
+        ESPACIO PARA NAMED QUERIES NATIVOS
+    -->    
+    
+<!--     <named-native-query name="Correspondencia.solicitudes.actualizarEstadoDocumentacion" > -->
+<!-- 		<query> -->
+<!-- 			UPDATE sol -->
+<!--             SET sol.solEstadoDocumentacion = :nuevoEstado -->
+<!--             FROM Solicitud sol -->
+<!--             WHERE sol.solNumeroRadicacion IN (:numerosRadicacion) -->
+<!-- 		</query>		 -->
+<!-- 	</named-native-query> -->
+</entity-mappings>

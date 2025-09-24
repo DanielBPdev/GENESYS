@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+                 version="2.1">
+
+    <!-- ESPACIO PARA NAMED QUERIES JPA -->
+	
+    <!-- CONSULTAS MODELO CORE -->
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarDepartamentos">
+        <description>Consulta los códigos de departamento</description>
+        <query>
+            SELECT d.codigo
+            FROM Departamento d
+            ORDER BY d.codigo
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarMunicipios">
+        <description>Consulta los códigos de municipio</description>
+        <query>
+            SELECT m.codigo
+            FROM Municipio m
+            ORDER BY m.codigo
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.Empresa.ConsultarEmpresa">
+        <description>Consulta de un empleador a partir de su tipo y número de documento de identidad</description>
+        <query>
+            SELECT emp 
+            FROM Empresa emp
+            WHERE emp.persona.tipoIdentificacion =:tipoIdentificacion 
+            AND emp.persona.numeroIdentificacion =:numeroIdentificacion
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.EntidadPagadora.ConsultarEntidadPagadora">
+        <description>Consulta de una entidad pagadora a partir de su tipo y número de documento de identidad</description>
+        <query>
+            SELECT ent 
+            FROM EntidadPagadora ent
+            WHERE ent.empresa.persona.tipoIdentificacion =:tipoIdentificacion 
+            AND ent.empresa.persona.numeroIdentificacion =:numeroIdentificacion
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.Persona.ConsultarPersona">
+        <description>Consulta de una persona a partir de su tipo y número de documento de identidad</description>
+        <query>
+            SELECT per 
+            FROM Persona per
+            WHERE per.tipoIdentificacion =:tipoIdentificacion 
+            AND per.numeroIdentificacion =:numeroIdentificacion
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarCodigosCIIU">
+        <description>Consulta de los códigos de actividades comerciales CIIU</description>
+        <query>
+            SELECT ciiu.codigo
+            FROM CodigoCIIU ciiu
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.FieldDefinitionLoad.ConsultarDefinicionCampo">
+        <description>Consulta de la definición de un campo en el componente de lectura de archivos</description>
+        <query>
+            SELECT fd
+            FROM FieldDefinitionLoad fd 
+            WHERE fd.label IN (:llaveCampo)
+        </query>
+    </named-query>
+	
+	
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarFestivosAnio">
+        <description>Consulta para obtener el listado de días festivos</description>
+        <query>
+            SELECT fest
+            FROM DiasFestivos fest 
+            ORDER BY fest.fecha
+        </query>
+    </named-query>
+
+    <named-query name="ArchivosPilaService.PilaOperadorInformacion.ConsultarOperadoresFinancieros">
+        <description>Consulta de operadores financieros</description>
+        <query>
+            SELECT b 
+            FROM Banco b			
+        </query>
+    </named-query>
+	
+	
+    <!-- CONSULTAS OPERADOR DE INFORMACION -->
+    <named-query name="ArchivosPilaService.PilaOperadorInformacion.ConsultarOperadorinformacionActivoEspecifico">
+        <description>Consulta de parámetros de conexión de un operador de información activo específico para la CCF</description>
+        <query>
+            SELECT coi 
+            FROM ConexionOperadorInformacion coi 
+            JOIN FETCH coi.operadorinformacionCcf oic
+            JOIN FETCH oic.operadorInformacion oi
+            JOIN FETCH oic.cajaCompensacion cc
+            WHERE oic.operadorInformacion.id = :idOperador
+            AND oic.estado = 1
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.PilaOperadorInformacion.ConsultarOperadorinformacionActivo">
+        <description>Consulta de parámetros de conexión de un operador de información activo para la CCF</description>
+        <query>
+            SELECT coi 
+            FROM ConexionOperadorInformacion coi 
+            JOIN FETCH coi.operadorinformacionCcf oic
+            JOIN FETCH oic.operadorInformacion oi
+            JOIN FETCH oic.cajaCompensacion cc
+            WHERE oic.estado = 1
+        </query>
+    </named-query>
+	
+    <!-- CONSULTAS EJECUCIÓN PROGRAMADA -->
+    <named-query name="ArchivosPilaService.PilaEjecucionProgramada.ConsultarEjecucionProgramadaVigenteCcf">
+        <description>Consulta de la configuración de ejecución programada de PILA vigente a la fecha actual por CCF</description>
+        <query>
+            SELECT ep
+            FROM EjecucionProgramada ep
+            WHERE ep.fechaInicioVigencia &lt;= :fechaActual
+            AND ep.fechaFinVigencia &gt;= :fechaActual
+            AND ep.ccf.codigo = :cajaCompensacion
+        </query>
+    </named-query>
+	
+    <!-- CONSULTAS DE PARÁMETROS DE VALIDACION -->
+    <named-query name="ArchivosPilaService.PilaOperadorInformacion.ConsultarOperadoresinformacionActivos">
+        <description>Consulta de operadores de información activos</description>
+        <query>
+            SELECT oi 
+            FROM OperadorInformacion oi 
+            WHERE oi.operadorActivo = 1
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.PilaOperadorInformacionCcf.ConsultarOperadoresinformacionActivosCcf">
+        <description>Consulta de operadores de información activos para una CCF</description>
+        <query>
+            SELECT oiccf
+            FROM OperadorInformacionCcf oiccf
+            WHERE oiccf.cajaCompensacion.codigo = :codigoCcf
+            AND oiccf.estado = 1
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarPeriodoTasaInteres">
+        <description>Consulta de períodos de tasa de interés</description>
+        <query>
+            SELECT tasa 
+            FROM TasasInteresMora tasa
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarPeriodoTasaInteresRango">
+        <description>Consulta de períodos de tasa de interés en rango de fechas de validez</description>
+        <query>
+            SELECT tasa 
+            FROM TasasInteresMora tasa
+            WHERE 
+            (	
+            tasa.fechaInicioTasa BETWEEN :fechaInicial AND :fechaFinal
+            OR 
+            tasa.fechaFinTasa BETWEEN :fechaInicial AND :fechaFinal
+            )
+            OR
+            (
+            :fechaInicial BETWEEN tasa.fechaInicioTasa AND tasa.fechaFinTasa
+            OR
+            :fechaFinal BETWEEN tasa.fechaInicioTasa AND tasa.fechaFinTasa
+            )
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.Beneficio.ConsultarDatosBeneficio">
+        <description>Consulta de parametrización de beneficio de ley</description>
+        <query>
+            SELECT ben
+            FROM Beneficio ben
+            WHERE ben.tipoBeneficio = :tipoBeneficio
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.DescuentoInteresMora.ConsultarCasosDescuento">
+        <description>Consulta de condiciones parametrizadas para otorgar descuento en mora de aportes</description>
+        <query>
+            SELECT descuento
+            FROM DescuentoInteresMora descuento
+        </query>
+    </named-query>
+	
+    <named-query name="ArchivosPilaService.ListasBlancasAportantes.porNumeroIdentificacion">
+        <description>Consulta la entidad de lista blanca de pila por un número de identificación dado </description>
+        <query>
+            SELECT listasBlanca
+            FROM ListasBlancasAportantes listasBlanca
+            WHERE listasBlanca.numeroIdentificacionPlanilla = :numeroIdentificacionPlanilla
+        </query>
+    </named-query>
+    
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarEmpresasDescentralizadas">
+        <description>Consulta las empresas descentralizadas</description>
+        <query>
+            SELECT ed
+            FROM PreRegistroEmpresaDesCentralizada ed
+        </query>
+    </named-query>
+        
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarEmpresaDescentralizada">
+        <description>Consulta una empresa descentralizada</description>
+        <query>
+            SELECT pred FROM PreRegistroEmpresaDesCentralizada pred 
+            WHERE pred.tipoIdentificacion = :tipoIdentificacion
+            AND pred.prdNumeroIdentificacion = :numeroIdentificacion
+            AND pred.codigoSucursal = :codigoSucursal
+            AND pred.prdNombreSucursalPila = :nombreSucursalPila
+        </query>
+    </named-query>
+          
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarEmpresaDescentralizadaSinTipo">
+        <description>Consulta una empresa descentralizada sin tipo de identificacion</description>
+        <query>
+            SELECT pred FROM PreRegistroEmpresaDesCentralizada pred 
+            WHERE pred.prdNumeroIdentificacion = :numeroIdentificacion
+            AND pred.codigoSucursal = :codigoSucursal 
+            AND pred.prdNombreSucursalPila = :nombreSucursalPila
+        </query>
+    </named-query> 
+
+
+    
+
+
+    
+    <!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+    
+</entity-mappings>

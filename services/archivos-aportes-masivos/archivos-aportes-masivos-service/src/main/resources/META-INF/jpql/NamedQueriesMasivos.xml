@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<!-- 
+
+	<named-native-query name="Aportes.aporte.general.consultar.persona.solicitante.masivo" result-set-mapping="GrupoFamiliarOutDTOMapping">
+		<query>
+		SELECT apg.apgPersona,apg.apgEmpresa, per.pertipoIdentificacion,per.pernumeroIdentificacion,
+			apg.apgtipoSolicitante,per.perprimerNombre, per.persegundoNombre,
+			per.perprimerApellido, per.persegundoApellido, per.perrazonSocial,est.roaEstadoAfiliado
+			FROM AporteGeneral apg, Persona per, VW_EstadoAfiliacionPersonaCaja est
+			WHERE est.perId = per.perid
+			AND
+			apg.apgPersona = per.perid
+			AND per.pertipoIdentificacion =:tipoIdentificacion
+			AND per.pernumeroIdentificacion =:numeroIdentificacion
+			AND (apg.apgperiodoAporte = :periodo OR :periodo IS  NULL)
+			GROUP BY apg.apgPersona,apg.apgEmpresa, per.pertipoIdentificacion,per.pernumeroIdentificacion,
+			apg.apgtipoSolicitante,per.perprimerNombre, per.persegundoNombre,
+			per.perprimerApellido, per.persegundoApellido, per.perrazonSocial, est.roaEstadoAfiliado
+		</query>
+	</named-native-query>
+	--> 
+
+	<named-query name="Aportes.masivos.archivo" >
+		<query>
+		SELECT ma from MasivoArchivo ma
+		where ma.tipoArchivo = :tipoArchivo
+		</query>
+	</named-query>
+	<named-query name="Archivos.Aportes.Masivos.Buscar.MasivoArchivo.Por.ECM" >
+		<query>
+		SELECT ma from MasivoArchivo ma
+		where ma.nombreArchivo like :ecmIdentificador
+		</query>
+	</named-query>
+	<named-query name="Aportes.masivos.simulado" >
+		<query>
+		select ms from MasivoSimulado ms, MasivoArchivo ma
+		where  ma.solicitud =  :idSolicitud
+		and ms.nombreArchivo = ma.nombreArchivo
+		</query>
+	</named-query>
+	<named-query name="Aportes.masivo.general" >
+		<query>
+		select mg from MasivoGeneral mg, MasivoArchivo ma
+		where  ma.solicitud =  :idSolicitud
+		and ma.id = mg.idMasivoArchivo
+		and mg.numeroIdentificacionAportante = :numeroIdentificacion
+		</query>
+	</named-query>
+
+	<named-query name="Aportes.Masivos.Consultar.Masivo.Archivo.Por.Radicado">
+		<query>
+			SELECT ma from MasivoArchivo ma
+			where ma.numeroRadicacion = :numeroRadicado
+		</query>
+	</named-query>
+
+	<named-native-query name="Aportes.Masivos.Borrar.MasivoArchivo.Por.MasivoArchivo">
+		<query>
+			delete maa
+			FROM masivos.MasivoArchivo maa
+			where maa.maaId = :idMasivoArchivo
+		</query>
+
+	</named-native-query>
+	<named-native-query name="Aportes.Masivos.Borrar.MasivoDetallado.Por.MasivoArchivo">
+		<query>
+			delete mad
+			FROM masivos.MasivoDetallado mad
+			inner JOIN masivos.MasivoGeneral mag  on mad.madMasivoGeneral = mag.magId
+			where mag.magMasivoArchivo = :idMasivoArchivo
+		</query>
+		
+	</named-native-query>
+	<named-native-query name="Aportes.Masivos.Borrar.General.Por.MasivoArchivo">
+		<query>
+			delete mag
+			FROM masivos.MasivoGeneral mag
+			where mag.magMasivoArchivo = :idMasivoArchivo
+			
+		</query>
+		
+	</named-native-query>
+
+
+	<named-native-query name="Aportes.Masivos.Borrar.Masivo.Simulado.Por.Masivo.Archivo">
+		<query>
+			delete ms
+			FROM masivos.MasivoSimulado ms
+			inner join masivos.MasivoArchivo maa on ms.maaNombreArchivo = maa.maaNombreArchivo
+			where maa.maaId = :idMasivoArchivo
+		</query>
+		
+	</named-native-query>
+
+
+	
+
+	<named-native-query name="Aportes.Masivos.Consultar.Archivo.En.Procesamiento">
+		<query>
+			select maaId
+			from masivos.MasivoArchivo
+			where maaEstado = 'PROCESANDO'
+			and maaTipoArchivo = :tipoArchivo
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Archivos.Aportes.Masivos.Buscar.MasivoArchivo.AportesDevolucion.Por.Radicado">
+		<query>
+			select *
+			from masivos.aportesDevolucion
+			where numeroradicado  = :numeroRadicado
+		</query>
+	</named-native-query>
+	<named-native-query name="Archivos.Aportes.Masivos.Buscar.MasivoArchivo.AportesSimuladosDevolucion.Por.Radicado">
+		<query>
+			select *
+			from masivos.aportesDevolucionGeneralSimular
+			where numeroradicado  = :numeroRadicado
+		</query>
+	</named-native-query>
+
+
+	<named-native-query name="Aportes.Masivos.Consultar.Montos.Recaudo.Simulado">
+		<query>
+			select
+				sum(mad.madTotalAporte) montoGestionado,
+				(select sum(mas.MontoToal) from masivos.MasivoSimulado mas where mas.maaNombreArchivo = :nombreArchivo) montoTotal
+			from
+			masivos.MasivoArchivo maa
+			inner join masivos.MasivoGeneral mag on mag.magMasivoArchivo = maa.maaId
+			inner join masivos.MasivoDetallado mad on mad.madMasivoGeneral = mag.magId
+			where maa.maaNombreArchivo = :nombreArchivo
+			and maa.maaNumeroRadicacion = :numeroRadicado
+		</query>
+	</named-native-query>
+		<named-native-query name="Aportes.masivos.simulado.reporte"
+		result-set-mapping="Aportes.masivos.simulado.reporte.mapping">
+		<query>		
+	     select 
+            ROW_NUMBER() over(order by ma.maaId) as numeroRegistro,
+		    ma.maaFechaProcesamiento as fechaRecaudo,
+			ma.maaNombreOriginalArchivo as nombreArchivo,
+			mg.magTipoIdentificacionAportante as tipoIdentificacionAportante,
+			mg.magNumeroIdentificacionAportante as numeroIdentificacionAportante,
+			mg.magRazonSocial as razonSocialAportante,
+			mg.magPeriodoPago as periodoPago,
+			mg.magTipoAportante as tipoAportante,
+			md.madTipoIdentificacionCotizante as tipoIdentificacionCotizante,
+			md.madNumeroIdentificacionCotizante as numeroIdentificacionCotizante,
+		    md.madTipoCotizante as tipoCotizante,
+			md.madAporteObligatorio as aporteObligatorio,
+			md.madValorIntereses as valorIntereses, 
+			md.madTotalAporte as totalAporte,
+			me.magrObservacion as error
+			from masivos.MasivoApGeeralRechazos me
+			left join masivos.MasivoGeneral mg on mg.magId = me.magrMasivoGeneralId
+			left join masivos.MasivoArchivo ma on ma.maaId = mg.magMasivoArchivo
+			left join masivos.MasivoDetallado md on md.madId = me.magrMasivoDetalleId
+			where ma.maaSolicitud = :idSolicitud
+		</query>
+	</named-native-query>
+
+	<sql-result-set-mapping name="Aportes.masivos.simulado.reporte.mapping">
+		<constructor-result target-class="com.asopagos.aportes.masivos.dto.ReporteRecaudoSimulado">
+			<column name="numeroRegistro" class="java.lang.Long"/>
+			<column name="fechaRecaudo" class="java.util.Date"/>
+			<column name="nombreArchivo" class="java.lang.String"/>
+			<column name="tipoIdentificacionAportante" class="java.lang.String"/>
+			<column name="numeroIdentificacionAportante" class="java.lang.String"/>
+			<column name="razonSocialAportante" class="java.lang.String"/>
+			<column name="periodoPago" class="java.lang.String"/>
+			<column name="tipoAportante" class="java.lang.String"/>
+			<column name="tipoIdentificacionCotizante" class="java.lang.String"/>
+			<column name="numeroIdentificacionCotizante" class="java.lang.String"/>
+			<column name="tipoCotizante" class="java.lang.String"/>
+			<column name="aporteObligatorio" class="java.math.BigDecimal"/>
+			<column name="valorIntereses" class="java.math.BigDecimal"/>
+			<column name="totalAporte" class="java.math.BigDecimal"/>
+			<column name="error" class="java.lang.String"/>
+		</constructor-result>
+
+	</sql-result-set-mapping>
+	
+	<named-native-query name="Aportes.masivos.simulado.devoluciones"
+		result-set-mapping="Aportes.masivos.simulado.devoluciones.mapping">
+		<query>	
+		 select numeroRegistro,
+		 fechaHoraDeCarga,
+		 nombreArchivo,
+		 tipoIdentificacionAportante,
+		 numeroIdentificacionAportante,
+		 razonSocial,
+         periodoPago,
+		 tipoAportante,
+		 tipoIdentificacionCotizante,
+		 numeroIdentificacionCotizante,
+		 tipoCotizante,
+		 aporteObligatorio,
+		 valorIntereses,
+         totalAporte,
+		 error from masivos.MasivosDvGenerarRechazos2 mdv where  numeroRadicado = :numeroRadicado	
+		</query>
+	</named-native-query>
+
+	<sql-result-set-mapping name="Aportes.masivos.simulado.devoluciones.mapping">
+		<constructor-result target-class="com.asopagos.aportes.masivos.dto.ReporteDevolucionesSimulado">
+			<column name="numeroRegistro" class="java.lang.Long"/>
+			<column name="fechaHoraDeCarga" class="java.util.Date"/>
+			<column name="nombreArchivo" class="java.lang.String"/>
+			<column name="tipoIdentificacionAportante" class="java.lang.String"/>
+			<column name="numeroIdentificacionAportante" class="java.lang.String"/>
+			<column name="razonSocial" class="java.lang.String"/>
+			<column name="periodoPago" class="java.lang.String"/>
+			<column name="tipoAportante" class="java.lang.String"/>
+			<column name="tipoIdentificacionCotizante" class="java.lang.String"/>
+			<column name="numeroIdentificacionCotizante" class="java.lang.String"/>
+			<column name="tipoCotizante" class="java.lang.String"/>
+			<column name="aporteObligatorio" class="java.math.BigDecimal"/>
+			<column name="valorIntereses" class="java.math.BigDecimal"/>
+			<column name="totalAporte" class="java.math.BigDecimal"/>
+			<column name="error" class="java.lang.String"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	
+</entity-mappings>

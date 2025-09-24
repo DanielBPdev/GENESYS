@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query
+		name="PilaService.RegistroGeneral.consultarRegistroGeneralPorId">
+		<description>consultar el registro general de procesamiento de planilla PILA por id</description>
+		<query>
+            SELECT registroGeneral
+            FROM RegistroGeneral registroGeneral 
+            WHERE registroGeneral.id = :idRegistroGeneral
+           </query>
+	</named-query>
+
+	<named-query name="PilaService.RegistroGeneral.obtenerRegistroDetallado">
+		<description>Constante para la consulta del id de un registro general</description>
+		<query>
+			SELECT det
+			FROM RegistroDetallado det 
+			WHERE det.registroGeneral = :idRegistroGeneral
+		</query>
+	</named-query>
+	
+	<named-query name="PilaService.RegistroGeneral.obtenerIdRegistroGeneral">
+		<description>Constante para la consulta del id de un registro general</description>
+		<query>
+            SELECT registroGeneral.id
+            FROM RegistroGeneral registroGeneral 
+            WHERE registroGeneral.registroControl = :idPlanilla
+            AND registroGeneral.registroControlManual IS NULL
+		</query>
+	</named-query>
+	
+	<!-- FIN CONSULTAS HU 401 -->
+
+	<!-- INICIO CONSULTAS HU 410 -->
+	<named-query
+		name="PilaService.RegistroGeneral.ConsultarEstadoGeneralPlanilla.porIdIndicePlanilla">
+		<description>Constante para la consulta del resultado general de PILA 2 para un número de planilla específico</description>
+		<query>
+			SELECT new com.asopagos.dto.pila.RespuestaConsultaEmpleadorDTO(
+				rg.tipoIdentificacionAportante,
+				rg.numeroIdentificacionAportante, 
+				rg.id,
+				rg.tipoPlanilla,
+				rg.registroControl, 
+				rg.periodoAporte, 
+				rg.numPlanilla 
+			)
+			FROM RegistroGeneral rg
+			WHERE rg.registroControl = :idIndicePlanilla
+			AND rg.registroControlManual IS NULL
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaService.RegistroDetallado.ConsultarEstadoDetalladoPlanilla">
+		<description>Constante para la consulta del resultado detallado de PILA 2 para un registro general específico</description>
+		<query>
+			SELECT new com.asopagos.dto.pila.DetalleTablaAportanteDTO(
+				rd.numeroIdentificacionCotizante,
+				rd.tipoIdentificacionCotizante, 
+				rd.registroControl,
+				rd.estadoEvaluacion,
+				rd.aporteObligatorio,
+				rd.outEstadoValidacionV0,
+				rd.outEstadoValidacionV1,
+				rd.outEstadoValidacionV2,
+				rd.outEstadoValidacionV3,
+				CASE WHEN rd.tipoCotizante IS NULL THEN 'Pensionado'
+					WHEN rd.tipoCotizante NOT IN (3,4,16,34,35,36,53,57,60,61) THEN 'Dependiente' 
+					ELSE 'Independiente' 
+				END,
+				rd.correcciones,
+				rd.registroGeneral,
+				rd.id,
+				rd.outEstadoRegistroAporte,
+				rd.primerApellido,
+    			rd.primerNombre,
+    			rd.segundoApellido,
+    			rd.segundoNombre
+			)
+			FROM RegistroGeneral rg, RegistroDetallado rd 
+			WHERE rg.id = rd.registroGeneral 
+			AND rg.registroControl = :idIndicePlanilla
+			and rg.registroControlManual IS NULL
+			and rd.outRegistroActual = TRUE
+			ORDER BY rd.registroControl
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaService.RegistroDetallado.ConsultarEstadoDetalladoPlanillaCompleto">
+		<description>Consulta del resultado detallado de PILA 2 para un registro general específico (Resultado completo)</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.RegistroDetalladoModeloDTO(rd)
+			FROM RegistroGeneral rg, RegistroDetallado rd 
+			WHERE rg.id = rd.registroGeneral 
+			AND rg.registroControl = :idPlanilla
+			AND rg.registroControlManual IS NULL
+			AND (
+			    (:usarInicial = TRUE AND rd.outRegInicial IS NULL)
+			    OR (:usarInicial = FALSE AND COALESCE(rd.outRegistroActual, FALSE) = TRUE)
+			)
+			AND (:ignorarA = false OR COALESCE(rd.correcciones, '') != 'A')
+			AND rd.outMarcaValidacionRegistroAporte IS NOT NULL
+			AND rd.outEstadoRegistroAporte IS NOT NULL 
+			AND (
+			    (:discriminar IS NULL)
+			    OR (:discriminar = TRUE AND (rd.estadoRegistroCorreccion IS NULL 
+			        OR rd.estadoRegistroCorreccion = com.asopagos.enumeraciones.pila.EstadoValidacionRegistroCorreccionEnum.NO_APLICA_REGISTRO_ANULADO))
+                OR (:discriminar = FALSE AND (rd.estadoRegistroCorreccion IS NULL 
+                    OR rd.estadoRegistroCorreccion != com.asopagos.enumeraciones.pila.EstadoValidacionRegistroCorreccionEnum.NO_APLICA_REGISTRO_ANULADO))
+			)
+			ORDER BY COALESCE(rd.grupoAC, 0), COALESCE(rd.correcciones, 'A'), rd.id
+		</query>
+	</named-query>
+	
+	<named-query
+		name="PilaService.RegistroDetallado.consultarRegistroDetalladoPorId">
+		<description>Consulta un registro detallado específico (Resultado completo)</description>
+		<query>
+			SELECT rd
+			FROM RegistroDetallado rd 
+			WHERE rd.id = :idRegistroDetallado 
+		</query>
+	</named-query>
+	
+	<named-query
+		name="PilaService.RegistroGeneral.consultarRegistroGeneralPorNumeroPlanilla">
+		<description>consultar el registro general de procesamiento de planilla PILA por numero de planilla</description>
+		<query>
+            SELECT registroGeneral
+            FROM RegistroGeneral registroGeneral 
+            WHERE registroGeneral.numPlanilla = :numeroPlanilla
+           </query>
+	</named-query>
+	
+	<named-query name="PilaService.RegistroDetallado.ConsultarRegistrosDetalladosPorIdRegistroGeneral">
+		<description>Consulta de registros detallados asociados a un ID de registro general</description>
+		<query>
+			SELECT rd
+			FROM RegistroDetallado rd
+			WHERE rd.registroGeneral = :idRegistroGeneral
+		</query>
+	</named-query>
+	
+	<named-query name="PilaService.RegistroDetallado.ConsultarInfoBasicaRegistrosDetalladosPorIdRegistroGeneral">
+		<description>Consulta de la información básica de los registros detallados asociados a un ID de registro general</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.RegistroDetalladoModeloDTO(1,red)
+			FROM RegistroDetallado red
+			WHERE red.registroGeneral = :idRegistroGeneral
+		</query>
+	</named-query>
+	
+	
+	<named-query name="PilaService.RegistroDetalladoNovedad.ConsultarNovedadesStagingPorRegistroDetallado">
+		<description>Consulta de novedades en staging asociadas a un registro detallado</description>
+		<query>
+			SELECT rdn
+			FROM RegistroDetalladoNovedad rdn
+			WHERE rdn.registroDetallado = :idRegistroDetallado
+		</query>
+	</named-query>
+	
+	<named-query name="PilaService.RegistroDetalladoNovedad.ConsultarCantidadNovedadesPorRegistroDetallado">
+		<description>Consulta de la cantidad de novedades asociadas a cada registro de tallado de un registro general</description>
+		<query>
+			SELECT new com.asopagos.pila.dto.ConsultaNovedadesPorRegistroDTO(
+				rd.id,
+				(SELECT COUNT(rdn.id)
+				FROM RegistroDetalladoNovedad rdn 
+				WHERE rdn.registroDetallado = rd.id)
+			)
+			FROM RegistroDetallado rd 
+			WHERE rd.registroGeneral = :idRegistroGeneral
+		</query>
+	</named-query>
+	
+	<named-query name="PilaService.RegistroDetallado.MarcarRegistroDetalladoSinNovedad">
+		<description>Actualización de registros detallados a marcar como registrados sin novedad</description>
+		<query>
+			UPDATE RegistroDetallado 
+			SET outRegistradoNovedad = 1,
+				outEstadoRegistroAporte = 'PROCESADO_SIN_NOVEDAD'
+			WHERE id IN (:registrosSinNovedad)
+			AND outRegistradoAporte = 1
+		</query>
+	</named-query>
+	
+	<named-query
+		name="PilaService.IndicePlanilla.datosTipoAPlanillaN">
+		<description>consultar el registro de una planilla N para ser agrupados</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.RegistroDetalladoModeloDTO(red.id, red.grupoAC, red.tipoIdentificacionCotizante, red.numeroIdentificacionCotizante,
+				red.primerNombre, red.segundoNombre, red.primerApellido, red.segundoApellido, red.tipoCotizante, red.aporteObligatorio, red.diasCotizados, 
+				red.tarifa,	red.novIngreso, red.novRetiro, red.novVSP, red.novVST, red.novSLN, red.novIGE, red.novLMA, red.novVACLR, red.diasIRL, red.correcciones, 
+				red.registroControl)
+            FROM RegistroDetallado red, RegistroGeneral reg 
+            WHERE red.registroGeneral = reg.id 
+            AND reg.registroControl = :idIndicePlanilla     
+            AND red.correcciones = 'A'
+            AND red.grupoAC IS NULL
+            ORDER BY red.tipoIdentificacionCotizante, red.numeroIdentificacionCotizante, red.idRegistro2pila
+        </query>
+	</named-query>
+	
+	<named-query
+		name="PilaService.IndicePlanilla.consultarAgrupaciones">
+		<description>consultar el registro de una planilla N para ser agrupados</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.RegistroDetalladoModeloDTO(red.id, red.grupoAC, red.tipoIdentificacionCotizante, red.numeroIdentificacionCotizante,
+				red.primerNombre, red.segundoNombre, red.primerApellido, red.segundoApellido, red.tipoCotizante, red.aporteObligatorio, red.diasCotizados, 
+				red.tarifa,	red.novIngreso, red.novRetiro, red.novVSP, red.novVST, red.novSLN, red.novIGE, red.novLMA, red.novVACLR, red.diasIRL, red.correcciones, 
+				red.registroControl)
+            FROM RegistroDetallado red, RegistroGeneral reg 
+            WHERE red.registroGeneral = reg.id 
+            AND reg.registroControl = :idIndicePlanilla        
+        </query>
+	</named-query>
+	
+	<named-query
+		name="PilaService.IndicePlanilla.datosPlanillaN">
+		<description>consultar el registro de una planilla N para ser agrupados</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.RegistroDetalladoModeloDTO(red.id, red.grupoAC, red.tipoIdentificacionCotizante, red.numeroIdentificacionCotizante,
+				red.primerNombre, red.segundoNombre, red.primerApellido, red.segundoApellido, red.tipoCotizante, red.aporteObligatorio, red.diasCotizados, 
+				red.tarifa,	red.novIngreso, red.novRetiro, red.novVSP, red.novVST, red.novSLN, red.novIGE, red.novLMA, red.novVACLR, red.diasIRL, red.correcciones,
+				red.registroControl)
+            FROM RegistroDetallado red, RegistroGeneral reg 
+            WHERE red.registroGeneral = reg.id 
+            AND reg.registroControl = :idIndicePlanilla           
+            AND red.tipoIdentificacionCotizante = :tipoIdentificacion
+            AND red.numeroIdentificacionCotizante = :numeroIdentificacion
+            AND (
+            	(red.correcciones = 'A' AND red.grupoAC IS NOT NULL)
+            	OR red.correcciones = 'C'
+            )
+        </query>
+	</named-query>
+	
+	<named-query name="PilaService.RegistroGeneral.consulta.id.planilla">
+	   <description>Consulta de Registro General por ID de planilla PILA</description>
+	   <query>
+	       SELECT new com.asopagos.dto.modelo.RegistroGeneralModeloDTO(reg)
+	       FROM RegistroGeneral reg
+	       WHERE reg.registroControl = :idIndicePlanilla
+	       AND reg.registroControlManual IS NULL
+	   </query>
+	</named-query>
+	
+	<named-native-query name="PilaService.staging.registrarPlanillaCandidataReproceso">
+		<query>
+			INSERT INTO PlanillasCandidatasReproceso(pcrIdRegistroGeneral, pcrMotivoBloqueo, pcrFechaCreacionRegistro)
+			VALUES (:idRegistroGeneral, :motivoBloqueo, :fecha);
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaService.IndicePlanilla.agrupaRegistrosPlanillaN">
+		<description>Actualización de registros detallados con un numero agrupador</description>
+		<query>
+			UPDATE Staging.RegistroDetallado 
+			SET redOUTGrupoAC = (
+				SELECT MAX(ISNULL(red.redOUTGrupoAC,0)) + 1 
+				FROM Staging.RegistroDetallado red
+				INNER JOIN Staging.RegistroGeneral reg ON red.redRegistroGeneral = reg.regId
+				WHERE reg.regRegistroControl = :idIndicePlanilla
+			)
+			WHERE redId IN (:idsRegistrosDetallados)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaService.IndicePlanilla.desagrupaRegistrosPlanillaN">
+		<description>Actualización de registros detallados borrando el numero agrupador</description>
+		<query>
+			UPDATE Staging.RegistroDetallado 
+			SET redOUTGrupoAC = NULL
+			WHERE redId IN (:idsRegistrosDetallados)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaService.Long.ObtenerIdRegistroGeneralPorNumeroPlanilla">
+		<query>
+			SELECT reg.regId FROM pila.staging.RegistroGeneral reg 
+			where reg.regNumPlanilla = :numeroPlanilla
+		</query>
+	</named-native-query>
+	<!-- FIN CONSULTAS HU 410 -->
+
+	<named-query
+		name="PilaService.RegistroDetalladoNovedad.ConsultarNovedadesReintegro">
+		<description>Consulta de novedades de reintegro aplicadas en staging asociadas a un registro detallado</description>
+		<query>
+			SELECT new com.asopagos.pila.dto.DetallePestanaNovedadesDTO(
+				rd.numeroIdentificacionCotizante,
+				rd.tipoCotizante,
+				rd.outFechaProcesamientoValidRegAporte,
+				CASE WHEN rdn.tipoTransaccion IS NOT NULL THEN rdn.tipoTransaccion
+					ELSE 'NOVEDAD_REINTEGRO' END,
+				'SISTEMA', 
+				rd.id
+			)
+			FROM RegistroDetallado rd, RegistroDetalladoNovedad rdn 
+			WHERE rd.id = rdn.registroDetallado 
+				AND rdn.tipoNovedad = :tipoNovedad
+				AND rd.id IN (:idRegistroDetallado)
+		</query>
+	</named-query>
+
+	<!-- INICIO CONSULTAS PARA VISTAS 360 -->
+	<named-query name="PilaService.Consultar.detalleAporteParaVista360">
+		<description>constante para la consulta del detalle de un aporte dado el id de registro detallado</description>
+		<query>
+			SELECT new com.asopagos.pila.dto.DetalleAporteVista360DTO(
+				reg.numPlanilla,
+				reg.tipoPlanilla,
+				reg.fechaRecaudo,
+				reg.periodoAporte,
+				CASE WHEN red.correcciones IS NULL THEN 0 ELSE 1 END,
+				1,
+				red.tipoIdentificacionCotizante,
+				red.primerNombre,
+				red.segundoNombre,
+				red.primerApellido,
+				red.segundoApellido,
+				CASE WHEN red.tipoCotizante IS NULL THEN 'PENSIONADO' WHEN red.tipoCotizante NOT IN (3,4,16,34,35,36,53,57,60,61) THEN 'TRABAJADOR_DEPENDIENTE' ELSE 'TRABAJADOR_INDEPENDIENTE' END,
+				CASE WHEN red.correcciones IS NULL THEN 0 ELSE 1 END,
+				red.outFechaIngresoCotizante,
+				red.outFechaRetiroCotizante, 
+				red.numeroIdentificacionCotizante, 
+				reg.tipoIdentificacionAportante, 
+				reg.numeroIdentificacionAportante
+			)
+			FROM RegistroGeneral reg, RegistroDetallado red 
+			WHERE reg.id = red.registroGeneral 
+			AND red.id = :idRegistroDetallado
+		</query>
+	</named-query>
+	<named-query name="PilaService.Consultar.novedadesAporte">
+		<description>consulta las novedades asociadas a un aporte</description>
+		<query>SELECT new com.asopagos.pila.dto.HistoricoNovedades360DTO(
+				rdn.tipoNovedad,
+				'si',
+				rdn.fechaInicioNovedad,
+				rdn.fechaFinNovedad,
+				rdn.accionNovedad
+			)
+			FROM RegistroDetalladoNovedad rdn where rdn.registroDetallado = :idRegistroDetallado
+		</query>
+	</named-query>
+	<named-query name="PilaService.Consultar.informacionAporte">
+		<description>consulta la información correspondiente al aporte</description>
+		<query>
+			SELECT new com.asopagos.pila.dto.InformacionAporte360DTO(
+				rd.estadoEvaluacion,
+				rd.aporteObligatorio,
+				<!-- interesesFinalesAjustados, -->
+				rd.diasCotizados,
+				rd.horasLaboradas,
+				rd.salarioBasico,
+				rd.valorIBC,
+				rd.tarifa,
+				rd.aporteObligatorio,
+				rd.outValorMoraCotizante,
+				rd.salarioIntegral,
+				rg.valTotalApoObligatorio,
+				CASE WHEN rd.tipoCotizante IS NULL THEN 'PENSIONADO' WHEN rd.tipoCotizante NOT IN (3,4,16,34,35,36,53,57,60,61) THEN 'TRABAJADOR_DEPENDIENTE' ELSE 'TRABAJADOR_INDEPENDIENTE' END,
+				rd.outEstadoValidacionV0,
+				rd.outEstadoValidacionV1,
+				rd.outEstadoValidacionV2,
+				rd.outEstadoValidacionV3,
+				rd.outEstadoValidacionV1,
+				rd.outEstadoValidacionV1,
+				rg.registroControl
+			)
+			FROM RegistroGeneral rg, RegistroDetallado rd 
+			WHERE rg.id = rd.registroGeneral 
+			AND rd.id = :idRegistroDetallado
+		</query>
+	</named-query>
+	
+	<!--  FIN CONSULTAS PARA VISTAS 360   -->
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="PilaService.consultar.verificarAportesPendientes">
+		<query>
+			SELECT 
+				CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END 
+			FROM pila.dbo.TemAporte 
+				WHERE temRegistroGeneral = :idRegGeneral
+				AND (temMarcaAporteManual != 0 OR temMarcaAporteSimulado != 0 OR temEnProceso != 0)		
+		</query>
+	</named-native-query>
+	<named-native-query name="PilaService.consultar.verificarNovedadesPendientes">
+		<query>
+			SELECT 
+				CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END 
+			FROM pila.dbo.TemNovedad 
+				WHERE tenRegistroGeneral = :idRegGeneral
+				AND (tenEnProceso != 0 OR tenMarcaNovedadSimulado != 0)
+		</query>
+	</named-native-query>
+	
+	
+	<named-native-query
+		name="PilaService.StagingParametros.ObtenerParametrosIndependiente">
+		<description>Realiza la busqueda por numero de identificacion,fechas y planilla</description>
+		<query>
+		SELECT stpValorParametro 
+		FROM staging.StagingParametros
+		WHERE stpNombreParametro LIKE 'SOLICITANTE_INDEPENDIENTE'
+        </query>
+	</named-native-query>
+	<named-native-query name="Certificados.consultar.aportantes.anio">
+		<description>Consulta que calcula el tipo de afiliado</description>
+		<query>
+			SELECT regFechaRecaudo,regNumPlanilla,regValTotalApoObligatorio, regPeriodoAporte, regValorIntMora,
+			CASE WHEN regEsAportePensionados = 0
+			THEN
+				CASE WHEN 
+				(
+				SELECT COUNT(1) 
+				FROM staging.RegistroDetallado 
+				WHERE ISNULL(redTipoCotizante,'') NOT IN 
+					(	
+					SELECT Data AS tipoCotizante 
+					FROM (
+						SELECT Data FROM dbo.Split( (
+						SELECT stpValorParametro FROM staging.StagingParametros 
+						WHERE stpNombreParametro = 'SOLICITANTE_INDEPENDIENTE') ,',')
+					) AS T) AND redRegistroGeneral = reg.regId
+				) > 1 THEN 'DEPENDIENTE' ELSE 'INDEPENDIENTE' END
+			ELSE 'PENSIONADO' END
+			AS tipoAfiliacion
+			FROM staging.RegistroGeneral reg
+			WHERE regNumeroIdentificacionAportante =:numeroIdentificacion
+			AND regTipoIdentificacionAportante =:tipoIdentificacion
+			AND (:anio) IN (SELECT value FROM STRING_SPLIT(regPeriodoAporte, '-'))
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaService.RegistroDetallado.ConsultarEstadoDetalladoPlanillaIds"
+		result-set-mapping="PilaService.RegistroDetallado.ConsultarEstadoDetalladoPlanillaIds.mapping">
+		<description>Consulta del resultado detallado de PILA 2 para un registro general específico (Sólo IDs)</description>
+		<query>
+			SELECT rg.regRegistroControl, rd.redId
+			FROM staging.RegistroGeneral rg
+			INNER JOIN staging.RegistroDetallado rd ON rg.regId = rd.redRegistroGeneral 
+			WHERE rg.regRegistroControl IN (:idsPlanilla)
+				AND rg.regRegistroControlManual IS NULL
+				AND (:ignorarA = 0 OR COALESCE(rd.redCorrecciones, '') != 'A')
+				AND rd.redOUTMarcaValRegistroAporte IS NOT NULL
+				AND rd.redOUTEstadoRegistroAporte IS NOT NULL 
+			ORDER BY COALESCE(rd.redOUTGrupoAC, 0), rd.redId
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaService.RegistroDetallado.actualizar.aprobarB7">
+	   <description>Sentencia para la marcación de validaciones de bloque 7 como aprobadas para propósitos de 
+	       planillas de Corrección / Adición</description>
+	   <query>
+	       UPDATE red
+	       SET red.redOUTEstadoRegistroAporte = CASE 
+		           WHEN red.redOUTEstadoRegistroAporte = 'NO_OK' THEN 'NO_OK_APROBADO'
+		           WHEN red.redOUTEstadoRegistroAporte = 'NO_VALIDADO_BD' THEN 'NO_VALIDADO_BD_APROBADO'
+		           ELSE red.redOUTEstadoRegistroAporte
+		       END
+		   FROM staging.RegistroGeneral reg
+		   INNER JOIN staging.RegistroDetallado red ON (red.redRegistroGeneral = reg.regId)
+		   WHERE reg.regOUTMOtivoProcesoManual IS NOT NULL
+		   AND red.redId IN (:idsRegistro)
+	   </query>
+	</named-native-query>
+	
+	<named-native-query name="PilaService.RegistroDetallado.limpiar.agrupacion">
+	   <description>Sentencia para la limpieza de las marcas de agrupación de una planilla de corrección</description>
+	   <query>
+	       UPDATE red
+	       SET red.redOUTGrupoAC = null
+	       FROM staging.RegistroDetallado red
+	       INNER JOIN staging.RegistroGeneral reg ON red.redRegistroGeneral = reg.regId
+	       WHERE reg.regRegistroControl = :idPlanilla
+	   </query>
+	</named-native-query>
+	
+	<!-- MAPEO DE CONSULTAS NATIVAS -->
+	<sql-result-set-mapping name="PilaService.RegistroDetallado.ConsultarEstadoDetalladoPlanillaIds.mapping">
+		<column-result name="regRegistroControl" class="java.lang.Long"/>
+		<column-result name="redId" class="java.lang.Long"/>
+	</sql-result-set-mapping>
+</entity-mappings>

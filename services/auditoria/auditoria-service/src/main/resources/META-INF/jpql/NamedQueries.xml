@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="auditoria.eliminar.tablas.innecesarias">
+		<description>Elimina tablas que no son necesarias</description>
+		<query>
+			 	DELETE FROM ParametrizacionTablaAuditable tba
+			 	WHERE
+			 	tba.nombreTabla NOT IN :listaTablasActuales
+			</query>
+	</named-query>
+
+	<named-query name="auditoria.actualizar.tabla.auditable">
+		<description>Actualizar tablas auditables</description>
+		<query>
+			 	UPDATE ParametrizacionTablaAuditable tba 
+			 	SET 
+			 	tba.actualizar = :actualizar, 
+			 	tba.crear = :crear,
+				tba.consultar = :consultar			 	
+			 	WHERE
+			 	tba.nombreTabla = :nombreTabla
+			</query>
+	</named-query>
+
+	<named-query name="auditoria.consultar.eventos.auditoria">
+		<description>Consulta informacion de las tablas auditables</description>
+		<query>
+				SELECT tba FROM ParametrizacionTablaAuditable tba WHERE tba.nombreTabla IN :listaTablas
+			</query>
+	</named-query>
+
+	<named-query
+		name="auditoria.consultar.todos.eventos.auditoria">
+		<description>Consulta toda la informacion de la tablas auditables</description>
+		<query>
+				SELECT tba FROM ParametrizacionTablaAuditable tba
+			</query>
+	</named-query>
+
+	<named-query name="auditoria.consultar.log.crear">
+		<description>Consultar log de auditoria</description>
+		<query>
+				SELECT l
+				FROM RevisionEntidad l
+				JOIN FETCH l.revision r   
+				WHERE r.nombreUsuario = :nombreUsuario 
+				AND l.revisionType = :tipoOperacion
+				AND r.timestamp &gt;= :fechaInicio 
+				AND r.timestamp &lt;= :fechaFin
+				AND l.entityClassName IN (:tablas) 
+			</query>
+		<hint name="requestId" value="l.requestId"></hint>
+	</named-query>
+
+	<named-query name="auditoria.consultar.log.crear.total">
+		<description>Consultar log de auditoria</description>
+		<query>
+				SELECT COUNT(l)
+				FROM RevisionEntidad l
+				JOIN l.revision r   
+				WHERE r.nombreUsuario = :nombreUsuario 
+				AND l.revisionType = :tipoOperacion
+				AND r.timestamp &gt;= :fechaInicio 
+				AND r.timestamp &lt;= :fechaFin
+				AND l.entityClassName IN (:tablas) 
+			</query>
+	</named-query>
+
+	<named-query name="auditoria.consultar.log.actualizar">
+		<description>Consultar log de auditoria</description>
+		<query>
+				SELECT l
+				FROM RevisionEntidad l
+				JOIN FETCH l.revision r   
+				WHERE r.nombreUsuario = :nombreUsuario 
+				AND l.revisionType = :tipoOperacion
+				AND r.timestamp &gt;= :fechaInicio 
+				AND r.timestamp &lt;= :fechaFin
+				AND l.entityClassName IN (:tablas) 
+				AND l.entityClassName IN (SELECT p.entityClassName FROM ParametrizacionTablaAuditable p WHERE p.actualizar = true)
+			</query>
+		<hint name="requestId" value="l.requestId"></hint>
+	</named-query>
+
+	<named-query
+		name="auditoria.consultar.log.actualizar.total">
+		<description>Consultar log de auditoria actualizacion total</description>
+		<query>
+				SELECT COUNT(l)
+				FROM RevisionEntidad l
+				JOIN l.revision r   
+				WHERE r.nombreUsuario = :nombreUsuario 
+				AND l.revisionType = :tipoOperacion
+				AND r.timestamp &gt;= :fechaInicio 
+				AND r.timestamp &lt;= :fechaFin
+				AND l.entityClassName IN (:tablas) 
+				AND l.entityClassName IN (SELECT p.entityClassName FROM ParametrizacionTablaAuditable p WHERE p.actualizar = true)
+			</query>
+	</named-query>
+
+	<entity
+		class="com.asopagos.entidades.auditoria.ParametrizacionTablaAuditable">
+		<table name="ParametrizacionTablaAuditable"
+			schema="${auditoria.schema}" catalog="${auditoria.catalog}" />
+		<attributes>
+			<id name="id">
+				<column name="ptaId" />
+				<generated-value strategy="IDENTITY" />
+			</id>
+			<basic name="nombreTabla">
+				<column name="ptaNombreTabla" />
+			</basic>
+			<basic name="entityClassName">
+				<column name="ptaEntityClassName" />
+			</basic>
+			<basic name="crear">
+				<column name="ptaCrear" />
+			</basic>
+			<basic name="actualizar">
+				<column name="ptaActualizar" />
+			</basic>
+			<basic name="consultar">
+				<column name="ptaConsultar" />
+			</basic>
+		</attributes>
+	</entity>
+	<entity class="com.asopagos.entidades.auditoria.RevisionEntidad">
+		<table name="RevisionEntidad" schema="${auditoria.schema}"
+			catalog="${auditoria.catalog}" />
+		<attributes>
+			<id name="id">
+				<column name="reeId" />
+				<generated-value strategy="IDENTITY" />
+			</id>
+			<basic name="entityClassName">
+				<column name="reeEntityClassName" />
+			</basic>
+			<basic name="revisionType">
+				<column name="reeRevisionType" />
+			</basic>
+			<basic name="timeStamp">
+				<column name="reeTimeStamp" nullable="false" />
+			</basic>
+			<many-to-one name="revision">
+				<join-column name="reeRevision" nullable="false" />
+			</many-to-one>
+		</attributes>
+	</entity>
+	<entity class="com.asopagos.entidades.auditoria.Revision">
+		<table name="Revision" schema="${auditoria.schema}"
+			catalog="${auditoria.catalog}" />
+		<attributes>
+			<id name="id">
+				<column name="revId" />
+				<generated-value strategy="IDENTITY" />
+			</id>
+			<basic name="timestamp">
+				<column name="revTimeStamp" nullable="false" />
+			</basic>
+			<basic name="ip">
+				<column name="revIp" />
+			</basic>
+			<basic name="requestId">
+				<column name="revRequestId" />
+			</basic>
+			<basic name="nombreUsuario">
+				<column name="revNombreUsuario" />
+			</basic>
+			<one-to-many name="modifiedEntityTypes"
+				mapped-by="revision">
+				<cascade>
+					<cascade-all />
+				</cascade>
+			</one-to-many>
+		</attributes>
+	</entity>
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+</entity-mappings>

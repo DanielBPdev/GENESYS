@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="listasChequeo.cajaCompensacion.buscarTodos">
+		<query>
+            SELECT new com.asopagos.listaschequeo.dto.CajaCompensacionDTO(cc.idCajaCompensacion, cc.nombre
+            	, cc.codigo, d.nombre)
+            FROM CajaCompensacion cc,
+            Departamento d
+            WHERE cc.idDepartamento = d.idDepartamento
+            AND cc.socioAsopagos = true
+            ORDER BY cc.codigo
+        </query>
+	</named-query>
+
+	<named-query name="listasChequeo.tipoSolicitante.buscarPorCajaCompensacion">
+		<query>
+            SELECT DISTINCT rts.clasificacion 
+            FROM RequisitoCajaClasificacion rts
+            JOIN rts.cajaCompensacion cc
+            WHERE cc.socioAsopagos = true
+            AND cc.idCajaCompensacion = :idCajaCompensacion
+            AND rts.estado != :estadoInhabilitado
+        </query>
+	</named-query>
+
+	<named-query
+		name="listasChequeo.listasChequeo.buscarListaChequeoPorSolicitudPersonaConPrevio">
+		<query>
+            SELECT rcc.idRequisitoTipoSolicitanteCaja
+            FROM ItemChequeo ich, RequisitoCajaClasificacion rcc, GrupoRequisito grq
+            WHERE ich.solicitudGlobal.idSolicitud = :idSolicitud
+            AND ich.persona.tipoIdentificacion = :tipoIdentificacion
+            AND ich.persona.numeroIdentificacion = :numeroIdentificacion
+            AND rcc.requisito = ich.requisito
+            AND rcc.clasificacion =  ich.solicitudGlobal.clasificacion
+			AND rcc.tipoTransaccion =  ich.solicitudGlobal.tipoTransaccion
+			AND rcc.idRequisitoTipoSolicitanteCaja = grq.idRequisitoCajaClasificacion
+			AND grq.grupoUsuario IN (:listaGrupos)
+        </query>
+	</named-query>
+	<named-query
+		name="listasChequeo.listasChequeo.buscarListaChequeoPorSolicitudPersona">
+		<query>
+            SELECT new com.asopagos.dto.ItemChequeoDTO(
+                ich.requisito.idRequisito, ich.requisito.descripcion, rcc.tipoRequisito, 
+                ich.identificadorDocumento, ich.versionDocumento, ich.estadoRequisito, 
+                ich.cumpleRequisito,ich.formatoEntregaDocumento, 
+                ich.comentarios, ich.cumpleRequisitoBack, ich.comentariosBack,
+                rcc.textoAyuda, rcc.idRequisitoTipoSolicitanteCaja, ich.fechaRecepcionDocumentos
+            )
+            FROM ItemChequeo ich, RequisitoCajaClasificacion rcc
+            WHERE ich.solicitudGlobal.idSolicitud = :idSolicitud
+            AND ich.persona.tipoIdentificacion = :tipoIdentificacion
+            AND ich.persona.numeroIdentificacion = :numeroIdentificacion
+            AND rcc.requisito = ich.requisito
+            AND rcc.clasificacion =  ich.solicitudGlobal.clasificacion
+			AND rcc.tipoTransaccion =  ich.solicitudGlobal.tipoTransaccion
+        </query>
+	</named-query>
+	<named-query
+		name="listasChequeo.listasChequeo.buscarListaChequeoPorClasificacion">
+		<query>
+            SELECT new com.asopagos.dto.ItemChequeoDTO(
+                ich.requisito.idRequisito, ich.requisito.descripcion, rcc.tipoRequisito, 
+                ich.identificadorDocumento, ich.versionDocumento, ich.estadoRequisito, 
+                ich.cumpleRequisito,ich.formatoEntregaDocumento, 
+                ich.comentarios, ich.cumpleRequisitoBack, ich.comentariosBack,
+                rcc.textoAyuda, rcc.idRequisitoTipoSolicitanteCaja, ich.fechaRecepcionDocumentos
+            )
+            FROM ItemChequeo ich, RequisitoCajaClasificacion rcc
+            WHERE ich.solicitudGlobal.idSolicitud = :idSolicitud
+            AND ich.persona.tipoIdentificacion = :tipoIdentificacion
+            AND ich.persona.numeroIdentificacion = :numeroIdentificacion
+            AND rcc.clasificacion = :clasificacion
+            AND rcc.requisito = ich.requisito
+			AND rcc.tipoTransaccion =  ich.solicitudGlobal.tipoTransaccion
+			AND rcc.cajaCompensacion.idCajaCompensacion = :idCaja
+        </query>
+	</named-query>
+	<named-query
+		name="listasChequeo.listasChequeo.buscarListaChequeoPorSolicitud">
+		<query>
+            SELECT ich, rcc
+            FROM ItemChequeo ich
+            JOIN FETCH ich.requisito, RequisitoCajaClasificacion rcc
+            WHERE ich.solicitudGlobal.idSolicitud = :idSolicitud
+            AND rcc.requisito = ich.requisito
+            AND rcc.clasificacion =  ich.solicitudGlobal.clasificacion
+			AND rcc.tipoTransaccion =  ich.solicitudGlobal.tipoTransaccion
+        </query>
+	</named-query>
+	<named-query
+		name="listasChequeo.listasChequeo.buscarListaChequeoPorSolicitudConPrevio">
+		<query>
+	            SELECT rcc.idRequisitoTipoSolicitanteCaja
+	            FROM ItemChequeo ich, RequisitoCajaClasificacion rcc, GrupoRequisito grq
+	            WHERE ich.solicitudGlobal.idSolicitud = :idSolicitud
+	            AND rcc.requisito = ich.requisito
+	            AND rcc.clasificacion =  ich.solicitudGlobal.clasificacion
+				AND rcc.tipoTransaccion =  ich.solicitudGlobal.tipoTransaccion
+				AND rcc.idRequisitoTipoSolicitanteCaja = grq.idRequisitoCajaClasificacion
+				AND grq.grupoUsuario IN (:listaGrupos)
+	    </query>
+	</named-query>
+	<named-query
+		name="listasChequeo.listasChequeo.buscarListaChequeoPorSolicitudYRequisito">
+		<query>
+            SELECT ich
+            FROM ItemChequeo ich
+            JOIN FETCH ich.requisito r
+            WHERE ich.solicitudGlobal.idSolicitud = :idSolicitud
+            AND r.idRequisito = :idRequisito
+        </query>
+	</named-query>
+	<named-query
+		name="listasChequeo.listasChequeo.buscarListaChequeoPorSolicitudRequisitoYPersona">
+		<query>
+            SELECT ich
+            FROM ItemChequeo ich
+            JOIN FETCH ich.requisito r
+            WHERE ich.solicitudGlobal.idSolicitud = :idSolicitud
+            AND r.idRequisito = :idRequisito
+            AND ich.persona.idPersona =:idPersona
+        </query>
+	</named-query>
+
+	<named-query
+		name="listasChequeo.persona.consultarPorTipoNumeroIdentificacion">
+		<query>
+            SELECT p FROM Persona p 
+            WHERE p.numeroIdentificacion = :numeroIdentificacion 
+            AND p.tipoIdentificacion = :tipoIdentificacion
+        </query>
+	</named-query>
+
+	<named-query name="listasChequeo.requisitos.consultarRequisitos.nombre">
+		<query>
+            SELECT new com.asopagos.listaschequeo.dto.RequisitoDTO(
+            		r.idRequisito, r.descripcion, r.estado
+            )
+            FROM Requisito r 
+            WHERE r.descripcion like :nombre
+        </query>
+	</named-query>
+
+	<named-query name="listasChequeo.requisitos.consultarRequisitos">
+		<query>
+            SELECT new com.asopagos.listaschequeo.dto.RequisitoDTO(
+            		r.idRequisito, r.descripcion, r.estado
+            )
+            FROM Requisito r
+        </query>
+	</named-query>
+
+	<named-query
+		name="listasChequeo.requisitos.consultar.consultarRequisitosCajasCompensacion">
+		<query>
+            SELECT new com.asopagos.listaschequeo.dto.RequisitoCajaClasificacionDTO(
+            rcc.idRequisitoTipoSolicitanteCaja, rcc.requisito.idRequisito, rcc.cajaCompensacion.idCajaCompensacion,
+    		rcc.clasificacion, rcc.tipoTransaccion, rcc.estado, rcc.textoAyuda, rcc.tipoRequisito
+            )
+            FROM RequisitoCajaClasificacion rcc
+            WHERE rcc.tipoTransaccion = :tipoTransaccion
+            AND rcc.clasificacion = :clasificacion
+        </query>
+	</named-query>
+
+	<named-query
+		name="listasChequeo.requisitos.consultar.consultarRequisitosClasificaciones">
+		<query>
+            SELECT new com.asopagos.listaschequeo.dto.RequisitoCajaClasificacionDTO(
+            rcc.idRequisitoTipoSolicitanteCaja, rcc.requisito.idRequisito, rcc.cajaCompensacion.idCajaCompensacion,
+    		rcc.clasificacion, rcc.tipoTransaccion, rcc.estado, rcc.textoAyuda, rcc.tipoRequisito
+            )
+            FROM RequisitoCajaClasificacion rcc
+            WHERE rcc.tipoTransaccion = :tipoTransaccion
+            AND rcc.clasificacion IN (:clasificaciones)
+            AND rcc.cajaCompensacion.idCajaCompensacion = :idCajaCompensacion
+        </query>
+	</named-query>
+
+	<!-- <named-query name="listasChequeo.requisitos.actualizar.requisito"> -->
+	<!-- <query> -->
+	<!-- UPDATE Requisito r -->
+	<!-- SET r.estado = :estado -->
+	<!-- WHERE r.idRequisito = :idRequisito -->
+	<!-- </query> -->
+	<!-- </named-query> -->
+	<named-query
+		name="listasChequeo.buscarGrupoUsuario.idRequisitoCajaClasificacion">
+		<query>
+   			SELECT grq FROM GrupoRequisito grq
+   			WHERE grq.idRequisitoCajaClasificacion=:idRequisitoCajaClasificacion
+   		</query>
+	</named-query>
+	<named-query name="listasChequeo.consultarRequisitos.idRequisito">
+		<query>
+   			SELECT req FROM Requisito req WHERE req.idRequisito=:idRequisito
+   		</query>
+	</named-query>
+	<named-query name="listasChequeo.consultarCajaCompensacion.id">
+		<query>
+   			SELECT ccf FROM CajaCompensacion ccf WHERE ccf.idCajaCompensacion=:idCajaCompensacion
+   		</query>
+	</named-query>
+	<named-query name="listasChequeo.consultarRequisitoCajaClasificacion">
+		<query>
+   			SELECT rcc FROM RequisitoCajaClasificacion rcc 
+   			WHERE cajaCompensacion.idCajaCompensacion = :idCajaCompensacion
+  				AND tipoTransaccion = :tipoTransaccion
+  				AND clasificacion = :clasificacion
+  				AND requisito.idRequisito = :requisito
+   		</query>
+	</named-query>
+	<named-query
+		name="listasChequeo.consultar.grupoUsuario.requisitoCajaClasificacion.listaGrupos">
+		<query>
+    		SELECT COUNT(grq.idRequisitoCajaClasificacion) FROM GrupoRequisito grq
+    		WHERE grq.idRequisitoCajaClasificacion=:idRequisitoCajaClasificacion
+			AND grq.grupoUsuario IN (:listaGrupos)
+    	</query>
+	</named-query>
+	<!-- solo se actualiza la relación pues no se borran datos -->
+	<named-query name="listasChequeo.GrupoUsuario.id.requisitoCajaClasificacion">
+		<query>
+            DELETE FROM GrupoRequisito grq 
+            WHERE grq.idRequisitoCajaClasificacion =:idRequisitoCajaClasificacion
+        </query>
+	</named-query>
+	<named-query name="listasChequeo.GrupoUsuario.id.grupoUsuarios">
+		<query>
+   			DELETE FROM GrupoRequisito grq
+   			WHERE grq.idRequisitoCajaClasificacion =:idRequisitoCajaClasificacion 
+            AND grq.idGrupoRequisito NOT IN (:idsGruposUsuarios)
+   		</query>
+	</named-query>
+
+	<named-query name="listasChequeo.consultarItemsChequeo.Solicitudes">
+		<query>
+   			SELECT new com.asopagos.listaschequeo.dto.EtiquetaSolicitudesDTO(Rq.idRequisito,Rq.descripcion,P.idPersona,P.tipoIdentificacion,
+   																			P.numeroIdentificacion,Sol.idSolicitud,Sol.numeroRadicacion,P.razonSocial,Ic.formatoEntregaDocumento) 
+   			FROM ItemChequeo Ic,Solicitud Sol,Requisito Rq,Persona P 
+   			WHERE Ic.solicitudGlobal = Sol.idSolicitud AND
+   			Rq.idRequisito = Ic.requisito AND
+   			P.idPersona=Ic.persona AND
+   			Sol.numeroRadicacion =:numeroRadicacion
+   		</query>
+	</named-query>
+
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+	<named-native-query
+		name="listasChequeo.listasChequeo.buscarPorClasificacionCajaCompensacion">
+		<query>
+            SELECT rts.rtsRequisito, req.reqDescripcion, rts.rtsEstado, rts.rtsTipoRequisito, rts.rtsTextoAyuda, rts.rtsId
+            FROM RequisitoCajaClasificacion rts
+            JOIN Requisito req ON req.reqId = rts.rtsRequisito
+            WHERE rts.rtsTipoTransaccion = :tipoTransaccion 
+            AND rts.rtsClasificacion = :clasificacion
+            AND rts.rtsCajaCompensacion = :idCajaCompensacion
+            AND req.reqEstado &lt;&gt; 'INHABILITADO'
+            AND rts.rtsEstado IN ('OBLIGATORIO', 'OPCIONAL')
+            ORDER BY rts.rtsId
+        </query>
+	</named-native-query>
+	<named-native-query
+		name="listasChequeo.listasChequeo.buscarPorClasificacionCajaCompensacionPersona">
+		<query>
+            SELECT rts.rtsRequisito, req.reqDescripcion, rts.rtsEstado, rts.rtsTipoRequisito, rts.rtsTextoAyuda, rts.rtsId, 
+            	ich.ichIdentificadorDocumento, ich.ichFechaRecepcionDocumento
+            FROM RequisitoCajaClasificacion rts
+            JOIN Requisito req ON req.reqId = rts.rtsRequisito
+            LEFT JOIN ItemChequeo ich ON (
+                rts.rtsRequisito = ich.ichRequisito
+                AND ich.ichId IN (
+                    SELECT MAX(ich.ichId)
+                    FROM ItemChequeo ich
+                    JOIN Persona per ON ich.ichPersona = per.perId
+                    JOIN Solicitud sol ON ich.ichSolicitud = sol.solId
+                    WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+                    AND per.perTipoIdentificacion = :tipoIdentificacion
+                    AND sol.solResultadoProceso = 'APROBADA' 
+                    AND ich.ichIdentificadorDocumento is not null
+                    GROUP BY (ich.ichRequisito)
+                )
+            )
+            WHERE rts.rtsTipoTransaccion = :tipoTransaccion 
+            AND rts.rtsClasificacion = :clasificacion 
+            AND rts.rtsCajaCompensacion = :idCajaCompensacion
+            AND req.reqEstado &lt;&gt; 'INHABILITADO'
+            AND rts.rtsEstado IN ('OBLIGATORIO', 'OPCIONAL')
+            ORDER BY rts.rtsId
+        </query>
+	</named-native-query>
+
+    <named-native-query name="consultar.documento.requisito.persona" result-set-mapping="consultar.documento.requisito.persona.mapping">
+        <query>
+            SELECT ich.ichIdentificadorDocumento, req.reqId, req.reqDescripcion, tdr.tdrTipoDocumento
+            FROM ItemChequeo ich
+            JOIN Requisito req ON (ich.ichRequisito = req.reqId)
+            JOIN TipoDocumentoRequisito tdr ON (req.reqId = tdr.tdrRequisito)
+            JOIN (SELECT MAX(ich.ichId) AS id FROM ItemChequeo ich
+                JOIN Persona per ON (ich.ichPersona = per.perId)
+                JOIN Solicitud sol ON (ich.ichSolicitud = sol.solId)
+                WHERE sol.solResultadoProceso = 'APROBADA'
+                AND per.perTipoIdentificacion = :tipoIdentificacion
+                AND per.perNumeroIdentificacion = :numeroIdentificacion
+                AND ich.ichIdentificadorDocumento IS NOT NULL
+                GROUP BY ich.ichRequisito) item ON (ich.ichId = item.Id)
+        </query>
+    </named-native-query>
+    <sql-result-set-mapping name="consultar.documento.requisito.persona.mapping">
+        <constructor-result target-class="com.asopagos.dto.DocumentoRequisitoDTO">
+            <column name="ichIdentificadorDocumento"/>
+            <column name="reqId" class="java.lang.Long"/>
+            <column name="reqDescripcion"/>
+            <column name="tdrTipoDocumento"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+</entity-mappings>

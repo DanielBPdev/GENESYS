@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>pila</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+		
+	<artifactId>pila-service</artifactId>	
+	<packaging>war</packaging>
+	<name>Servicio de PILA </name>
+	<description>Aplicación Web que implementa los servicios de gestión de consola Pila y procesamiento manual de planillas</description>
+
+	<properties>
+		<configuracion.servidor>wildfly-swarm-pila</configuracion.servidor>
+		<fabric8.skip>false</fabric8.skip>
+	</properties>
+
+	<dependencies>		
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>pila-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>pila-persistence</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>archivos-pila-api</artifactId>
+			<version>${project.version}</version>
+			<exclusions>
+			 <exclusion>
+			  <groupId>com.heinsohn.lion.components.fileProcessing</groupId>
+                <artifactId>lion-fileProcessingHot</artifactId>	
+			 </exclusion>
+			 <exclusion>
+			  <groupId>com.heinsohn.lion.components.common</groupId>
+                <artifactId>lion-commonHot</artifactId>
+			 </exclusion>
+	            <exclusion>
+	            <groupId>com.heinsohn.lion.components.cache</groupId>
+                <artifactId>lion-cacheHot</artifactId>
+	            </exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency> 
+		
+ 
+	</dependencies>
+
+    <build>
+        <!-- Maven will append the version to the finalName (which is the name 
+        given to the generated war, and hence the context root) -->
+        <finalName>PilaService</finalName>
+        <plugins>
+           <plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+        </plugins>
+    </build>
+    
+   	<profiles>
+	</profiles>
+    
+</project>

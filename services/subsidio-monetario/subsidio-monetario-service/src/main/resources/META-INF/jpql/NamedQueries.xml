@@ -1,0 +1,2580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query
+		name="SubsidioMonetarioService.ParametrizacionEjecucionProgramada.ConsultarEjecucionProgramada">
+		<description>Consulta la ejecucion programada actual</description>
+		<query>
+			SELECT pep
+			FROM ParametrizacionEjecucionProgramada pep
+			WHERE pep.proceso IN ('EJECUTAR_LIQUIDACION_SUBSIDIO_MONETARIO_PROGRAMADO')
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.buscarTodas.parametrizacion">
+		<description>Busca todas las parametrizaciones</description>
+		<query>
+		    SELECT pls FROM ParametrizacionLiquidacionSubsidio pls
+		    WHERE (:anio IS NULL OR anioVigenciaParametrizacion = :anio)		    
+		    ORDER BY anioVigenciaParametrizacion DESC,idParametrizacionLiquidacionSubsidio DESC
+        </query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.buscarPorId.parametrizacion">
+		<description>Busca parametrizacion por id</description>
+		<query>
+		    SELECT pls FROM ParametrizacionLiquidacionSubsidio pls 
+		    where pls.idParametrizacionLiquidacionSubsidio = :idParametrizacionLiquidacionSubsidio
+        </query>
+	</named-query>
+
+	<named-query name="SubsidioMonetario.buscarPorId.condicion">
+		<description>Busca condicion por id</description>
+		<query>
+		    SELECT pcs FROM ParametrizacionCondicionesSubsidio pcs
+		    where pcs.idParametrizacionCondicionesSubsidio = :idParametrizacionCondicionesSubsidio
+        </query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.buscarPorNumeroRadicado.solicitud">
+		<description>Busca solicitud por número de radicado</description>
+		<query>
+			SELECT sls.idProcesoLiquidacionSubsidio FROM SolicitudLiquidacionSubsidio sls
+            WHERE sls.solicitudGlobal.numeroRadicacion = :numeroRadicado
+        </query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.buscarPorNumeroRadicado.solicitudLiquidacion">
+		<description>Busca solicitud de liquidación por número de radicado</description>
+		<query>
+			SELECT sls FROM SolicitudLiquidacionSubsidio sls
+			LEFT JOIN FETCH sls.solicitudGlobal sol 
+			WHERE sol.numeroRadicacion = :numeroRadicado
+        </query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.buscarSolicitudesLiquidacionSinCerrar.solicitudLiquidacion">
+		<description>Busca las solicitudes de liquidacion sin cerrar</description>
+		<query>
+			SELECT sls
+			FROM SolicitudLiquidacionSubsidio sls
+			JOIN FETCH sls.solicitudGlobal
+			WHERE (sls.estadoLiquidacion NOT IN (:estadoSolicitudLiquidacion)
+				AND sls.tipoLiquidacion = :tipoLiquidacion)
+				OR (sls.estadoLiquidacion NOT IN (:estadoSolicitudLiquidacionCerrada)
+				AND sls.tipoLiquidacion &lt;&gt; :tipoLiquidacion)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.buscarSolicitudesLiquidacionMasivaCerrada.solicitudLiquidacion">
+		<description>Busca las solicitudes de liquidacion masivas y cerradas</description>
+		<query>
+			SELECT sls
+			FROM SolicitudLiquidacionSubsidio sls
+			JOIN FETCH sls.solicitudGlobal
+			WHERE (sls.estadoLiquidacion IN (:estadoSolicitudLiquidacion)
+				AND sls.tipoLiquidacion IN :tipoLiquidacion)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.buscarSolicitudesLiquidacionFallecimientoSinCerrar.solicitudLiquidacion">
+		<description>Busca las solicitudes de liquidacion sin cerrar</description>
+		<query>
+			SELECT sls
+			FROM SolicitudLiquidacionSubsidio sls
+			JOIN FETCH sls.solicitudGlobal
+			WHERE sls.estadoLiquidacion NOT IN (:estadoSolicitudLiquidacion)
+			AND sls.tipoLiquidacion = :tipoLiquidacion  
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.cerrarSolicitudes.solicitudLiquidacion">
+		<description>Cerrar las solicitudes </description>
+		<query>
+			UPDATE SolicitudLiquidacionSubsidio sls
+			SET sls.estadoLiquidacion = :estadoSolicitudLiquidacion
+			WHERE sls.tipoEjecucionProceso = :tipoEjecucionProceso
+		</query>
+	</named-query>
+
+	<named-query name="SubsidioMonetario.buscarPorId.solicitud">
+		<description>Consultar solicitud por id del proceso de liquidacion </description>
+		<query>
+			SELECT sls FROM SolicitudLiquidacionSubsidio sls left join fetch sls.solicitudGlobal
+            WHERE sls.idProcesoLiquidacionSubsidio = :solicitudLiquidacion
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarPeriodos.periodo">
+		<description>Consultar lista de periodos a partir del periodo</description>
+		<query>
+			SELECT p
+			FROM Periodo p
+			WHERE p.fechaPeriodo = :periodo		
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarPeriodo.solicitudLiquidacion">
+		<description>Consultar fecha del periodo regular asociado a la solicitud de liquidación</description>
+		<query>
+			SELECT MAX(p.fechaPeriodo)
+			FROM PeriodoLiquidacion pl, Periodo p
+			WHERE pl.idPeriodo = p.idPeriodo
+			AND pl.idSolicitudLiquidacionSubsidio = :idSolicitudLiquidacion
+			AND pl.tipoPeriodo = 'REGULAR'
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarTotalSolicitudes.solicitudLiquidacion">
+		<description>Consultar el total de solicitudes de liquidacion</description>
+		<query>
+			SELECT COUNT(sls) 
+			FROM SolicitudLiquidacionSubsidio sls
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarUltimaSolicitud.solicitudLiquidacion">
+		<description>Consulta la última solicitud realizada</description>
+		<query>
+			SELECT sls
+			FROM SolicitudLiquidacionSubsidio sls
+			WHERE sls.idProcesoLiquidacionSubsidio = (
+				SELECT MAX(sls1.idProcesoLiquidacionSubsidio) 
+				FROM SolicitudLiquidacionSubsidio sls1
+				LEFT JOIN sls1.solicitudGlobal
+				WHERE sls1.tipoLiquidacion = :tipoLiquidacion 
+				AND solResultadoProceso = 'DISPERSADA'
+			)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarLiquidacionMasivaSinCerrar.solicitudLiquidacion">
+		<description>Consulta si hay liquidaciones masivas en proceso</description>
+		<query>
+			SELECT sls
+			FROM SolicitudLiquidacionSubsidio sls
+			WHERE sls.estadoLiquidacion NOT IN (:estadoProcesoLiquidacion) 
+			AND sls.tipoLiquidacion IN (:tipoLiquidacion)
+			ORDER BY sls.idProcesoLiquidacionSubsidio DESC 
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarBeneficiariosAfiliado.beneficiario">
+		<description>Consulta los beneficiarios de un afiliado</description>
+		<query>
+			SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				per.tipoIdentificacion,
+				per.numeroIdentificacion,
+				per.primerNombre,
+				per.segundoNombre,
+				per.primerApellido,
+				per.segundoApellido,
+				ben.tipoBeneficiario,
+				ben.grupoFamiliar.idGrupoFamiliar,
+				ben.estadoBeneficiarioAfiliado,
+				ben.idBeneficiario,
+				ben.afiliado.idAfiliado,
+				ben.idBeneficiarioDetalle,
+				roa.empleador.idEmpleador
+			)
+			FROM Beneficiario ben, RolAfiliado roa, Persona per, Afiliado afi
+			WHERE ben.afiliado.idAfiliado = afi.idAfiliado
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND per.idPersona = ben.persona.idPersona
+			AND roa.tipoAfiliado IN (:tipoAfiliado)			
+			AND (:idPersona IS NULL OR afi.persona.idPersona = (:idPersona))			
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarBeneficiariosXEmpleador.beneficiario">
+		<description>Consulta los beneficiarios de un afiliado</description>
+		<query>
+			SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				per.tipoIdentificacion,
+				per.numeroIdentificacion,
+				per.primerNombre,
+				per.segundoNombre,
+				per.primerApellido,
+				per.segundoApellido,
+				ben.tipoBeneficiario,
+				ben.grupoFamiliar.idGrupoFamiliar,
+				ben.estadoBeneficiarioAfiliado,
+				ben.idBeneficiario,
+				ben.afiliado.idAfiliado,
+				ben.idBeneficiarioDetalle,
+				roa.empleador.idEmpleador
+			)
+			FROM Beneficiario ben, RolAfiliado roa, Persona per, Afiliado afi
+			WHERE ben.afiliado.idAfiliado = afi.idAfiliado
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND per.idPersona = ben.persona.idPersona
+			AND roa.tipoAfiliado IN (:tipoAfiliado)
+			AND roa.empleador.idEmpleador IN (:listaEmpleadores)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarSolicitudesProgramadas.solicitudLiquidacion">
+		<description>Consulta ejecuciones programadas distintas a cerrada</description>
+		<query>
+			SELECT new com.asopagos.subsidiomonetario.dto.RespuestaGenericaDTO
+			(
+				sls.solicitudGlobal.idSolicitud,
+				sls.idProcesoLiquidacionSubsidio,
+				p.fechaPeriodo,
+				sls.solicitudGlobal.numeroRadicacion
+			)
+			FROM SolicitudLiquidacionSubsidio sls, PeriodoLiquidacion pl, Periodo p			
+			WHERE pl.idSolicitudLiquidacionSubsidio = sls.idProcesoLiquidacionSubsidio
+			AND pl.idPeriodo = p.idPeriodo 
+			AND sls.estadoLiquidacion NOT IN (:estadoProcesoLiquidacion) 
+			AND sls.tipoLiquidacion IN (:tipoLiquidacion)
+			AND sls.tipoEjecucionProceso IN (:tipoEjecucion)
+			ORDER BY sls.idProcesoLiquidacionSubsidio DESC
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.actualizarEstadoSolicitudNumRadicado.solicitudLiquidacion">
+		<description>Actualizar estado de solicitud liquidación</description>
+		<query>
+			UPDATE SolicitudLiquidacionSubsidio sls
+			SET sls.estadoLiquidacion = :nuevoEstado			
+			WHERE sls.solicitudGlobal.idSolicitud IN (
+				SELECT sol.idSolicitud 
+				FROM Solicitud sol 
+				WHERE sol.numeroRadicacion = :numeroRadicado
+			)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarArchivos.liquidacion">
+		<description>Consultar información de los identificadores de archivos</description>
+		<query>
+			SELECT als
+			FROM ArchivoLiquidacionSubsidio als, SolicitudLiquidacionSubsidio sls JOIN sls.solicitudGlobal sgl
+			WHERE als.idSolicitudLiquidacionSubsidio = sls.idProcesoLiquidacionSubsidio
+			AND sgl.numeroRadicacion = :numeroRadicacion			
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarArchivos.liquidacion.id">
+		<description>Consultar información de los identificadores de archivos por id</description>
+		<query>
+			SELECT als FROM ArchivoLiquidacionSubsidio als
+			WHERE als.idArchivoLiquidacionSubsidio = :idArchivoLiquidacionSubsidio
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarValorCuotaPeriodo.parametrizacionCondicionesSubsidio">
+		<description> Consulta el valor de la cuota en un periodo determinado </description>
+		<query>
+			SELECT pcs.valorCuotaAnualBase 
+			FROM ParametrizacionCondicionesSubsidio pcs
+			WHERE :periodo BETWEEN pcs.fechaPeriodoInicial AND pcs.fechaPeriodoFinal	
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarPeriodoRegular.radicacion">
+		<description> Consulta el periodo regular asociado a una liquidación por medio del número de radicación </description>
+		<query>
+			SELECT MAX(p.fechaPeriodo)
+			FROM PeriodoLiquidacion pl, Periodo p, SolicitudLiquidacionSubsidio sls
+			JOIN sls.solicitudGlobal sol
+			WHERE pl.idPeriodo = p.idPeriodo
+			AND pl.idSolicitudLiquidacionSubsidio = sls.idProcesoLiquidacionSubsidio
+			AND pl.tipoPeriodo = 'REGULAR'
+			AND sol.numeroRadicacion = :numeroRadicacion
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarValorCuotaAnualYAgraria.paramatrizacionCondicionesSubsidio">
+		<description> Consultar los valores de la cuota anual y agraria para un periodo determinado </description>
+		<query>
+			SELECT new com.asopagos.subsidiomonetario.dto.ValorPeriodoDTO(
+				pcs.valorCuotaAnualBase,
+				pcs.valorCuotaAnualAgraria
+			)
+			FROM ParametrizacionCondicionesSubsidio pcs
+			WHERE :periodo BETWEEN pcs.fechaPeriodoInicial AND pcs.fechaPeriodoFinal
+			ORDER BY pcs.idParametrizacionCondicionesSubsidio
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarPeriodoExiste.periodo">
+		<description>Consulta si un periodo existe en BD</description>
+		<query>
+			SELECT COUNT(p.idPeriodo)
+			FROM Periodo p
+			WHERE cast(p.fechaPeriodo as date) = :fechaPeriodo
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarIdPeriodoXFecha.periodo">
+		<description>Consultar el id de un periodo a partir de la fecha</description>
+		<query>
+			SELECT p.idPeriodo
+			FROM Periodo p
+			WHERE cast(p.fechaPeriodo as date) = :fechaPeriodo		
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarValorCuotaPeriodo.parametrizacionLiquidacionSubsidio">
+		<description> Consulta el valor del factor de discapacidad para un periodo dado </description>
+		<query>
+			SELECT pls.factorCuotaInvalidez 
+			FROM ParametrizacionLiquidacionSubsidio pls
+			WHERE :periodo BETWEEN pls.fechaPeriodoInicial AND pls.fechaPeriodoFinal
+			ORDER BY pls.idParametrizacionLiquidacionSubsidio DESC
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarValorCuotaAgrariaPeriodo.parametrizacionCondicionesSubsidio">
+		<description> Consulta el valor de la cuota en un periodo determinado </description>
+		<query>
+			SELECT pcs.valorCuotaAnualAgraria 
+			FROM ParametrizacionCondicionesSubsidio pcs
+			WHERE :periodo BETWEEN pcs.fechaPeriodoInicial AND pcs.fechaPeriodoFinal
+			ORDER BY pcs.idParametrizacionCondicionesSubsidio DESC	
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarHistorico.liquidacionMasiva">
+		<description> Consulta que permite obtener el histórico de las liquidaciones masivas dispersadas</description>
+		<query>
+			SELECT new com.asopagos.subsidiomonetario.dto.ResultadoHistoricoLiquidacionMasivaDTO(
+				sol.numeroRadicacion,
+				per.fechaPeriodo,
+				sls.fechaDispersion			
+			)
+			FROM SolicitudLiquidacionSubsidio sls
+			JOIN sls.solicitudGlobal sol, PeriodoLiquidacion pl, Periodo per
+			WHERE pl.idSolicitudLiquidacionSubsidio = sls.idProcesoLiquidacionSubsidio
+			AND pl.idPeriodo = per.idPeriodo 
+			AND pl.tipoPeriodo = com.asopagos.enumeraciones.subsidiomonetario.liquidacion.TipoPeriodoEnum.REGULAR
+			AND sol.resultadoProceso = com.asopagos.enumeraciones.afiliaciones.ResultadoProcesoEnum.DISPERSADA
+			AND sls.tipoLiquidacion = com.asopagos.enumeraciones.subsidiomonetario.liquidacion.TipoProcesoLiquidacionEnum.MASIVA
+			AND (:periodo IS NULL OR per.fechaPeriodo = :periodo)
+			AND sol.numeroRadicacion LIKE :numeroRadicacion
+			AND sls.fechaInicial BETWEEN :fechaInicio AND :fechaFin
+		</query>
+		<hint name="fechaInicio" value="sls.fechaInicial"></hint>
+		<hint name="numeroOperacion" value="sol.numeroRadicacion"></hint>
+		<hint name="periodo" value="per.fechaPeriodo"></hint>
+		<hint name="fecha" value="sls.fechaDispersion"></hint>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.cosultar.condicion.intervalo">
+		<description>Consulta que permite obtener la parametrización de condiciones para un periodo</description>
+		<query>
+		    SELECT pcs FROM ParametrizacionCondicionesSubsidio pcs
+		    WHERE pcs.fechaPeriodoInicial &lt;=:periodo AND pcs.fechaPeriodoFinal &gt;=:periodo
+		    ORDER BY idParametrizacionCondicionesSubsidio DESC
+        </query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.cosultar.liquidacion.intervalo">
+		<description>Consulta que permite obtener la parametrización de condiciones para un periodo</description>
+		<query>
+		    SELECT pls FROM ParametrizacionLiquidacionSubsidio pls
+		    WHERE pls.fechaPeriodoInicial &lt;=:periodo AND pls.fechaPeriodoFinal &gt;=:periodo
+		    ORDER BY idParametrizacionLiquidacionSubsidio DESC
+        </query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarIdsConjuntoValidaciones.conjuntoValidacionSubsidio">
+		<description></description>
+		<query>
+			SELECT cvs
+			FROM ConjuntoValidacionSubsidio cvs
+			WHERE cvs.conjuntoValidacion IN (:conjuntoValidaciones)	
+ 		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarIdConjuntoValidacionXNombre.conjuntoValidacionSubsidio">
+		<description></description>
+		<query>
+			SELECT cvs
+			FROM ConjuntoValidacionSubsidio cvs
+			WHERE cvs.conjuntoValidacion = :tipoValidacion	
+ 		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarDetalleTrabajadorFallecido.persona">
+		<description>Consulta para obtener el detalle del trabajador fallecido</description>
+		<query>
+		SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.PersonaFallecidaTrabajadorDTO(
+			per.idPersona,
+			per.tipoIdentificacion,
+			per.numeroIdentificacion,
+			per.primerNombre,
+			per.segundoNombre,
+			per.primerApellido,
+			per.segundoApellido,
+			pde.fechaNacimiento,
+			pde.fechaDefuncion,
+			pde.fallecido,
+			roa.estadoAfiliado,
+			roa.motivoDesafiliacion,
+			sol.canalRecepcion,
+			sol.fechaRadicacion,
+			sol.tipoTransaccion	
+		)
+		FROM Persona per, Afiliado afi, RolAfiliado roa, PersonaDetalle pde, 
+		SolicitudNovedadPersona snp, SolicitudNovedad sn, Solicitud sol
+		WHERE afi.persona.idPersona = per.idPersona
+		AND per.idPersona = pde.idPersona
+		AND per.idPersona = snp.idPersona
+		AND snp.idSolicitudNovedad = sn.idSolicitudNovedad
+		AND afi.idAfiliado = roa.afiliado.idAfiliado
+		AND sn.solicitudGlobal.idSolicitud = sol.idSolicitud
+		AND roa.idRolAfiliado = (
+			SELECT MAX(roa.idRolAfiliado)
+			FROM Persona per, Afiliado afi, RolAfiliado roa
+			WHERE afi.persona.idPersona = per.idPersona
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND roa.tipoAfiliado = com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.TRABAJADOR_DEPENDIENTE
+			AND per.idPersona = :idPersona )
+		AND sol.idSolicitud = (
+			SELECT MAX(sol.idSolicitud)
+			FROM Persona per, SolicitudNovedadPersona snp, SolicitudNovedad sn, Solicitud sol
+			WHERE per.idPersona = snp.idPersona
+			AND snp.idSolicitudNovedad = sn.idSolicitudNovedad
+			AND sn.solicitudGlobal.idSolicitud = sol.idSolicitud
+			AND sol.canalRecepcion IN (
+				com.asopagos.enumeraciones.core.CanalRecepcionEnum.PRESENCIAL,
+				com.asopagos.enumeraciones.core.CanalRecepcionEnum.ENTIDAD_EXTERNA )
+			AND sol.resultadoProceso = com.asopagos.enumeraciones.afiliaciones.ResultadoProcesoEnum.APROBADA
+			AND per.idPersona = :idPersona 
+		)	
+ 		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarDetalleTrabajador.persona">
+		<description>Consulta para obtener el detalle del trabajador fallecido</description>
+		<query>
+		SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.PersonaFallecidaTrabajadorDTO(
+			per.idPersona,
+			per.tipoIdentificacion,
+			per.numeroIdentificacion,
+			per.primerNombre,
+			per.segundoNombre,
+			per.primerApellido,
+			per.segundoApellido,
+			pde.fechaNacimiento,
+			pde.fechaDefuncion,
+			pde.fallecido,
+			roa.estadoAfiliado,
+			roa.motivoDesafiliacion,
+			sol.canalRecepcion,
+			sol.fechaRadicacion,
+			sol.tipoTransaccion
+		)
+		FROM Persona per, Afiliado afi, RolAfiliado roa, PersonaDetalle pde, 
+		SolicitudNovedadPersona snp, SolicitudNovedad sn, Solicitud sol
+		WHERE afi.persona.idPersona = per.idPersona
+		AND per.idPersona = pde.idPersona
+		AND per.idPersona = snp.idPersona
+		AND snp.idSolicitudNovedad = sn.idSolicitudNovedad
+		AND afi.idAfiliado = roa.afiliado.idAfiliado
+		AND sn.solicitudGlobal.idSolicitud = sol.idSolicitud
+		AND roa.idRolAfiliado = (
+			SELECT MAX(roa.idRolAfiliado)
+			FROM Persona per, Afiliado afi, RolAfiliado roa
+			WHERE afi.persona.idPersona = per.idPersona
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND roa.tipoAfiliado = com.asopagos.enumeraciones.personas.TipoAfiliadoEnum.TRABAJADOR_DEPENDIENTE
+			AND per.idPersona = :idPersona )
+		AND sol.idSolicitud = (
+			SELECT MAX(sol.idSolicitud)
+			FROM Persona per, SolicitudNovedadPersona snp, SolicitudNovedad sn, Solicitud sol
+			WHERE per.idPersona = snp.idPersona
+			AND snp.idSolicitudNovedad = sn.idSolicitudNovedad
+			AND sn.solicitudGlobal.idSolicitud = sol.idSolicitud
+			AND sol.canalRecepcion IN (
+				com.asopagos.enumeraciones.core.CanalRecepcionEnum.PRESENCIAL,
+				com.asopagos.enumeraciones.core.CanalRecepcionEnum.ENTIDAD_EXTERNA )
+			AND sol.resultadoProceso = com.asopagos.enumeraciones.afiliaciones.ResultadoProcesoEnum.APROBADA
+			AND per.idPersona = :idPersona 
+		)	
+ 		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarBeneficiariosAfiliadoDistinct.beneficiario">
+		<description>Consulta los beneficiarios de un afiliado, sin empleador, esta consulta arroja los resultados
+		que se muestran en pantalla para seleccion</description>
+		<query>
+			SELECT DISTINCT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				per.tipoIdentificacion,
+				per.numeroIdentificacion,
+				per.primerNombre,
+				per.segundoNombre,
+				per.primerApellido,
+				per.segundoApellido,
+				ben.tipoBeneficiario,
+				ben.grupoFamiliar.numero,
+				ben.estadoBeneficiarioAfiliado,
+				ben.idBeneficiario,
+				ben.afiliado.idAfiliado,
+				ben.idBeneficiarioDetalle,
+				pde.fechaDefuncion				
+			)
+			FROM Beneficiario ben, RolAfiliado roa, Persona per, Afiliado afi, PersonaDetalle pde
+			WHERE ben.afiliado.idAfiliado = afi.idAfiliado
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND per.idPersona = ben.persona.idPersona
+			AND roa.tipoAfiliado IN (:tipoAfiliado)			
+			AND (:idPersona IS NULL OR afi.persona.idPersona = (:idPersona))
+			AND pde.idPersona = per.idPersona
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarBeneficiariosAfiliadoIds.beneficiario">
+		<description>Consultar los id's asociados a los beneficiarios seleccionados en pantalla</description>
+		<query>
+			SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				ben.grupoFamiliar.idGrupoFamiliar,
+				ben.idBeneficiario,
+				ben.afiliado.idAfiliado,
+				ben.idBeneficiarioDetalle,
+				roa.empleador.idEmpleador
+			)
+			FROM Beneficiario ben, RolAfiliado roa, Persona per, Afiliado afi
+			WHERE afi.idAfiliado = ben.afiliado.idAfiliado
+			AND per.idPersona = afi.persona.idPersona
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND roa.tipoAfiliado IN (:tipoAfiliado)		
+			AND per.idPersona IN (:listaPersonas)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarBeneficiariosAfiliadoIdsXEmpleador.beneficiario">
+		<description>Consultar los id's asociados a los beneficiarios de las empresas seleccionadas</description>
+		<query>
+			SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				ben.grupoFamiliar.idGrupoFamiliar,
+				ben.idBeneficiario,
+				ben.afiliado.idAfiliado,
+				ben.idBeneficiarioDetalle,
+				roa.empleador.idEmpleador
+			)
+			FROM Beneficiario ben, RolAfiliado roa, Persona per, Afiliado afi
+			WHERE afi.idAfiliado = ben.afiliado.idAfiliado
+			AND per.idPersona = afi.persona.idPersona
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND roa.tipoAfiliado IN (:tipoAfiliado)		
+			AND roa.empleador.idEmpleador IN (:listaEmpleadores)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarBeneficiariosAfiliadoIdsTodos.beneficiario">
+		<description>Consultar los id's asociados a todos los beneficiarios del sistema</description>
+		<query>
+			SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				ben.grupoFamiliar.idGrupoFamiliar,
+				ben.idBeneficiario,
+				ben.afiliado.idAfiliado,
+				ben.idBeneficiarioDetalle,
+				roa.empleador.idEmpleador
+			)
+			FROM Beneficiario ben, RolAfiliado roa, Persona per, Afiliado afi
+			WHERE afi.idAfiliado = ben.afiliado.idAfiliado
+			AND per.idPersona = afi.persona.idPersona
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND roa.tipoAfiliado IN (:tipoAfiliado)		
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarEmpresasAfiliado.rolAfiliado">
+		<description>Consultar los id's asociados a todos los beneficiarios del sistema</description>
+		<query>
+			SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				afi.idAfiliado,
+				roa.empleador.idEmpleador, 
+				ben.idBeneficiarioDetalle
+			)
+			FROM RolAfiliado roa, Persona per, Afiliado afi, Beneficiario ben
+			WHERE per.idPersona = afi.persona.idPersona
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND afi.idAfiliado = ben.afiliado.idAfiliado
+			AND roa.tipoAfiliado IN (:tipoAfiliado)					
+			AND ben.idBeneficiario IN (:listaBeneficiarios)
+			AND roa.idRolAfiliado IN (:listaRoaId)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarEmpresasAfiliado.roa">
+		<description>Consultar los id's asociados a todos los beneficiarios del sistema</description>
+		<query>
+			SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				afi.idAfiliado,
+				roa.empleador.idEmpleador, 
+				ben.idBeneficiarioDetalle
+			)
+			FROM RolAfiliado roa, Persona per, Afiliado afi, Beneficiario ben
+			WHERE per.idPersona = afi.persona.idPersona
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND afi.idAfiliado = ben.afiliado.idAfiliado
+			AND roa.tipoAfiliado IN (:tipoAfiliado)			
+			AND roa.idRolAfiliado IN (:listaRoaId)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarEmpresasAfiliado.ben">
+		<description>Consultar los id's asociados a todos los beneficiarios del sistema</description>
+		<query>
+			SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				afi.idAfiliado,
+				roa.empleador.idEmpleador, 
+				ben.idBeneficiarioDetalle
+			)
+			FROM RolAfiliado roa, Persona per, Afiliado afi, Beneficiario ben
+			WHERE per.idPersona = afi.persona.idPersona
+			AND afi.idAfiliado = roa.afiliado.idAfiliado
+			AND afi.idAfiliado = ben.afiliado.idAfiliado
+			AND roa.tipoAfiliado IN (:tipoAfiliado)					
+			AND ben.idBeneficiario IN (:listaBeneficiarios)			
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultar.empleadores.por.persona.trabajador">
+		<description>Consultar Empleadores por id de persona trabajador</description>
+		<query>
+			SELECT new com.asopagos.dto.RolAfiliadoDTO
+			(
+				roa
+			)
+			FROM RolAfiliado roa
+			WHERE roa.afiliado.persona.idPersona =:idPersona	
+			  AND roa.empleador IS NOT NULL		
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarIdAfiliado.afiliado">
+		<description></description>
+		<query>
+			SELECT afi.idAfiliado
+			FROM Afiliado afi
+			WHERE afi.persona.idPersona = :idPersona
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarNivelLiquidacionEspecifica.personaLiquidacionEspecifica">
+		<description>Consultar el nivel de una liquidacion especifica</description>
+		<query>
+			SELECT new com.asopagos.dto.subsidiomonetario.liquidacion.NivelLiquidacionEspecificaDTO
+			(
+				ple.idEmpleador,
+				ple.idAfiliadoPrincipal,
+				CASE WHEN ple.idAfiliadoPrincipal IS NULL THEN 'EMPRESA' ELSE 'PERSONA' END
+			)
+			FROM PersonaLiquidacionEspecifica ple
+			WHERE ple.idSolicitudLiquidacionSubsidio = :idSolicitudLiquidacion
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.cosultar.cajasCompensacion">
+		<description>Consulta que permite la información de las cajas de compensación</description>
+		<query>
+		    SELECT ccf FROM CajaCompensacion ccf
+        </query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarPersonasLiquidacionEspecifica.personas">
+		<description>Consulta las personas asociadas a una liquidacion especifica</description>
+		<query>
+			SELECT DISTINCT new com.asopagos.dto.PersonaDTO(per)
+			FROM PersonaLiquidacionEspecifica ple, Persona per, Afiliado afi
+			INNER JOIN per.ubicacionPrincipal ubi
+            WHERE ple.idAfiliadoPrincipal = afi.idAfiliado
+            AND afi.persona.idPersona = per.idPersona 
+            AND ple.idSolicitudLiquidacionSubsidio = :idProcesoLiquidacionSubsidio
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarEmpleadoresLiquidacionEspecifica.empleadores">
+		<query>
+    		SELECT empl 
+    		FROM Empleador empl, PersonaLiquidacionEspecifica ple
+    		INNER JOIN FETCH empl.empresa e
+    		INNER JOIN FETCH e.persona p
+    		LEFT JOIN FETCH p.ubicacionPrincipal u
+    		LEFT JOIN FETCH e.codigoCIIU c
+          	WHERE ple.idEmpleador = empl.idEmpleador
+          	AND ple.idSolicitudLiquidacionSubsidio = :idProcesoLiquidacionSubsidio
+     	</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarPeriodosLiquidacionEspecifica.periodoLiquidacion">
+		<description> Consultar los periodos de una liquidacion especifica a partir del número de radicado </description>
+		<query>
+			SELECT per
+			FROM Periodo per, PeriodoLiquidacion pli
+			WHERE pli.idPeriodo = per.idPeriodo
+			AND pli.idSolicitudLiquidacionSubsidio = :idProcesoLiquidacionSubsidio
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarCondicionesLiquidacionReconocimiento.aplicacionValidacionSubsidio">
+		<description>Consultar las condiciones de subsidio por reconocimiento</description>
+		<query>
+			SELECT avs
+			FROM AplicacionValidacionSubsidio avs
+			WHERE avs.idSolicitudLiquidacionSubsidio = :idProcesoLiquidacionSubsidio
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarCondicionesEspecialesLiqAjuste.parametrizacionSubsidioAjuste">
+		<description></description>
+		<query>
+			SELECT new com.asopagos.subsidiomonetario.dto.ValorPeriodoDTO (
+				per.fechaPeriodo, 
+				pcs.valorCuotaAnualBase, 
+				pcs.valorCuotaAnualAgraria, 
+				psa.valorCuotaAjuste, 
+				psa.valorCuotaAgrariaAjuste 
+			)
+			FROM PeriodoLiquidacion pel, SolicitudLiquidacionSubsidio sls, 
+			ParametrizacionSubsidioAjuste psa, ParametrizacionCondicionesSubsidio pcs,
+			Periodo per
+			WHERE pel.idSolicitudLiquidacionSubsidio = sls.idProcesoLiquidacionSubsidio
+			AND psa.idPeriodoLiquidacion = pel.idPeriodoLiquidacion
+			AND pel.idPeriodo = per.idPeriodo
+			AND pel.idSolicitudLiquidacionSubsidio = :idProcesoLiquidacionSubsidio
+			AND pcs.idParametrizacionCondicionesSubsidio = :idParametrizacionCondicionesSubsidio
+		</query>
+	</named-query>
+	<named-native-query
+		name="SubsidioMonetario.consultarIdParametrizacionCondicion">
+		<description>Constante que permite obtener los beneficiarios en un proceso de liquidación por defunción de beneficiario</description>
+		<query>
+			select top 1 pcsId from ParametrizacionCondicionesSubsidio
+			order by pcsId desc
+		</query>
+	</named-native-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarEstadosEmpleador.estadoCondicionValidacionSubsidio">
+		<description>Consultar los estados del empleador</description>
+		<query>
+			SELECT ecv
+			FROM EstadoCondicionValidacionSubsidio ecv
+			WHERE ecv.idAplicacionValidacionSubsidio = :idAplicacionValidacionSubsidio
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultar.validaciones.tipoProceso">
+		<description>Consultar las validaciones relacionadas al tipo de proceso parametrizado</description>
+		<query>
+			SELECT cvs.conjuntoValidacion FROM ConjuntoValidacionSubsidio cvs
+			WHERE cvs.tipoProceso = :tipoProceso
+			ORDER BY idConjuntoValidacionSubsidio
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultar.identificador.conjuntoValidacion">
+		<description>Consultar el identificador del conjunto validación parametrizado</description>
+		<query>
+			SELECT cvs.idConjuntoValidacionSubsidio FROM ConjuntoValidacionSubsidio cvs
+			WHERE cvs.conjuntoValidacion = :validacion
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarFecha.ultimoCorteAportes.liquidacionMasiva">
+		<description>Consulta que permite obtener la fecha de corte de aportes para la última liquidación masiva ejecutada</description>
+		<query>
+			SELECT MAX(sls.fechaCorteAportes) 
+			FROM SolicitudLiquidacionSubsidio sls
+			INNER JOIN sls.solicitudGlobal sol
+			WHERE sls.fechaInicial &lt; :fechaInicialLiquidacion
+			AND sls.tipoLiquidacion = com.asopagos.enumeraciones.subsidiomonetario.liquidacion.TipoProcesoLiquidacionEnum.MASIVA
+			AND sls.estadoLiquidacion = com.asopagos.enumeraciones.subsidiomonetario.liquidacion.EstadoProcesoLiquidacionEnum.CERRADA
+			AND sol.resultadoProceso = com.asopagos.enumeraciones.afiliaciones.ResultadoProcesoEnum.DISPERSADA
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarSolicitudLiquidacion.ultima.liquidacionMasiva">
+		<description>Consulta que permite obtener la información de la última liquidación masiva</description>
+		<query>
+			SELECT slsub FROM SolicitudLiquidacionSubsidio slsub
+			WHERE slsub.fechaInicial = (SELECT MAX(sls.fechaInicial) FROM SolicitudLiquidacionSubsidio sls
+			WHERE sls.tipoLiquidacion = com.asopagos.enumeraciones.subsidiomonetario.liquidacion.TipoProcesoLiquidacionEnum.MASIVA)
+			AND slsub.tipoLiquidacion = com.asopagos.enumeraciones.subsidiomonetario.liquidacion.TipoProcesoLiquidacionEnum.MASIVA
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultarBeneficiarios.asociadoAfiliado.personaLiquidacionEspecifica">
+		<description>Consulta los beneficiarios de un afiliado, sin empleador, esta consulta arroja los resultados
+		que se muestran en pantalla para seleccion. Los beneficiarios son los asociados a las condiciones realizadas en la liquidacion</description>
+		<query>
+			SELECT DISTINCT new com.asopagos.dto.subsidiomonetario.liquidacion.BeneficiariosAfiliadoDTO
+			(
+				per.tipoIdentificacion,
+				per.numeroIdentificacion,
+				per.primerNombre,
+				per.segundoNombre,
+				per.primerApellido,
+				per.segundoApellido,
+				ben.tipoBeneficiario,
+				ben.grupoFamiliar.numero,
+				ben.estadoBeneficiarioAfiliado,
+				ben.idBeneficiario,
+				ben.afiliado.idAfiliado,
+				ben.idBeneficiarioDetalle,
+				pde.fechaDefuncion				
+			)
+			FROM SolicitudLiquidacionSubsidio solLiqSub ,PersonaLiquidacionEspecifica perLiqEsp, 
+				 Beneficiario ben, Persona per, Afiliado afi, PersonaDetalle pde
+			WHERE SOLLIQSUB.solicitudGlobal.idSolicitud = :idSolicituGlobal
+			AND perLiqEsp.idSolicitudLiquidacionSubsidio = solLiqSub.idProcesoLiquidacionSubsidio 
+			AND perLiqEsp.idBeneficiarioDetalle = ben.idBeneficiarioDetalle
+			AND ben.afiliado.idAfiliado = afi.idAfiliado
+			AND per.idPersona = ben.persona.idPersona
+			AND afi.persona.idPersona = (:idPersona)
+			AND pde.idPersona = per.idPersona
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.vista360.empleador.liquidacion.exportar">
+		<description>consulta el identificador y el nombre del sitio de pago</description>
+		<query>
+			SELECT new com.asopagos.subsidiomonetario.dto.RegistroLiquidacionSubsidioDTO(
+				traba.tipoIdentificacion, 
+				traba.numeroIdentificacion, 
+				traba.razonSocial,
+				benef.tipoIdentificacion, 
+				benef.numeroIdentificacion, 
+				benef.razonSocial,
+				admin.tipoIdentificacion, 
+				admin.numeroIdentificacion, 
+				admin.razonSocial,
+				sls.fechaInicial,
+				sls.fechaDispersion,
+				cas.medioDePagoTransaccion,
+				SUM(dsa.valorSubsidioMonetario), 
+				SUM(dsa.valorDescuento), 
+				SUM(dsa.valorOriginalAbonado),
+				sol.numeroRadicacion)
+			FROM CuentaAdministradorSubsidio cas,
+				AdministradorSubsidio asu,
+				Persona admin,
+				DetalleSubsidioAsignado dsa,
+				BeneficiarioDetalle bed,
+				PersonaDetalle ped,
+				Persona benef,
+				Afiliado afi,
+				Persona traba,
+				Empleador emp,
+				Empresa empre,
+				Persona emple,
+				SolicitudLiquidacionSubsidio sls,
+				Solicitud sol,
+				PeriodoLiquidacion pel,
+				Periodo pri
+			WHERE 
+				cas.idAdministradorSubsidio = asu.idAdministradorSubsidio
+				AND asu.idPersona = admin.idPersona
+				AND cas.idCuentaAdministradorSubsidio = dsa.idCuentaAdministradorSubsidio
+				AND bed.idBeneficiarioDetalle = dsa.idBeneficiarioDetalle
+				AND ped.idPersonaDetalle = bed.idPersonaDetalle
+				AND ped.idPersona = benef.idPersona
+				AND dsa.idAfiliadoPrincipal = afi.idAfiliado
+				AND afi.persona = traba.idPersona
+				AND emp.idEmpleador = dsa.idEmpleador
+				AND empre.idEmpresa = emp.empresa
+				AND emple.idPersona = empre.persona
+				AND sls.idProcesoLiquidacionSubsidio = dsa.idSolicitudLiquidacionSubsidio
+				AND sol.idSolicitud = sls.solicitudGlobal
+				AND pel.idSolicitudLiquidacionSubsidio = sls.idProcesoLiquidacionSubsidio
+				AND pri.idPeriodo = pel.idPeriodo
+				
+				AND dsa.estado = 'DERECHO_ASIGNADO' 
+				AND cas.estadoLiquidacionSubsidio = 'GENERADO'
+				AND pel.tipoPeriodo = 'REGULAR'
+				AND (:numeroRadicacion IS NULL OR sol.numeroRadicacion = :numeroRadicacion)
+				AND emple.tipoIdentificacion = :tipoIdentificacion
+				AND emple.numeroIdentificacion = :numeroIdentificacion
+				AND (:fechaInicio IS NULL OR sls.fechaInicial &gt;= :fechaInicio)
+				AND (:fechaFin IS NULL OR sls.fechaInicial &lt;= :fechaFin)
+				AND (:periodo IS NULL OR pri.fechaPeriodo in (:periodo))
+			GROUP BY 
+				traba.tipoIdentificacion, traba.numeroIdentificacion, traba.razonSocial,
+				benef.tipoIdentificacion, benef.numeroIdentificacion, benef.razonSocial,
+				admin.tipoIdentificacion, admin.numeroIdentificacion, admin.razonSocial,
+				sls.fechaInicial, sls.fechaDispersion, cas.medioDePagoTransaccion,sol.numeroRadicacion
+			ORDER BY 				
+				traba.tipoIdentificacion, traba.numeroIdentificacion, traba.razonSocial,
+				benef.tipoIdentificacion, benef.numeroIdentificacion, benef.razonSocial,
+				admin.tipoIdentificacion, admin.numeroIdentificacion, admin.razonSocial
+		</query>
+	</named-query>
+
+	<named-query name="SubsidioMonetario.buscarTodas.condicion">
+		<description>Busca todas las condiciones</description>
+		<query>
+		    SELECT pcs FROM ParametrizacionCondicionesSubsidio pcs		     
+		    WHERE (:anio IS NULL OR anioVigenciaParametrizacion = :anio)
+		    ORDER BY anioVigenciaParametrizacion DESC,idParametrizacionCondicionesSubsidio DESC
+        </query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultar.anios.condicion.parametrizados.subsidio">
+		<description>Consulta que se obtiene los anios parametrizados en condiciones de subsidio monetario</description>
+		<query>
+			SELECT DISTINCT anioVigenciaParametrizacion
+			FROM ParametrizacionCondicionesSubsidio
+			ORDER BY anioVigenciaParametrizacion
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.consultar.anios.concepto.parametrizados.subsidio">
+		<description>Consulta que se obtiene los anios parametrizados en condiciones de subsidio monetario</description>
+		<query>
+			SELECT DISTINCT anioVigenciaParametrizacion
+			FROM ParametrizacionLiquidacionSubsidio
+			ORDER BY anioVigenciaParametrizacion
+		</query>
+	</named-query>
+
+	<named-query name="SubsidioMonetario.consultar.cuenta.ccf">
+		<description>Consulta que obtiene datos de la cuenta de ccf</description>
+		<query>
+			SELECT ccc
+			FROM CuentaCCF ccc			
+		</query>
+	</named-query>
+
+	<named-query name="SubsidioMonetario.eliminar.cuenta.ccf">
+		<description>Eliminar todos los registros de la tabla</description>
+		<query>
+			DELETE FROM CuentaCCF			
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.eliminar.registro.aplicacionValidacionSubsidio.por.id">
+		<description>Consulta que se encarga de eliminar el registro de la tabla AplicacionValidacionSubsidio por medio del id</description>
+		<query>
+			DELETE FROM AplicacionValidacionSubsidio  WHERE avsId IN (:idAplicacionSubsidio)
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.eliminar.cargueBloqueoCuotaMonetaria.por.id">
+		<description>Eliminar todos los registros de la tabla</description>
+		<query>
+			DELETE FROM CargueBloqueoCuotaMonetaria 
+			WHERE idCargueBloqueoCuotaMonetaria = :idCargueBloqueoCuotaMonetaria		
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.radicar.bloqueoCM.beneficiarios">
+		<description>Radica carga de bloqueo cuota monetaria</description>
+		<query>
+			UPDATE CargueBloqueoCuotaMonetaria 
+			SET radicado = true
+			WHERE idCargueBloqueoCuotaMonetaria = :idCargueBloqueoCuotaMonetaria
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.eliminar.bloqueoBeneficiarioCuotaMonetaria.por.id.cargue">
+		<description>Eliminar todos los registros de la tabla que tengan relacion con </description>
+		<query>
+			DELETE FROM BloqueoBeneficiarioCuotaMonetaria			
+			WHERE cargueBloqueoCuotaMonetaria.idCargueBloqueoCuotaMonetaria = :idCargueBloqueoCuotaMonetaria
+		</query>
+	</named-query>
+
+	<named-query
+		name="SubsidioMonetario.desbloquear.cuota.monetaria.beneficiarios">
+		<description>Radica carga de bloqueo cuota monetaria</description>
+		<query>
+			SELECT bbc
+			FROM BloqueoBeneficiarioCuotaMonetaria bbc			
+			WHERE idBloqueoBeneficiarioCuotaMonetaria IN (:idsCargueBloqueoCuotaMonetaria)
+		</query>
+	</named-query>
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query
+		name="SubsidioMonetario.consultarHistorico.liquidacionEspecifica">
+		<description>Consulta que permite obtener el hístorico de las liquidaciones específicas dispersadas o rechazadas</description>
+		<query>
+			SELECT Solicitud.solNumeroRadicacion, 
+			SolicitudesIntervalo.periodo, 
+			SolicitudLiquidacionSubsidio.slsFechaInicio FROM SolicitudLiquidacionSubsidio 
+			INNER JOIN (SELECT SolicitudLiquidacionSubsidio.slsId AS identificadorSolicitudLiquidacion, 
+			MAX(Periodo.priPeriodo) AS periodo FROM Periodo 
+			INNER JOIN PeriodoLiquidacion ON Periodo.priId = PeriodoLiquidacion.pelPeriodo 
+			INNER JOIN SolicitudLiquidacionSubsidio ON PeriodoLiquidacion.pelSolicitudLiquidacionSubsidio = SolicitudLiquidacionSubsidio.slsId 
+			WHERE (:periodo IS NULL OR CAST(Periodo.priPeriodo AS DATE) = (CAST(:periodo AS DATE))) 
+			AND SolicitudLiquidacionSubsidio.slsFechaInicio BETWEEN :fechaInicio AND :fechaFin 
+			GROUP BY SolicitudLiquidacionSubsidio.slsId) AS SolicitudesIntervalo 
+			ON SolicitudLiquidacionSubsidio.slsId = SolicitudesIntervalo.identificadorSolicitudLiquidacion 
+			INNER JOIN Solicitud ON SolicitudLiquidacionSubsidio.slsSolicitudGlobal = Solicitud.solId 
+			WHERE SolicitudLiquidacionSubsidio.slsTipoLiquidacion = :tipoLiquidacion 
+			AND (:tipoLiquidacionEspecifica IS NULL OR SolicitudLiquidacionSubsidio.slsTipoLiquidacionEspecifica = :tipoLiquidacionEspecifica) 
+			AND Solicitud.solNumeroRadicacion LIKE :numeroRadicacion 
+			AND Solicitud.solResultadoProceso IN ('DISPERSADA','RECHAZADA_PRIMER_NIVEL','CANCELADA')
+		</query>
+		<hint name="numeroOperacion"
+			value="Solicitud.solNumeroRadicacion"></hint>
+		<hint name="periodo" value="SolicitudesIntervalo.periodo"></hint>
+		<hint name="fecha"
+			value="SolicitudLiquidacionSubsidio.slsFechaInicio"></hint>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.historico.liquidacionesFallecimiento">
+		<description>Consulta que permite obtener la información histórica de las liquidaciones por fallecimiento</description>
+		<query>
+		SELECT Solicitud.solNumeroRadicacion, 
+		SolicitudLiquidacionSubsidio.slsTipoLiquidacionEspecifica, 
+		FiltroAfiliado.tipoIdentificacionAfiliado, 
+		FiltroAfiliado.numeroIdentificacionAfiliado,
+		FiltroAfiliado.nombreAfiliado, 
+		FiltroAfiliado.fechaFallecimientoAfiliado, 
+		TotalesDispersados.montoDispersado, 
+		Solicitud.solFechaRadicacion, 
+		SolicitudLiquidacionSubsidio.slsFechaDispersion,
+		Solicitud.solResultadoProceso 
+		 FROM SolicitudLiquidacionSubsidio 
+		INNER JOIN (SELECT TotalDispersado.identificadorSolicitud AS identificadorSolicitud, 
+						(TotalDispersado.montoDispersado + TotalProgramado.montoDispersado) AS montoDispersado 
+					FROM (SELECT SolicitudLiquidacionSubsidio.slsId AS identificadorSolicitud, 
+							COALESCE(SUM(DetalleSubsidioAsignado.dsaValorOriginalAbonado), 0) AS montoDispersado FROM SolicitudLiquidacionSubsidio 
+							INNER JOIN (SELECT SolicitudLiquidacionSubsidio.slsId AS identificadorSolicitudLiquidacion, 
+										MAX(Periodo.priPeriodo) AS periodo 
+										FROM Periodo 
+										INNER JOIN PeriodoLiquidacion ON Periodo.priId = PeriodoLiquidacion.pelPeriodo 
+										INNER JOIN SolicitudLiquidacionSubsidio ON PeriodoLiquidacion.pelSolicitudLiquidacionSubsidio = SolicitudLiquidacionSubsidio.slsId 
+										WHERE SolicitudLiquidacionSubsidio.slsFechaInicio BETWEEN :fechaInicio AND :fechaFin
+										GROUP BY SolicitudLiquidacionSubsidio.slsId
+										) AS SolicitudesIntervalo ON SolicitudLiquidacionSubsidio.slsId = SolicitudesIntervalo.identificadorSolicitudLiquidacion 
+							INNER JOIN Solicitud ON SolicitudLiquidacionSubsidio.slsSolicitudGlobal = Solicitud.solId 
+							LEFT JOIN DetalleSubsidioAsignado ON SolicitudLiquidacionSubsidio.slsId = DetalleSubsidioAsignado.dsaSolicitudLiquidacionSubsidio 
+							WHERE SolicitudLiquidacionSubsidio.slsTipoLiquidacion = 'SUBSUDIO_DE_DEFUNCION' 
+							AND Solicitud.solNumeroRadicacion LIKE :numeroRadicacion 
+							GROUP BY SolicitudLiquidacionSubsidio.slsId
+						  ) AS TotalDispersado,
+						  (SELECT SolicitudLiquidacionSubsidio.slsId AS identificadorSolicitud, 
+							COALESCE(SUM(DetalleSubsidioAsignadoProgramado.dprValorOriginalAbonado), 0) AS montoDispersado FROM SolicitudLiquidacionSubsidio 
+							INNER JOIN (SELECT SolicitudLiquidacionSubsidio.slsId AS identificadorSolicitudLiquidacion, 
+										MAX(Periodo.priPeriodo) AS periodo FROM Periodo 
+										INNER JOIN PeriodoLiquidacion ON Periodo.priId = PeriodoLiquidacion.pelPeriodo 
+										INNER JOIN SolicitudLiquidacionSubsidio ON PeriodoLiquidacion.pelSolicitudLiquidacionSubsidio = SolicitudLiquidacionSubsidio.slsId 
+										WHERE SolicitudLiquidacionSubsidio.slsFechaInicio BETWEEN :fechaInicio AND :fechaFin
+										GROUP BY SolicitudLiquidacionSubsidio.slsId
+										) AS SolicitudesIntervalo ON SolicitudLiquidacionSubsidio.slsId = SolicitudesIntervalo.identificadorSolicitudLiquidacion 
+							INNER JOIN Solicitud ON SolicitudLiquidacionSubsidio.slsSolicitudGlobal = Solicitud.solId 
+							LEFT JOIN DetalleSubsidioAsignadoProgramado ON SolicitudLiquidacionSubsidio.slsId = DetalleSubsidioAsignadoProgramado.dprSolicitudLiquidacionSubsidio 
+							WHERE SolicitudLiquidacionSubsidio.slsTipoLiquidacion = 'SUBSUDIO_DE_DEFUNCION' 
+							AND Solicitud.solNumeroRadicacion LIKE :numeroRadicacion 
+							GROUP BY SolicitudLiquidacionSubsidio.slsId
+						  ) AS TotalProgramado 
+					WHERE TotalDispersado.identificadorSolicitud = TotalProgramado.identificadorSolicitud
+				   ) AS TotalesDispersados ON SolicitudLiquidacionSubsidio.slsId = TotalesDispersados.identificadorSolicitud 
+		INNER JOIN (SELECT InformacionAfiliado.identificadorSolicitudLiquidacion, 
+					PersonaAfiliado.perTipoIdentificacion AS tipoIdentificacionAfiliado, 
+					PersonaAfiliado.perNumeroIdentificacion AS numeroIdentificacionAfiliado, 
+					PersonaAfiliado.perRazonSocial AS nombreAfiliado, 
+					DetalleDeAfiliado.pedFechaDefuncion AS fechaFallecimientoAfiliado 
+					FROM Afiliado 
+					INNER JOIN (SELECT PersonaLiquidacionEspecifica.pleSolicitudLiquidacionSubsidio AS identificadorSolicitudLiquidacion, 
+								PersonaLiquidacionEspecifica.pleAfiliadoPrincipal AS identificadorAfiliadoPrincipal FROM SolicitudLiquidacionSubsidio 
+								INNER JOIN Solicitud ON SolicitudLiquidacionSubsidio.slsSolicitudGlobal = Solicitud.solId 
+								INNER JOIN PersonaLiquidacionEspecifica ON SolicitudLiquidacionSubsidio.slsId = PersonaLiquidacionEspecifica.pleSolicitudLiquidacionSubsidio 
+								WHERE Solicitud.solNumeroRadicacion LIKE :numeroRadicacion 
+								AND SolicitudLiquidacionSubsidio.slsTipoLiquidacion = 'SUBSUDIO_DE_DEFUNCION' 
+								GROUP BY PersonaLiquidacionEspecifica.pleSolicitudLiquidacionSubsidio, PersonaLiquidacionEspecifica.pleAfiliadoPrincipal
+								) AS InformacionAfiliado 	ON Afiliado.afiId = InformacionAfiliado.identificadorAfiliadoPrincipal 
+					INNER JOIN Persona AS PersonaAfiliado ON Afiliado.afiPersona = PersonaAfiliado.perId 
+					INNER JOIN PersonaDetalle AS DetalleDeAfiliado ON PersonaAfiliado.perId = DetalleDeAfiliado.pedPersona 
+					WHERE (:tipoIdentificacion IS NULL OR PersonaAfiliado.perTipoIdentificacion = :tipoIdentificacion) 
+					AND (:numeroIdentificacion IS NULL OR PersonaAfiliado.perNumeroIdentificacion = :numeroIdentificacion)
+					) AS FiltroAfiliado ON SolicitudLiquidacionSubsidio.slsId = FiltroAfiliado.identificadorSolicitudLiquidacion 
+		INNER JOIN Solicitud ON SolicitudLiquidacionSubsidio.slsSolicitudGlobal = Solicitud.solId 
+		WHERE Solicitud.solResultadoProceso IN ('DISPERSADA','RECHAZADA_PRIMER_NIVEL','CANCELADA')
+		  AND ((SolicitudLiquidacionSubsidio.slsTipoLiquidacionEspecifica = 'DEFUNCION_TRABAJADOR_DEPENDIENTE' 
+		  		AND DATEFROMPARTS(YEAR(FiltroAfiliado.fechaFallecimientoAfiliado),MONTH(FiltroAfiliado.fechaFallecimientoAfiliado),1)  = :periodo)
+		  	OR (SolicitudLiquidacionSubsidio.slsTipoLiquidacionEspecifica = 'DEFUNCION_BENEFICIARIO' 
+		  		AND :periodo = (SELECT DATEFROMPARTS(YEAR(MAX(ped.pedFechaDefuncion)),MONTH(MAX(ped.pedFechaDefuncion)),1)			
+						FROM dbo.PersonaLiquidacionEspecifica ple				
+						INNER JOIN BeneficiarioDetalle bed on bed.bedId = ple.pleBeneficiarioDetalle
+						INNER JOIN PersonaDetalle ped on ped.pedId = bed.bedPersonaDetalle
+						WHERE ple.pleSolicitudLiquidacionSubsidio = SolicitudLiquidacionSubsidio.slsId)))
+
+		</query>
+		<hint name="fechaRadicacion" value="Solicitud.solFechaRadicacion"></hint>
+		<hint name="periodoFallecimiento" value="FiltroAfiliado.fechaFallecimientoAfiliado"></hint>
+	</named-native-query>
+
+	<named-native-query
+        name="SubsidioMonetario.vista360.trabajador.retiroLiquidacionTrabajador">
+        <description>Consulta Retiro Por Liquidacion Trabajador</description>
+        <query>
+          select  sum(dsaValorTotal)
+            FROM DetalleSubsidioAsignado
+            INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+            INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+            INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+            INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+            INNER JOIN Persona pafi ON pafi.perId = afiPersona
+            INNER JOIN Persona pem on pem.perId = dsacondicionpersonaempleador
+            where 
+            pafi.perTipoIdentificacion = :tipoIdAfiliado
+            and solNumeroRadicacion = :numerosRadicados
+            and pafi.perNumeroIdentificacion = :numeroIdAfiliado
+            and pem.perTipoIdentificacion = :tipoIdEmpleador
+            AND casEstadoTransaccionSubsidio = 'COBRADO'
+            and dsaPeriodoLiquidado =  dsaPeriodoLiquidado
+            and pem.perNumeroIdentificacion =:numeroIdEmpleador
+        </query>
+    </named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.beneficiarios.liquidacionFallecimiento">
+		<description>Constante que permite obtener los beneficiarios en un proceso de liquidación por defunción de beneficiario</description>
+		<query>
+			SELECT DISTINCT Solicitud.solNumeroRadicacion,
+			Persona.perTipoIdentificacion, Persona.perNumeroIdentificacion,
+			Persona.perRazonSocial, PersonaDetalle.pedFechaDefuncion
+			FROM SolicitudLiquidacionSubsidio
+			INNER JOIN Solicitud ON SolicitudLiquidacionSubsidio.slsSolicitudGlobal = Solicitud.solId
+			INNER JOIN PersonaLiquidacionEspecifica ON SolicitudLiquidacionSubsidio.slsId = PersonaLiquidacionEspecifica.pleSolicitudLiquidacionSubsidio
+			INNER JOIN BeneficiarioDetalle ON PersonaLiquidacionEspecifica.pleBeneficiarioDetalle = BeneficiarioDetalle.bedId
+			INNER JOIN PersonaDetalle ON BeneficiarioDetalle.bedPersonaDetalle = PersonaDetalle.pedId
+			INNER JOIN Persona ON PersonaDetalle.pedPersona = Persona.perId
+			WHERE Solicitud.solNumeroRadicacion IN (:numerosRadicacion)
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultarTrabajadorBeneficiariosFallecidos.por.solicitudLiquidacionSubsidio">
+		<description>Consultar trabajador dependiente fallecido o beneficiarios de un trabajador fallecidos</description>
+		<query>
+			SELECT PersonaFallecimiento.idPersona FROM (
+				SELECT 
+					CASE  
+					WHEN SolicitudLiquidacionSubsidio.slsTipoLiquidacionEspecifica = 'DEFUNCION_TRABAJADOR_DEPENDIENTE'
+					THEN (PersonaAfiliado.perId)
+					END AS idPersona
+				FROM  SolicitudLiquidacionSubsidio
+				INNER JOIN PersonaLiquidacionEspecifica ON SolicitudLiquidacionSubsidio.slsId = PersonaLiquidacionEspecifica.pleSolicitudLiquidacionSubsidio
+				LEFT JOIN Afiliado ON Afiliado.afiId = PersonaLiquidacionEspecifica.pleAfiliadoPrincipal
+				LEFT JOIN Persona AS PersonaAfiliado ON PersonaAfiliado.perId = Afiliado.afiPersona
+				LEFT JOIN BeneficiarioDetalle ON PersonaLiquidacionEspecifica.pleBeneficiarioDetalle = BeneficiarioDetalle.bedId
+				LEFT JOIN PersonaDetalle ON BeneficiarioDetalle.bedPersonaDetalle = PersonaDetalle.pedId
+				LEFT JOIN Persona AS PersonaBeneficiario ON PersonaDetalle.pedPersona = PersonaBeneficiario.perId
+				WHERE SolicitudLiquidacionSubsidio.slsId = :idProcesoLiquidacionSubsidio
+				AND SolicitudLiquidacionSubsidio.slsTipoLiquidacion = 'SUBSUDIO_DE_DEFUNCION'
+			) AS PersonaFallecimiento
+			GROUP BY PersonaFallecimiento.idPersona	
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultarBeneficiariosFallecidos.por.numeroLiquidacion">
+		<description>Consultar beneficiario fallecido </description>
+		<query>
+			Select PersonaDetalle.pedFechaDefuncion  from solicitud 
+			inner join SolicitudLiquidacionSubsidio ON 
+			solicitud.solId= SolicitudLiquidacionSubsidio.slsSolicitudGlobal
+			INNER JOIN PersonaLiquidacionEspecifica ON
+			SolicitudLiquidacionSubsidio.slsId = PersonaLiquidacionEspecifica.pleSolicitudLiquidacionSubsidio
+			LEFT JOIN BeneficiarioDetalle ON 
+			PersonaLiquidacionEspecifica.pleBeneficiarioDetalle= BeneficiarioDetalle.bedId
+			LEFT JOIN PersonaDetalle ON 
+			BeneficiarioDetalle.bedPersonaDetalle = PersonaDetalle.pedId
+			WHERE solicitud.solNumeroRadicacion = :numeroRadicacion
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.seleccionar.personaLiquidacionEspecifica.trabajador.liquidacionFallecimiento">
+		<description>Consulta que permite obtener el identificador de PersonaLiquidacionEspecifica para el trabajador en una liquidación de fallecimiento </description>
+		<query>
+			SELECT TOP 1 PersonaLiquidacionEspecifica.pleId
+			FROM PersonaLiquidacionEspecifica
+			INNER JOIN SolicitudLiquidacionSubsidio ON PersonaLiquidacionEspecifica.pleSolicitudLiquidacionSubsidio = SolicitudLiquidacionSubsidio.slsId
+			INNER JOIN Solicitud ON SolicitudLiquidacionSubsidio.slsSolicitudGlobal = Solicitud.solId
+			INNER JOIN Afiliado ON PersonaLiquidacionEspecifica.pleAfiliadoPrincipal = Afiliado.afiId
+			INNER JOIN Persona ON Afiliado.afiPersona = Persona.perId
+			WHERE Solicitud.solNumeroRadicacion = :numeroRadicacion
+			AND Persona.perId = :idPersona
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.seleccionar.personaLiquidacionEspecifica.beneficiario.liquidacionFallecimiento">
+		<description>Consulta que permite obtener el identificador de PersonaLiquidacionEspecifica para un beneficiario en una liquidación de fallecimiento</description>
+		<query>
+			SELECT TOP 1 PersonaLiquidacionEspecifica.pleId
+			FROM PersonaLiquidacionEspecifica
+			INNER JOIN SolicitudLiquidacionSubsidio ON PersonaLiquidacionEspecifica.pleSolicitudLiquidacionSubsidio = SolicitudLiquidacionSubsidio.slsId
+			INNER JOIN Solicitud ON SolicitudLiquidacionSubsidio.slsSolicitudGlobal = Solicitud.solId
+			INNER JOIN BeneficiarioDetalle ON PersonaLiquidacionEspecifica.pleBeneficiarioDetalle = BeneficiarioDetalle.bedId
+			INNER JOIN PersonaDetalle ON BeneficiarioDetalle.bedPersonaDetalle = PersonaDetalle.pedId
+			INNER JOIN Persona ON PersonaDetalle.pedPersona = Persona.perId
+			WHERE Solicitud.solNumeroRadicacion = :numeroRadicacion
+			AND Persona.perId = :idPersona
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultarEmails.comunicado63.masivo.dispersion.pagos.empleador">
+		<description>Consulta que permite obtener el listado de empresas destinatarios de correo de una liquidacion masiva</description>
+		<query>
+			SELECT 
+				perId, ubiEmail, ubiAutorizacionEnvioEmail
+			FROM Empleador e
+				INNER JOIN Empresa e2 on e.empEmpresa = e2.empId
+				INNER JOIN Persona on e2.empPersona = perId
+				INNER JOIN UbicacionEmpresa on ubeEmpresa = e2.empId
+				INNER JOIN Ubicacion on ubiId = ubeUbicacion
+			WHERE ubeTipoUbicacion = 'ENVIO_CORRESPONDENCIA'
+				AND perId IN (:idPersonas)
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultarEmails.comunicado64.masivo.dispersion.pagos.trabajador">
+		<description>Consulta que permite obtener el listado de trabajadores destinatarios de correo de una liquidacion masiva</description>
+		<query>
+			SELECT 
+				perId, ubiEmail, ubiAutorizacionEnvioEmail
+			FROM Afiliado 
+				INNER JOIN Persona on afiPersona = perId
+				INNER JOIN Ubicacion on ubiId = perUbicacionPrincipal
+				AND perId IN (:idPersonas)
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultarEmails.comunicado65.masivo.dispersion.pagos.admin">
+		<description>Consulta que permite obtener el listado de admin de subsidio destinatarios de correo de una liquidacion masiva y fallecimiento</description>
+		<query>
+			SELECT 
+				perId, ubiEmail, ubiAutorizacionEnvioEmail
+			FROM AdministradorSubsidio 
+				INNER JOIN Persona on asuPersona = perId
+				INNER JOIN Ubicacion on ubiId = perUbicacionPrincipal
+				AND perId IN (:idPersonas)
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultarEmails.comunicado_74_77.masivo.dispersion.pagos.trabajadorConyuge">
+		<description>Consulta que permite obtener el listado de trabajadores destinatarios de correo de una liquidacion fallecimiento</description>
+		<query>
+			SELECT 
+				perId, ubiEmail,ubiAutorizacionEnvioEmail
+			FROM Persona
+				INNER JOIN Ubicacion on ubiId = perUbicacionPrincipal
+				AND perId IN (:idPersonas)
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.rangoDias.beneficiario.hu506.caso6">
+		<description>Constante para la consulta que permite obtener el resultado de la validación del rango de dias del caso 6</description>
+		<query>
+			SELECT CASE WHEN 
+			EXISTS(
+				SELECT 1
+				FROM dbo.Persona per
+				INNER JOIN dbo.Beneficiario ben ON per.perId = ben.benPersona
+				INNER JOIN dbo.PersonaDetalle pde ON pde.pedPersona = per.perId
+				INNER JOIN dbo.SolicitudNovedadPersona snp ON snp.snpPersona = per.perId
+				INNER JOIN dbo.SolicitudNovedad sn ON snp.snpSolicitudNovedad = sn.snoId
+				INNER JOIN dbo.Solicitud sol ON sn.snoSolicitudGlobal = sol.solId
+				WHERE ben.benId = :idBeneficiario
+				AND pde.pedFallecido = 1
+				AND DATEDIFF(day, pde.pedFechaDefuncion, CAST(sol.solFechaCreacion AS DATE)) 
+				BETWEEN 1 AND (
+								SELECT pcs.pcsDiasNovedadFallecimiento 
+								  FROM dbo.ParametrizacionCondicionesSubsidio pcs
+							     WHERE pcsId = (SELECT MAX(pcsId) 
+												  FROM dbo.ParametrizacionCondicionesSubsidio pcs 
+												 WHERE CAST(GETDATE() AS DATE) BETWEEN pcs.pcsPeriodoInicio AND pcs.pcsPeriodoFin
+											    )
+							  )
+			)THEN 0 ELSE 1 END;
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="SubsidioMonetario.consultar.diaParametrizado.detallesProgramados.porPeriodo">
+		<description>Consulta que permite saber si la fecha actual concuerda con alguna de las fechas programados de los detalles programados para permitir el pago a los detalles asignados</description>
+		<query>
+			SELECT CASE WHEN 
+			EXISTS(						 
+				SELECT *
+				FROM dbo.DetalleSubsidioAsignadoProgramado 
+				WHERE dbo.DetalleSubsidioAsignadoProgramado.dprFechaProgramadaPago = CAST(CONVERT(VARCHAR(10), GETDATE(),121) AS DATE)
+			)THEN 1 ELSE 0 END;
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.nombre.sitios.pago">
+		<description>consulta el identificador y el nombre del sitio de pago</description>
+		<query>
+			SELECT sipId, sipNombre FROM SitioPago
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.vista360.trabajador.detallePagosCuotaMonetaria">
+		<description>Consulta que permite realizar la consulta del detalle de pagos para cada cuota monetaria</description>
+		<query>
+			with 
+				ValoresFiltro as (
+					select dsaid as idRvl 
+					from DetalleSubsidioAsignado
+					where dsaResultadoValidacionLiquidacion in (:listaIdsRvl)
+					union
+				    select dprId
+					from DetalleSubsidioAsignadoProgramado
+					where dprResultadoValidacionLiquidacion in (:listaIdsRvl)
+				),
+				ValorLiquidado as (
+					select 
+					dsaResultadoValidacionLiquidacion as idRvl, 
+					sum(dsaValorSubsidioMonetario) as valorLiquidado
+					from DetalleSubsidioAsignado
+					inner join CuentaAdministradorSubsidio on dsaCuentaAdministradorSubsidio = casId
+					where dsaid in (select idRvl from ValoresFiltro)
+					and dsaEstado = 'DERECHO_ASIGNADO'
+					and dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO'
+					group by dsaResultadoValidacionLiquidacion
+				),
+				PendienteProgramado as (
+					select 
+					dprResultadoValidacionLiquidacion as idRvl, 
+					sum(dprValorOriginalAbonado) as pendienteProgramado
+					from DetalleSubsidioAsignadoProgramado
+					inner join CuentaAdministradorSubsidioProgramada on dprCuentaAdministradorSubsidioProgramada = capId
+					where dprid in (select idRvl from ValoresFiltro)
+					and dprEstado = 'DERECHO_ASIGNADO'
+					group by dprResultadoValidacionLiquidacion
+				),
+				Saldo as (
+					select 
+					dsaResultadoValidacionLiquidacion as idRvl, 
+					sum(dsaValorTotal) as saldo
+					from DetalleSubsidioAsignado
+					inner join CuentaAdministradorSubsidio on dsaCuentaAdministradorSubsidio = casId
+					where dsaid in (select idRvl from ValoresFiltro)
+					and (casEstadoTransaccionSubsidio in ('APLICADO', 'ENVIADO'))
+					group by dsaResultadoValidacionLiquidacion
+				),
+				Cobrado as (
+					select 
+					aux.idRvl as idRvl, 
+					sum(abs(dsaValorTotal)) as cobrado
+					from CuentaAdministradorSubsidio
+					inner join 
+					(select 
+						dsaResultadoValidacionLiquidacion as idRvl, 
+						casIdCuentaAdmonSubsidioRelacionado as idCuenta, 
+						dsaValorTotal
+					from DetalleSubsidioAsignado
+					inner join CuentaAdministradorSubsidio on dsaCuentaAdministradorSubsidio = casId
+					where dsaid in (select idRvl from ValoresFiltro)
+						and (casEstadoTransaccionSubsidio = 'COBRADO')
+					) as aux
+					on aux.idCuenta = casId
+					group by aux.idRvl
+				),
+				Anulado as (
+					select 
+					dsaResultadoValidacionLiquidacion as idRvl, 
+					sum(casValorRealTransaccion) as anulado
+					from DetalleSubsidioAsignado
+					inner join CuentaAdministradorSubsidio on dsaCuentaAdministradorSubsidio = casId
+					where dsaid in (select idRvl from ValoresFiltro)
+					and dsaEstado = 'ANULADO'
+					and casEstadoTransaccionSubsidio = 'ANULADO'
+					group by dsaResultadoValidacionLiquidacion
+				)
+			select 
+			coalesce(vl.idRvl, pp.idRvl, s.idRvl, c.idRvl, a.idRvl) as idRvl,
+			coalesce(vl.valorLiquidado, 0) as valorLiquidado,
+			coalesce(pp.pendienteProgramado, 0) as pendienteProgramado,
+			coalesce(c.cobrado, 0) as pagado,
+			coalesce(s.saldo, 0) as saldo,
+			case when a.idRvl is not null then 'ANULADO'
+				else 'DERECHO_ASIGNADO'
+			end as estado,
+			a.anulado
+			from ValorLiquidado vl
+			full outer join PendienteProgramado pp on vl.idRvl = pp.idRvl
+			full outer join Saldo s on vl.idRvl = s.idRvl
+			full outer join Cobrado c on vl.idRvl = c.idRvl
+			full outer join Anulado a on vl.idRvl = a.idRvl
+
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.vista360.trabajador.liquidacionFallecimiento.core">
+		<description>Consulta que permite realizar la consulta relacionada a una liquidacion de fallecimiento de un trabajador</description>
+		<query>
+		SELECT 
+			s.solNumeroRadicacion, s.slsFechaInicio,
+			s.slsTipoLiquidacion, s.slsTipoLiquidacionEspecifica,
+			s.slsEstadoLiquidacion, s.resultadoProceso,
+			s.slsConsideracionAporteDesembolso, s.slsTipoDesembolso,
+			a.valorLiquidado, ISNULL(b.pendienteProgramado,0) AS pendienteProgramado, (a.valorLiquidado - ISNULL(c.saldo,0)) AS pagado, c.saldo
+		FROM 
+			(SELECT solNumeroRadicacion, slsFechaInicio,
+					slsTipoLiquidacion, slsTipoLiquidacionEspecifica,
+					slsEstadoLiquidacion, CASE WHEN (solResultadoProceso = 'DISPERSADA') THEN 'Aprobada' ELSE 'Rechazada' END AS resultadoProceso,
+					slsConsideracionAporteDesembolso, slsTipoDesembolso
+					FROM SolicitudLiquidacionSubsidio 
+					INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+					WHERE solNumeroRadicacion = :numeroRadicado) AS s 
+		LEFT JOIN
+			(SELECT solNumeroRadicacion, SUM(dsaValorSubsidioMonetario) AS valorLiquidado
+					FROM DetalleSubsidioAsignado
+					INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId  
+					INNER JOIN SolicitudLiquidacionSubsidio ON slsId = casSolicitudLiquidacionSubsidio  
+					INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+					WHERE dsaEstado = 'DERECHO_ASIGNADO'
+					AND dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO' 
+					AND solNumeroRadicacion = :numeroRadicado
+					GROUP BY solNumeroRadicacion) AS a ON s.solNumeroRadicacion = a.solNumeroRadicacion
+		LEFT JOIN
+			(SELECT solNumeroRadicacion, SUM(dprValorOriginalAbonado) AS pendienteProgramado
+					FROM DetalleSubsidioAsignadoProgramado
+					INNER JOIN CuentaAdministradorSubsidioProgramada ON dprCuentaAdministradorSubsidioProgramada = capId  
+					INNER JOIN SolicitudLiquidacionSubsidio ON slsId = casSolicitudLiquidacionSubsidio  
+					INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+					WHERE dprEstado = 'DERECHO_ASIGNADO'
+					AND solNumeroRadicacion = :numeroRadicado
+					GROUP BY solNumeroRadicacion) AS b ON a.solNumeroRadicacion = b.solNumeroRadicacion
+		LEFT JOIN
+			(SELECT solNumeroRadicacion, SUM(dsaValorTotal) AS saldo
+					FROM DetalleSubsidioAsignado
+					INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId  
+					INNER JOIN SolicitudLiquidacionSubsidio ON slsId = casSolicitudLiquidacionSubsidio  
+					INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+					WHERE (casEstadoTransaccionSubsidio = 'APLICADO')
+					AND solNumeroRadicacion = :numeroRadicado
+					GROUP BY solNumeroRadicacion) AS c ON a.solNumeroRadicacion = c.solNumeroRadicacion	
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.info.adminSubsidio">
+		<description>Consulta que obtiene la información del administrador del subsidio y sus grupos familiares (servicio de integración)</description>
+		<query>
+			SELECT 
+            CONCAT(adminSubsidio.perPrimerNombre,' ',adminSubsidio.perSegundoNombre, ' ',adminSubsidio.perPrimerApellido,' ',adminSubsidio.perSegundoApellido) AS nombreAdmin,
+            adminSubsidio.perTipoIdentificacion AS tipoIdAdmin,
+            adminSubsidio.perNumeroIdentificacion AS numeroIdAdmin,
+            perAfiliado.perTipoIdentificacion AS tipoIdAfi,
+            perAfiliado.perNumeroIdentificacion AS numeroIdAfi,
+            CONCAT(perAfiliado.perPrimerNombre,' ',perAfiliado.perSegundoNombre, ' ',perAfiliado.perPrimerApellido,' ',perAfiliado.perSegundoApellido) AS nombreAfiliado,
+            dbo.GrupoFamiliar.grfNumero,
+            dbo.MedioDePago.mdpTipo
+            FROM dbo.AdministradorSubsidio
+            INNER JOIN dbo.Persona AS adminSubsidio ON dbo.AdministradorSubsidio.asuPersona = adminSubsidio.perId
+            INNER JOIN dbo.AdminSubsidioGrupo ON dbo.AdministradorSubsidio.asuId = dbo.AdminSubsidioGrupo.asgAdministradorSubsidio
+           	INNER JOIN dbo.GrupoFamiliar ON dbo.AdminSubsidioGrupo.asgGrupoFamiliar = dbo.GrupoFamiliar.grfId
+           	INNER JOIN dbo.Afiliado ON dbo.GrupoFamiliar.grfAfiliado = dbo.Afiliado.afiId
+           	INNER JOIN dbo.Persona AS perAfiliado ON dbo.Afiliado.afiPersona = perAfiliado.perId
+           	INNER JOIN dbo.MedioDePago ON dbo.AdminSubsidioGrupo.asgMedioDePago = dbo.MedioDePago.mdpId
+            WHERE adminSubsidio.perNumeroIdentificacion = :numeroIdAdmin
+            AND adminSubsidio.perTipoIdentificacion = :tipoIdAdmin
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.obtener.cuota.monetaria">
+		<description>Consulta encargada de obtener la información de la cuota monetaria por afiliado</description>
+		<query>
+			SELECT DISTINCT
+            afiPersona.perTipoIdentificacion AS tipoIdAfiliado,
+            afiPersona.perNumeroIdentificacion AS numeroIdAfiliado,
+            CONCAT(afiPersona.perPrimerNombre,' ',afiPersona.perSegundoNombre, ' ',afiPersona.perPrimerApellido,' ',afiPersona.perSegundoApellido) AS nombreAfiliado,
+            dbo.DetalleSubsidioAsignado.dsaPeriodoLiquidado,
+            adminSubsidio.perTipoIdentificacion AS tipoIdAdmin,
+            adminSubsidio.perNumeroIdentificacion AS numeroIdAdmin,
+            CONCAT(adminSubsidio.perPrimerNombre,' ',adminSubsidio.perSegundoNombre, ' ',adminSubsidio.perPrimerApellido,' ',adminSubsidio.perSegundoApellido) AS nombreAdmin,
+            dbo.CuentaAdministradorSubsidio.casMedioDePagoTransaccion,
+            dbo.GrupoFamiliar.grfNumero,
+            SUM(dbo.DetalleSubsidioAsignado.dsaValorSubsidioMonetario) AS valorSubsidioMonetario,
+            dbo.CuentaAdministradorSubsidio.casUsuarioTransaccion,
+            dbo.CuentaAdministradorSubsidio.casFechaHoraTransaccion,
+            dbo.CuentaAdministradorSubsidio.casTipoTransaccionSubsidio,
+            dbo.CuentaAdministradorSubsidio.casEstadoTransaccionSubsidio,
+            dbo.CuentaAdministradorSubsidio.casOrigenTransaccion,
+            dbo.CuentaAdministradorSubsidio.casValorRealTransaccion,
+            dbo.CuentaAdministradorSubsidio.casNumeroTarjetaAdmonSubsidio,
+            dbo.ConvenioTerceroPagador.conNombre AS nombreTerceroPagador,
+            convenioPersona.perTipoIdentificacion AS tipoIdTerceroPagador, 
+            convenioPersona.perNumeroIdentificacion AS numeroIdTerceroPagador,
+            CASE
+				WHEN dbo.CuentaAdministradorSubsidio.casSitioDePago IS NOT NULL
+				THEN (
+						SELECT CONCAT(dbo.Departamento.depNombre,',',dbo.Municipio.munNombre)
+						FROM dbo.SitioPago
+						INNER JOIN dbo.Infraestructura ON dbo.SitioPago.sipInfraestructura = dbo.Infraestructura.infId
+						INNER JOIN dbo.Municipio ON dbo.Municipio.munId = dbo.Infraestructura.infMunicipio
+						INNER JOIN dbo.Departamento ON dbo.Departamento.depId = dbo.Municipio.munDepartamento
+						WHERE dbo.SitioPago.sipId = dbo.CuentaAdministradorSubsidio.casSitioDePago
+					 )
+				ELSE NULL
+			END AS nombreSitioPago,
+			CASE
+				WHEN dbo.CuentaAdministradorSubsidio.casSitioDeCobro IS NOT NULL
+				THEN (
+						SELECT CONCAT(dbo.Departamento.depNombre,',',dbo.Municipio.munNombre)
+						FROM dbo.SitioPago
+						INNER JOIN dbo.Infraestructura ON dbo.SitioPago.sipInfraestructura = dbo.Infraestructura.infId
+						INNER JOIN dbo.Municipio ON dbo.Municipio.munId = dbo.Infraestructura.infMunicipio
+						INNER JOIN dbo.Departamento ON dbo.Departamento.depId = dbo.Municipio.munDepartamento
+						WHERE dbo.SitioPago.sipId = dbo.CuentaAdministradorSubsidio.casSitioDeCobro
+					 )
+				ELSE NULL
+			END AS nombreSitioCobro,
+			dbo.CuentaAdministradorSubsidio.casNumeroCuentaAdmonSubsidio,
+			dbo.CuentaAdministradorSubsidio.casTipoCuentaAdmonSubsidio,
+			dbo.CuentaAdministradorSubsidio.casNombreBanco,
+			CASE
+				WHEN dbo.CuentaAdministradorSubsidio.casSitioDeCobro IS NOT NULL
+				THEN (
+						SELECT dbo.Municipio.munCodigo
+						FROM dbo.SitioPago
+						INNER JOIN dbo.Infraestructura ON dbo.SitioPago.sipInfraestructura = dbo.Infraestructura.infId
+						INNER JOIN dbo.Municipio ON dbo.Municipio.munId = dbo.Infraestructura.infMunicipio
+						WHERE dbo.SitioPago.sipId = dbo.CuentaAdministradorSubsidio.casSitioDeCobro
+					 )
+				ELSE NULL
+			END AS codigoMunicipioCobro,
+			CASE
+				WHEN dbo.CuentaAdministradorSubsidio.casSitioDeCobro IS NOT NULL
+				THEN (
+						SELECT dbo.Departamento.depCodigo
+						FROM dbo.SitioPago
+						INNER JOIN dbo.Infraestructura ON dbo.SitioPago.sipInfraestructura = dbo.Infraestructura.infId
+						INNER JOIN dbo.Municipio ON dbo.Municipio.munId = dbo.Infraestructura.infMunicipio
+						INNER JOIN dbo.Departamento ON dbo.Departamento.depId = dbo.Municipio.munDepartamento
+						WHERE dbo.SitioPago.sipId = dbo.CuentaAdministradorSubsidio.casSitioDeCobro
+					 )
+				ELSE NULL
+			END AS codigoDepartamentoCobro,
+			CASE 
+				WHEN dbo.CuentaAdministradorSubsidio.casSolicitudLiquidacionSubsidio IS NOT NULL
+				THEN (SELECT solNumeroRadicacion FROM dbo.solicitudLiquidacionSubsidio 
+						JOIN dbo.solicitud ON dbo.solicitudLiquidacionSubsidio.slsSolicitudGlobal = dbo.solicitud.solId 
+						WHERE dbo.solicitudLiquidacionSubsidio.slsId = dbo.CuentaAdministradorSubsidio.casSolicitudLiquidacionSubsidio) END AS idTransaccion
+            FROM dbo.CuentaAdministradorSubsidio
+            INNER JOIN dbo.DetalleSubsidioAsignado ON 
+            (dbo.CuentaAdministradorSubsidio.casId = dbo.DetalleSubsidioAsignado.dsaCuentaAdministradorSubsidio
+            AND dbo.DetalleSubsidioAsignado.dsaPeriodoLiquidado = CAST(:periodo AS DATE))
+            INNER JOIN dbo.MedioDePago  ON dbo.CuentaAdministradorSubsidio.casMedioDePago = dbo.MedioDePago.mdpId
+            INNER JOIN dbo.AdministradorSubsidio ON dbo.CuentaAdministradorSubsidio.casAdministradorSubsidio = dbo.AdministradorSubsidio.asuId
+            INNER JOIN dbo.Persona AS adminSubsidio ON dbo.AdministradorSubsidio.asuPersona = adminSubsidio.perId
+            INNER JOIN dbo.Afiliado ON dbo.DetalleSubsidioAsignado.dsaAfiliadoPrincipal = dbo.Afiliado.afiId
+            INNER JOIN dbo.Persona AS afiPersona ON dbo.Afiliado.afiPersona = afiPersona.perId
+            INNER JOIN dbo.Beneficiario ON (dbo.DetalleSubsidioAsignado.dsaBeneficiarioDetalle = dbo.Beneficiario.benBeneficiarioDetalle
+            AND dbo.Beneficiario.benAfiliado = dbo.DetalleSubsidioAsignado.dsaAfiliadoPrincipal)
+            INNER JOIN dbo.Persona AS benPersona ON dbo.Beneficiario.benPersona = benPersona.perId
+            INNER JOIN dbo.GrupoFamiliar ON (dbo.DetalleSubsidioAsignado.dsaGrupoFamiliar = dbo.GrupoFamiliar.grfId
+            AND dbo.Beneficiario.benGrupoFamiliar = dbo.DetalleSubsidioAsignado.dsaGrupoFamiliar 
+            AND dbo.Beneficiario.benGrupoFamiliar = dbo.GrupoFamiliar.grfId)
+            LEFT JOIN  dbo.ConvenioTerceroPagador ON dbo.CuentaAdministradorSubsidio.casNombreTerceroPagado = dbo.ConvenioTerceroPagador.conNombre
+            LEFT JOIN  dbo.Empresa ON dbo.ConvenioTerceroPagador.conEmpresa = dbo.Empresa.empId
+            LEFT JOIN dbo.Persona AS convenioPersona ON dbo.Empresa.empPersona = convenioPersona.perId
+            WHERE ((:numeroIdPersona IS NULL OR benPersona.perNumeroIdentificacion = :numeroIdPersona) AND benPersona.perTipoIdentificacion = :tipoIdPersona)
+            OR  ((:numeroIdPersona IS NULL OR afiPersona.perNumeroIdentificacion = :numeroIdPersona) AND afiPersona.perTipoIdentificacion = :tipoIdPersona)
+            GROUP BY afiPersona.perTipoIdentificacion,afiPersona.perNumeroIdentificacion,CONCAT(afiPersona.perPrimerNombre,' ',afiPersona.perSegundoNombre, ' ',afiPersona.perPrimerApellido,' ',afiPersona.perSegundoApellido),
+            dbo.DetalleSubsidioAsignado.dsaPeriodoLiquidado,adminSubsidio.perTipoIdentificacion,adminSubsidio.perNumeroIdentificacion,           
+            CONCAT(adminSubsidio.perPrimerNombre,' ',adminSubsidio.perSegundoNombre, ' ',adminSubsidio.perPrimerApellido,' ',adminSubsidio.perSegundoApellido),
+            dbo.CuentaAdministradorSubsidio.casMedioDePagoTransaccion,dbo.GrupoFamiliar.grfNumero,
+            dbo.DetalleSubsidioAsignado.dsaValorSubsidioMonetario,dbo.CuentaAdministradorSubsidio.casUsuarioTransaccion,dbo.CuentaAdministradorSubsidio.casFechaHoraTransaccion,
+            dbo.CuentaAdministradorSubsidio.casTipoTransaccionSubsidio,dbo.CuentaAdministradorSubsidio.casEstadoTransaccionSubsidio,dbo.CuentaAdministradorSubsidio.casOrigenTransaccion,
+            dbo.CuentaAdministradorSubsidio.casValorRealTransaccion,dbo.CuentaAdministradorSubsidio.casNumeroTarjetaAdmonSubsidio, dbo.ConvenioTerceroPagador.conNombre,
+            convenioPersona.perTipoIdentificacion, convenioPersona.perNumeroIdentificacion,dbo.CuentaAdministradorSubsidio.casSitioDePago,
+			dbo.CuentaAdministradorSubsidio.casNumeroCuentaAdmonSubsidio,dbo.CuentaAdministradorSubsidio.casTipoCuentaAdmonSubsidio,
+			dbo.CuentaAdministradorSubsidio.casNombreBanco, dbo.CuentaAdministradorSubsidio.casSitioDeCobro,dbo.CuentaAdministradorSubsidio.casSitioDeCobro,
+			dbo.CuentaAdministradorSubsidio.casSolicitudLiquidacionSubsidio
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.vista360.trabajador.liquidacionPagosCuotaMonetaria">
+		<description>Consulta que permite realizar la consulta del detalle de pagos para cada cuota monetaria</description>
+		<query>
+			<!-- SELECT a1.numeroRadicacion, a.valorLiquidado, ISNULL(b.pendienteProgramado,0) AS pendienteProgramado, ISNULL(e.cobrado,0) AS pagado, 
+                   CAST(ISNULL(c.saldo,0) as numeric) as saldo, CAST(ISNULL(d.descuento,0) as numeric) as descuento, -1 as totalPagar
+            FROM (SELECT solNumeroRadicacion AS numeroRadicacion
+					FROM SolicitudLiquidacionSubsidio
+                        INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+						where solNumeroRadicacion IN (:numerosRadicados)
+						GROUP BY solNumeroRadicacion) AS a1
+			LEFT JOIN
+                (SELECT solNumeroRadicacion AS numeroRadicacion, SUM(dsaValorSubsidioMonetario) AS valorLiquidado
+                        FROM DetalleSubsidioAsignado
+                        INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+                        INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+                        INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+                        INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+                        INNER JOIN Persona ON perId = afiPersona
+                        WHERE solNumeroRadicacion IN (:numerosRadicados)
+                        AND perTipoIdentificacion = :tipoIdentificacion
+                        AND perNumeroIdentificacion = :numeroIdentificacion
+                        AND dsaEstado = 'DERECHO_ASIGNADO'
+                        AND dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO' 
+                        GROUP BY solNumeroRadicacion) AS a ON a1.numeroRadicacion = a.numeroRadicacion
+            LEFT JOIN
+                (SELECT solNumeroRadicacion AS numeroRadicacion, SUM(dprValorOriginalAbonado) AS pendienteProgramado
+                        FROM DetalleSubsidioAsignadoProgramado
+                        INNER JOIN CuentaAdministradorSubsidioProgramada ON dprCuentaAdministradorSubsidioProgramada = capId
+                        INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dprSolicitudLiquidacionSubsidio 
+                        INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+                        INNER JOIN Afiliado ON afiId = dprAfiliadoPrincipal
+                        INNER JOIN Persona ON perId = afiPersona
+                        WHERE solNumeroRadicacion IN (:numerosRadicados)  
+                        AND perTipoIdentificacion = :tipoIdentificacion
+                        AND perNumeroIdentificacion = :numeroIdentificacion
+                        AND dprEstado = 'DERECHO_ASIGNADO'
+                        GROUP BY solNumeroRadicacion) AS b ON a1.numeroRadicacion = b.numeroRadicacion
+            LEFT JOIN
+                (SELECT solNumeroRadicacion AS numeroRadicacion, SUM(dsaValorTotal) AS saldo
+                        FROM DetalleSubsidioAsignado
+                        INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+                        INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+                        INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+                        INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+                        INNER JOIN Persona ON perId = afiPersona
+                        WHERE solNumeroRadicacion IN (:numerosRadicados)
+                        AND perTipoIdentificacion = :tipoIdentificacion
+                        AND perNumeroIdentificacion = :numeroIdentificacion
+                        AND (casEstadoTransaccionSubsidio = 'APLICADO' OR casEstadoTransaccionSubsidio = 'ENVIADO')
+                        GROUP BY solNumeroRadicacion) AS c ON a1.numeroRadicacion = c.numeroRadicacion
+            LEFT JOIN 
+               (SELECT solNumeroRadicacion AS numeroRadicacion, SUM(dsaValorDescuento) AS descuento
+                        FROM DetalleSubsidioAsignado
+                        INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+                        INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+                        INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+                        INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+                        INNER JOIN Persona ON perId = afiPersona
+                        WHERE solNumeroRadicacion IN (:numerosRadicados)
+                        AND perTipoIdentificacion = :tipoIdentificacion
+                        AND perNumeroIdentificacion = :numeroIdentificacion
+                        AND dsaEstado = 'DERECHO_ASIGNADO'
+                        AND dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO' 
+                        GROUP BY solNumeroRadicacion) AS d ON a1.numeroRadicacion = d.numeroRadicacion
+            LEFT JOIN
+               (SELECT aux.numeroRadicacion AS numeroRadicacion, SUM (ABS(casValorRealTransaccion)) AS cobrado
+                FROM CuentaAdministradorSubsidio
+                INNER JOIN
+                       (SELECT solNumeroRadicacion AS numeroRadicacion, casId AS idCuenta
+                        FROM DetalleSubsidioAsignado
+                        INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+                        INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+                        INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+	                    INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+	                    INNER JOIN Persona pafi ON pafi.perId = afiPersona
+	                    INNER JOIN Persona pem on pem.perId = dsacondicionpersonaempleador
+	                    where solNumeroRadicacion in (:numerosRadicados)
+	                    and pafi.perTipoIdentificacion = :tipoIdentificacion
+	                    and pafi.perNumeroIdentificacion = :numeroIdentificacion
+	                    and pem.perTipoIdentificacion = :tipoIdentificacionEmpleador
+	                    AND casEstadoTransaccionSubsidio = 'COBRADO'
+	                    and dsaPeriodoLiquidado =  dsaPeriodoLiquidado
+	                    and pem.perNumeroIdentificacion = :numeroIdentificacionEmpleador
+                        GROUP BY solNumeroRadicacion, casId) AS aux
+                ON aux.idCuenta = casId 
+                GROUP BY aux.numeroRadicacion) AS e ON e.numeroRadicacion = d.numeroRadicacion -->
+			SELECT a.numeroRadicacion, a.valorLiquidado, ISNULL(b.pendienteProgramado,0) AS pendienteProgramado, ISNULL(e.cobrado,0) AS pagado, 
+				   CAST(ISNULL(c.saldo,0) as numeric) as saldo, CAST(ISNULL(d.descuento,0) as numeric) as descuento, -1 as totalPagar, a.perNumeroIdentificacion,a.perTipoIdentificacion
+			FROM 
+				(SELECT solNumeroRadicacion AS numeroRadicacion,pe.perNumeroIdentificacion,pe.perTipoIdentificacion, SUM(dsaValorSubsidioMonetario) AS valorLiquidado
+						FROM DetalleSubsidioAsignado
+						INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+						INNER JOIN Empleador e on e.empId = dsaEmpleador
+						INNER JOIN Empresa em on em.empId = e.empEmpresa
+						INNER JOIN Persona pe on pe.perId = em.empPersona
+						INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+						INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+						INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+						INNER JOIN Persona pa ON pa.perId = afiPersona
+						WHERE solNumeroRadicacion IN (:numerosRadicados)
+						AND pa.perTipoIdentificacion = :tipoIdentificacion
+						AND pa.perNumeroIdentificacion =:numeroIdentificacion
+						AND dsaEstado = 'DERECHO_ASIGNADO'
+						AND dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO' 
+						GROUP BY solNumeroRadicacion, pe.perNumeroIdentificacion, pe.perTipoIdentificacion) AS a
+			LEFT JOIN
+				(SELECT solNumeroRadicacion AS numeroRadicacion,pe.perNumeroIdentificacion,pe.perTipoIdentificacion, SUM(dprValorOriginalAbonado) AS pendienteProgramado
+						FROM DetalleSubsidioAsignadoProgramado
+						INNER JOIN CuentaAdministradorSubsidioProgramada ON dprCuentaAdministradorSubsidioProgramada = capId
+						INNER JOIN Empleador e on e.empId = dprEmpleador
+						INNER JOIN Empresa em on em.empId = e.empEmpresa
+						INNER JOIN Persona pe on pe.perId = em.empPersona
+						INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dprSolicitudLiquidacionSubsidio 
+						INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+						INNER JOIN Afiliado ON afiId = dprAfiliadoPrincipal
+						INNER JOIN Persona pa ON pa.perId = afiPersona
+						WHERE solNumeroRadicacion IN (:numerosRadicados)  
+						AND pa.perTipoIdentificacion = :tipoIdentificacion
+						AND pa.perNumeroIdentificacion = :numeroIdentificacion
+						AND dprEstado = 'DERECHO_ASIGNADO'
+						GROUP BY solNumeroRadicacion, pe.perNumeroIdentificacion, pe.perTipoIdentificacion) AS b ON a.numeroRadicacion = b.numeroRadicacion and
+						a.perNumeroIdentificacion =b.perNumeroIdentificacion and a.perTipoIdentificacion = b.perTipoIdentificacion
+			LEFT JOIN
+				(SELECT solNumeroRadicacion AS numeroRadicacion,pe.perNumeroIdentificacion,pe.perTipoIdentificacion, SUM(dsaValorTotal) AS saldo
+						FROM DetalleSubsidioAsignado
+						INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+						INNER JOIN Empleador e on e.empId = dsaEmpleador
+						INNER JOIN Empresa em on em.empId = e.empEmpresa
+						INNER JOIN Persona pe on pe.perId = em.empPersona
+						INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+						INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+						INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+						INNER JOIN Persona pa ON pa.perId = afiPersona
+						WHERE solNumeroRadicacion IN (:numerosRadicados)
+						AND pa.perTipoIdentificacion = :tipoIdentificacion
+						AND pa.perNumeroIdentificacion =:numeroIdentificacion
+						AND (casEstadoTransaccionSubsidio = 'APLICADO' OR casEstadoTransaccionSubsidio = 'ENVIADO')
+						GROUP BY solNumeroRadicacion, pe.perNumeroIdentificacion, pe.perTipoIdentificacion) AS c ON a.numeroRadicacion = c.numeroRadicacion and
+						a.perNumeroIdentificacion = c.perNumeroIdentificacion and a.perTipoIdentificacion = c.perTipoIdentificacion
+			LEFT JOIN 
+			   (SELECT solNumeroRadicacion AS numeroRadicacion, pe.perNumeroIdentificacion,pe.perTipoIdentificacion, SUM(dsaValorDescuento) AS descuento
+						FROM DetalleSubsidioAsignado
+						INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+						INNER JOIN Empleador e on e.empId = dsaEmpleador
+						INNER JOIN Empresa em on em.empId = e.empEmpresa
+						INNER JOIN Persona pe on pe.perId = em.empPersona
+						INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+						INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+						INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+						INNER JOIN Persona pa ON pa.perId = afiPersona
+						WHERE solNumeroRadicacion IN (:numerosRadicados)
+						AND pa.perTipoIdentificacion = :tipoIdentificacion
+						AND pa.perNumeroIdentificacion = :numeroIdentificacion
+						AND dsaEstado = 'DERECHO_ASIGNADO'
+						AND dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO' 
+						GROUP BY solNumeroRadicacion, pe.perNumeroIdentificacion, pe.perTipoIdentificacion) AS d ON a.numeroRadicacion = d.numeroRadicacion and 
+						a.perNumeroIdentificacion = d.perNumeroIdentificacion and a.perTipoIdentificacion = d.perTipoIdentificacion
+			LEFT JOIN
+			   (SELECT aux.numeroRadicacion AS numeroRadicacion, aux.perNumeroIdentificacion,aux.perTipoIdentificacion,SUM (ABS(casValorRealTransaccion)) AS cobrado
+			  	FROM CuentaAdministradorSubsidio
+				INNER JOIN
+					   (SELECT solNumeroRadicacion AS numeroRadicacion,pe.perNumeroIdentificacion,pe.perTipoIdentificacion, casId AS idCuenta
+						FROM DetalleSubsidioAsignado
+						INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+						INNER JOIN Empleador e on e.empId = dsaEmpleador
+						INNER JOIN Empresa em on em.empId = e.empEmpresa
+						INNER JOIN Persona pe on pe.perId = em.empPersona
+						INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+						INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+						INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+						INNER JOIN Persona pa ON pa.perId = afiPersona
+						WHERE solNumeroRadicacion IN (:numerosRadicados)
+						AND pa.perTipoIdentificacion = :tipoIdentificacion
+						AND pa.perNumeroIdentificacion = :numeroIdentificacion
+						AND (casEstadoTransaccionSubsidio = 'COBRADO')
+						GROUP BY solNumeroRadicacion, pe.perNumeroIdentificacion, pe.perTipoIdentificacion,casId) AS aux
+				ON aux.idCuenta = casId 
+				GROUP BY aux.numeroRadicacion, aux.perNumeroIdentificacion,aux.perTipoIdentificacion) AS e ON e.numeroRadicacion = d.numeroRadicacion and e.perNumeroIdentificacion = d.perNumeroIdentificacion
+				and e.perTipoIdentificacion = d.perTipoIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.vista360.trabajador.liquidacionPagosCuotaMonetariaYperiodo">
+		<description>Consulta que permite realizar la consulta del detalle de pagos para cada cuota monetaria</description>
+		<query>
+					SELECT a.numeroRadicacion,
+			a.valorLiquidado,
+			ISNULL(b.pendienteProgramado,0) AS pendienteProgramado, 
+			CAST(ISNULL(d.retirado,0) as numeric(19,5)) AS pagado, 
+			CAST(ISNULL(c.saldo,0) as numeric(19,5)) as saldo, 
+			a.periodoLiquidado as periodoLiquidado
+		FROM 
+			(
+			SELECT solNumeroRadicacion AS numeroRadicacion, dsaPeriodoLiquidado AS periodoLiquidado,pe.perNumeroIdentificacion,pe.perTipoIdentificacion, SUM(dsaValorSubsidioMonetario) AS valorLiquidado
+					FROM DetalleSubsidioAsignado
+					INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+					INNER JOIN Empleador e on e.empId = dsaEmpleador
+					INNER JOIN Empresa em on em.empId = e.empEmpresa
+					INNER JOIN Persona pe on pe.perId = em.empPersona
+					INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+					INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+					INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+					INNER JOIN Persona pa ON pa.perId = afiPersona
+					WHERE solNumeroRadicacion IN (:numerosRadicados)
+					AND pa.perTipoIdentificacion = :tipoIdentificacion
+					AND pa.perNumeroIdentificacion = :numeroIdentificacion
+					AND dsaEstado = 'DERECHO_ASIGNADO'
+					AND dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO' 
+					GROUP BY solNumeroRadicacion, dsaPeriodoLiquidado, pe.perNumeroIdentificacion, pe.perTipoIdentificacion) AS a
+		LEFT JOIN
+			(SELECT solNumeroRadicacion AS numeroRadicacion, dprPeriodoLiquidado AS periodoLiquidado,pe.perNumeroIdentificacion,pe.perTipoIdentificacion, SUM(dprValorOriginalAbonado) AS pendienteProgramado
+					FROM DetalleSubsidioAsignadoProgramado dsap
+					INNER JOIN CuentaAdministradorSubsidioProgramada casp ON dsap.dprCuentaAdministradorSubsidioProgramada = capId
+					INNER JOIN SolicitudLiquidacionSubsidio sls ON sls.slsId = dsap.dprSolicitudLiquidacionSubsidio 
+					INNER JOIN Empleador e on e.empId = dsap.dprEmpleador
+					INNER JOIN Empresa em on em.empId = e.empEmpresa
+					INNER JOIN Persona pe on pe.perId = em.empPersona
+					INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+					INNER JOIN Afiliado ON afiId = dprAfiliadoPrincipal
+					INNER JOIN Persona pa ON pa.perId = afiPersona
+					WHERE solNumeroRadicacion IN (:numerosRadicados)  
+					AND pa.perTipoIdentificacion = :tipoIdentificacion
+					AND pa.perNumeroIdentificacion =:numeroIdentificacion
+					AND dprEstado = 'DERECHO_ASIGNADO'
+					GROUP BY solNumeroRadicacion, dprPeriodoLiquidado,pe.perNumeroIdentificacion,pe.perTipoIdentificacion) AS b ON a.numeroRadicacion = b.numeroRadicacion AND a.periodoLiquidado = b.periodoLiquidado 
+					AND a.perNumeroIdentificacion =b.perNumeroIdentificacion and a.perTipoIdentificacion = b.perTipoIdentificacion
+		LEFT JOIN
+			(SELECT solNumeroRadicacion AS numeroRadicacion, dsaPeriodoLiquidado AS periodoLiquidado,pe.perNumeroIdentificacion,pe.perTipoIdentificacion, SUM(dsaValorTotal) AS saldo
+					FROM DetalleSubsidioAsignado
+					INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+					INNER JOIN Empleador e on e.empId = dsaEmpleador
+					INNER JOIN Empresa em on em.empId = e.empEmpresa
+					INNER JOIN Persona pe on pe.perId = em.empPersona
+					INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+					INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+					INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+					INNER JOIN Persona pa ON pa.perId = afiPersona
+					WHERE solNumeroRadicacion IN (:numerosRadicados)
+					AND pa.perTipoIdentificacion = :tipoIdentificacion
+					AND pa.perNumeroIdentificacion = :numeroIdentificacion
+					AND (casEstadoTransaccionSubsidio = 'APLICADO' OR casEstadoTransaccionSubsidio = 'ENVIADO')
+					GROUP BY solNumeroRadicacion, dsaPeriodoLiquidado,pe.perNumeroIdentificacion, pe.perTipoIdentificacion) AS c ON a.numeroRadicacion = c.numeroRadicacion AND a.periodoLiquidado = c.periodoLiquidado AND 
+					a.perNumeroIdentificacion = c.perNumeroIdentificacion and a.perTipoIdentificacion = c.perTipoIdentificacion
+		LEFT JOIN 
+			(SELECT solNumeroRadicacion AS numeroRadicacion, dsaPeriodoLiquidado AS periodoLiquidado,pe.perNumeroIdentificacion,pe.perTipoIdentificacion, SUM(dsaValorTotal) AS retirado
+					FROM DetalleSubsidioAsignado
+					INNER JOIN CuentaAdministradorSubsidio ON dsaCuentaAdministradorSubsidio = casId
+					INNER JOIN Empleador e on e.empId = dsaEmpleador
+					INNER JOIN Empresa em on em.empId = e.empEmpresa
+					INNER JOIN Persona pe on pe.perId = em.empPersona
+					INNER JOIN SolicitudLiquidacionSubsidio ON slsId = dsaSolicitudLiquidacionSubsidio 
+					INNER JOIN Solicitud ON solId = slsSolicitudGlobal
+	                INNER JOIN Afiliado ON afiId = dsaAfiliadoPrincipal
+	                INNER JOIN Persona pa ON pa.perId = afiPersona
+	                INNER JOIN Persona pem on pem.perId = dsacondicionpersonaempleador
+	                where solNumeroRadicacion in (:numerosRadicados)
+	                and pa.perTipoIdentificacion = :tipoIdentificacion
+	                and pa.perNumeroIdentificacion = :numeroIdentificacion
+	                and pem.perTipoIdentificacion = :tipoIdentificacionEmpleador
+	                AND casEstadoTransaccionSubsidio = 'COBRADO'
+	                and dsaPeriodoLiquidado =  dsaPeriodoLiquidado
+	                and pem.perNumeroIdentificacion = :numeroIdentificacionEmpleador
+	                GROUP BY solNumeroRadicacion, dsaPeriodoLiquidado,pe.perNumeroIdentificacion, pe.perTipoIdentificacion) AS d ON a.numeroRadicacion = d.numeroRadicacion AND a.periodoLiquidado = d.periodoLiquidado and 
+					a.perNumeroIdentificacion = d.perNumeroIdentificacion and a.perTipoIdentificacion = d.perTipoIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.correos.personas.comunicados.137.138">
+		<description>Consulta que devuelve la información de los destinatarios de los comunicados de la 137 y 138</description>
+		<query>
+			SELECT dbo.Persona.perNumeroIdentificacion,dbo.Ubicacion.ubiEmail,dbo.Ubicacion.ubiAutorizacionEnvioEmail 
+			FROM dbo.Persona 
+			INNER JOIN dbo.Ubicacion ON dbo.Persona.perUbicacionPrincipal = dbo.Ubicacion.ubiId
+			WHERE dbo.Persona.perid IN (:listadoIdPersonas)
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.ultimo.registroAplicacionValidacionSubsidio.por.idSolicitudLiqSubsidio">
+		<description>Consulta que obtiene el ultimo registro de la tabla aplicacion validacion subsidio relacionado a una solicitud de liquidacion de subsidio</description>
+		<query>
+			SELECT DISTINCT AplicacionValidacionSubsidio.avsId,ConjuntoValidacionSubsidio.cvsTipoValidacion
+			FROM AplicacionValidacionSubsidio
+			INNER JOIN ConjuntoValidacionSubsidio ON ConjuntoValidacionSubsidio.cvsId = AplicacionValidacionSubsidio.avsConjuntoValidacionSubsidio
+			WHERE  AplicacionValidacionSubsidio.avsSolicitudLiquidacionSubsidio = :idSolicitudLiquidacionSubsidio
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.eliminar.registroAplicacionValidacionSubsidioPersona.por.idAplicacionValidacionAsociado">
+		<description>Consulta que se encarga de eliminar el registro de la tabla aplicacion validacion subsidio persona asociado al id aplicacion subsidio</description>
+		<query>
+			DELETE FROM AplicacionValidacionSubsidioPersona WHERE avpAplicacionValidacionSubsidio IN (:idAplicacionSubsidio) 
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.obtener.periodosMontos.programadosDispersados">
+		<description>Consulta que obtiene los periodos y el monto de lo liquidado para las cuotas dispersadas</description>
+		<query>
+			SELECT DetalleSubsidioAsignadoProgramado.dprPeriodoLiquidado AS periodo, SUM(DetalleSubsidioAsignadoProgramado.dprValorTotal) AS total
+			FROM DetalleSubsidioAsignadoProgramado
+			INNER JOIN SolicitudLiquidacionSubsidio ON DetalleSubsidioAsignadoProgramado.dprSolicitudLiquidacionSubsidio = SolicitudLiquidacionSubsidio.slsId
+			INNER JOIN Solicitud ON dbo.SolicitudLiquidacionSubsidio.slsSolicitudGlobal = dbo.Solicitud.solId
+			AND dbo.Solicitud.solNumeroRadicacion = :numeroRadicacion
+			WHERE DetalleSubsidioAsignadoProgramado.dprEstado = 'DERECHO_ASIGNADO'
+			GROUP BY DetalleSubsidioAsignadoProgramado.dprPeriodoLiquidado
+			UNION
+			SELECT DetalleSubsidioAsignado.dsaPeriodoLiquidado AS periodo, SUM(DetalleSubsidioAsignado.dsaValorTotal) AS total
+			FROM DetalleSubsidioAsignado
+			INNER JOIN SolicitudLiquidacionSubsidio ON DetalleSubsidioAsignado.dsaSolicitudLiquidacionSubsidio = SolicitudLiquidacionSubsidio.slsId
+			INNER JOIN Solicitud ON SolicitudLiquidacionSubsidio.slsSolicitudGlobal = Solicitud.solId
+			AND Solicitud.solNumeroRadicacion = :numeroRadicacion
+			GROUP BY DetalleSubsidioAsignado.dsaPeriodoLiquidado
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.infoUbicacion.trabajador.admin">
+		<description>Consulta que obtiene la información relevante de la ubicación sea del trabajdor o del administrador de la liq de fallecimiento dispersada</description>
+		<query>
+			SELECT 
+			Ubicacion.ubiDireccionFisica, Municipio.munNombre, Departamento.depNombre,
+			CASE 
+				WHEN Ubicacion.ubiTelefonoCelular IS NOT NULL
+				THEN Ubicacion.ubiTelefonoCelular
+				ELSE CONCAT(Ubicacion.ubiIndicativoTelFijo,' ',Ubicacion.ubiTelefonoFijo)
+			END AS telefono
+			FROM Persona
+			INNER JOIN Ubicacion ON dbo.Ubicacion.ubiId = Persona.perUbicacionPrincipal
+			INNER JOIN Municipio ON dbo.Municipio.munId = Ubicacion.ubiMunicipio
+			INNER JOIN Departamento ON dbo.Departamento.depId = Municipio.munDepartamento
+			WHERE perId = :idPersona
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.registros.trabajador.vista360">
+		<description>Consulta que obtiene los estados de los nyumeros de radicados sea masiva o especifica para la vista 360 trabajador</description>
+		<query>
+			SELECT 
+			Solicitud.solNumeroRadicacion, 
+			CASE 
+				WHEN SolicitudLiquidacionSubsidio.slsTipoLiquidacion = 'MASIVA' 
+				THEN Solicitud.solResultadoProceso
+				ELSE SolicitudLiquidacionSubsidio.slsEstadoLiquidacion
+			END AS estado,
+			Solicitud.solResultadoProceso
+			FROM Solicitud
+			INNER JOIN SolicitudLiquidacionSubsidio ON Solicitud.solId = SolicitudLiquidacionSubsidio.slsSolicitudGlobal
+			WHERE Solicitud.solNumeroRadicacion IN (:lstNumeroRadicados)
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.historico.estados.solicitud.liquidacion">
+		<query>
+		SELECT hslEstadoLiquidacion, hslSolicitudLiquidacionSubsidio, MAX(hslTimeStamp) AS fecha, MAX(hslNombreUsuario) as revNombreUsuario,hslObservacionesSegundoNivel,hslRazonRechazoLiquidacion
+		FROM HistoricoSolicitudLiquidacionSubsidio
+		WHERE hslSolicitudLiquidacionSubsidio = :identificadorSolicitud
+		GROUP BY hslEstadoLiquidacion, hslSolicitudLiquidacionSubsidio,hslObservacionesSegundoNivel,hslRazonRechazoLiquidacion
+		ORDER BY fecha
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.validar.existencia.beneficiarios.bloqueo">
+		<description>Actualiza poniendo identificador a persona a los beneficiarios que si existen en la base de datos
+					y que serán bloqueados en subsidio monetario</description>
+		<query>
+			UPDATE bbc
+			SET bbc.bbcPersona = per.perId
+			FROM BloqueoBeneficiarioCuotaMonetaria bbc
+			INNER JOIN Persona per ON per.perNumeroIdentificacion = bbc.bbcNumeroIdentificacionBeneficiario AND per.perTipoIdentificacion = bbc.bbcTipoIdentificacionBeneciario 
+			INNER JOIN Beneficiario ben ON ben.benPersona = per.perId
+			WHERE bbc.bbcCargueBloqueoCuotaMonetaria = :idCargueBloqueoCuotaMonetaria			
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.validar.existencia.beneficiarios.archivo.bloqueo">
+		<description>Verifica la existencia de los beneficiarios cargados en el archivo de bloqueo</description>
+		<query>
+			SELECT per.perId
+			FROM Persona per
+			INNER JOIN Beneficiario ben ON ben.benPersona = per.perId
+			WHERE per.perTipoIdentificacion = :tipoIdentificacion AND per.perNumeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.validar.existencia.beneficiarios.bloqueo.aud">
+		<description>Actualiza poniendo identificador a persona a los beneficiarios que si existen en la base de datos
+					y que serán bloqueados en subsidio monetario</description>
+		<query>
+			UPDATE bbcAud
+			SET bbcAud.bbcPersona = bbc.bbcPersona
+			FROM aud.BloqueoBeneficiarioCuotaMonetaria_aud bbcAud
+			INNER JOIN BloqueoBeneficiarioCuotaMonetaria bbc on  bbc.bbcId = bbcAud.bbcId	
+			WHERE bbcAud.bbcCargueBloqueoCuotaMonetaria = :idCargueBloqueoCuotaMonetaria			
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="SubsidioMonetario.eliminar.beneficiarios.bloqueo.no.existentes.bloqueo">
+		<description>Eliminar todos los registros de la tabla</description>
+		<query>
+			DELETE FROM BloqueoBeneficiarioCuotaMonetaria 
+			WHERE bbcPersona IS NULL 
+			AND bbcCargueBloqueoCuotaMonetaria = :idCargueBloqueoCuotaMonetaria			
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.eliminar.beneficiarios.bloqueo.no.existentes.bloqueo.aud">
+		<description>Eliminar todos los registros de la tabla</description>
+		<query>
+			DELETE FROM aud.BloqueoBeneficiarioCuotaMonetaria_aud 
+			WHERE bbcPersona IS NULL 
+			AND bbcCargueBloqueoCuotaMonetaria = :idCargueBloqueoCuotaMonetaria			
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.radicar.bloqueoCM.beneficiarios.aud">
+		<description>Radica carga de bloqueo cuota monetaria</description>
+		<query>
+			UPDATE aud.CargueBloqueoCuotaMonetaria_aud 
+			SET cabRadicado = 1
+			WHERE cabId = :idCargueBloqueoCuotaMonetaria
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.eliminar.bloqueoBeneficiarioCuotaMonetaria.por.id.cargue.aud">
+		<description>Eliminar todos los registros de la tabla que tengan relacion con </description>
+		<query>
+			DELETE  
+			FROM aud.BloqueoBeneficiarioCuotaMonetaria_aud
+			WHERE bbcCargueBloqueoCuotaMonetaria = :idCargueBloqueoCuotaMonetaria
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.eliminar.cargueBloqueoCuotaMonetaria.por.id.aud">
+		<description>Eliminar todos los registros de la tabl </description>
+		<query>
+			DELETE FROM aud.CargueBloqueoCuotaMonetaria_aud 
+			WHERE cabId = :idCargueBloqueoCuotaMonetaria		
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.beneficiarios.por.filtros">
+		<query>
+		select
+		per.perid, 
+		per.perTipoIdentificacion,
+		per.perNumeroIdentificacion,
+		per.perRazonSocial,
+	 	est.benEstadoBeneficiarioAfiliado
+		 from personaDetalle as perdet
+		 inner join persona as per on per.perid = perdet.pedpersona
+		 inner join VW_EstadoAfiliacionBeneficiario est on est.perId = per.perId 
+		 where (:numeroIdentificacion IS NULL OR per.pernumeroidentificacion = :numeroIdentificacion)
+		 AND (:tipoIdentificacion IS NULL OR per.perTipoIdentificacion = :tipoIdentificacion)
+		 AND (:primerNombre IS NULL  OR per.perPrimerNombre LIKE  :primerNombre)
+		 AND (:segundoNombre IS NULL OR per.perSegundoNombre LIKE  :segundoNombre)
+		 AND (:primerApellido IS NULL OR per.perPrimerApellido LIKE :primerApellido)
+		 AND (:segundoApellido IS NULL OR per.perSegundoApellido LIKE  :segundoApellido)
+		 AND (:fechaNacimiento = '1800-01-01' OR perdet.pedFechaNacimiento = :fechaNacimiento)	
+ 		</query>
+	</named-native-query>
+	<named-native-query
+			name="SubsidioMonetario.buscar.informacion.afiliado.relacion.beneficiario">
+		<query>
+		SELECT benId, perId, perTipoIdentificacion, perNumeroIdentificacion, perRazonSocial, benPersona 
+		FROM Beneficiario
+		INNER JOIN dbo.Afiliado A on Beneficiario.benAfiliado = A.afiId
+		INNER JOIN dbo.Persona P on P.perId = A.afiPersona
+		WHERE benId = :benId
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="SubsidioMonetario.consultar.afiliado.por.beneficiario">
+		<query>
+		select perAfi.perId, benPersona, benId  from Beneficiario ben
+		join Persona perBen on perBen.perId = ben.benPersona
+		Join Afiliado afi on afi.afiId = ben.benAfiliado
+		join Persona perAfi on perAfi.perId = afi.afiPersona
+		where perBen.perNumeroIdentificacion = :benNumeroIdentificacion
+		and perBen.perTipoIdentificacion = :tipoIdentificacionBen
+		and perAfi.perTipoIdentificacion = :tipoIdentificacionAfi
+		and perAfi.perNumeroIdentificacion = :afiNumeroIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="SubsidioMonetario.consultar.beneficiarios.por.tipoYNumeroIdentificacion">
+		<query>
+		select
+		per.perid, 
+		per.perTipoIdentificacion,
+		per.perNumeroIdentificacion,
+		per.perRazonSocial,
+	 	est.benEstadoBeneficiarioAfiliado
+		 from personaDetalle as perdet
+		 inner join persona as per on per.perid = perdet.pedpersona
+		 inner join VW_EstadoAfiliacionBeneficiario est on est.perId = per.perId 
+		 where (:numeroIdentificacion IS NULL OR per.pernumeroidentificacion = :numeroIdentificacion)
+		 AND (:tipoIdentificacion IS NULL OR per.perTipoIdentificacion = :tipoIdentificacion)
+ 		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.beneficiarios.bloqueados">
+		<query>
+		select 
+		per.perTipoIdentificacion,
+		per.perNumeroIdentificacion,
+		per.perRazonSocial,
+		est.benEstadoBeneficiarioAfiliado,
+		bbc.bbcAsignacionCuotaPorOtraCCF,
+		bbc.bbcBeneficiarioComoAfiliadoOtraCCF,
+		bbc.bbcCausalBloqueo,
+		cab.cabPeriodoInicio,
+		cab.cabPeriodoFin,
+		cab.cabfechaCarga
+		FROM BloqueoBeneficiarioCuotaMonetaria bbc
+		INNER JOIN CargueBloqueoCuotaMonetaria cab on cab.cabId = bbc.bbcCargueBloqueoCuotaMonetaria
+		INNER JOIN Persona per on bbc.bbcPersona = per.perId
+		INNER JOIN VW_EstadoAfiliacionBeneficiario est on est.perId = per.perId	
+		WHERE bbc.bbcBloqueado = 1
+		AND bbc.bbcBeneficiario IS NULL
+ 		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.existencia.beneficiarios.bloqueados.core">
+		<query>
+		select top 1
+		per.perTipoIdentificacion,
+		per.perNumeroIdentificacion,
+		per.perRazonSocial,
+		est.benEstadoBeneficiarioAfiliado,
+		bbc.bbcAsignacionCuotaPorOtraCCF,
+		bbc.bbcBeneficiarioComoAfiliadoOtraCCF,
+		bbc.bbcCausalBloqueo,
+		cab.cabPeriodoInicio,
+		cab.cabPeriodoFin
+		FROM BloqueoBeneficiarioCuotaMonetaria bbc
+		INNER JOIN CargueBloqueoCuotaMonetaria cab on cab.cabId = bbc.bbcCargueBloqueoCuotaMonetaria
+		INNER JOIN Persona per on bbc.bbcPersona = per.perId
+		INNER JOIN VW_EstadoAfiliacionBeneficiario est on est.perId = per.perId	
+		WHERE bbc.bbcBloqueado = 1
+ 		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.beneficiarios.bloqueados.por.filtros">
+		<query>
+		SELECT DISTINCT
+			bbc.bbcId,
+			per.perId,
+			per.perTipoIdentificacion,
+			per.perNumeroIdentificacion,
+			per.perRazonSocial,
+			est.benEstadoBeneficiarioAfiliado,
+			bbc.bbcAsignacionCuotaPorOtraCCF,
+			bbc.bbcBeneficiarioComoAfiliadoOtraCCF,
+			bbc.bbcCausalBloqueo,
+			cab.cabPeriodoInicio,
+			cab.cabPeriodoFin,
+			ben.benTipoBeneficiario,
+            (CASE
+                    WHEN bbc.bbcBeneficiario IS NOT NULL THEN per2.perTipoIdentificacion
+                    ELSE NULL
+                END) AS perAfiTipoIdentificacion,
+            (CASE
+                    WHEN bbc.bbcBeneficiario IS NOT NULL THEN per2.perNumeroIdentificacion
+                    ELSE NULL
+                END) AS perAfiNumeroIdentificacion
+		FROM BloqueoBeneficiarioCuotaMonetaria bbc
+		INNER JOIN CargueBloqueoCuotaMonetaria cab ON cab.cabId = bbc.bbcCargueBloqueoCuotaMonetaria
+		INNER JOIN Persona per ON bbc.bbcPersona = per.perId
+		INNER JOIN PersonaDetalle ped ON ped.pedPersona = per.perId
+		INNER JOIN Beneficiario ben ON ben.benPersona = per.perId
+		INNER JOIN VW_EstadoAfiliacionBeneficiario est ON est.perId = per.perId
+		INNER JOIN Afiliado A ON ben.benAfiliado = A.afiId
+		INNER JOIN Persona P ON P.perId = A.afiPersona
+		LEFT JOIN Beneficiario ben2 ON bbc.bbcBeneficiario = ben2.benId
+		LEFT JOIN Afiliado afi2 ON ben2.benAfiliado = afi2.afiId
+		LEFT JOIN Persona per2 ON per2.perId = afi2.afiPersona
+		WHERE bbc.bbcBloqueado = 1
+		AND ((:numeroIdentificacion IS NULL OR per.perNumeroIdentificacion = :numeroIdentificacion)
+		AND (:tipoIdentificacion IS NULL OR per.perTipoIdentificacion = :tipoIdentificacion)
+		AND (:primerNombre IS NULL  OR per.perPrimerNombre LIKE  :primerNombre)
+		AND (:segundoNombre IS NULL OR per.perSegundoNombre LIKE  :segundoNombre)
+		AND (:primerApellido IS NULL OR per.perPrimerApellido LIKE :primerApellido)
+		AND (:segundoApellido IS NULL OR per.perSegundoApellido LIKE  :segundoApellido)
+		AND (:fechaNacimiento = '1800-01-01' OR ped.pedFechaNacimiento = :fechaNacimiento))
+ 		</query>
+	</named-native-query>
+
+	<named-native-query name="subsidioMonetario.consultar.tipoLiquidacion.aprobar">
+		<desciption>Consulta que muestra el tipo de liquidacion que se quiere aprobar cc liquidacion paralela</desciption>
+		<query>
+			SELECT sls.slsTipoLiquidacion
+			FROM solicitud sol
+			JOIN solicitudLiquidacionSubsidio sls ON sls.slsSolicitudGlobal = sol.solid
+			WHERE sol.solNumeroRadicacion = :numeroRadicado
+		</query>
+	</named-native-query>
+
+	<named-native-query name="SubsidioMonetario.consultar.personasLiquidacionEspecifica.sinCondiciones">
+		<desciption>Consulta que muestra el tipo de liquidacion que se quiere aprobar cc liquidacion paralela</desciption>
+		<query>
+			SELECT ple.pleEmpleador, ple.pleAfiliadoPrincipal, ple.pleBeneficiarioDetalle, ple.pleGrupoFamiliar, ple.pleEmpresa, pri.priPeriodo
+			FROM PersonaLiquidacionEspecifica ple
+			JOIN SolicitudLiquidacionSubsidio sls ON sls.slsId = ple.pleSolicitudLiquidacionSubsidio
+			JOIN Solicitud sol ON sol.solId = sls.slsSolicitudGlobal
+			JOIN PeriodoLiquidacion pel ON pel.pelSolicitudLiquidacionSubsidio = sls.slsId
+			JOIN Periodo pri ON pri.priId = pel.pelPeriodo
+			WHERE sol.solNumeroRadicacion = :numeroRadicado
+		</query>
+	</named-native-query>
+
+	<named-native-query name="SubsidioMonetario.consultarTipoNumeroDoc.persona">
+		<desciption>Consulta que obtiene Id de Persona por Tipo Y numero de Documento</desciption>
+		<query>
+			SELECT per.perId
+			FROM Persona per
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="SubsidioMonetario.consultarFecha.ultimoCorteAportes.liquidacionMasiva2">
+		<desciption>Consulta que permite obtener la fecha de corte de aportes para la última liquidación masiva ejecutada</desciption>
+		<query>
+			SELECT MAX(slsfechaCorteAporte)
+			FROM SolicitudLiquidacionSubsidio sls
+			INNER JOIN SOLICITUD sol on sls.slsSolicitudGlobal = sol.solId
+			WHERE  
+			slsfechainicio &lt; CAST(:fechaInicialLiquidacion as datetime)
+			and
+			slsTipoLiquidacion = 'MASIVA'
+			AND slsEstadoLiquidacion = 'CERRADA'
+			AND sol.solResultadoProceso = 'DISPERSADA'
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.beneficiarios.noExisten">
+		<query>
+		select 
+		bbc.bbcId,
+		bbc.bbcTipoIdentificacionBeneciario,
+		bbc.bbcNumeroIdentificacionBeneficiario,
+		bbc.bbcNombrePersona,
+		bbc.bbcAsignacionCuotaPorOtraCCF,
+		bbc.bbcBeneficiarioComoAfiliadoOtraCCF,
+		bbc.bbcCausalBloqueo,
+		bbc.bbcNumLinea
+		FROM BloqueoBeneficiarioCuotaMonetaria bbc
+		WHERE  bbcCargueBloqueoCuotaMonetaria= :idCargueBloqueoCuotaMonetaria and bbcPersona is null
+ 		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="SubsidioMonetario.consultar.entidadesDescuento">
+		<query>
+			select entd.endId, entd.endNombre
+			FROM EntidadDescuento entd
+ 		</query>
+	</named-native-query>
+	<named-native-query
+		name="SubsidioMonetario.consultar.afiliacion.couta.monetaria.ivr">
+		<query>
+		SELECT CASE WHEN subsidio.fechaCobro IS NOT NULL THEN '212' ELSE '210' END AS resultado,
+		subsidio.fechaCobro,
+		SUM (subsidio.casValorRealTransaccion) AS valorAcumulado
+		FROM Persona per
+		INNER JOIN Afiliado afi ON afi.afiPersona = per.perId
+		INNER JOIN (SELECT roaAfiliado FROM RolAfiliado GROUP BY roaAfiliado) roa ON roa.roaAfiliado = afi.afiId
+		LEFT JOIN (SELECT dsa.dsaAfiliadoPrincipal, cas.casValorRealTransaccion, cas.casId,
+		(SELECT CONVERT (DATE, MAX (dsa1.dsaFechaHoraCreacion)) FROM DetalleSubsidioAsignado dsa1 
+		INNER JOIN CuentaAdministradorSubsidio cas1 ON cas1.casId = dsa1.dsaCuentaAdministradorSubsidio
+		WHERE cas1.casTipoTransaccionSubsidio = 'ABONO'
+		AND dsa1.dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO'
+		AND cas1.casEstadoTransaccionSubsidio IN ('ENVIADO', 'APLICADO')
+		AND dsa1.dsaAfiliadoPrincipal = afi.afiId) AS fechaCobro
+		FROM DetalleSubsidioAsignado dsa 
+		INNER JOIN CuentaAdministradorSubsidio cas ON cas.casId = dsa.dsaCuentaAdministradorSubsidio
+		INNER JOIN Afiliado afi ON afi.afiId = dsa.dsaAfiliadoPrincipal
+		INNER JOIN Persona per ON per.perId = afi.afiPersona
+		INNER JOIN administradorSubsidio asu ON asu.asuId = cas.casAdministradorSubsidio
+		WHERE cas.casTipoTransaccionSubsidio = 'ABONO'
+		AND dsa.dsaOrigenRegistroSubsidio IN ('RETIRO_PARCIAL', 'LIQUIDACION_SUBSIDIO_MONETARIO')
+		AND cas.casEstadoTransaccionSubsidio IN ('ENVIADO', 'APLICADO')
+		AND per.perTipoIdentificacion = :tipoDocumento AND per.perNumeroIdentificacion = :numeroDocumento
+		AND asu.asuPersona = afi.afiPersona
+		GROUP BY dsa.dsaAfiliadoPrincipal, casId, cas.casValorRealTransaccion, afi.afiId) AS subsidio
+		ON subsidio.dsaAfiliadoPrincipal = afi.afiId
+		WHERE per.perTipoIdentificacion = :tipoDocumento
+		AND per.perNumeroIdentificacion = :numeroDocumento
+		GROUP BY afi.afiId, subsidio.fechaCobro
+ 		</query>
+	</named-native-query>
+	<named-native-query
+		name="SubsidioMonetario.consultar.listado.periodos.couta.monetaria.ivr">
+		<query>
+		SELECT SUM (dsa.dsaValorTotal) AS valorPago, 
+		dsa.dsaPeriodoLiquidado AS periodoSubsidio, 
+		CASE WHEN cas.casMedioDePagoTransaccion = 'EFECTIVO' THEN 'G'
+		WHEN cas.casMedioDePagoTransaccion = 'TARJETA' THEN 'J'
+		WHEN cas.casMedioDePagoTransaccion = 'TRANSFERENCIA' AND cas.casTipoCuentaAdmonSubsidio = 'DAVIPLATA' THEN 'D'
+		WHEN cas.casMedioDePagoTransaccion = 'TRANSFERENCIA' AND cas.casTipoCuentaAdmonSubsidio != 'DAVIPLATA' THEN 'T'
+		END AS modalidadPago
+		FROM Persona per
+		INNER JOIN Afiliado afi ON afi.afiPersona = per.perId
+		INNER JOIN (SELECT roaAfiliado FROM RolAfiliado GROUP BY roaAfiliado) roa ON roa.roaAfiliado = afi.afiId
+		INNER JOIN (SELECT MAX (dsa.dsaPeriodoLiquidado) AS dsaPeriodoLiquidado, dsa.dsaAfiliadoPrincipal
+			FROM DetalleSubsidioAsignado dsa 
+			INNER JOIN CuentaAdministradorSubsidio cas ON cas.casId = dsa.dsaCuentaAdministradorSubsidio
+			INNER JOIN Afiliado afi ON afi.afiId = dsa.dsaAfiliadoPrincipal
+			INNER JOIN Persona per ON per.perId = afi.afiPersona
+			INNER JOIN administradorSubsidio asu ON asu.asuId = cas.casAdministradorSubsidio 
+			WHERE cas.casTipoTransaccionSubsidio = 'ABONO'
+			AND dsa.dsaOrigenRegistroSubsidio IN ('RETIRO_PARCIAL', 'LIQUIDACION_SUBSIDIO_MONETARIO')
+			AND cas.casEstadoTransaccionSubsidio IN ('ENVIADO', 'APLICADO')
+			AND per.perTipoIdentificacion = :tipoDocumento AND per.perNumeroIdentificacion = :numeroDocumento
+			AND asu.asuPersona = afi.afiPersona
+			GROUP BY dsa.dsaAfiliadoPrincipal
+		) AS periodoLiq
+		ON periodoLiq.dsaAfiliadoPrincipal = afi.afiId
+		INNER JOIN DetalleSubsidioAsignado dsa ON dsa.dsaAfiliadoPrincipal = afi.afiId AND periodoLiq.dsaPeriodoLiquidado = dsa.dsaPeriodoLiquidado
+		INNER JOIN CuentaAdministradorSubsidio cas ON cas.casId = dsa.dsaCuentaAdministradorSubsidio
+		INNER JOIN administradorSubsidio asu ON asu.asuId = cas.casAdministradorSubsidio
+		WHERE asu.asuPersona = afi.afiPersona
+		GROUP BY dsa.dsaPeriodoLiquidado, cas.casMedioDePagoTransaccion, cas.casTipoCuentaAdmonSubsidio
+	 </query>
+	</named-native-query>
+	<named-native-query
+		name="SubsidioMonetario.consultar.liquidacion.fallecimiento">
+		<description>Constante que permite obtener abonos que han sido originados de una liquidación por fallecimiento</description>
+		<query>
+			select so.solNumeroRadicacion, so.solFechaRadicacion, padim.perTipoIdentificacion, padim.perNumeroIdentificacion, padim.perRazonSocial, dsa.dsaPeriodoLiquidado,
+            dsa.dsaValorSubsidioMonetario, dsa.dsaValorDescuento, dsa.dsaValorTotal, dsa.dsaFechaHoraCreacion, cas.casMedioDePagoTransaccion   
+			from CuentaAdministradorSubsidio cas
+			inner join SolicitudLiquidacionSubsidio sls on sls.slsId=cas.casSolicitudLiquidacionSubsidio
+			inner join Solicitud so on so.solid = sls.slsSolicitudGlobal
+			inner join DetalleSubsidioAsignado dsa on dsa.dsaCuentaAdministradorSubsidio=cas.casid
+			inner join AdministradorSubsidio asu on asu.asuId=dsa.dsaAdministradorSubsidio
+			inner join Persona padim on asu.asuPersona= padim.perId
+			inner join Afiliado on afiId =dsaAfiliadoPrincipal 
+			inner join Persona pafil on pafil.perId = afiPersona
+            WHERE (:tipoIdentificacion IS NULL OR pafil.perTipoIdentificacion = :tipoIdentificacion) 
+            AND (:numeroIdentificacion IS NULL OR pafil.perNumeroIdentificacion = :numeroIdentificacion)
+            AND (:numeroOperacion IS NULL OR so.solNumeroRadicacion=:numeroOperacion)
+            AND (:medioPago IS NULL OR cas.casMedioDePagoTransaccion=:medioPago)			
+			AND (:fechaInicio IS NULL  OR sls.slsFechaDispersion BETWEEN :fechaInicio AND :fechaFin)
+			AND (CONVERT(varchar,:fechaProgramada,23) IS NULL OR CONVERT(varchar,dsa.dsaFechaHoraCreacion,23) = CONVERT(varchar,:fechaProgramada,23))
+			AND (:periodoRegular IS NULL OR CAST(dsa.dsaPeriodoLiquidado AS DATE)=(CAST(:periodoRegular AS DATE)))			
+			AND slsEstadoLiquidacion='CERRADA'
+			AND solResultadoProceso='DISPERSADA'
+			AND slsTipoLiquidacion='SUBSUDIO_DE_DEFUNCION' 
+                   
+		</query>
+	</named-native-query>
+
+
+	<named-native-query name="SSubsidioMonetario.Actualizar.ECM.Archivo.Liquidacion.Sin.Derecho">
+		<query>
+			update ArchivoLiquidacionSubsidio set alsIdentificadorECMPersonasSinDerecho = :ecmArchivo
+			from ArchivoLiquidacionSubsidio als
+			join SolicitudLiquidacionSubsidio sl on sl.slsId = als.alsSolicitudLiquidacionSubsidio
+			join Solicitud sol on sol.solId = sl.slsSolicitudGlobal
+			where solNumeroRadicacion = :numeroRadicacion
+
+		</query>
+	</named-native-query>
+	<named-native-query name="SubsidioMonetario.obtener.info.subsidio.por.afiliado.beneficiario">
+		<description>Consulta encargada de obtener la información del subsidio por afiliado o beneficiario</description>
+		<query>
+			
+
+
+if(:numeroIdAfi is not null and :numeroIdBen is not null)
+	begin
+		select distinct
+		pafi.perTipoIdentificacion tipoIdAfiliado, pafi.perNumeroIdentificacion	numeroIdAfiliado, pafi.perRazonSocial nombreAfiliado,
+		pemp.perTipoIdentificacion tipoIdEmpleador, pemp.perNumeroIdentificacion numeroIdEmpleador, pemp.perRazonSocial razonSocialEmpleador,
+		grfId grupoFamiliar,
+		padm.perTipoIdentificacion tipoIdAdmin, padm.perNumeroIdentificacion numeroIdAdmin, padm.perRazonSocial nombreAdmin,
+		dsaPeriodoLiquidado periodo,
+		pben.perTipoIdentificacion benTipoIdentificacion, pben.perNumeroIdentificacion benNumeroIdentificacion,
+		case
+		when benTipoBeneficiario IN ('HIJO_BIOLOGICO', 'HIJO_ADOPTIVO','HIJASTRO','HERMANO_HUERFANO_DE_PADRES','BENEFICIARIO_EN_CUSTODIA') then 'HIJO'
+		when benTipoBeneficiario IN ('PADRE','MADRE') then 'PADRES'
+		else '' end parentesco,
+		slsFechaInicio fechaInicioLiquidacion, dsaTipoCuotaSubsidio tipoCuotaSubsidio, slsTipoLiquidacion tipoLiquidacion,dsaEstado estadoDerecho,
+		dsaValorTotal valorCuota,dsaValorDescuento valorDescuento
+		from dbo.Solicitud
+		inner join dbo.SolicitudLiquidacionSubsidio on solid = slsSolicitudGlobal
+		inner join dbo.DetalleSubsidioAsignado on slsid = dsaSolicitudLiquidacionSubsidio
+		inner join dbo.BeneficiarioDetalle on dsaBeneficiarioDetalle =  bedid 
+		inner join dbo.Beneficiario on bedId =  benBeneficiarioDetalle and dsaGrupoFamiliar = benGrupoFamiliar
+		inner join dbo.Persona pben on benPersona = pben.perid
+		inner join dbo.Afiliado on dsaAfiliadoPrincipal = afiid
+		inner join dbo.Persona pafi on afipersona = pafi.perid
+		inner join dbo.Empleador e on dsaEmpleador = e.empId
+		inner join dbo.Empresa ee on e.empempresa = ee.empId
+		inner join dbo.Persona pemp on emppersona = pemp.perid
+		inner join dbo.GrupoFamiliar on dsaGrupoFamiliar = grfid
+		inner join dbo.AdministradorSubsidio on dsaAdministradorSubsidio = asuid
+		inner join dbo.Persona padm on asuPersona = padm.perid
+		inner join dbo.PeriodoLiquidacion on slsId = pelSolicitudLiquidacionSubsidio
+		where pafi.perTipoIdentificacion = :tipoIdAfi
+		and pafi.Pernumeroidentificacion = :numeroIdAfi
+		and pben.perTipoIdentificacion = :tipoIdBen
+		and pben.Pernumeroidentificacion = :numeroIdBen
+		and dsaEstado = 'DERECHO_ASIGNADO'
+		and dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO'
+		and pelTipoPeriodo = 'REGULAR'
+		order by grfId, pben.perTipoIdentificacion, pben.perNumeroIdentificacion, dsaPeriodoLiquidado
+	end
+else
+	begin
+		select distinct
+		pafi.perTipoIdentificacion tipoIdAfiliado, pafi.perNumeroIdentificacion	numeroIdAfiliado, pafi.perRazonSocial nombreAfiliado,
+		pemp.perTipoIdentificacion tipoIdEmpleador, pemp.perNumeroIdentificacion numeroIdEmpleador, pemp.perRazonSocial razonSocialEmpleador,
+		grfId grupoFamiliar,
+		padm.perTipoIdentificacion tipoIdAdmin, padm.perNumeroIdentificacion numeroIdAdmin, padm.perRazonSocial nombreAdmin,
+		dsaPeriodoLiquidado periodo,
+		pben.perTipoIdentificacion benTipoIdentificacion, pben.perNumeroIdentificacion benNumeroIdentificacion,
+		case
+		when benTipoBeneficiario IN ('HIJO_BIOLOGICO', 'HIJO_ADOPTIVO','HIJASTRO','HERMANO_HUERFANO_DE_PADRES','BENEFICIARIO_EN_CUSTODIA') then 'HIJO'
+		when benTipoBeneficiario IN ('PADRE','MADRE') then 'PADRES'
+		else '' end parentesco,
+		slsFechaInicio fechaInicioLiquidacion, dsaTipoCuotaSubsidio tipoCuotaSubsidio, slsTipoLiquidacion tipoLiquidacion,dsaEstado estadoDerecho,
+		dsaValorTotal valorCuota,dsaValorDescuento valorDescuento
+		from dbo.Solicitud
+		inner join dbo.SolicitudLiquidacionSubsidio on solid = slsSolicitudGlobal
+		inner join dbo.DetalleSubsidioAsignado on slsid = dsaSolicitudLiquidacionSubsidio
+		inner join dbo.BeneficiarioDetalle on dsaBeneficiarioDetalle =  bedid 
+		inner join dbo.Beneficiario on bedId =  benBeneficiarioDetalle and dsaGrupoFamiliar = benGrupoFamiliar
+		inner join dbo.Persona pben on benPersona = pben.perid
+		inner join dbo.Afiliado on dsaAfiliadoPrincipal = afiid
+		inner join dbo.Persona pafi on afipersona = pafi.perid
+		inner join dbo.Empleador e on dsaEmpleador = e.empId
+		inner join dbo.Empresa ee on e.empempresa = ee.empId
+		inner join dbo.Persona pemp on emppersona = pemp.perid
+		inner join dbo.GrupoFamiliar on dsaGrupoFamiliar = grfid
+		inner join dbo.AdministradorSubsidio on dsaAdministradorSubsidio = asuid
+		inner join dbo.Persona padm on asuPersona = padm.perid
+		inner join dbo.PeriodoLiquidacion on slsId = pelSolicitudLiquidacionSubsidio
+		where pafi.perTipoIdentificacion = :tipoIdAfi
+		and pafi.Pernumeroidentificacion = :numeroIdAfi
+		and dsaEstado = 'DERECHO_ASIGNADO'
+		and dsaOrigenRegistroSubsidio = 'LIQUIDACION_SUBSIDIO_MONETARIO'
+		and pelTipoPeriodo = 'REGULAR'
+		order by grfId, pben.perTipoIdentificacion, pben.perNumeroIdentificacion, dsaPeriodoLiquidado
+	end
+
+		</query>
+	</named-native-query>
+	<!-- ESPACIO PARA NAMED STORED PROCEDURES -->
+	<named-stored-procedure-query
+		name="stored.procedure.consultar.especie.liquidacion.manual"
+		procedure-name="Subsidio_Especie_Liq_Manual">
+		<parameter
+			class="java.lang.String"
+			mode="IN"
+			name="tipoDocumento"
+		 />
+		<parameter
+			class="java.lang.String"
+			mode="IN"
+			name="numeroDocumento"
+		 />
+		<parameter
+			class="java.lang.String"
+			mode="IN"
+			name="Periodo"
+		 />
+	</named-stored-procedure-query>
+		<named-stored-procedure-query
+		name="SubsidioMonetario.StoredProcedures.LiquidacionesFallecimientoProgramado"
+		procedure-name="USP_SM_GET_LiquidacionesFallecimientoProgramado">
+		<parameter class="java.lang.String" mode="IN" name="sNumeroRadicado" />
+		<parameter class="java.lang.String" mode="IN" name="tipoIdentificacion" />
+		<parameter class="java.lang.String" mode="IN" name="numeroIdentificacion" />
+		<parameter class="java.lang.String" mode="IN" name="medioPago" />
+		<parameter class="java.lang.String" mode="IN" name="fechaInicio" />
+		<parameter class="java.lang.String" mode="IN" name="fechaFin" />
+		<parameter class="java.lang.String" mode="IN" name="periodoRegular" />
+		<parameter class="java.lang.String" mode="IN" name="fechaProgramadaPago" />
+		
+
+	</named-stored-procedure-query>
+</entity-mappings>

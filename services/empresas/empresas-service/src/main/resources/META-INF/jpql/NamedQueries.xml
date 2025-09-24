@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<named-query name="Empleadores.id.buscarTodos">
+		<query>
+            SELECT e FROM Empresa e 
+            JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+            WHERE e.idEmpresa =:idEmpresa
+        </query>
+	</named-query>
+
+	<!-- empleador es ahora un long -->
+	<named-query name="Empleador.sucursales.buscarTodos">
+		<query>
+            SELECT suempl FROM SucursalEmpresa suempl            
+            JOIN FETCH suempl.ubicacion u
+            LEFT JOIN FETCH suempl.codigoCIIU 
+            WHERE suempl.idEmpresa = :idEmpresa
+        </query>
+	</named-query>
+
+	<named-query name="Empleador.sucursales.buscar.por.idSucursalEmpresa">
+		<query>
+            SELECT suempl FROM SucursalEmpresa suempl            
+            JOIN FETCH suempl.ubicacion u
+            LEFT JOIN FETCH suempl.codigoCIIU 
+            WHERE suempl.idSucursalEmpresa = :idSucursalEmpresa
+        </query>
+	</named-query>
+
+	<named-query name="Empleador.ubicaciones.buscarTodos">
+		<query>
+            SELECT ue FROM UbicacionEmpresa ue               
+            LEFT JOIN FETCH ue.ubicacion
+            WHERE ue.idEmpresa = :idEmpresa 
+        </query>
+	</named-query>
+
+	<named-query name="Empleador.empresa.id">
+		<query>
+            SELECT emp FROM Empresa emp   
+            JOIN FETCH emp.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            WHERE emp.id = :idEmpresa 
+        </query>
+	</named-query>
+	<named-query name="Empleador.ubicacion.id">
+		<query>
+            SELECT ubi FROM Ubicacion ubi   
+            WHERE ubi.id = :idUbicacionEmpresa
+        </query>
+	</named-query>
+	<named-query name="Empleador.Empresa.consultarEmpresaPorPersona">
+		<query>
+			SELECT e FROM Empresa e
+			JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+			WHERE p.tipoIdentificacion = :tipoIdentificacion
+			AND p.numeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Empleador.Empresa.consultarUbicacionPrincipalPorEmpresa">
+		<query>
+			SELECT ube from UbicacionEmpresa ube
+			WHERE ube.idEmpresa = :idEmpresa
+			and ube.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL
+		</query>
+	</named-query>
+	<named-query name="Empleador.Persona.consultarPersona">
+		<query>
+			SELECT per FROM Persona per
+			WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query
+		name="Empresa.SucursalEmpresa.buscarSucursalPorCodigoNombreIdTrabajador">
+		<query>
+			SELECT sue FROM SucursalEmpresa sue
+			WHERE sue.codigo = :codigoSucursal
+			AND sue.idEmpresa =
+			(
+				SELECT empl.empresa.id FROM Empleador empl
+				WHERE empl.id =
+				(
+					SELECT roa.empleador.id from RolAfiliado roa
+					WHERE roa.afiliado.persona.id = :idPersonaCotizante
+					and roa.estadoAfiliado = com.asopagos.enumeraciones.personas.EstadoAfiliadoEnum.ACTIVO
+				)
+			)
+		</query>
+	</named-query>
+	<named-query
+		name="Empresa.SucursalEmpresa.consultarSucursalEmpresaPorCodigo">
+		<query>
+			SELECT sue FROM SucursalEmpresa sue
+			WHERE sue.codigo = :codigoSucursal
+		</query>
+	</named-query>
+
+	<named-query name="Empresa.SucursalEmpresa.buscarSucursalPorCodigoIdEmpresa">
+		<query>
+			SELECT sue FROM SucursalEmpresa sue
+			LEFT JOIN FETCH sue.ubicacion ubi
+			WHERE sue.codigo = :codigoSucursal
+			AND sue.idEmpresa = :idEmpresa
+		</query>
+	</named-query>
+	<named-query name="Empresa.SucursalEmpresa.buscarSucursalPorPersona">
+		<query>
+			<!-- SELECT sue FROM SucursalEmpresa sue, Empresa emp, Empleador empl, RolAfiliado roa, Afiliado afi, Persona per
+			WHERE sue.idEmpresa = emp.id
+			AND empl.empresa = emp.id
+			AND empl.id = roa.empleador
+			AND roa.afiliado = afi.id
+			AND afi.persona = per.id
+			AND per.id = :idPersonaCotizante
+			AND roa.estadoAfiliado = com.asopagos.enumeraciones.personas.EstadoAfiliadoEnum.ACTIVO
+			AND roa.sucursalEmpleador.idSucursalEmpresa = sue.idSucursalEmpresa
+			AND sue.codigo = :codigoSucursal -->
+			SELECT sue 
+			FROM SucursalEmpresa sue, 
+				Empresa emp, 
+				Empleador empl, 
+				RolAfiliado roa, 
+				Afiliado afi, 
+				Persona per
+			JOIN FETCH sue.ubicacion ubi
+			JOIN FETCH sue.codigoCIIU sucCiiu	
+            WHERE sue.idEmpresa = emp.id
+            AND empl.empresa = emp.id
+            AND empl.id = roa.empleador
+            AND roa.afiliado = afi.id
+            AND afi.persona = per.id
+            AND per.id = :idPersonaCotizante
+            AND roa.estadoAfiliado = com.asopagos.enumeraciones.personas.EstadoAfiliadoEnum.ACTIVO
+            AND roa.sucursalEmpleador.idSucursalEmpresa = sue.idSucursalEmpresa
+            AND sue.codigo = :codigoSucursal
+            AND (:idEmpresa IS NULL OR emp.id= :idEmpresa)
+		</query>
+	</named-query>
+	<named-query name="Fovis.Consultar.Oferente.Identificacion">
+		<description>Consulta que obtiene la información de un oferente, por identificación</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.OferenteModeloDTO(ofe,per,emp)
+			FROM Oferente ofe, Persona per, Empresa emp
+			WHERE ofe.idPersona = per.idPersona
+			AND (emp.idEmpresa = ofe.idEmpresa OR emp.persona.idPersona = per.idPersona)
+			AND per.tipoIdentificacion =:tipoIdentificacion
+			AND per.numeroIdentificacion =:numeroIdentificacion
+		</query>
+	</named-query>
+        <named-query name="Fovis.Consultar.Proveedor.Identificacion">
+		<description>Consulta que obtiene la información de un proveedor, por identificación</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.ProveedorModeloDTO(prov,per)
+			FROM Proveedor prov, Persona per	
+			WHERE prov.idPersona = per.idPersona 
+			AND per.tipoIdentificacion =:tipoIdentificacion
+			AND per.numeroIdentificacion =:numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query
+		name="Empresa.SucursalEmpresa.consultarSucursalPorCodigoEIdDeEmpresa">
+		<query>
+<!-- 			SELECT sue FROM SucursalEmpresa sue
+			WHERE sue.codigo = :codigoSucursal
+			AND sue.idEmpresa = :idEmpresa -->			
+			SELECT sue FROM Persona per, Empresa emp, SucursalEmpresa sue
+			WHERE per.numeroIdentificacion = :numeroIdAportante
+			AND per.tipoIdentificacion = :tipoIdAportante 
+			AND per.id = emp.persona 
+			AND emp.id = sue.idEmpresa
+			AND sue.codigo = :codigoSucursal
+		</query>
+	</named-query>
+        
+        <named-query
+		name="Empresa.SucursalEmpresa.consultarSucursalPorCodigoEIdDeEmpresa2">
+		<query>	
+			SELECT sue FROM Persona per, Empresa emp, SucursalEmpresa sue
+			WHERE per.numeroIdentificacion = :numeroIdEmpleador
+			AND per.tipoIdentificacion = :tipoIdEmpleador 
+			AND per.id = emp.persona 
+			AND emp.id = sue.idEmpresa
+			AND sue.codigo = :codigoSucursal
+		</query>
+	</named-query>
+        
+        <named-query
+		name="Empresa.SucursalEmpresa.consultarSucursalPorNombreEIdDeEmpresa">
+		<query>	
+			SELECT sue FROM Persona per, Empresa emp, SucursalEmpresa sue
+			WHERE per.numeroIdentificacion = :numeroIdEmpleador
+			AND per.tipoIdentificacion = :tipoIdEmpleador 
+			AND per.id = emp.persona 
+			AND emp.id = sue.idEmpresa
+			AND sue.nombre = :nombreSucursal
+		</query>
+	</named-query>
+
+	<named-query name="Empresa.consultar.razonSocial">
+		<query>
+			SELECT emp from Empresa emp
+			WHERE emp.persona.razonSocial LIKE :razonSocial
+		</query>
+	</named-query>
+
+	<named-query name="Empleador.Persona.consultarPersonaPorRazonSocial">
+		<query>
+			SELECT per FROM Persona per
+			WHERE per.razonSocial LIKE :razonSocial
+		</query>
+	</named-query>
+	
+	<named-query name="Empresa.Persona.consultarPersonaPorId">
+		<query>
+			SELECT per FROM Persona per
+			LEFT JOIN FETCH per.ubicacionPrincipal u
+			WHERE per.idPersona =:idPersona
+		</query>
+	</named-query>
+	
+	<named-query name="Empleador.Consultar.Oferente.RazonSocial">
+		<description>Consulta que obtiene la información de un oferente, por identificación</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.OferenteModeloDTO(ofe,per,emp)
+			FROM Oferente ofe, Persona per, Empresa emp
+			WHERE ofe.idPersona = per.idPersona
+			AND (emp.idEmpresa = ofe.idEmpresa OR emp.persona.idPersona = per.idPersona)
+			AND per.razonSocial LIKE :razonSocial
+		</query>
+	</named-query>
+        
+        <named-query name="Empleador.Consultar.Proveedor.RazonSocial">
+		<description>Consulta que obtiene la información de un proveedor, por razon social</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.ProveedorModeloDTO(prov,per)
+			FROM Proveedor prov, Persona per	
+			WHERE prov.idPersona = per.idPersona 
+			AND per.razonSocial LIKE :razonSocial
+		</query>
+	</named-query>
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="Empleador.SucursalEmpresa.consultarCodigos">
+		<query>
+            SELECT codigo = CAST(sue.sueCodigo AS INT) FROM SucursalEmpresa sue 
+            WHERE sue.sueEmpresa=:idEmpresa
+            ORDER BY codigo ASC
+        </query>
+	</named-native-query>
+
+    <named-native-query name="consultar.representante.legal.principal.by.id.empresa"
+        result-set-mapping="consultar.representante.legal.by.id.empresa.mapping">
+        <query>
+            SELECT per.*, ubi.*
+            FROM Empresa emp
+            JOIN Persona per ON (emp.empRepresentanteLegal = per.perId)
+            LEFT JOIN Ubicacion ubi ON (emp.empUbicacionRepresentanteLegal = ubi.ubiId)
+            WHERE emp.empId = :idEmpresa
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.representante.legal.suplente.by.id.empresa"
+        result-set-mapping="consultar.representante.legal.by.id.empresa.mapping">
+        <query>
+            SELECT per.*, ubi.*
+            FROM Empresa emp
+            JOIN Persona per ON (emp.empRepresentanteLegalSuplente = per.perId)
+            LEFT JOIN Ubicacion ubi ON (emp.empUbicacionRepresentanteLegalSuplente = ubi.ubiId)
+            WHERE emp.empId = :idEmpresa
+        </query>
+    </named-native-query>
+<!--49270BORRADOKT comentado ya que el glpi 49270 contempla la tabla LegalizacionDesembolosoProveedor pero esta nunca se inserta y no se utiliza-->
+ <!--   <named-native-query name="Empleador.Consultar.Proveedor.Legalizacion.desemboloso">
+            <description>Consulta que obtiene la información de un oferente, por identificación</description>
+            <query>
+                select 
+				leg.id,leg.idProveedor,leg.idPersona,leg.sldId,leg.numeroRadicacion,leg.valorADesembolsar,leg.porcentajeASembolsar,leg.fecha,
+                perNumeroIdentificacion,perRazonSocial,perTipoIdentificacion,perPrimerNombre,perSegundoNombre,perPrimerApellido,perSegundoApellido,
+                provEstado,provCuentaBancaria,
+                banCodigoPILA,banNombre,banMedioPago,banCodigo,
+                provTipoCuenta,provNumeroCuenta,provTipoIdentificacionTitular,provNumeroIdentificacionTitular,provDigitoVerificacionTitular,
+                provNombreTitularCuenta,provConcepto
+                from legalizacionDesembolosoProveedor leg
+                join proveedor prov on prov.provId = leg.idProveedor
+                join persona on prov.provPersona = persona.perId
+                join Banco on prov.provBanco = banco.banId
+				WHERE (:idlegalizacionDesembolosoProveedor IS NULL OR leg.id = :idlegalizacionDesembolosoProveedor)
+				AND (:numeroRadicacion = '0' OR numeroRadicacion = :numeroRadicacion)
+                AND (:sldId IS NULL OR sldId = :sldId)
+            </query>
+    </named-native-query>
+        -->
+    
+    <!-- ESPACIO PARA MAPEO DE NAMED QUERIES NATIVOS -->
+    <sql-result-set-mapping name="consultar.representante.legal.by.id.empresa.mapping">
+       <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+       <entity-result entity-class="com.asopagos.entidades.ccf.core.Ubicacion"></entity-result>
+    </sql-result-set-mapping>
+<!--    <sql-result-set-mapping name="Empleador.Consultar.Proveedor.Legalizacion.desemboloso.mapping">
+       <entity-result entity-class="com.asopagos.entidades.ccf.fovis.LegalizacionDesembolosoProveedor"></entity-result>
+    </sql-result-set-mapping>-->
+</entity-mappings>

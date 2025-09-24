@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<named-query name="AfiliacionPersonasWeb.consultar.departamentos">
+		<query>
+            SELECT d FROM Departamento d
+            ORDER BY d.codigo
+        </query>
+	</named-query>
+	<named-query name="AfiliacionPersonasWeb.consultar.municipios">
+		<query>
+            SELECT m FROM Municipio m
+            ORDER BY m.codigo
+        </query>
+	</named-query>
+
+	<named-query
+		name="afiliacion.buscar.solicitud.afiliacion.persona.empleador.estado">
+		<query> 
+			SELECT solPer FROM SolicitudAfiliacionPersona solPer 
+			JOIN FETCH solPer.rolAfiliado rol 
+			JOIN FETCH solPer.solicitudGlobal sol
+			JOIN FETCH rol.afiliado afi
+			WHERE sol.canalRecepcion= :canalRecepcion 
+			AND solPer.estadoSolicitud= :estadoSolicitud AND 
+			rol.empleador.idEmpleador= :idEmpleador 
+	</query>
+	</named-query>
+	<named-query name="afiliacion.estado.identificador.cargue.multiple.empleador">
+		<query> 
+		SELECT cam FROM CargueMultiple cam LEFT JOIN FETCH cam.empleador emp 
+		WHERE emp.idEmpleador= :idEmpleador ORDER BY cam.codigoCargueMultiple DESC 
+	    </query>
+	</named-query>
+	<named-query name="afiliacion.buscar.cargue.multiple.por.id">
+		<query> 
+		SELECT cam FROM CargueMultiple cam WHERE cam.idSolicitudAfiliacionMultiple= :idCargue
+	    </query>
+	</named-query>
+	<named-query name="afiliacion.buscar.empleador.por.id">
+		<query> 
+		SELECT emp FROM Empleador emp LEFT JOIN FETCH emp.empresa em LEFT JOIN FETCH em.persona per LEFT JOIN FETCH per.ubicacionPrincipal WHERE emp.idEmpleador= :idEmpleador
+	    </query>
+	</named-query>
+	<named-query name="afiliacion.buscar.carga.multiple.por.empleador.estado">
+		<query>   
+		SELECT car FROM CargueMultiple car LEFT JOIN FETCH car.empleador emp WHERE emp.idEmpleador= :idEmpleador and car.estado= :estado
+	   </query>
+	</named-query>
+	<named-query name="afiliacion.buscar.solicitud.carga.por.idCarga">
+		<query>   
+		SELECT sol FROM Solicitud sol WHERE sol.cargaAfiliacionMultiple= :idCargaMultiple
+	   </query>
+	</named-query>
+	<named-query name="afiliacion.buscar.dato.temporal.por.id.solicitud">
+		<query>   
+		SELECT dat FROM DatoTemporalSolicitud dat WHERE dat.Solicitud IN(:idSolicitud)
+	   </query>
+	</named-query>
+	<named-query
+		name="afiliacion.actualizar.estado.cargue.multiple.por.id.empleador">
+		<query>   
+		SELECT car FROM CargueMultiple car LEFT JOIN FETCH car.empleador emp WHERE emp.idEmpleador=:idEmpleador order by car.idSolicitudAfiliacionMultiple DESC
+	   </query>
+	</named-query>
+	<named-query name="afiliacion.buscar.file.log.definition.catalog">
+		<query>   
+		SELECT log FROM FileLoadedLog log LEFT JOIN FETCH log.fileLoaded filo WHERE filo.id= :fileLoadedId
+	   </query>
+	</named-query>
+	<named-query name="afiliacion.buscar.file.nombreCampos">
+		<query>   
+		SELECT new com.asopagos.dto.DefinicionCamposCargaDTO(fieldl.label,fieldl.fieldLoadCatalog.name) 
+		FROM FieldDefinitionLoad fieldl 
+		LEFT JOIN fieldl.fieldLoadCatalog flc
+		WHERE fieldl.lineDefinition.fileDefinition.id = :idFileDefinition
+	   </query>
+	</named-query>
+	<named-query name="afiliacion.buscar.persona.por.id">
+		<query> 
+		SELECT per FROM Persona per WHERE per.idPersona=:idPersona
+	    </query>
+	</named-query>
+	<named-query name="afiliacion.buscar.solicitud.afiliacion.persona.empleador">
+		<query> 
+			SELECT solPer, perDet, rol, sol, afi, emp, p, u, m
+			FROM SolicitudAfiliacionPersona solPer, PersonaDetalle perDet
+			JOIN solPer.rolAfiliado rol
+			JOIN solPer.solicitudGlobal sol
+			JOIN rol.afiliado afi
+			JOIN rol.empleador emp
+			JOIN afi.persona p
+			JOIN p.ubicacionPrincipal u
+			JOIN u.municipio m
+			WHERE 
+			(:tipoIdentificacionEmpleador IS NULL OR emp.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador)
+			AND (:numeroIdentificacionEmpleador IS NULL OR emp.empresa.persona.numeroIdentificacion = :numeroIdentificacionEmpleador)
+			AND (:tipoIdentificacionSolicitante IS NULL OR p.tipoIdentificacion = :tipoIdentificacionSolicitante)
+			AND (:numeroIdentificacionSolicitante IS NULL OR p.numeroIdentificacion = :numeroIdentificacionSolicitante)
+			AND (:numeroSolicitud IS NULL OR sol.numeroRadicacion = :numeroSolicitud)
+			AND (
+				:fechaInicioDate IS NULL OR :fechaFinDate IS NULL OR
+				sol.fechaRadicacion BETWEEN :fechaInicioDate AND :fechaFinDate
+			)
+			AND (afi.persona.idPersona=perDet.idPersona OR perDet.idPersona IS NULL)
+			AND solPer.estadoSolicitud != 'CERRADA'
+	</query>
+	</named-query>
+
+	<named-query name="afiliacion.buscar.solicitud.afiliacion.persona.empleador.web">
+		<query> 
+			SELECT solPer, perDet, rol, sol, afi, emp, p
+			FROM SolicitudAfiliacionPersona solPer, PersonaDetalle perDet
+			JOIN solPer.rolAfiliado rol
+			JOIN solPer.solicitudGlobal sol
+			JOIN rol.afiliado afi
+			JOIN rol.empleador emp
+			JOIN afi.persona p
+			WHERE 
+			(:tipoIdentificacionEmpleador IS NULL OR emp.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador)
+			AND (:numeroIdentificacionEmpleador IS NULL OR emp.empresa.persona.numeroIdentificacion = :numeroIdentificacionEmpleador)
+			AND (:tipoIdentificacionSolicitante IS NULL OR p.tipoIdentificacion = :tipoIdentificacionSolicitante)
+			AND (:numeroIdentificacionSolicitante IS NULL OR p.numeroIdentificacion = :numeroIdentificacionSolicitante)
+			AND (:numeroSolicitud IS NULL OR sol.numeroRadicacion = :numeroSolicitud)
+			AND (
+				:fechaInicioDate IS NULL OR :fechaFinDate IS NULL OR
+				sol.fechaRadicacion BETWEEN :fechaInicioDate AND :fechaFinDate
+			)
+			AND (afi.persona.idPersona=perDet.idPersona OR perDet.idPersona IS NULL)
+			AND solPer.estadoSolicitud != 'CERRADA'
+	</query>
+	</named-query>
+		<named-query name="afiliacion.buscar.solicitud.afiliacion.persona.empleador.consultar">
+		<query> 
+			SELECT solPer,perDet, rol, sol, afi,emp,p,u,m
+			FROM SolicitudAfiliacionPersona solPer,PersonaDetalle perDet
+			JOIN  solPer.rolAfiliado rol 
+			JOIN  solPer.solicitudGlobal sol
+			JOIN  rol.afiliado afi
+			JOIN  rol.empleador emp 
+			JOIN  afi.persona p
+			JOIN  p.ubicacionPrincipal u
+			JOIN  u.municipio m
+			WHERE sol.canalRecepcion= :canalRecepcion 
+			AND rol.empleador.idEmpleador= :idEmpleador
+			AND (afi.persona.idPersona=perDet.idPersona OR perDet.idPersona IS NULL)
+			AND (:tipoIdentificacion IS NULL OR p.tipoIdentificacion = :tipoIdentificacion)
+			AND (:numeroIdentificacion IS NULL OR p.numeroIdentificacion = :numeroIdentificacion)
+			AND (:numeroRadicacion IS NULL OR sol.numeroRadicacion = :numeroRadicacion)
+	</query>
+	</named-query>
+	<named-query name="afiliacion.estado.cargue.multiple.por.id">
+		<query> 
+		SELECT car FROM CargueMultiple car where car.idSolicitudAfiliacionMultiple= :idSolicitudAfiliacionMultiple
+	    </query>
+	</named-query>
+		<named-query name="afiliacion.buscar.sucursal.empresa.por.id">
+		<query> 
+		SELECT su FROM SucursalEmpresa su where su.idSucursalEmpresa= :idSucursalEmpresa
+	    </query>
+	</named-query>
+	<named-query
+		name="AfiliacionPersonasWebComposite.Actualizar.Solicitudes.A.Canceladas">
+		<description>Cambia el estado de las solicitudes a canceladas</description>
+		<query>
+			UPDATE SolicitudAfiliacionPersona
+			SET sapEstadoSolicitud = 'CERRADA'
+			WHERE sapSolicitudGlobal IN (:listado)
+		</query>
+	</named-query>
+	<named-query name="afiliacion.buscar.persona.detalle.tipo.numero.identificacion">
+		<query>
+			SELECT pdt FROM PersonaDetalle pdt
+			WHERE pdt.idPersona IN (SELECT per.id FROM Persona per
+			WHERE per.tipoIdentificacion =:tipoIdentificacion
+			AND per.numeroIdentificacion =:numeroIdentificacion)
+		</query>
+	</named-query>
+		<named-query name="afiliacion.buscar.persona.tipo.numero.identificacion">
+		<query> 
+		SELECT per FROM Persona per
+		JOIN FETCH per.ubicacionPrincipal ubi 
+		WHERE per.numeroIdentificacion=:numeroIdentificacion
+		AND per.tipoIdentificacion=:tipoIdentificacion
+	    </query>
+	</named-query>
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+        <named-native-query name="afiliacion.buscar.pais">
+		<query>
+			select count(paiid) as cant from pais 
+                        where paiDescripcion LIKE :nombrePaisP
+                </query>
+	</named-native-query>
+        <named-native-query name="afiliacion.buscar.ocupacion.profesional">
+		<query>
+			select count(ocuId) as cant from OcupacionProfesion
+                        where ocuCodigo = :ocupacion 
+		</query>
+	</named-native-query>
+         <named-native-query name="afiliacion.buscar.ocupacion.profesional.name">
+		<query>
+			select count(ocuId) as cant from OcupacionProfesion
+                        where ocuNombre LIKE :ocupacion 
+		</query>
+	</named-native-query>
+        <named-native-query name="afiliacion.buscar.municipio">
+		<query>
+			select count(munId) as cant from Municipio
+                        where munCodigo = :codigoMunicipio
+		</query>
+	</named-native-query>
+         <named-native-query name="afiliacion.buscar.buscarCodigoPais">
+		<query>
+			select top 1 paiId from pais where paiDescripcion LIKE :nombrePaisP
+		</query>
+	</named-native-query>
+        <named-native-query name="afiliacion.buscar.id.ocupacion">
+		<query>
+			select top 1 ocuId from OcupacionProfesion
+                        where ocuNombre LIKE :nombreOcupacionP
+		</query>
+	</named-native-query>
+	<named-native-query name="afiliacion.sucursal.ECM"> 
+		<query> 
+		SELECT car.camIdSucursalEmpleador, car.camCodigoIdentificacionECM 
+		FROM CargueMultiple car
+		INNER JOIN Empleador emp ON car.camIdEmpleador = emp.empId
+		WHERE emp.empId = :idEmpleador
+		AND camEstado = :estadoSolicitud
+		ORDER BY car.camId DESC
+	    </query>
+	</named-native-query>
+	<named-native-query name="afiliacion.solicitud.masivos"> 
+		<query> 
+		select * from SolicitudAfiliacionPersona sap
+		Join solicitud sol on sol.solId = sap.sapSolicitudGlobal
+		Join RolAfiliado roa on roa.roaId = sap.sapRolAfiliado
+		join Afiliado afi on afi.afiId = roa.roaAfiliado
+		join Persona per on per.perId = afi.afiPersona
+		where perid in (:idAfiliados)
+		and sap.sapEstadoSolicitud != 'CERRADA'
+	    </query>
+	</named-native-query>
+	<named-stored-procedure-query
+			name="sp.procedure.ASP_JsonPersona"
+			procedure-name="ASP_JsonPersona">
+		<parameter
+				class="java.lang.String"
+				mode="IN"
+				name="personas"
+		/>
+	</named-stored-procedure-query>
+</entity-mappings>

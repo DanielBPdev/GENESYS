@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="afiliaciones_PU" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jboss/datasources/asopagosDS</jta-data-source>
+		<mapping-file>META-INF/jpql/NamedQueries.xml</mapping-file> 
+		<mapping-file>META-INF/jpql/ActualizarNovedadPilaRutineNamedQueries.xml</mapping-file>
+		<jar-file>lib/model-auditoria-entities-${project.version}.jar</jar-file>
+		<class>com.asopagos.entidades.transversal.core.ValidacionProceso</class>
+		<class>com.asopagos.entidades.transversal.core.HistoriaResultadoValidacion</class>
+		<class>com.asopagos.entidades.transversal.core.DatosRegistroValidacion</class>
+		<class>com.asopagos.entidades.ccf.personas.Empleador</class>
+		<class>com.asopagos.entidades.ccf.personas.Empresa</class>
+		<class>com.asopagos.entidades.ccf.personas.Persona</class>
+		<class>com.asopagos.entidades.ccf.personas.PersonaDetalle</class>
+		<class>com.asopagos.entidades.ccf.general.Solicitud</class>
+		<class>com.asopagos.entidades.transversal.personas.ARL</class>
+		<class>com.asopagos.entidades.transversal.core.CodigoCIIU</class>
+		<class>com.asopagos.entidades.ccf.personas.RolContactoEmpleador</class>
+		<class>com.asopagos.entidades.ccf.core.Ubicacion</class>
+		<class>com.asopagos.entidades.transversal.core.Municipio</class>
+		<class>com.asopagos.entidades.transversal.core.Departamento</class>
+		<class>com.asopagos.entidades.ccf.core.SucursalEmpleador</class> 
+		<class>com.asopagos.entidades.ccf.personas.Beneficiario</class>
+		<class>com.asopagos.entidades.ccf.personas.RolAfiliado</class>
+		<class>com.asopagos.entidades.ccf.personas.Afiliado</class>
+		<class>com.asopagos.entidades.ccf.personas.SocioEmpleador</class>
+		<class>com.asopagos.entidades.ccf.personas.GrupoFamiliar</class>
+		<class>com.asopagos.entidades.ccf.personas.EntidadPagadora</class>
+		<class>com.asopagos.entidades.ccf.personas.RelacionGrupoFamiliar</class>
+		<class>com.asopagos.entidades.transversal.personas.AFP</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.ProductoNoConforme</class>
+		<class>com.asopagos.entidades.ccf.core.EtiquetaCorrespondenciaRadicado</class>
+		<class>com.asopagos.entidades.ccf.core.SucursalEmpresa</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.IntentoAfiliacion</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.IntentoAfiliacionRequisito</class>
+		<class>com.asopagos.entidades.transversal.personas.ListaEspecialRevision</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.SolicitudAfiliacionPersona</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.SolicitudAfiliacionEmpleador</class>
+		<class>com.asopagos.entidades.ccf.novedades.SolicitudNovedad</class>
+		<class>com.asopagos.entidades.ccf.aportes.SolicitudAporte</class>
+		<class>com.asopagos.entidades.ccf.aportes.SolicitudCorreccionAporte</class>
+		<class>com.asopagos.entidades.ccf.aportes.SolicitudDevolucionAporte</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.SolicitudAsociacionPersonaEntidadPagadora</class>
+		<class>com.asopagos.entidades.ccf.cartera.SolicitudPreventiva</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudPostulacion</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudNovedadFovis</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudAnalisisNovedadFovis</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudAsignacion</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudVerificacionFovis</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudGestionCruce</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudLegalizacionDesembolso</class>
+		<class>com.asopagos.entidades.ccf.cartera.SolicitudDesafiliacion</class>
+		<class>com.asopagos.entidades.ccf.cartera.SolicitudFiscalizacion</class>
+		<class>com.asopagos.entidades.ccf.cartera.SolicitudGestionCobroElectronico</class>
+		<class>com.asopagos.entidades.ccf.cartera.SolicitudGestionCobroFisico</class>
+		<class>com.asopagos.entidades.ccf.cartera.SolicitudGestionCobroManual</class>
+		<class>com.asopagos.entidades.ccf.core.DocumentoSoporte</class>
+		<class>com.asopagos.entidades.ccf.aportes.SolicitudCierreRecaudo</class>
+		<class>com.asopagos.entidades.ccf.personas.Pais</class>
+		<class>com.asopagos.entidades.ccf.personas.CertificadoEscolarBeneficiario</class>
+		<class>com.asopagos.entidades.ccf.novedades.CargueMultipleSupervivencia</class>
+		<class>com.asopagos.entidades.ccf.core.AuditoriaIntegracionServicios</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.ArchivosTrasladosEmpresasCCF</class>
+		<class>com.asopagos.dto.ResultadoHallazgosValidacionArchivoDTO</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.ItemChequeo</class>
+		<class>com.asopagos.entidades.transversal.core.Requisito</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.DatoTemporalSolicitud</class>
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+	
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect"/>
+			<property name="hibernate.hbm2ddl.auto" value="${persistencia}"/>
+			<property name="hibernate.show_sql" value="false"/>
+			<property name="hibernate.format_sql" value="false"/>
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/>
+			<property name="hibernate.transaction.flush_before_completion" value="true"/>
+			<property name="hibernate.max_fetch_depth" value="3"/>
+			<property name="hibernate.default_batch_fetch_size" value="8"/>
+			<property name="hibernate.jdbc.batch_size" value="500"/>
+			<property name="hibernate.query.substitutions" value="true 1, false 0"/>
+			<property name="hibernate.connection.driver_class" value="com.microsoft.jdbc.sqlserver.SQLServerDriver"/>
+			<!-- envers -->
+			<property name="hibernate.integration.envers.enabled" value="${audit.enabled}"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="${audit.enabled}"/>
+			<property name="org.hibernate.envers.default_schema" value="${default.schema}"/>
+			<property name="org.hibernate.envers.store_data_at_delete" value="true"/>
+			<property name="org.hibernate.envers.default_catalog" value="${nombre.usuario}"/>
+		</properties>
+
+	</persistence-unit>
+</persistence>

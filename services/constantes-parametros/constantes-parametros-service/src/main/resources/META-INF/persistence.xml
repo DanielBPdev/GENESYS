@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="constantes_parametros_PU" transaction-type="JTA">
+
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jboss/datasources/asopagosDS</jta-data-source>
+		<mapping-file>META-INF/jpql/NamedQueries.xml</mapping-file>
+		<jar-file>lib/model-auditoria-entities-${project.version}.jar</jar-file>
+		
+		<class>com.asopagos.entidades.ccf.core.AreaCajaCompensacion</class>
+		<class>com.asopagos.entidades.ccf.core.SedeCajaCompensacion</class>
+		<class>com.asopagos.entidades.ccf.core.Beneficio</class>
+		<class>com.asopagos.entidades.ccf.general.Constante</class>
+		<class>com.asopagos.entidades.ccf.general.Parametro</class>
+		<class>com.asopagos.entidades.transversal.core.ParametrizacionGaps</class>
+		<class>com.asopagos.entidades.ccf.core.OperadorInformacion</class>
+		<class>com.asopagos.entidades.ccf.core.OperadorInformacionCcf</class>
+		<class>com.asopagos.entidades.transversal.core.CajaCompensacion</class>
+		<class>com.asopagos.entidades.ccf.general.ConexionOperadorInformacion</class>
+		<class>com.asopagos.entidades.ccf.general.ParametrizacionValorUVT</class>
+		<class>com.asopagos.entidades.ccf.general.ModificacionConstanteDummy</class>
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="${persistencia}" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+			<!-- envers -->
+			<property name="hibernate.integration.envers.enabled" value="${audit.enabled}"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="${audit.enabled}"/>
+			<property name="org.hibernate.envers.default_schema" value="${default.schema}"/>
+			<property name="org.hibernate.envers.store_data_at_delete" value="true"/>
+			<property name="org.hibernate.envers.default_catalog" value="${nombre.usuario}"/>
+		</properties>
+
+	</persistence-unit>
+</persistence>

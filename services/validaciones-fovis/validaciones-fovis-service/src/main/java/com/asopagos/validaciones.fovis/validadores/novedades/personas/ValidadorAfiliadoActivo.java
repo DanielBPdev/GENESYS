@@ -1,0 +1,70 @@
+package com.asopagos.validaciones.fovis.validadores.novedades.personas;
+
+import com.asopagos.dto.ValidacionDTO;
+import com.asopagos.enumeraciones.core.ResultadoValidacionEnum;
+import com.asopagos.enumeraciones.core.TipoExcepcionFuncionalEnum;
+import com.asopagos.enumeraciones.core.ValidacionCoreEnum;
+import com.asopagos.enumeraciones.personas.EstadoAfiliadoEnum;
+import com.asopagos.enumeraciones.personas.TipoIdentificacionEnum;
+import com.asopagos.validaciones.fovis.constants.ConstantesValidaciones;
+import com.asopagos.validaciones.fovis.constants.NamedQueriesConstants;
+import com.asopagos.validaciones.fovis.ejb.ValidadorFovisAbstract;
+
+import javax.persistence.NoResultException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * CLASE QUE VALIDA:
+ * si el valor del campo "Estado de afiliación" del afiliado principal es "Activo" 
+ * 
+ * @author Steven Quintero González <squintero@heinsohn.com.co>
+ */
+public class ValidadorAfiliadoActivo extends ValidadorFovisAbstract {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.asopagos.validaciones.api.ValidadorCore#execute(java.util.Map)
+	 */
+	@Override
+	public ValidacionDTO execute(Map<String, String> datosValidacion) {
+		logger.debug("Inicio de método ValidadorAfiliadoActivo.execute");
+		try{
+			TipoIdentificacionEnum tipoIdentificacion = TipoIdentificacionEnum.valueOf(datosValidacion.get(ConstantesValidaciones.TIPO_ID_PARAM));
+	        String numeroIdentificacion = datosValidacion.get(ConstantesValidaciones.NUM_ID_PARAM);
+	        // CC 220114
+	        //se listan los estados válidos para aprobar la validación
+            List<EstadoAfiliadoEnum> estadosValidos = new ArrayList<EstadoAfiliadoEnum>();
+            estadosValidos.add(EstadoAfiliadoEnum.ACTIVO);
+	        //se consulta el afiliado con el tipo y número de documento
+	        Long cantidadRolesActivos = (Long) entityManager.createNamedQuery(NamedQueriesConstants.CONTAR_ROL_AFILIADO_POR_TIPO_NUMERO_IDENTIFICACION_Y_ESTADO)
+					.setParameter(ConstantesValidaciones.TIPO_ID_PARAM, tipoIdentificacion)
+					.setParameter(ConstantesValidaciones.NUM_ID_PARAM, numeroIdentificacion)
+					.setParameter(ConstantesValidaciones.ESTADOS_VALIDOS_AFILIADO_PARAM, estadosValidos)
+					.getSingleResult();
+	        //se realiza la validación
+			if(cantidadRolesActivos != null && cantidadRolesActivos > 0){
+				//validación exitosa
+				logger.debug("HABILITADA- Fin de método ValidadorAfiliadoActivo.execute");
+				return crearMensajeExitoso(ValidacionCoreEnum.VALIDACION_AFILIADO_ACTIVO);	
+			}else{
+				//validación fallida
+				logger.debug("NO HABILITADA- Fin de método ValidadorAfiliadoActivo.execute");
+				return crearValidacion(myResources.getString(ConstantesValidaciones.KEY_AFILIADO_ACTIVO),ResultadoValidacionEnum.NO_APROBADA,
+						ValidacionCoreEnum.VALIDACION_AFILIADO_ACTIVO,
+						TipoExcepcionFuncionalEnum.EXCEPCION_FUNCIONAL_TIPO_2);
+			}
+		} catch (NoResultException e) {
+		    //validación fallida
+            logger.debug("NO HABILITADA- Fin de método ValidadorAfiliadoActivo.execute");
+            return crearValidacion(myResources.getString(ConstantesValidaciones.KEY_AFILIADO_ACTIVO),ResultadoValidacionEnum.NO_APROBADA,
+                    ValidacionCoreEnum.VALIDACION_AFILIADO_ACTIVO,
+                    TipoExcepcionFuncionalEnum.EXCEPCION_FUNCIONAL_TIPO_2);
+		} catch (Exception e) {
+			logger.error("No evaluado - Ocurrió alguna excepción", e);
+			return crearMensajeNoEvaluado(ConstantesValidaciones.KEY_VALIDACION_NOVEDAD_ABORTADA_POR_EXCEPCION,
+					ValidacionCoreEnum.VALIDACION_AFILIADO_ACTIVO, TipoExcepcionFuncionalEnum.EXCEPCION_TECNICA);
+		}
+	}
+}

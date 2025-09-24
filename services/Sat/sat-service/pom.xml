@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>Sat</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+		
+	<artifactId>sat-service</artifactId>	
+	<packaging>war</packaging>
+	<name>Servicio de SAT </name>
+	<description>Aplicación Web que implementa los servicios de integracion con SAT</description>
+
+	<properties>
+		<configuracion.servidor>wildfly-swarm-pila</configuracion.servidor>
+		<fabric8.skip>false</fabric8.skip>
+	</properties>
+
+	<dependencies>		
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>sat-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+                <dependency>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                    <version>1.5.0-b01</version>
+                </dependency>
+                <dependency>
+                        <groupId>com.asopagos.coreaas.services</groupId>
+                        <artifactId>afiliacion-empleadores-composite-api</artifactId>
+                        <version>${project.version}</version>
+                </dependency>
+				<dependency>
+                        <groupId>com.asopagos.coreaas.services</groupId>
+                        <artifactId>asignar-solicitudes-api</artifactId>
+                        <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.asopagos.coreaas.services</groupId>
+                    <artifactId>listas-api</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+						<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+    <build>
+        <!-- Maven will append the version to the finalName (which is the name 
+        given to the generated war, and hence the context root) -->
+        <finalName>SatService</finalName>
+        <plugins>
+           <plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+        </plugins>
+    </build>
+    
+   	<profiles>
+	</profiles>
+    
+</project>

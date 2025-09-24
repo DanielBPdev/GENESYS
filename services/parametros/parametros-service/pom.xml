@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>parametros</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>parametros-service</artifactId>
+	<packaging>war</packaging>
+	<name>Servicio Parametros</name>
+	<description>Procesa los mensajes enviados por asopagos, 
+		para realizar la configuración de parámetros, 
+		también notifica a Asopagos cuando se realizan algunos cambios 
+		de configuración de parámetros
+	</description>
+
+	<properties>
+		<base.servidor>wildfly-swarm-messaging</base.servidor>
+		<configuracion.servidor>wildfly-swarm-topic</configuracion.servidor>
+		<fabric8.skip>false</fabric8.skip>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>afiliaciones-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>parametros-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>subsidio-monetario-parametros-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>listas-chequeo-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.jboss.resteasy</groupId>
+		    <artifactId>resteasy-jackson-provider</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>subsidio-monetario-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>usuarios-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<finalName>ParametrosService</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

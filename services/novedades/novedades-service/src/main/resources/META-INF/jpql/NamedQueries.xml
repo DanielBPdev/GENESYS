@@ -1,0 +1,2031 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+                 version="2.1">
+
+    <!-- ESPACIO PARA NAMED QUERIES JPA -->
+    <named-query name="novedades.consultar.persona.numeroIdentificacion">
+        <description>Busca la persona por el numero documento</description>
+        <query>
+            SELECT per FROM Persona per
+            WHERE per.numeroIdentificacion = :numeroIdentificacion
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.departamentos">
+        <query>
+            SELECT d FROM Departamento d
+            ORDER BY d.codigo
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.municipios">
+        <query>
+            SELECT m FROM Municipio m
+            ORDER BY m.codigo
+        </query>
+    </named-query>
+    <named-query name="novedades.buscar.empleador.por.id">
+        <query>
+            SELECT emp FROM Empleador emp LEFT JOIN FETCH emp.empresa em
+            LEFT JOIN FETCH em.persona per LEFT JOIN FETCH per.ubicacionPrincipal WHERE emp.idEmpleador= :idEmpleador
+        </query>
+    </named-query>
+    <named-query name="novedades.buscar.file.nombreCampos">
+        <query>
+            SELECT new com.asopagos.dto.DefinicionCamposCargaDTO(fieldl.label,fieldl.fieldLoadCatalog.name)
+            FROM FieldDefinitionLoad fieldl
+            LEFT JOIN fieldl.fieldLoadCatalog flc
+            WHERE fieldl.lineDefinition.fileDefinition.id = :idFileDefinition
+        </query>
+    </named-query>
+    <named-query name="novedades.buscar.persona.por.id">
+        <query>
+            SELECT per FROM Persona per WHERE per.idPersona=:idPersona
+        </query>
+    </named-query>
+    <named-query name="novedades.estado.identificador.cargue.multiple.empleador">
+        <query>
+            SELECT cam FROM CargueMultiple cam LEFT JOIN FETCH cam.empleador emp
+            WHERE emp.idEmpleador= :idEmpleador ORDER BY cam.idSolicitudAfiliacionMultiple DESC
+        </query>
+    </named-query>
+    <named-query name="novedades.estado.cargue.multiple.por.id">
+        <query>
+            SELECT car FROM CargueMultiple car where car.idSolicitudAfiliacionMultiple= :idSolicitudAfiliacionMultiple
+        </query>
+    </named-query>
+    <named-query name="Novedad.tipoTransaccion">
+        <query>
+            SELECT n FROM ParametrizacionNovedad n where n.novedad=:tipoTransaccion
+        </query>
+    </named-query>
+    <named-query name="SolicitudNovedad.idSolicitud">
+        <query>
+            select sno from SolicitudNovedad sno join fetch sno.solicitudGlobal where
+            sno.idSolicitudNovedad=:idsolicitud
+        </query>
+    </named-query>
+    <named-query name="novedades.buscar.sucursal.empresa.por.id">
+        <query>
+            SELECT su FROM SucursalEmpresa su where su.idSucursalEmpresa= :idSucursalEmpresa
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.departamento.por.id">
+        <query>
+            SELECT dep FROM Departamento dep WHERE dep.idDepartamento=:idDepartamento
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.municipio.por.id">
+        <query>
+            SELECT mun FROM Municipio mun WHERE mun.idMunicipio=:idMunicipio
+        </query>
+    </named-query>
+    <named-query name="novedades.estado.cargue.multiple.por.id.empleador">
+        <query>
+            SELECT car FROM CargueMultiple car LEFT JOIN FETCH car.empleador emp
+            WHERE emp.idEmpleador=:idEmpleador order by car.idSolicitudAfiliacionMultiple DESC
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.solicitud.por.idSolicitudGlobal">
+        <query>
+            SELECT sn
+            FROM SolicitudNovedad sn
+            LEFT JOIN FETCH sn.solicitudGlobal
+            WHERE sn.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.solicitudes.novedad.empleador.con.canal.recepcion">
+        <query>
+            SELECT solNov FROM SolicitudNovedad solNov
+            WHERE solNov.solicitudGlobal.canalRecepcion = :canalRecepcion
+            AND solNov.id IN
+            (
+            SELECT solNovEmp.idSolicitudNovedad FROM SolicitudNovedadEmpleador solNovEmp
+            WHERE solNovEmp.idEmpleador =
+            (
+            SELECT emp.id FROM Empleador emp
+            WHERE emp.empresa.persona.numeroIdentificacion = :numeroIdentificacion
+            AND emp.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+            )
+            )
+            OR solNov.id IN
+            (
+            SELECT solNovPer.idSolicitudNovedad FROM SolicitudNovedadPersona solNovPer
+            WHERE solNovPer.idPersona =
+            (
+            SELECT p FROM Persona p
+            WHERE p.numeroIdentificacion = :numeroIdentificacion
+            AND p.tipoIdentificacion = :tipoIdentificacion
+            )
+            )
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.solicitudes.novedad.empleador.sin.canal.recepcion">
+        <query>
+            SELECT solNov FROM SolicitudNovedad solNov
+            WHERE solNov.id IN
+            (
+            SELECT solNovEmp.idSolicitudNovedad FROM SolicitudNovedadEmpleador solNovEmp
+            WHERE solNovEmp.idEmpleador =
+            (
+            SELECT emp.id FROM Empleador emp
+            WHERE emp.empresa.persona.numeroIdentificacion = :numeroIdentificacion
+            AND emp.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+            )
+            )
+            OR solNov.id IN
+            (
+            SELECT solNovPer.idSolicitudNovedad FROM SolicitudNovedadPersona solNovPer
+            WHERE solNovPer.idRolAfiliado IN
+            (
+            SELECT rol.idRolAfiliado FROM RolAfiliado rol
+            WHERE rol.empleador.empresa.persona.numeroIdentificacion = :numeroIdentificacion
+            AND rol.empleador.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+            )
+            )
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.solicitudes.novedad.persona.sin.canal.recepcion">
+        <query>
+            SELECT solNov FROM SolicitudNovedad solNov
+            WHERE solNov.id IN
+            (
+            SELECT solNovPer.idSolicitudNovedad FROM SolicitudNovedadPersona solNovPer
+            WHERE solNovPer.idPersona IN
+            (
+            SELECT per.idPersona FROM Persona per
+            WHERE per.numeroIdentificacion = :numeroIdentificacion
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            )
+            )
+        </query>
+    </named-query>
+    <named-query
+            name="novedades.consultar.solicitudes.novedad.persona.con.canal.recepcion">
+        <query>
+            SELECT solNov FROM SolicitudNovedad solNov
+            WHERE solNov.solicitudGlobal.canalRecepcion = :canalRecepcion
+            AND solNov.id IN
+            (
+            SELECT solNovPer.idSolicitudNovedad FROM SolicitudNovedadPersona solNovPer
+            WHERE solNovPer.idPersona IN
+            (
+            SELECT per.idPersona FROM Persona per
+            WHERE per.numeroIdentificacion = :numeroIdentificacion
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            )
+            )
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.consultarNovedades">
+        <query>
+            SELECT nov FROM ParametrizacionNovedad nov WHERE nov.proceso = :procesoEnum
+        </query>
+    </named-query>
+    <named-query
+            name="novedades.consultar.registros.novedad.persona.inconsistentes.id">
+        <query>
+            SELECT perInc
+            FROM RegistroPersonaInconsistente perInc
+            WHERE perInc.idRegistroPersonaInconsistente =:idRegistroPersonaInconsitente
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.persona.tipo.numeroIdentificacion">
+        <query>
+            SELECT per FROM Persona per
+            WHERE per.numeroIdentificacion = :numeroIdentificacion AND
+            per.tipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-query>
+    <named-native-query name="novedades.consultar.persona.numeroIdentificacionTipo">
+        <query>
+            SELECT per.perId FROM Persona per
+            WHERE per.pernumeroIdentificacion = :numeroIdentificacion AND
+            per.pertipoIdenticicacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+    <named-native-query name="novedades.consultar.identificacion.novedad">
+        <query>
+            SELECT p.pernumeroidentificacion, p.pertipoidentificacion from persona p
+            INNER JOIN afiliado afi on afi.afipersona = p.perid
+            INNER JOIN rolafiliado roa on roa.roaafiliado = afi.afiid
+            INNER JOIN SolicitudNovedadpersona snp on snp.snprolafiliado = roa.roaid
+            WHERE snp.snpsolicitudnovedad= :idSolicitudNovedad
+        </query>
+    </named-native-query>
+    <named-native-query name="novedades.beneficiario.consultar.identificacion.novedad">
+        <query>
+            select p.pernumeroidentificacion, p.pertipoidentificacion from Persona p
+            inner join Beneficiario ben on p.perId = ben.benPersona
+            inner join SolicitudNovedadPersona snp on ben.benId = snp.snpBeneficiario
+            where snp.snpSolicitudNovedad =:idSolicitudNovedad
+        </query>
+    </named-native-query>
+    <named-native-query name="novedades.consultar.todosLosJuzgados">
+        <query>
+            select j.ctaId, j.ofjNroCtaJudicial, j.ofjCodJuzgado, j.ofjNombreJuzgado from OficinasJuzgados j
+        </query>
+    </named-native-query>
+    <named-query
+            name="novedades.consultar.cargue.multiple.supervivencia.por.id">
+        <query>
+            SELECT cms FROM CargueMultipleSupervivencia cms WHERE
+            cms.idCargueMultipleSupervivencia=:idCargueSupervivencia
+        </query>
+    </named-query>
+
+    <named-query
+            name="novedades.personas.consultarSolicitudesDesistir">
+        <query>
+            SELECT sn FROM SolicitudNovedad sn
+            JOIN FETCH sn.solicitudGlobal sg
+            WHERE sn.cargaMultiple =:cargaMultiple
+            AND sn.estadoSolicitud != :estadoSolicitud
+            AND sg.fechaRadicacion &lt; :fechaDesistirCargaMultiple
+        </query>
+    </named-query>
+
+    <named-query name="novedades.personas.consultarHayRegistroPersonaInconsistente">
+        <query>
+            SELECT CASE WHEN (count(perInc.idRegistroPersonaInconsistente) > 0) then true else false end
+            FROM RegistroPersonaInconsistente perInc, Persona per
+            WHERE perInc.idPersona = per.idPersona
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND per.numeroIdentificacion = :numeroIdentificacion
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.codigosCIIU">
+        <query>
+            SELECT c FROM CodigoCIIU c
+            ORDER BY c.codigo
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.gradosAcademicos">
+        <query>
+            SELECT gra FROM GradoAcademico gra
+            ORDER BY gra.nombre
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.AFP">
+        <query>
+            SELECT afp FROM AFP afp
+            ORDER BY afp.idAFP
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.cargue.archivo.actualizacion.id">
+        <query>
+            SELECT caa FROM CargueArchivoActualizacion caa
+            WHERE caa.idCargueArchivoActualizacion = :idCargue
+        </query>
+    </named-query>
+    <named-query name="novedades.consultar.diferencia.cargue.archivo.actualizacion.id">
+        <query>
+            SELECT dca FROM DiferenciasCargueActualizacion dca
+            WHERE dca.idDiferenciasCargueActualizacion = :idDiferenciaCargue
+        </query>
+    </named-query>
+
+    <named-query name="consultar.novedad.persona.id.solicitud.novedad">
+        <query>
+            SELECT solNovPer
+            FROM SolicitudNovedadPersona solNovPer
+            WHERE solNovPer.idSolicitudNovedad =:idSolicitudNovedad
+        </query>
+    </named-query>
+    <named-query name="consultar.registro.novedades.futuras">
+        <query>
+            SELECT new com.asopagos.dto.modelo.RegistroNovedadFuturaModeloDTO(rnf, per, empl)
+            FROM RegistroNovedadFutura rnf,
+            Persona per, Empleador empl
+            JOIN empl.empresa emp
+            JOIN emp.persona perEmp
+            WHERE rnf.idPersona = per.idPersona
+            AND rnf.idEmpleador = empl.idEmpleador
+            AND :fechaActual >= rnf.fechaInicio
+            AND rnf.registroProcesado = :registroProcesado
+        </query>
+    </named-query>
+
+    <named-query name="novedades.consultar.solicitudesSinInstanciaProceso">
+        <query>
+            SELECT new com.asopagos.dto.SolicitudNovedadGeneralDTO(sol.idSolicitud, sol.numeroRadicacion,
+            sno.estadoSolicitud, sol.tipoTransaccion) FROM SolicitudNovedad sno
+            JOIN sno.solicitudGlobal sol
+            WHERE sol.canalRecepcion IN (:canales)
+            AND sol.fechaRadicacion > :fechaInicial
+            AND sol.idInstanciaProceso IS NULL
+            AND sno.estadoSolicitud IN (:estados)
+            AND sol.resultadoProceso IS NULL
+        </query>
+    </named-query>
+    <!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+
+    <named-native-query
+            name="novedades.consultar.registros.novedad.persona.inconsistentes.tipo.numeroIdentificacion.fechaingreso">
+        <query>
+            SELECT perInc.rpiId, perInc.rpiCanalContacto, perInc.rpiEstadoGestion, perInc.rpiFechaIngreso,
+            perInc.rpiObservaciones, perInc.rpiTipoInconsistencia,cargue.cmsId, cargue.cmsNombreArchivo,
+            per.perId, per.perTipoIdentificacion, per.perNumeroIdentificacion
+            FROM RegistroPersonaInconsistente perInc
+            JOIN Persona per ON per.perId = perInc.rpiPersona
+            LEFT JOIN CargueMultipleSupervivencia cargue ON cargue.cmsId = perInc.rpiCargueMultipleSupervivencia
+            WHERE perInc.rpiFechaIngreso =:fechaIngreso
+            AND per.perNumeroIdentificacion =:numeroIdentificacion
+            AND per.perTipoIdentificacion =:tipoIdentificacion
+            AND perInc.rpiEstadoGestion =:estado
+        </query>
+    </named-native-query>
+    <!-- nuevo-->
+    <named-native-query
+            name="novedades.consultar.reporte.afiliacion.supervivencia">
+        <query>
+            SELECT
+            '2' AS codigo
+            ,(select case
+            WHEN perTipoIdentificacion='REGISTRO_CIVIL' THEN 'RC'
+            WHEN perTipoIdentificacion='TARJETA_IDENTIDAD' THEN 'TI'
+            when perTipoIdentificacion='CEDULA_CIUDADANIA' THEN 'CC'
+            when perTipoIdentificacion='CEDULA_EXTRANJERIA' THEN 'CE'
+            when perTipoIdentificacion='PASAPORTE' THEN 'PA'
+            when perTipoIdentificacion='CARNE_DIPLOMATICO' THEN 'CD'
+            when perTipoIdentificacion='NIT' THEN 'NIT' 
+            when perTipoIdentificacion='SALVOCONDUCTO' THEN 'SC'
+            when perTipoIdentificacion='PERM_ESP_PERMANENCIA' THEN 'PE'
+            when perTipoIdentificacion='PERM_PROT_TEMPORAL' THEN 'PT'
+
+            ELSE '' end )as perTipoIdentificacion
+            ,perNumeroIdentificacion
+            FROM VW_EstadoAfiliacionPersonaCaja where roaEstadoAfiliado =:estado
+            AND perTipoIdentificacion!='NIT'
+        </query>
+    </named-native-query>
+    <named-native-query
+            name="novedades.consultar.registros.novedad.persona.inconsistentes.tipo.numeroIdentificacion">
+        <query>
+            SELECT perInc.rpiId, perInc.rpiCanalContacto, perInc.rpiEstadoGestion, perInc.rpiFechaIngreso,
+            perInc.rpiObservaciones, perInc.rpiTipoInconsistencia,cargue.cmsId, cargue.cmsNombreArchivo,
+            per.perId, per.perTipoIdentificacion, per.perNumeroIdentificacion
+            FROM RegistroPersonaInconsistente perInc
+            JOIN Persona per ON per.perId = perInc.rpiPersona
+            LEFT JOIN CargueMultipleSupervivencia cargue ON cargue.cmsId = perInc.rpiCargueMultipleSupervivencia
+            WHERE per.perNumeroIdentificacion =:numeroIdentificacion
+            AND per.perTipoIdentificacion =:tipoIdentificacion
+            AND perInc.rpiEstadoGestion =:estado
+        </query>
+    </named-native-query>
+    <named-native-query
+            name="novedades.consultar.registros.novedad.persona.inconsistentes.fechaingreso">
+        <query>
+            SELECT perInc.rpiId, perInc.rpiCanalContacto, perInc.rpiEstadoGestion, perInc.rpiFechaIngreso,
+            perInc.rpiObservaciones, perInc.rpiTipoInconsistencia,cargue.cmsId, cargue.cmsNombreArchivo,
+            per.perId, per.perTipoIdentificacion, per.perNumeroIdentificacion
+            FROM RegistroPersonaInconsistente perInc
+            JOIN Persona per ON per.perId = perInc.rpiPersona
+            LEFT JOIN CargueMultipleSupervivencia cargue ON cargue.cmsId = perInc.rpiCargueMultipleSupervivencia
+            WHERE perInc.rpiFechaIngreso =:fechaIngreso
+            AND perInc.rpiEstadoGestion =:estado
+        </query>
+    </named-native-query>
+    <named-native-query
+            name="novedades.consultar.registros.novedad.persona.inconsistentes">
+        <query>
+            SELECT perInc.rpiId, perInc.rpiCanalContacto, perInc.rpiEstadoGestion, perInc.rpiFechaIngreso,
+            perInc.rpiObservaciones, perInc.rpiTipoInconsistencia,cargue.cmsId, cargue.cmsNombreArchivo,
+            per.perId, per.perTipoIdentificacion, per.perNumeroIdentificacion
+            FROM RegistroPersonaInconsistente perInc
+            JOIN Persona per ON per.perId = perInc.rpiPersona
+            LEFT JOIN CargueMultipleSupervivencia cargue ON cargue.cmsId = perInc.rpiCargueMultipleSupervivencia
+            WHERE perInc.rpiEstadoGestion =:estado
+        </query>
+    </named-native-query>
+    <named-native-query
+            name="consultar.Novedades.Empleador">
+        <query>
+            SELECT * FROM (
+            SELECT pno.novTipoTransaccion
+            , sol.solFechaRadicacion
+            , sno.snoEstadoSolicitud
+            , (SELECT TOP(1) eecEstadoAfiliacion
+            FROM EstadoAfiliacionEmpleadorCaja
+            WHERE eecPersona = per.perId
+            AND eecFechaCambioEstado &lt; CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ORDER BY eecFechaCambioEstado DESC) AS estadoAntes,
+            (SELECT TOP(1) eecEstadoAfiliacion
+            FROM EstadoAfiliacionEmpleadorCaja
+            WHERE eecPersona = per.perId
+            AND eecFechaCambioEstado &gt;= CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ORDER BY eecId DESC) AS estadoDespues
+            , nde.nopFechaInicio
+            , nde.nopFechaFin
+            , sol.solNumeroRadicacion
+            , sol.solCanalRecepcion
+            , sol.solId
+            FROM SolicitudNovedadEmpleador sne
+            JOIN SolicitudNovedad sno ON sno.snoId = sne.sneIdSolicitudNovedad
+            JOIN Solicitud sol ON sol.solId = sno.snoSolicitudGlobal
+            JOIN Empleador emp ON emp.empId = sne.sneIdEmpleador
+            JOIN Empresa empr ON empr.empId = emp.empEmpresa
+            JOIN Persona per on per.perId = empr.empPersona
+            JOIN ParametrizacionNovedad pno on pno.novId = sno.snoNovedad
+            LEFT JOIN NovedadDetalle nde on nde.nopSolicitudNovedad = sno.snoId
+            WHERE per.perTipoIdentificacion = :tipoIdentificacion
+            AND per.perNumeroIdentificacion = :numeroIdentificacion
+            AND sol.solDiferenciasCargueActualizacion IS NULL
+            ) novedades
+        </query>
+        <hint name="fechaRadicacion" value="solFechaRadicacion"/>
+        <hint name="novedad" value="novTipoTransaccion"/>
+        <hint name="estadoSolicitud" value="snoEstadoSolicitud"/>
+        <hint name="estadoEmpleadorAntes" value="estadoAntes"/>
+        <hint name="estadoEmpleadorDespues" value="estadoDespues"/>
+        <hint name="fechaInicio" value="nopFechaInicio"/>
+        <hint name="fechaFin" value="nopFechaFin"/>
+        <hint name="numeroRadicacion" value="solNumeroRadicacion"/>
+        <hint name="canalRecepcion" value="solCanalRecepcion"/>
+    </named-native-query>
+
+    <named-native-query
+            name="consultar.Novedades.Empleador.Vista360">
+        <query>
+            SELECT * FROM (
+            SELECT pno.novTipoTransaccion
+            , sol.solFechaRadicacion
+            , sno.snoEstadoSolicitud
+            , (SELECT TOP(1) eecEstadoAfiliacion
+            FROM EstadoAfiliacionEmpleadorCaja
+            WHERE eecPersona = per.perId
+            AND eecFechaCambioEstado &lt; CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ORDER BY eecFechaCambioEstado DESC) AS estadoAntes,
+            (SELECT TOP(1) eecEstadoAfiliacion
+            FROM EstadoAfiliacionEmpleadorCaja
+            WHERE eecPersona = per.perId
+            AND eecFechaCambioEstado &gt;= CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ORDER BY eecFechaCambioEstado ASC) AS estadoDespues
+            , nde.nopFechaInicio
+            , nde.nopFechaFin
+            , sol.solNumeroRadicacion
+            , sol.solCanalRecepcion
+            , sol.solId
+            FROM SolicitudNovedadEmpleador sne
+            JOIN SolicitudNovedad sno ON sno.snoId = sne.sneIdSolicitudNovedad
+            JOIN Solicitud sol ON sol.solId = sno.snoSolicitudGlobal
+            JOIN Empleador emp ON emp.empId = sne.sneIdEmpleador
+            JOIN Empresa empr ON empr.empId = emp.empEmpresa
+            JOIN Persona per on per.perId = empr.empPersona
+            JOIN ParametrizacionNovedad pno on pno.novId = sno.snoNovedad
+            LEFT JOIN NovedadDetalle nde on nde.nopSolicitudNovedad = sno.snoId
+            WHERE per.perTipoIdentificacion = :tipoIdentificacion
+            AND per.perNumeroIdentificacion = :numeroIdentificacion
+            -- AND sol.solDiferenciasCargueActualizacion IS NULL
+            AND sol.solResultadoProceso = 'APROBADA'
+            ) novedades
+        </query>
+        <hint name="fechaRadicacion" value="solFechaRadicacion"/>
+        <hint name="novedad" value="novTipoTransaccion"/>
+        <hint name="estadoSolicitud" value="snoEstadoSolicitud"/>
+        <hint name="estadoEmpleadorAntes" value="estadoAntes"/>
+        <hint name="estadoEmpleadorDespues" value="estadoDespues"/>
+        <hint name="fechaInicio" value="nopFechaInicio"/>
+        <hint name="fechaFin" value="nopFechaFin"/>
+        <hint name="numeroRadicacion" value="solNumeroRadicacion"/>
+        <hint name="canalRecepcion" value="solCanalRecepcion"/>
+    </named-native-query>
+
+    <named-native-query
+            name="novedades.fovis.consultar.NovedadesVigentesPersona">
+        <query>
+            SELECT nov.novTipoTransaccion, nop.nopFechaInicio, nop.nopFechaFin
+            FROM ParametrizacionNovedad nov
+            JOIN SolicitudNovedad sno ON sno.snoNovedad = nov.novId
+            JOIN NovedadDetalle nop ON nop.nopSolicitudNovedad = sno.snoId
+            JOIN SolicitudNovedadPersona snp ON snp.snpSolicitudNovedad = sno.snoId
+            JOIN Persona per ON per.perId = snp.snpPersona
+            WHERE per.perTipoIdentificacion =:tipoIdentificacion
+            AND per.perNumeroIdentificacion =:numeroIdentificacion
+            AND nop.nopFechaFin &gt;= :fechaActual
+        </query>
+    </named-native-query>
+
+    <named-native-query
+            name="novedades.fovis.consultar.CondicionInvalidez">
+        <query>
+            SELECT coi.coiFechaReporteInvalidez
+            FROM CondicionInvalidez coi
+            JOIN Persona per ON per.perId = coi.coiPersona
+            WHERE per.perTipoIdentificacion =:tipoIdentificacion
+            AND per.perNumeroIdentificacion =:numeroIdentificacion
+            AND coi.coiInvalidez =:condicionInvalidez
+        </query>
+    </named-native-query>
+
+    <named-native-query
+            name="novedades.consultar.NovedadesRegistradasPersona">
+        <query>
+            SELECT * FROM (
+            SELECT nov.novTipoTransaccion,
+            sol.solFechaRadicacion,
+            CASE WHEN sol.solResultadoProceso = 'APROBADA' THEN 'Aplicada' ELSE 'Guardada' END estadoNovedad,
+            nop.nopFechaInicio,
+            nop.nopFechaFin,
+            sol.solNumeroRadicacion,
+            CASE WHEN sol.solCanalRecepcion = 'WEB'
+            AND nov.novTipoTransaccion LIKE'%_DEPWEB%' THEN 'Web Empresas'
+            WHEN sol.solCanalRecepcion = 'WEB' THEN 'Web Personas'
+            ELSE solCanalRecepcion END solCanalRecepcion,
+            CASE WHEN sol.solclasificacion = 'TRABAJADOR_DEPENDIENTE'
+            AND nov.novTipoTransaccion LIKE '%_DEPENDIENTE%'
+            THEN pemp.perRazonSocial ELSE '' END empleador,
+            (SELECT TOP(1) eacEstadoAfiliacion
+            FROM EstadoAfiliacionPersonaCaja
+            WHERE eacPersona = per.perId
+            AND eacFechaCambioEstado &lt; CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ORDER BY eacFechaCambioEstado DESC
+            ) AS estadoAntes,
+            CASE WHEN nov.novTipoTransaccion IN ('REPORTE_FALLECIMIENTO_PERSONAS_DEPWEB',
+            'REPORTE_FALLECIMIENTO_PERSONAS', 'REPORTE_FALLECIMIENTO_PERSONAS_WEB',
+            'RETIRO_TRABAJADOR_DEPENDIENTE', 'RETIRO_TRABAJADOR_INDEPENDIENTE', 'RETIRO_PENSIONADO_25ANIOS',
+            'RETIRO_PENSIONADO_MAYOR_1_5SM_0_6',
+            'RETIRO_PENSIONADO_MAYOR_1_5SM_2', 'RETIRO_PENSIONADO_MENOR_1_5SM_0', 'RETIRO_PENSIONADO_MENOR_1_5SM_0_6',
+            'RETIRO_PENSIONADO_MENOR_1_5SM_2',
+            'RETIRO_PENSIONADO_PENSION_FAMILIAR', 'RETIRO_AUTOMATICO_POR_MORA')
+            AND sol.solResultadoProceso = 'APROBADA'
+            AND (SELECT TOP(1) eacEstadoAfiliacion
+            FROM EstadoAfiliacionPersonaCaja
+            WHERE eacPersona = per.perId
+            AND eacFechaCambioEstado &gt;= CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ) IS NOT NULL
+            THEN (SELECT TOP(1) eacEstadoAfiliacion
+            FROM EstadoAfiliacionPersonaCaja
+            WHERE eacPersona = per.perId
+            AND eacFechaCambioEstado &gt;= CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ) ELSE (SELECT TOP(1) eacEstadoAfiliacion
+            FROM EstadoAfiliacionPersonaCaja
+            WHERE eacPersona = per.perId
+            AND eacFechaCambioEstado &lt; CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ORDER BY eacFechaCambioEstado DESC
+            ) END AS estadoDespues,
+            sol.solId,
+            CASE WHEN nov.novTipoTransaccion LIKE '%_DEPENDIENTE%'
+            OR nov.novTipoTransaccion LIKE '%_INDEPENDIENTE%'
+            OR nov.novTipoTransaccion LIKE '%_PENSIONADO%'
+            THEN 'Afiliación' ELSE 'Persona' END nivelNovedad,
+            empl.empId as idEmpleador,
+            per.perId,
+            empr.empId as idEmpresa
+            FROM SolicitudNovedad sno
+            JOIN Solicitud sol ON (sno.snoSolicitudGlobal = sol.solId)
+            JOIN SolicitudNovedadPersona snp ON (sno.snoId = snp.snpSolicitudNovedad)
+            JOIN Persona per ON (per.perId = snp.snpPersona)
+            JOIN ParametrizacionNovedad nov ON (sno.snoNovedad = nov.novId)
+            LEFT JOIN NovedadDetalle nop ON (nop.nopSolicitudNovedad = sno.snoId)
+            LEFT JOIN Empresa empr ON empr.empId = (CASE WHEN snp.snpRolAfiliado is null
+            THEN (SELECT ag.apgEmpresa FROM Empresa er JOIN AporteGeneral ag ON er.empId = ag.apgEmpresa JOIN
+            AporteDetallado ad ON ad.apdAporteGeneral=ag.apgId
+            JOIN SolicitudNovedadPila snp2 ON ad.apdRegistroDetallado=snp2.spiRegistroDetallado and
+            snp2.spiSolicitudNovedad=sno.snoId
+            AND sol.solCanalRecepcion IN ('PILA', 'APORTE_MANUAL') AND (nov.novTipoTransaccion LIKE '%_DEPENDIENTE%' OR
+            nov.novTipoTransaccion LIKE '%_INDEPENDIENTE%'
+            OR nov.novTipoTransaccion LIKE '%_PENSIONADO%' ))
+            ELSE (SELECT er2.empId FROM RolAfiliado roa JOIN Empleador el ON el.empId=roa.roaEmpleador JOIN Empresa er2
+            ON er2.empId = el.empEmpresa
+            WHERE roa.roaId = snp.snpRolAfiliado) END)
+            LEFT JOIN Empleador empl ON (empl.empEmpresa = empr.empId)
+            LEFT JOIN Persona pemp ON (pemp.perId = empr.empPersona)
+            LEFT JOIN IntentoNovedad ino ON (ino.inoSolicitud = sol.solId)
+            LEFT JOIN Beneficiario ben ON (snp.snpBeneficiario = ben.benId)
+            WHERE per.perTipoIdentificacion = :tipoIdentificacion
+            AND per.perNumeroIdentificacion = :numeroIdentificacion
+            AND ino.inoSolicitud IS NULL
+            AND 1 = (CASE WHEN ben.benTipoBeneficiario IS NULL AND snp.snpBeneficiario IS NULL
+            AND (sol.solClasificacion IS NULL OR sol.solClasificacion NOT IN ('CONYUGE', 'PADRE', 'MADRE',
+            'HIJO_BIOLOGICO', 'HIJO_ADOPTIVO', 'HIJASTRO', 'HERMANO_HUERFANO_DE_PADRES', 'BENEFICIARIO_EN_CUSTODIA'))
+            THEN 1
+            WHEN ben.benTipoBeneficiario IS NOT NULL AND snp.snpBeneficiario IS NOT NULL THEN 1
+            ELSE 0 END)
+            ) novedadesPersona
+        </query>
+        <hint name="fechaRegistroNovedad" value="solFechaRadicacion"/>
+        <hint name="nombreNovedad" value="novTipoTransaccion"/>
+        <hint name="estadoNovedad" value="estadoNovedad"/>
+        <hint name="fechaInicioVigencia" value="nopFechaInicio"/>
+        <hint name="fechaFinVigencia" value="nopFechaFin"/>
+        <hint name="numeroOperacion" value="solNumeroRadicacion"/>
+        <hint name="canal" value="solCanalRecepcion"/>
+        <hint name="empleador" value="empleador"/>
+        <hint name="estadoPersonaAntes" value="estadoAntes"/>
+        <hint name="estadoPersonaDespues" value="estadoDespues"/>
+        <hint name="nivelNovedad" value="nivelNovedad"/>
+    </named-native-query>
+    <named-stored-procedure-query
+            name="stored.procedure.novedades.consultar.NovedadesRegistradasPersonaIntNG"
+            procedure-name="ASP_NovedadesRegistradasPersonaIntING">
+        <parameter
+                class="java.lang.String"
+                mode="IN"
+                name="tipoIdentificacion"
+        />
+        <parameter
+                class="java.lang.String"
+                mode="IN"
+                name="numeroIdentificacion"
+        />
+
+    </named-stored-procedure-query>
+    <!--	<parameter 
+			class="java.util.Date"
+			mode="OUT"
+			name="dFechaHabil"
+		/>-->
+    <named-native-query
+            name="novedades.consultar.NovedadesRegistradasPersonaIntNG">
+        <query>
+            SELECT * FROM (
+            SELECT nov.novTipoTransaccion,
+            sol.solFechaRadicacion,
+            CASE WHEN sol.solResultadoProceso = 'APROBADA' THEN 'Aplicada' ELSE 'Guardada' END estadoNovedad,
+            nop.nopFechaInicio,
+            nop.nopFechaFin,
+            sol.solNumeroRadicacion,
+            CASE WHEN sol.solCanalRecepcion = 'WEB'
+            AND nov.novTipoTransaccion LIKE'%_DEPWEB%' THEN 'Web Empresas'
+            WHEN sol.solCanalRecepcion = 'WEB' THEN 'Web Personas'
+            ELSE solCanalRecepcion END solCanalRecepcion,
+            pemp.perRazonSocial empleador,
+            case when sol.solResultadoProceso = 'APROBADA' then 'ACTIVO'
+            else
+            (SELECT TOP(1) eacEstadoAfiliacion
+            FROM EstadoAfiliacionPersonaCaja
+            WHERE eacPersona = per.perId
+            AND eacFechaCambioEstado &lt; CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ORDER BY eacFechaCambioEstado DESC
+            ) end AS estadoAntes,
+            case when sol.solResultadoProceso = 'APROBADA' and (select left(novTipoTransaccion,6) from
+            ParametrizacionNovedad with (nolock) where sno.snoNovedad = novId) not in ('RETIRO', 'RETIRA') then 'ACTIVO'
+            else
+            CASE WHEN nov.novTipoTransaccion IN ('REPORTE_FALLECIMIENTO_PERSONAS_DEPWEB',
+            'REPORTE_FALLECIMIENTO_PERSONAS', 'REPORTE_FALLECIMIENTO_PERSONAS_WEB',
+            'RETIRO_TRABAJADOR_DEPENDIENTE', 'RETIRO_TRABAJADOR_INDEPENDIENTE', 'RETIRO_PENSIONADO_25ANIOS',
+            'RETIRO_PENSIONADO_MAYOR_1_5SM_0_6',
+            'RETIRO_PENSIONADO_MAYOR_1_5SM_2', 'RETIRO_PENSIONADO_MENOR_1_5SM_0', 'RETIRO_PENSIONADO_MENOR_1_5SM_0_6',
+            'RETIRO_PENSIONADO_MENOR_1_5SM_2',
+            'RETIRO_PENSIONADO_PENSION_FAMILIAR', 'RETIRO_AUTOMATICO_POR_MORA')
+            AND sol.solResultadoProceso = 'APROBADA'
+            AND (SELECT TOP(1) eacEstadoAfiliacion
+            FROM EstadoAfiliacionPersonaCaja
+            WHERE eacPersona = per.perId
+            AND eacFechaCambioEstado &gt;= CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ) IS NOT NULL
+            THEN (SELECT TOP(1) eacEstadoAfiliacion
+            FROM EstadoAfiliacionPersonaCaja
+            WHERE eacPersona = per.perId
+            AND eacFechaCambioEstado &gt;= CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ) when sol.solResultadoProceso = 'RECHAZADA' then (SELECT TOP(1) eacEstadoAfiliacion
+            FROM EstadoAfiliacionPersonaCaja
+            WHERE eacPersona = per.perId
+            AND eacFechaCambioEstado &lt; CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ORDER BY eacFechaCambioEstado DESC)
+            ELSE (SELECT TOP(1) eacEstadoAfiliacion
+            FROM EstadoAfiliacionPersonaCaja
+            WHERE eacPersona = per.perId
+            AND eacFechaCambioEstado &gt; CAST(CONVERT(VARCHAR,sol.solFechaRadicacion,20) AS DATETIME)
+            ORDER BY eacFechaCambioEstado DESC
+            ) END
+            end AS estadoDespues,
+            sol.solId,
+            CASE WHEN nov.novTipoTransaccion LIKE '%_DEPENDIENTE%'
+            OR nov.novTipoTransaccion LIKE '%_INDEPENDIENTE%'
+            OR nov.novTipoTransaccion LIKE '%_PENSIONADO%'
+            THEN 'Afiliación' ELSE 'Persona' END nivelNovedad,
+            empl.empId as idEmpleador,
+            per.perId,
+            empr.empId as idEmpresa
+            FROM SolicitudNovedad sno
+            JOIN Solicitud sol ON (sno.snoSolicitudGlobal = sol.solId)
+            JOIN SolicitudNovedadPersona snp ON (sno.snoId = snp.snpSolicitudNovedad)
+            JOIN Persona per ON (per.perId = snp.snpPersona)
+            JOIN ParametrizacionNovedad nov ON (sno.snoNovedad = nov.novId)
+            LEFT JOIN NovedadDetalle nop ON (nop.nopSolicitudNovedad = sno.snoId)
+            LEFT JOIN Empresa empr ON empr.empId =
+            (CASE WHEN snp.snpRolAfiliado is null
+            THEN (SELECT ag.apgEmpresa FROM Empresa er JOIN AporteGeneral ag ON er.empId = ag.apgEmpresa JOIN
+            AporteDetallado ad ON ad.apdAporteGeneral=ag.apgId
+            JOIN SolicitudNovedadPila snp2 ON ad.apdRegistroDetallado=snp2.spiRegistroDetallado and
+            snp2.spiSolicitudNovedad=sno.snoId
+            AND sol.solCanalRecepcion IN ('PILA', 'APORTE_MANUAL'))
+            ELSE (SELECT er2.empId FROM RolAfiliado roa JOIN Empleador el ON el.empId=roa.roaEmpleador JOIN Empresa er2
+            ON er2.empId = el.empEmpresa
+            WHERE roa.roaId = snp.snpRolAfiliado) END)
+            LEFT JOIN Empleador empl ON (empl.empEmpresa = empr.empId)
+            LEFT JOIN Persona pemp ON (pemp.perId = empr.empPersona)
+            LEFT JOIN IntentoNovedad ino ON (ino.inoSolicitud = sol.solId)
+            LEFT JOIN Beneficiario ben ON (snp.snpBeneficiario = ben.benId)
+
+            WHERE per.perTipoIdentificacion = :tipoIdentificacion
+            AND per.perNumeroIdentificacion = :numeroIdentificacion
+            AND 1 = (CASE WHEN snp.snpBeneficiario IS NULL AND sol.solClasificacion NOT IN ('CONYUGE', 'PADRE', 'MADRE',
+            'HIJO_BIOLOGICO', 'HIJO_ADOPTIVO', 'HIJASTRO', 'HERMANO_HUERFANO_DE_PADRES', 'BENEFICIARIO_EN_CUSTODIA')
+            THEN 1
+            ELSE 0 END )
+            UNION
+            SELECT nov.novTipoTransaccion,
+            sol.solFechaRadicacion,
+            CASE WHEN sol.solResultadoProceso = 'APROBADA' THEN 'Aplicada' ELSE 'Guardada' END estadoNovedad,
+            nop.nopFechaInicio,
+            nop.nopFechaFin,
+            sol.solNumeroRadicacion,
+            CASE WHEN sol.solCanalRecepcion = 'WEB'
+            AND nov.novTipoTransaccion LIKE'%_DEPWEB%' THEN 'Web Empresas'
+            WHEN sol.solCanalRecepcion = 'WEB' THEN 'Web Personas'
+            ELSE solCanalRecepcion END solCanalRecepcion,
+            pemp.perRazonSocial empleador,
+            (SELECT TOP(1) hb.hbeEstadoBeneficiarioAfiliado
+            FROM HistoricoBeneficiario hb
+            WHERE perB.perTipoIdentificacion = hb.hbeTipoIdentificacionBeneficiario
+            AND perB.perNumeroIdentificacion = hb.hbeNumeroIdentificacionBeneficiario
+            AND hb.hbeEstadoBeneficiarioAfiliado NOT IN (SELECT TOP(1) benEstadoBeneficiarioAfiliado
+            FROM Beneficiario
+            WHERE benPersona = perB.perId)
+            ORDER BY hb.hbeId DESC
+            ) AS estadoAntes,
+            CASE WHEN nov.novTipoTransaccion IN ('REPORTE_FALLECIMIENTO_PERSONAS_DEPWEB',
+            'REPORTE_FALLECIMIENTO_PERSONAS', 'REPORTE_FALLECIMIENTO_PERSONAS_WEB',
+            'RETIRO_TRABAJADOR_DEPENDIENTE', 'RETIRO_TRABAJADOR_INDEPENDIENTE', 'RETIRO_PENSIONADO_25ANIOS',
+            'RETIRO_PENSIONADO_MAYOR_1_5SM_0_6',
+            'RETIRO_PENSIONADO_MAYOR_1_5SM_2', 'RETIRO_PENSIONADO_MENOR_1_5SM_0', 'RETIRO_PENSIONADO_MENOR_1_5SM_0_6',
+            'RETIRO_PENSIONADO_MENOR_1_5SM_2',
+            'RETIRO_PENSIONADO_PENSION_FAMILIAR', 'RETIRO_AUTOMATICO_POR_MORA')
+            AND sol.solResultadoProceso = 'APROBADA'
+            AND (SELECT TOP(1) benEstadoBeneficiarioAfiliado
+            FROM Beneficiario
+            WHERE benPersona = perB.perId
+            ) IS NOT NULL
+            THEN (SELECT TOP(1) benEstadoBeneficiarioAfiliado
+            FROM Beneficiario
+            WHERE benPersona = perB.perId
+            ) ELSE (SELECT benEstadoBeneficiarioAfiliado
+            FROM Beneficiario
+            WHERE benPersona = perB.perId
+            ) END AS estadoDespues,
+            sol.solId,
+            CASE WHEN nov.novTipoTransaccion LIKE '%_DEPENDIENTE%'
+            OR nov.novTipoTransaccion LIKE '%_INDEPENDIENTE%'
+            OR nov.novTipoTransaccion LIKE '%_PENSIONADO%'
+            THEN 'Afiliación' ELSE 'Persona' END nivelNovedad,
+            empl.empId as idEmpleador,
+            perB.perId,
+            empr.empId as idEmpresa
+            FROM SolicitudNovedad sno
+            JOIN Solicitud sol ON (sno.snoSolicitudGlobal = sol.solId)
+            JOIN SolicitudNovedadPersona snp ON (sno.snoId = snp.snpSolicitudNovedad)
+            JOIN Persona per ON (per.perId = snp.snpPersona)
+            JOIN ParametrizacionNovedad nov ON (sno.snoNovedad = nov.novId)
+            LEFT JOIN NovedadDetalle nop ON (nop.nopSolicitudNovedad = sno.snoId)
+            LEFT JOIN Empresa empr ON empr.empId = (CASE WHEN snp.snpRolAfiliado is null
+            THEN (SELECT ag.apgEmpresa FROM Empresa er JOIN AporteGeneral ag ON er.empId = ag.apgEmpresa JOIN
+            AporteDetallado ad ON ad.apdAporteGeneral=ag.apgId
+            JOIN SolicitudNovedadPila snp2 ON ad.apdRegistroDetallado=snp2.spiRegistroDetallado and
+            snp2.spiSolicitudNovedad=sno.snoId
+            AND sol.solCanalRecepcion IN ('PILA', 'APORTE_MANUAL'))
+            ELSE (SELECT er2.empId FROM RolAfiliado roa JOIN Empleador el ON el.empId=roa.roaEmpleador JOIN Empresa er2
+            ON er2.empId = el.empEmpresa
+            WHERE roa.roaId = snp.snpRolAfiliado) END)
+            LEFT JOIN Empleador empl ON (empl.empEmpresa = empr.empId)
+            LEFT JOIN Persona pemp ON (pemp.perId = empr.empPersona)
+            LEFT JOIN IntentoNovedad ino ON (ino.inoSolicitud = sol.solId)
+            JOIN Beneficiario ben ON (snp.snpBeneficiario = ben.benId)
+            JOIN Persona perB ON (ben.benPersona = perB.perId)
+
+            WHERE perB.perTipoIdentificacion = :tipoIdentificacion
+            AND perB.perNumeroIdentificacion = :numeroIdentificacion
+            AND 1 = (CASE WHEN ben.benTipoBeneficiario IS NULL AND snp.snpBeneficiario IS NULL
+            AND (sol.solClasificacion IS NULL OR sol.solClasificacion NOT IN ('CONYUGE', 'PADRE', 'MADRE',
+            'HIJO_BIOLOGICO', 'HIJO_ADOPTIVO', 'HIJASTRO', 'HERMANO_HUERFANO_DE_PADRES', 'BENEFICIARIO_EN_CUSTODIA'))
+            THEN 1
+            ELSE 0 END)
+            ) novedadesPersona
+            WHERE (estadoNovedad = 'Aplicada') OR (solCanalRecepcion IN
+            ('APORTE_MANUAL','ARCHIVO_ACTUALIZACION','ARCHIVO_CERTI_ESCOLAR','CARTERA','CORRECCION_APORTE','ENTIDAD_EXTERNA','PILA','PRESENCIAL_INT'))
+        </query>
+        <hint name="fechaRegistroNovedad" value="solFechaRadicacion"/>
+        <hint name="nombreNovedad" value="novTipoTransaccion"/>
+        <hint name="estadoNovedad" value="estadoNovedad"/>
+        <hint name="fechaInicioVigencia" value="nopFechaInicio"/>
+        <hint name="fechaFinVigencia" value="nopFechaFin"/>
+        <hint name="numeroOperacion" value="solNumeroRadicacion"/>
+        <hint name="canal" value="solCanalRecepcion"/>
+        <hint name="empleador" value="empleador"/>
+        <hint name="estadoPersonaAntes" value="estadoAntes"/>
+        <hint name="estadoPersonaDespues" value="estadoDespues"/>
+        <hint name="nivelNovedad" value="nivelNovedad"/>
+    </named-native-query>
+    <!--
+       <named-native-query
+            name="novedades.consultar.NovedadesRegistradasPersonaIntNG">
+        <query>
+            select
+(select novTipoTransaccion from ParametrizacionNovedad with (nolock) where sn.snoNovedad = novId) as novTipoTransaccion
+,s.solFechaRadicacion
+,case when s.solResultadoProceso = 'APROBADA' then 'Aplicada' else 'Guardada' end as estadoNovedad
+,nop.nopFechaInicio
+,nop.nopFechaFin
+,s.solNumeroRadicacion
+,case when s.solCanalRecepcion = 'WEB' and (select novTipoTransaccion from ParametrizacionNovedad with (nolock) where sn.snoNovedad = novId) LIKE'%_DEPWEB%' 
+	THEN 'Web Empresas' 
+	WHEN s.solCanalRecepcion = 'WEB' 
+	THEN 'Web Personas'
+	ELSE solCanalRecepcion END solCanalRecepcion
+,empl.perRazonSocial empleador
+,case when s.solResultadoProceso = 'APROBADA' then 'ACTIVO' else 
+			case when (select roaEstadoAfiliado from VW_EstadoAfiliacionPersonaCaja2 where roaId = afi.roaId) is null
+				then (select roaEstadoAfiliado from VW_EstadoAfiliacionPersonaCaja2 where perTipoIdentificacion = afi.perTipoIdentificacion and perNumeroIdentificacion = afi.perNumeroIdentificacion)
+				else (select roaEstadoAfiliado from VW_EstadoAfiliacionPersonaCaja2 where roaId = afi.roaId) end end as estadoAntes
+,case when s.solResultadoProceso = 'APROBADA' and (select left(novTipoTransaccion,6) from ParametrizacionNovedad with (nolock) where sn.snoNovedad = novId) not in ('RETIRO', 'RETIRA') then 'ACTIVO' 
+		else 
+			case when s.solResultadoProceso = 'APROBADA' and (select left(novTipoTransaccion,6) from ParametrizacionNovedad with (nolock) where sn.snoNovedad = novId) in ('RETIRO', 'RETIRA') then 'INACTIVO'
+			else  
+				case when (select roaEstadoAfiliado from VW_EstadoAfiliacionPersonaCaja2 where roaId = afi.roaId) is null
+				then (select roaEstadoAfiliado from VW_EstadoAfiliacionPersonaCaja2 where perTipoIdentificacion = afi.perTipoIdentificacion and perNumeroIdentificacion = afi.perNumeroIdentificacion)
+				else (select roaEstadoAfiliado from VW_EstadoAfiliacionPersonaCaja2 where roaId = afi.roaId) end
+			end
+		end as estadoDespues
+,s.solId
+,CASE WHEN nov.novTipoTransaccion LIKE '%_DEPENDIENTE%'
+	OR nov.novTipoTransaccion LIKE '%_INDEPENDIENTE%'
+	OR nov.novTipoTransaccion LIKE '%_PENSIONADO%'
+THEN 'Afiliación' ELSE 'Persona' END nivelNovedad
+,empl.idEmpleador as idEmpleador
+,afi.perId
+,empl.idEmpresa as idEmpresa
+from solicitud as s with (nolock)
+inner join SolicitudNovedad as sn with (nolock) on s.solId = sn.snoSolicitudGlobal
+inner join SolicitudNovedadPersona as snp with (nolock) on sn.snoId = snp.snpSolicitudNovedad
+inner join ParametrizacionNovedad nov ON sn.snoNovedad = nov.novId
+left join NovedadDetalle nop with (nolock) on (nop.nopSolicitudNovedad = sn.snoId)
+left join 
+(select r.roaId, p.perId, r.roaTipoAfiliado, r.roaEstadoAfiliado, r.roaFechaRetiro, r.roaFechaIngreso, r.roaEmpleador, p.perNumeroIdentificacion, p.perTipoIdentificacion
+from persona as p with (nolock)
+inner join Afiliado as a with (nolock) on p.perId = a.afiPersona
+inner join RolAfiliado as r with (nolock) on a.afiId = r.roaAfiliado) as afi on afi.perId = snp.snpPersona and afi.roaId = snp.snpRolAfiliado
+left join 
+(select em.empId as idEmpleador, p.perRazonSocial, e.empId as idEmpresa
+from persona as p with (nolock)
+inner join Empresa as e with (nolock) on p.perId = e.empPersona
+inner join Empleador as em with (nolock) on e.empId = em.empEmpresa) as empl on afi.roaEmpleador = empl.idEmpleador
+where afi.perTipoIdentificacion = :tipoIdentificacion and afi.perNumeroIdentificacion = :numeroIdentificacion
+
+        </query>
+        <hint name="fechaRegistroNovedad" value="solFechaRadicacion"/>
+        <hint name="nombreNovedad" value="novTipoTransaccion"/>
+        <hint name="estadoNovedad" value="estadoNovedad"/>
+        <hint name="fechaInicioVigencia" value="nopFechaInicio"/>
+        <hint name="fechaFinVigencia" value="nopFechaFin"/>
+        <hint name="numeroOperacion" value="solNumeroRadicacion"/>
+        <hint name="canal" value="solCanalRecepcion"/>
+        <hint name="empleador" value="empleador"/>
+        <hint name="estadoPersonaAntes" value="estadoAntes"/>
+        <hint name="estadoPersonaDespues" value="estadoDespues"/>
+        <hint name="nivelNovedad" value="nivelNovedad"/>
+    </named-native-query>
+-->
+    <named-native-query
+            name="novedades.consultar.NovedadesRegistradasBeneficiario">
+        <query>
+            SELECT * FROM (
+            SELECT CASE WHEN ISNULL(ben.benTipoBeneficiario, sol.solClasificacion) IN ('HIJO_BIOLOGICO','HIJO_ADOPTIVO',
+            'HIJASTRO',
+            'HERMANO_HUERFANO_DE_PADRES', 'BENEFICIARIO_EN_CUSTODIA') THEN 'HIJO'
+            WHEN ben.benTipoBeneficiario IN ('PADRE','MADRE') THEN 'PADRES' ELSE 'CONYUGE' END relacion,
+            ISNULL(ben.benTipoBeneficiario, sol.solClasificacion) AS benTipoBeneficiario,
+            nov.novTipoTransaccion, sol.solFechaRadicacion,
+            CONCAT(perafi.perprimernombre,' ',perafi.persegundonombre,' ',perafi.perprimerapellido,' ',perafi.persegundoapellido) as
+            afiliadoP,
+            nop.nopFechaInicio, nop.nopFechaFin, sol.solNumeroRadicacion,
+            CASE WHEN sol.solResultadoProceso = 'APROBADA' THEN 'Aplicada' ELSE 'Guardada' END estadoNovedad,
+            sol.solCanalRecepcion,
+            sol.solId,
+            per.perNumeroIdentificacion,
+            per.perTipoIdentificacion,
+            CONCAT(perBen.perPrimerNombre,ISNULL(' '+ perBen.perSegundoNombre + ' ','
+            '),perBen.perPrimerApellido,ISNULL(' '+perBen.perSegundoApellido,'')) AS nombresYApellidosBeneficiario,
+            perBen.perTipoIdentificacion AS tipoIdentificacionBeneficiario,
+            perBen.perNumeroIdentificacion AS numeroIdentificacionBeneficiario
+            FROM ParametrizacionNovedad nov
+            JOIN SolicitudNovedad sno ON sno.snoNovedad = nov.novId
+            LEFT JOIN NovedadDetalle nop ON nop.nopSolicitudNovedad = sno.snoId
+            JOIN (SELECT snp.snpId, snp.snpSolicitudNovedad, snp.snpPersona, snpRolAfiliado, snpBeneficiario, null AS
+            tipo
+            FROM SolicitudNovedadPersona snp
+            UNION
+            SELECT snp.snpId, snp.snpSolicitudNovedad, per.perId, snpRolAfiliado, snpBeneficiario,
+            ben.benTipoBeneficiario
+            FROM SolicitudNovedadPersona snp
+            JOIN Beneficiario ben ON (snp.snpBeneficiario = ben.benId)
+            JOIN Persona per ON (ben.benPersona = per.perId)
+            ) AS snp ON snp.snpSolicitudNovedad = sno.snoId
+            LEFT JOIN Beneficiario ben ON ben.benId = snp.snpBeneficiario
+            LEFT JOIN Persona perBen ON perBen.perId = ben.benPersona
+            JOIN Solicitud sol ON sol.solId = sno.snoSolicitudGlobal
+            JOIN Persona per ON per.perId = snp.snpPersona
+            LEFT JOIN IntentoNovedad ino ON ino.inoSolicitud = sol.solId
+            LEFT JOIN Afiliado on afiid = ben.benafiliado
+			LEFT JOIN persona perafi on perafi.perid = afipersona
+            WHERE per.perTipoIdentificacion = :tipoIdentificacion
+            AND per.perNumeroIdentificacion = :numeroIdentificacion
+            AND 1 = (CASE WHEN snp.tipo IS NULL AND snp.snpBeneficiario IS NOT NULL THEN 1
+            WHEN /*snp.snpBeneficiario IS NULL AND */ sol.solClasificacion IN ('CONYUGE', 'PADRE', 'MADRE', 'HIJO_BIOLOGICO',
+            'HIJO_ADOPTIVO', 'HIJASTRO', 'HERMANO_HUERFANO_DE_PADRES', 'BENEFICIARIO_EN_CUSTODIA') THEN 1
+            ELSE 0 END)
+            AND 1 = (CASE WHEN (solCanalRecepcion = 'PRESENCIAL_INT' AND snoEstadoSolicitud != 'CERRADA') THEN 0 ELSE 1
+            END)
+            AND perBen.perId IS NOT NULL
+            ) novedadesBeneficiario
+            WHERE (estadoNovedad = 'Aplicada') OR (solCanalRecepcion IN
+            ('APORTE_MANUAL','ARCHIVO_ACTUALIZACION','ARCHIVO_CERTI_ESCOLAR','CARTERA','CORRECCION_APORTE','ENTIDAD_EXTERNA','PILA','PRESENCIAL_INT'))
+        </query>
+        <hint name="relacionBeneficiario" value="relacion"/>
+        <hint name="clasificacionBeneficiario" value="benTipoBeneficiario"/>
+        <hint name="nombreNovedad" value="novTipoTransaccion"/>
+        <hint name="fechaRegistroNovedad" value="solFechaRadicacion"/>
+        <hint name="afiliado" value="afiliadoP"/>
+        <hint name="fechaInicioVigencia" value="nopFechaInicio"/>
+        <hint name="fechaFinVigencia" value="nopFechaFin"/>
+        <hint name="numeroOperacion" value="solNumeroRadicacion"/>
+        <hint name="estadoNovedad" value="estadoNovedad"/>
+        <hint name="canal" value="solCanalRecepcion"/>
+    </named-native-query>
+
+    <named-native-query name="novedades.consultar.afiliado.por.estado"
+                        result-set-mapping="novedades.consultar.afiliado.por.estado.Mapping">
+        <query>
+            SELECT perEst.*
+            FROM (SELECT per.*,
+            CASE WHEN est.roaEstadoAfiliado IS NULL THEN 'NO_FORMALIZADO_CON_INFORMACION' ELSE est.roaEstadoAfiliado END
+            AS roaEstadoAfiliado
+            FROM Persona per JOIN VW_EstadoAfiliacionPersonaCaja est ON est.perId = per.perId) perEst
+            LEFT JOIN Afiliado afi ON afi.afiPersona = perEst.perId
+            LEFT JOIN Beneficiario ben ON ben.benPersona = perEst.perId
+            LEFT JOIN Empresa emp ON emp.empPersona = perEst.perId
+            WHERE emp.empId IS NULL
+            AND perEst.perTipoIdentificacion NOT IN ('NIT')
+            AND perEst.roaEstadoAfiliado IN (:estadoAfiliadoCaja)
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.consecutivoNovedadCascada">
+        <query>
+            SELECT COUNT(solId) FROM Solicitud
+            WHERE solNumeroRadicacion LIKE CONCAT(:numeroRadicado,'%')
+        </query>
+    </named-native-query>
+
+    <named-native-query name="guardar.ExcepcionNovedad">
+        <query>
+            INSERT INTO ExepcionNovedad (enoFechaExcepcion, enoSolicitudNovedadDTO, enoSolicitudNovedadModeloDTO,
+            enoUserDTO, enoExcepcion)
+            VALUES (:fechaRegistro, :jsonSolicitudNovedadDTO, :jsonSolicitudNovedad, :jsonUserDTO, :excepcion)
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.dataAfiliadosInactivosConBeneficiariosActivos"
+                        result-set-mapping="novedades.consultar.data.afiliados.Mapping">
+        <query>
+            SELECT DISTINCT afi.afiId idAfiliado, epc.roaFechaRetiro fechaRetiro, sol.solNumeroRadicacion radicado,
+            solTipoTransaccion transaccion
+            FROM Beneficiario ben
+            JOIN Afiliado afi ON afi.afiId = ben.benAfiliado
+            JOIN Persona per ON per.perId = afiPersona
+            JOIN VW_EstadoAfiliacionPersonaCaja epc ON per.perId = epc.perId
+            JOIN SolicitudNovedadPersona snp ON per.perId = snp.snpPersona
+            JOIN SolicitudNovedad sno ON sno.snoId = snp.snpSolicitudNovedad
+            JOIN Solicitud sol ON sol.solId = sno.snoSolicitudGlobal
+            JOIN (SELECT MAX(solId) AS solicitud, per.perId AS persona FROM Beneficiario ben
+            JOIN Afiliado afi ON afi.afiId = ben.benAfiliado
+            JOIN Persona per ON per.perId = afiPersona
+            JOIN VW_EstadoAfiliacionPersonaCaja epc ON per.perId = epc.perId
+            JOIN SolicitudNovedadPersona snp ON per.perId = snp.snpPersona
+            JOIN SolicitudNovedad sno ON sno.snoId = snp.snpSolicitudNovedad
+            JOIN Solicitud sol ON sol.solId = sno.snoSolicitudGlobal
+            WHERE epc.roaEstadoAfiliado = 'INACTIVO'
+            AND ben.benEstadoBeneficiarioAfiliado = 'ACTIVO'
+            AND sol.solTipoTransaccion LIKE 'RETIRO_TRABAJADOR_%'
+            GROUP BY per.perId) reg ON sol.solId = reg.solicitud
+            WHERE epc.roaEstadoAfiliado = 'INACTIVO'
+            AND ben.benEstadoBeneficiarioAfiliado = 'ACTIVO'
+            AND sol.solTipoTransaccion LIKE 'RETIRO_TRABAJADOR_%'
+            AND sol.solCanalRecepcion = 'PILA'
+        </query>
+    </named-native-query>
+
+
+    <named-native-query name="transaccion.novedad.pila.completa">
+        <query>
+            select tnpId
+            from TransaccionNovedadPilaCompleta
+            WHERE tnpId = :tempId
+        </query>
+    </named-native-query>
+
+    <named-native-query name="guardar.ExcepcionNovedad.pila">
+        <query>
+            INSERT ExcepcionNovedadPila (enpIdTempNovedad, enpExcepcion,enpFecha)
+            VALUES (:tempNovedadId, :excepcion, dbo.GetLocalDate())
+        </query>
+    </named-native-query>
+
+    <named-native-query name="novedades.guardar.registros.persona.inconsistentes.supervivencia">
+        <query>
+            INSERT RegistroPersonaInconsistente (rpiPersona, rpiCanalContacto, rpiFechaIngreso, rpiEstadoGestion,
+            rpiObservaciones, rpiTipoInconsistencia)
+            VALUES(:idPersona, :canalContacto, :fechaIngreso, :estadoGestion, :observaciones, :tipoInconsistencia);
+        </query>
+    </named-native-query>
+
+
+    <named-native-query name="consultar.persona.admin.sub.tipo.num">
+        <query>
+            select count(per.perId) as cant
+            from Persona per, AdministradorSubsidio adm
+            where adm.asuPersona = per.perId
+            and per.perTipoIdentificacion = :tipoIdenAdminSubsidio
+            and per.perNumeroIdentificacion = :numeroIdenAdminSubsidio
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.persona.admin.sub.casId">
+        <query>
+            select count(per.perId) as cant
+            FROM CuentaAdministradorSubsidio cas, AdministradorSubsidio adm, Persona per
+            where cas.casAdministradorSubsidio = adm.asuId
+            AND cas.casAdministradorSubsidio = adm.asuId
+            AND adm.asuPersona = per.perId
+            and per.perTipoIdentificacion = :tipoIdenAdminSubsidio
+            and per.perNumeroIdentificacion = :numeroIdenAdminSubsidio
+            and cas.casId = :casId
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.casId.medio.pago">
+        <query>
+            select count(per.perId) as cant
+            FROM CuentaAdministradorSubsidio cas, AdministradorSubsidio adm, Persona per
+            where cas.casAdministradorSubsidio = adm.asuId
+            AND cas.casAdministradorSubsidio = adm.asuId
+            AND adm.asuPersona = per.perId
+            and per.perTipoIdentificacion = :tipoIdenAdminSubsidio
+            and per.perNumeroIdentificacion = :numeroIdenAdminSubsidio
+            and cas.casId = :casId
+            and cas.casMedioDePagoTransaccion = 'TRANSFERENCIA'
+            and cas.casEstadoTransaccionSubsidio = 'ENVIADO'
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.asociado.admin.sub">
+        <query>
+            select count(per.perId) as cant
+            FROM CuentaAdministradorSubsidio cas, AdministradorSubsidio adm, Persona per
+            where cas.casAdministradorSubsidio = adm.asuId
+            AND cas.casAdministradorSubsidio = adm.asuId
+            AND adm.asuPersona = per.perId
+            and cas.casTipoIdentificacionTitularCuentaAdmonSubsidio = :tipoIdenAdminSubsidio
+            and cas.casNumeroIdentificacionTitularCuentaAdmonSubsidio = :numeroIdenAdminSubsidio
+            and cas.casId = :casId
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.persona.igual.admin.sub">
+        <query>
+            select count(per.perId) as cant
+            FROM CuentaAdministradorSubsidio cas, AdministradorSubsidio adm, Persona per
+            where cas.casAdministradorSubsidio = adm.asuId
+            AND cas.casAdministradorSubsidio = adm.asuId
+            AND adm.asuPersona = per.perId
+            and cas.casTipoIdentificacionTitularCuentaAdmonSubsidio = :tipoIdenAdminSubsidio
+            and cas.casNumeroIdentificacionTitularCuentaAdmonSubsidio = :numeroIdenAdminSubsidio
+            and cas.casId = :casId
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.tipo.cuenta.titular">
+        <query>
+            select count(per.perId) as cant
+            FROM CuentaAdministradorSubsidio cas, AdministradorSubsidio adm, Persona per
+            where cas.casAdministradorSubsidio = adm.asuId
+            AND cas.casAdministradorSubsidio = adm.asuId
+            AND adm.asuPersona = per.perId
+            and per.perTipoIdentificacion = :tipoIdenAdminSubsidio
+            and per.perNumeroIdentificacion = :numeroIdenAdminSubsidio
+            and cas.casId = :casId
+            and cas.casTipoCuentaAdmonSubsidio = :tipoCuenta
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.numero.cuenta.exits">
+        <query>
+            select count(per.perId) as cant
+            FROM CuentaAdministradorSubsidio cas, AdministradorSubsidio adm, Persona per
+            where cas.casAdministradorSubsidio = adm.asuId
+            AND cas.casAdministradorSubsidio = adm.asuId
+            AND adm.asuPersona = per.perId
+            and per.perTipoIdentificacion = :tipoIdenAdminSubsidio
+            and per.perNumeroIdentificacion = :numeroIdenAdminSubsidio
+            and cas.casId = :casId
+            and cas.casNumeroCuentaAdmonSubsidio = :numeroCuenta
+        </query>
+    </named-native-query>
+
+    <named-native-query name="consultar.titular.cuenta.admonSubsidio.casid">
+        <query>
+            select
+            casTipoIdentificacionTitularCuentaAdmonSubsidio,casNumeroIdentificacionTitularCuentaAdmonSubsidio,casGrupoFamiliar
+            from CuentaAdministradorSubsidio cas
+            where casId = :casId
+        </query>
+    </named-native-query>
+
+
+    <named-native-query name="consultar.valor.transaccion.genesys">
+        <query>
+            select count(per.perId) as cant
+            FROM CuentaAdministradorSubsidio cas, AdministradorSubsidio adm, Persona per
+            where cas.casAdministradorSubsidio = adm.asuId
+            AND cas.casAdministradorSubsidio = adm.asuId
+            AND adm.asuPersona = per.perId
+            and per.perTipoIdentificacion = :tipoIdenAdminSubsidio
+            and per.perNumeroIdentificacion = :numeroIdenAdminSubsidio
+            and cas.casId = :casId
+            and cas.casValorRealTransaccion = :valorTransferencia
+        </query>
+    </named-native-query>
+    <named-native-query name="consultar.numero.identificacion.caja.nit">
+        <query>
+            select prmValor
+            from Parametro
+            where prmNombre = 'NUMERO_ID_CCF'
+        </query>
+    </named-native-query>
+    <named-native-query name="novedades.update.persona.detalle.fallecido">
+        <query>
+            update PersonaDetalle
+            SET pedFallecido=:fallecido
+            where pedId = (SELECT perd.pedId
+            FROM PersonaDetalle perd
+            INNER JOIN Persona p ON p.perId = perd.pedPersona
+            WHERE p.perNumeroIdentificacion =:numeroIdentificacion
+            AND p.perTipoIdentificacion =:tipoIdentificacion)
+        </query>
+    </named-native-query>
+    <named-native-query name="consultar.persona.existe">
+        <query>
+            SELECT CASE 
+                WHEN EXISTS (SELECT roa.roaId 
+					FROM RolAfiliado roa
+					JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+					JOIN Persona per1 ON afi.afiPersona = per1.perId
+					JOIN VW_EstadoAfiliacionPersonaEmpresa v ON v.perId = per1.perId
+					WHERE per1.perNumeroIdentificacion =:numeroDocumento
+					AND per1.perTipoIdentificacion =:tipoDocumento
+					AND roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+					AND ((roa.roaEstadoAfiliado = 'ACTIVO' AND v.roaEstadoAfiliado != 'NO_FORMALIZADO_RETIRADO_CON_APORTES') OR
+					(roa.roaEstadoAfiliado = 'INACTIVO'))) THEN 1
+                WHEN EXISTS (SELECT roa.roaId 
+					FROM RolAfiliado roa
+					JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+					JOIN Persona per1 ON afi.afiPersona = per1.perId
+					JOIN VW_EstadoAfiliacionPersonaindependiente v ON v.perId = per1.perId
+					WHERE per1.perNumeroIdentificacion =:numeroDocumento
+					AND per1.perTipoIdentificacion =:tipoDocumento
+					AND roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+					AND ((roa.roaEstadoAfiliado = 'ACTIVO' AND v.roaEstadoAfiliado != 'NO_FORMALIZADO_RETIRADO_CON_APORTES') OR
+					(roa.roaEstadoAfiliado = 'INACTIVO'))) THEN 1
+                WHEN EXISTS (SELECT 1
+					FROM RolAfiliado roa
+					JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+					JOIN Persona per1 ON afi.afiPersona = per1.perId
+					JOIN VW_EstadoAfiliacionPersonaPENSIONADO v ON v.perId = per1.perId
+					WHERE per1.perNumeroIdentificacion =:numeroDocumento
+					AND per1.perTipoIdentificacion =:tipoDocumento
+					AND roaTipoAfiliado = 'PENSIONADO'
+					AND ((roa.roaEstadoAfiliado = 'ACTIVO' AND v.roaEstadoAfiliado != 'NO_FORMALIZADO_RETIRADO_CON_APORTES') OR
+					(roa.roaEstadoAfiliado = 'INACTIVO'))) THEN 1
+                WHEN EXISTS (SELECT 1
+					FROM Beneficiario ben
+					JOIN Persona per1 ON ben.benPersona = per1.perId
+					WHERE ben.benEstadoBeneficiarioAfiliado = 'ACTIVO'
+					AND per1.perNumeroIdentificacion =:numeroDocumento
+					AND per1.perTipoIdentificacion =:tipoDocumento) THEN 1
+                ELSE 0
+            END AS resultado
+        </query>
+    </named-native-query>
+    <named-native-query name="consultar.pensionado.25.anios">
+        <query>
+         SELECT 
+				per.perTipoIdentificacion, per.perNumeroIdentificacion,
+				CONCAT(perPrimerNombre, ' ', COALESCE(perSegundoNombre, ''), ' ', perPrimerApellido, ' ', COALESCE(perSegundoApellido, '')) AS NombreCompleto,
+				pd.pedFechaNacimiento, FLOOR(DATEDIFF(DAY, pedFechaNacimiento, GETDATE())/365.25) AS edad,
+								CASE WHEN EXISTS( SELECT roa.roaId 
+					FROM RolAfiliado roa
+					JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+					JOIN Persona per1 ON afi.afiPersona = per.perId
+					JOIN VW_EstadoAfiliacionPersonaEmpresa v ON v.perId = per.perId
+					WHERE per1.perNumeroIdentificacion = per.perNumeroIdentificacion
+					AND per1.perTipoIdentificacion = per.perTipoIdentificacion
+					AND roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+					AND ((roa.roaEstadoAfiliado = 'ACTIVO' AND v.roaEstadoAfiliado != 'NO_FORMALIZADO_RETIRADO_CON_APORTES') OR
+					(roa.roaEstadoAfiliado = 'INACTIVO' AND v.roaEstadoAfiliado = 'NO_FORMALIZADO_RETIRADO_CON_APORTES'))
+				) THEN (
+				select 
+				CASE 
+				WHEN isActivo = 1 THEN('ACTIVO') 
+				WHEN isInactivo = 1 AND isActivo = 0 THEN('INACTIVO')
+				WHEN isNoFormalizado = 1 AND isInactivo = 0 AND isActivo = 0THEN('INACTIVO')
+				END AS NuevaColumna
+				from(select CASE WHEN EXISTS(
+					select v.roaEstadoAfiliado as estado from VW_EstadoAfiliacionPersonaEmpresa v
+					join afiliado a on v.perId = a.afiPersona
+		WHERE v.perTipoIdentificacion =per.perTipoIdentificacion
+		AND v.perNumeroIdentificacion = per.perNumeroIdentificacion
+		AND v.roaEstadoAfiliado = 'ACTIVO') THEN 1 ELSE 0 END AS isActivo,
+		CASE WHEN EXISTS(
+					select v.roaEstadoAfiliado as estado from VW_EstadoAfiliacionPersonaEmpresa v
+					join afiliado a on v.perId = a.afiPersona
+		WHERE v.perTipoIdentificacion =per.perTipoIdentificacion
+		AND v.perNumeroIdentificacion = per.perNumeroIdentificacion
+		AND v.roaEstadoAfiliado = 'INACTIVO') THEN 1 ELSE 0 END AS isInactivo,
+		CASE WHEN EXISTS(
+					select v.roaEstadoAfiliado as estado from VW_EstadoAfiliacionPersonaEmpresa v
+					join afiliado a on v.perId = a.afiPersona
+		WHERE v.perTipoIdentificacion =per.perTipoIdentificacion
+		AND v.perNumeroIdentificacion = per.perNumeroIdentificacion
+		AND v.roaEstadoAfiliado = 'NO_FORMALIZADO_SIN_AFILIACION_CON_APORTES') THEN 1 ELSE 0 END AS isNoFormalizado) as sub
+				) ELSE 'INACTIVO' END AS isTrabajadorDependiente,
+				CASE WHEN EXISTS( SELECT roa.roaId 
+					FROM RolAfiliado roa
+					JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+					JOIN Persona per1 ON afi.afiPersona = per.perId
+					JOIN VW_EstadoAfiliacionPersonaindependiente v ON v.perId = per.perId
+					WHERE per1.perNumeroIdentificacion = per.perNumeroIdentificacion
+					AND per1.perTipoIdentificacion = per.perTipoIdentificacion
+					AND roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+					AND ((roa.roaEstadoAfiliado = 'ACTIVO' AND v.roaEstadoAfiliado !=  'NO_FORMALIZADO_RETIRADO_CON_APORTES') OR
+					(roa.roaEstadoAfiliado = 'INACTIVO' AND v.roaEstadoAfiliado = 'NO_FORMALIZADO_RETIRADO_CON_APORTES'))
+				) THEN (
+				select 
+				CASE 
+				WHEN isActivo = 1 THEN('ACTIVO') 
+				WHEN isInactivo = 1 AND isActivo = 0 THEN('INACTIVO')
+				WHEN isNoFormalizado = 1 AND isInactivo = 0 AND isActivo = 0THEN('INACTIVO')
+				END AS NuevaColumna
+				from(select CASE WHEN EXISTS(
+					select v.roaEstadoAfiliado as estado from VW_EstadoAfiliacionPersonaindependiente  v
+					join afiliado a on v.perId = a.afiPersona
+		WHERE v.perTipoIdentificacion =per.perTipoIdentificacion
+		AND v.perNumeroIdentificacion = per.perNumeroIdentificacion
+		AND v.roaEstadoAfiliado = 'ACTIVO') THEN 1 ELSE 0 END AS isActivo,
+		CASE WHEN EXISTS(
+					select v.roaEstadoAfiliado as estado from VW_EstadoAfiliacionPersonaindependiente  v
+					join afiliado a on v.perId = a.afiPersona
+		WHERE v.perTipoIdentificacion =per.perTipoIdentificacion
+		AND v.perNumeroIdentificacion = per.perNumeroIdentificacion
+		AND v.roaEstadoAfiliado = 'INACTIVO') THEN 1 ELSE 0 END AS isInactivo,
+		CASE WHEN EXISTS(
+					select v.roaEstadoAfiliado as estado from VW_EstadoAfiliacionPersonaindependiente  v
+					join afiliado a on v.perId = a.afiPersona
+		WHERE v.perTipoIdentificacion =per.perTipoIdentificacion
+		AND v.perNumeroIdentificacion = per.perNumeroIdentificacion
+		AND v.roaEstadoAfiliado = 'NO_FORMALIZADO_SIN_AFILIACION_CON_APORTES') THEN 1 ELSE 0 END AS isNoFormalizado) as sub
+				) ELSE 'INACTIVO' END AS isTrabajadorIndependiente
+				,
+				CASE WHEN EXISTS( SELECT roa.roaId 
+					FROM RolAfiliado roa
+					JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+					JOIN Persona per1 ON afi.afiPersona = per.perId
+					JOIN VW_EstadoAfiliacionPersonaPENSIONADO v ON v.perId = per.perId
+					WHERE per1.perNumeroIdentificacion = per.perNumeroIdentificacion
+					AND per1.perTipoIdentificacion = per.perTipoIdentificacion
+					AND roaTipoAfiliado = 'PENSIONADO'
+					AND ((roa.roaEstadoAfiliado = 'ACTIVO' AND v.roaEstadoAfiliado !=  'NO_FORMALIZADO_RETIRADO_CON_APORTES') OR
+					(roa.roaEstadoAfiliado = 'INACTIVO' AND v.roaEstadoAfiliado = 'NO_FORMALIZADO_RETIRADO_CON_APORTES'))
+				) THEN (
+				select 
+				CASE 
+				WHEN isActivo = 1 THEN('ACTIVO') 
+				WHEN isInactivo = 1 AND isActivo = 0 THEN('INACTIVO')
+				WHEN isNoFormalizado = 1 AND isInactivo = 0 AND isActivo = 0THEN('INACTIVO')
+				END AS NuevaColumna
+				from(select CASE WHEN EXISTS(
+					select v.roaEstadoAfiliado as estado from VW_EstadoAfiliacionPersonaPENSIONADO v
+					join afiliado a on v.perId = a.afiPersona
+		WHERE v.perTipoIdentificacion =per.perTipoIdentificacion
+		AND v.perNumeroIdentificacion = per.perNumeroIdentificacion
+		AND v.roaEstadoAfiliado = 'ACTIVO') THEN 1 ELSE 0 END AS isActivo,
+		CASE WHEN EXISTS(
+					select v.roaEstadoAfiliado as estado from VW_EstadoAfiliacionPersonaPENSIONADO v
+					join afiliado a on v.perId = a.afiPersona
+		WHERE v.perTipoIdentificacion =per.perTipoIdentificacion
+		AND v.perNumeroIdentificacion = per.perNumeroIdentificacion
+		AND v.roaEstadoAfiliado = 'INACTIVO') THEN 1 ELSE 0 END AS isInactivo,
+		CASE WHEN EXISTS(
+					select v.roaEstadoAfiliado as estado from VW_EstadoAfiliacionPersonaPENSIONADO v
+					join afiliado a on v.perId = a.afiPersona
+		WHERE v.perTipoIdentificacion =per.perTipoIdentificacion
+		AND v.perNumeroIdentificacion = per.perNumeroIdentificacion
+		AND v.roaEstadoAfiliado = 'NO_FORMALIZADO_SIN_AFILIACION_CON_APORTES') THEN 1 ELSE 0 END AS isNoFormalizado) as sub
+		) 
+		ELSE 'INACTIVO' END AS isPensionado,
+				CASE WHEN EXISTS (
+					SELECT ben.benId
+					FROM Beneficiario ben
+					JOIN Persona per1 ON benPersona= per1.perId
+					WHERE ben.benEstadoBeneficiarioAfiliado = 'ACTIVO'
+					AND per1.perNumeroIdentificacion = per.perNumeroIdentificacion
+					AND per1.perTipoIdentificacion = per.perTipoIdentificacion		
+				)THEN 'ACTIVO' ELSE 'INACTIVO' END AS isBeneficiario,
+                (0) as tiempo,
+                CASE WHEN EXISTS (select top 1 pofid from PostulacionFOVIS 
+						inner join JefeHogar On jehid = pofJefeHogar
+						inner join Afiliado on afiId = jehAfiliado
+						inner join persona on perId  = afiPersona
+						where perNumeroIdentificacion = per.perNumeroIdentificacion
+						AND perTipoIdentificacion = per.perTipoIdentificacion
+						order by pofid asc) THEN(1) else(0) END AS hogarFovis,
+				CASE WHEN EXISTS (select pofid from PostulacionFOVIS 
+					inner join JefeHogar On jehid = pofJefeHogar
+					inner join Afiliado on afiId = jehAfiliado
+					inner join persona on perId  = afiPersona
+					where perNumeroIdentificacion = per.perNumeroIdentificacion
+					AND perTipoIdentificacion = per.perTipoIdentificacion) 
+					THEN(select top 1 pofEstadoHogar from PostulacionFOVIS 
+					inner join JefeHogar On jehid = pofJefeHogar
+					inner join Afiliado on afiId = jehAfiliado
+					inner join persona on perId  = afiPersona
+					where perNumeroIdentificacion = per.perNumeroIdentificacion
+					AND perTipoIdentificacion = per.perTipoIdentificacion
+					order by pofid desc) else(null) END AS EstadoHogar,
+				(select top 1 casFechaHoraTransaccion from Beneficiario 
+						inner join  Persona p on benPersona =p.perId 
+						inner join GrupoFamiliar on benGrupoFamiliar = grfId
+						inner join Afiliado on grfAfiliado = afiId
+						inner join Persona p2 on afiPersona = p2.perId
+						left join CuentaAdministradorSubsidio on (casAfiliadoPrincipal = afiId) 
+						where benEstadoBeneficiarioAfiliado = 'ACTIVO' 
+						and casEstadoTransaccionSubsidio NOT IN ( 'GENERADO', 'ANULADO')
+						and p.perNumeroIdentificacion = per.perNumeroIdentificacion
+						order by casFechaHoraTransaccion DESC) as UltimoPeriodoAfiliadoPrincipal,
+					(select top 1 cas.casFechaHoraTransaccion from Beneficiario 
+						inner join  Persona p on benPersona =p.perId 
+						inner join GrupoFamiliar on benGrupoFamiliar = grfId
+						inner join Afiliado on grfAfiliado = afiId
+						inner join Persona p2 on afiPersona = p2.perId
+						inner join CuentaAdministradorSubsidio cas on cas.casGrupoFamiliar = grfId
+						where benEstadoBeneficiarioAfiliado = 'ACTIVO' and p2.perNumeroIdentificacion = per.perNumeroIdentificacion
+						and cas.casEstadoTransaccionSubsidio NOT IN ( 'GENERADO', 'ANULADO')
+						order by cas.casFechaHoraTransaccion DESC) AS ultimoPeriodoBeneficiario,
+				CASE WHEN EXISTS(SELECT pa.perNumeroIdentificacion
+							from AporteGeneral 
+							inner join AporteDetallado on apdAporteGeneral =apgId
+							inner join Persona pa on pa.perId = apdPersona
+							WHERE apgPeriodoAporte BETWEEN CONVERT(VARCHAR(7), DATEADD(MONTH, -3, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0)), 120)
+                            AND CONVERT(VARCHAR(7), DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0)), 120)
+							GROUP BY pa.perNumeroIdentificacion, pa.perTipoIdentificacion 
+							HAVING COUNT(DISTINCT apgPeriodoAporte) = 3
+							AND  pa.perNumeroIdentificacion = per.perNumeroIdentificacion
+							AND pa.perTipoIdentificacion = per.perTipoIdentificacion) THEN (1) ELSE(0) END AS aportesUltimosTresPeriodos
+				
+			FROM Persona per
+			INNER JOIN PersonaDetalle pd ON pd.pedPersona = per.perid
+			WHERE per.perNumeroIdentificacion =:numeroDocumento
+			AND per.perTipoIdentificacion =:tipoDocu
+        </query>
+    </named-native-query>
+
+
+    <named-native-query name="consultar.hallazgos.confirmacion.abonos"
+        result-set-mapping="consultar.hallazgos.confirmacion.abonos.mapping">
+        <query>
+            select
+                case 
+                    when rcaErrorValidacion3 = 0 then 'Administrador de subsidio no existe'
+                    when rcaErrorValidacion4 = 0 then 'Identificador transacción en cuenta de admin subsidio monetario no existe en genesys y/o no está relacionado al administrador de subsidio'
+                    when rcaErrorValidacion5 = 0 then 'El administrador de subsidio no tiene relacionado un medio de pago igual a transferencia'
+                    when rcaErrorValidacion6 = 0 then 'Titular de la cuenta no está relacionado con el administrador de subsidio'
+                    when rcaErrorValidacion7 = 0 then 'Titular de la cuenta no es el mismo administrador de subsidio'
+                    when rcaErrorValidacion8 = 0 then 'El valor en el campo tipo de cuenta es incorrecto y/o no está asociado al titular de la cuenta'
+                    when rcaErrorValidacion9 = 0 then 'Número de cuenta no existe y/o no está asociado al titular de la cuenta'
+                    when rcaErrorValidacion10 = 0 then 'El valor de la transferencia no coincide con el valor real de la transacción de la transacción que fue generada en genesys'
+                end error,
+                case 
+                    when rcaErrorValidacion3 = 0 then 'numeroIdenAdminSubsidio'
+                    when rcaErrorValidacion4 = 0 then 'casId'
+                    when rcaErrorValidacion5 = 0 then 'casId'
+                    when rcaErrorValidacion6 = 0 then 'numeroIdenAdminSubsidio'
+                    when rcaErrorValidacion7 = 0 then 'numeroIdenAdminSubsidio'
+                    when rcaErrorValidacion8 = 0 then 'tipoCuenta'
+                    when rcaErrorValidacion9 = 0 then 'numeroCuenta'
+                    when rcaErrorValidacion10 = 0 THEN 'valorTransferencia'
+                end nombreCampo,
+                rcaNumeroLinea numeroLinea
+            from RegistroConfirmacionAbonos
+            where rcaNombreArchivo = :nombreArchivo
+            and (
+                rcaErrorValidacion3 = 0 or
+                rcaErrorValidacion4 = 0 or
+                rcaErrorValidacion5 = 0 or
+                rcaErrorValidacion6 = 0 or
+                rcaErrorValidacion7 = 0 or
+                rcaErrorValidacion8 = 0 or
+                rcaErrorValidacion9 = 0 or
+                rcaErrorValidacion10 = 0
+                )
+        </query>
+    </named-native-query>
+
+
+    <named-native-query name="consultar.respuestas.confirmacion.abonos"
+        result-set-mapping="consultar.respuestas.confirmacion.abonos.mapping">
+        <query>
+            select
+                r.rcaTipoIdentificacion tipoIdentificacion,
+                r.rcaNumeroIdentificacion numeroIdentificacion,
+                r.rcaCuentaAdministradorSubsidio casId,
+                r.rcaTipoCuentaAdminSubsidio tipoCuenta,
+                r.rcaNumeroCuentaAdmon numeroCuenta,
+                r.rcaValorTransferencia valorTransferencia,
+                r.rcaResultadoAbono resultadoAbono,
+                r.rcaMotivoRechazoAbono motivoRechazoAbono,
+                r.rcaFechaConfirmacionAbono fechaConfirmacionAbono
+            from RegistroConfirmacionAbonos r
+            where r.rcaNombreArchivo = :nombreArchivo
+            and rcaErrorValidacion3 = 1
+            and rcaErrorValidacion4 = 1
+            and rcaErrorValidacion5 = 1
+            and rcaErrorValidacion6 = 1
+            and rcaErrorValidacion7 = 1
+            and rcaErrorValidacion8 = 1
+            and rcaErrorValidacion9 = 1
+            and rcaErrorValidacion10 = 1
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Obtener.empleadores.procesar">
+        <query>
+            SELECT *
+                FROM dbo.empleadoresFaltantesRetiroMoraAportes
+                WHERE (
+                    SELECT COUNT(*)
+                    FROM dbo.empleadoresFaltantesRetiroMoraAportes
+                    WHERE efrmEstadoProceso = 'EN_PROCESO'
+                ) = 0
+                AND efrmIntentosDiarios &lt; 5 and efrmEstadoProceso &lt;&gt; 'INACTIVADO'
+        </query>
+    </named-native-query>
+
+    <!-- 82800 -->
+	<named-native-query name="Consultar.datos.empleador.por.numero.documento.y.tipo.documento">
+        <description>Consulta datos de un empleador por su numero de documento y tipo documento</description>
+        <query>
+            select *
+			from Persona per
+            inner join Empresa emp on per.perId = emp.empPersona
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+    	<named-native-query name="Consultar.datos.persona.por.numero.documento.y.tipo.documento">
+        <description>Consulta datos de una persona por su numero de documento y tipo documento</description>
+        <query>
+            select *
+			from Persona per
+            inner join Afiliado afi on per.perId = afi.afiPersona
+            inner join RolAfiliado roafi on afi.afiId = roafi.roaAfiliado
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+    <!-- fin 82800 -->
+
+    <!-- 95241 -->
+	<named-native-query name="Consultar.correo.empleador.por.numero.documento.y.tipo.documento">
+        <description>Consulta correo de un empleador por su numero de documento y tipo documento</description>
+        <query>
+            select ubi.ubiemail
+            from Persona per
+            inner join Empresa emp on per.perId = emp.empPersona
+            inner join Ubicacion ubi on ubi.ubiId = emp.empUbicacionRepresentanteLegal
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+    	<named-native-query name="Consultar.correo.persona.por.numero.documento.y.tipo.documento">
+        <description>Consulta correos de una persona por su numero de documento y tipo documento</description>
+        <query>
+            select  ubi.ubiemail
+            from Persona per
+            inner join Afiliado afi on per.perId = afi.afiPersona
+            inner join RolAfiliado roafi on afi.afiId = roafi.roaAfiliado
+            left join Empleador emp on roafi.roaEmpleador = emp.empId
+            left join Empresa empr on empr.empId = emp.empEmpresa
+            inner join Ubicacion ubi on ubi.ubiId = per.perUbicacionPrincipal
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+    <!-- fin 95241 -->
+
+    <!-- 96686 -->
+	<named-native-query name="Consultar.persona.numero.existe.por.numero">
+        <description>Consultar persona numero ya existe por numero identificacion</description>
+        <query>
+            select *
+            from Persona per
+            where per.perNumeroIdentificacion = :numIdentificacion
+        </query>
+    </named-native-query>
+	<named-native-query name="Consultar.persona.numero.existe.por.numero.excluyendo.actual">
+        <description>Consultar persona numero ya existe por numero identificacion excluyendo actual</description>
+        <query>
+            SELECT p.* FROM Persona p
+            WHERE p.perNumeroIdentificacion = :numNuevo
+            AND NOT (p.perTipoIdentificacion = :tipoActual AND p.perNumeroIdentificacion = :numActual)
+        </query>
+    </named-native-query>
+    <!-- Consultas Afiliado -->
+	<named-native-query name="Consultar.datos.afiliado.existe.por.numero.identificacion.y.tipo.identificacion">
+        <description>Consultar afiliado por numero identificacion y tipo identificacion</description>
+        <query>
+        	select  per.perRazonSocial,per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido,
+			per.perNumeroIdentificacion, per.perTipoIdentificacion, roafi.roaEstadoAfiliado, roafi.roaTipoAfiliado, ped.pedFallecido, ped.pedFechaNacimiento
+			from Persona per
+			inner join Afiliado afi on per.perId = afi.afiPersona
+			inner join RolAfiliado roafi on afi.afiId = roafi.roaAfiliado
+			inner join PersonaDetalle ped on per.perId = ped.pedPersona
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+            and roafi.roaEstadoAfiliado = 'ACTIVO'
+        </query>
+    </named-native-query>
+ 	<named-native-query name="Consultar.datos.afiliado.existe.como.empleador.por.numero.identificacion.y.tipo.identificacion">
+        <description>Consultar afiliado si es empleador por numero identificacion y tipo identificacion</description>
+        <query>
+        	select *
+			from Persona per
+			inner join Empresa emp on per.perId = emp.empPersona
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+	<named-native-query name="Consultar.novedades.activas.afiliado.por.numero.identificacion.y.tipo.identificacion">
+        <description>Consulta novedades activas afiliado por numero identificacion y tipo identificaciondocumento</description>
+        <query>
+        	select per.perRazonSocial,per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido,
+			per.perNumeroIdentificacion, per.perTipoIdentificacion, sno.snoEstadoSolicitud, sol.solCanalRecepcion, 
+			sol.solUsuarioRadicacion, sol.solTipoTransaccion, sol.solClasificacion, sol.solResultadoProceso
+			from Persona per
+			join SolicitudNovedadPersona snp on per.perId = snp.snpPersona
+			join SolicitudNovedad sno on sno.snoId = snp.snpSolicitudNovedad
+			join Solicitud sol on sol.solId = sno.snoSolicitudGlobal
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+	<named-native-query name="Consultar.datos.afiliado.fallecido.por.numero.identificacion.y.tipo.identificacion">
+        <description>Consultar afiliado fallecido por numero identificacion y tipo identificacion</description>
+        <query>
+        	select  per.perRazonSocial,per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido,
+			per.perNumeroIdentificacion, per.perTipoIdentificacion, roafi.roaEstadoAfiliado, roafi.roaTipoAfiliado, ped.pedFallecido, ped.pedFechaNacimiento
+			from Persona per
+			inner join Afiliado afi on per.perId = afi.afiPersona
+			inner join RolAfiliado roafi on afi.afiId = roafi.roaAfiliado
+			inner join PersonaDetalle ped on per.perId = ped.pedPersona
+			where ped.pedFallecido = '1'
+            and per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+    <!-- Consultas Beneficiario -->
+	<named-native-query name="Consultar.datos.beneficiario.existe.por.numero.identificacion.y.tipo.identificacion">
+        <description>Consultar beneficiario por numero identificacion y tipo identificacion</description>
+        <query>
+			select per.perRazonSocial,per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido,
+			per.perNumeroIdentificacion, per.perTipoIdentificacion, ben.benTipoBeneficiario, ben.benEstadoBeneficiarioAfiliado, ped.pedFallecido, ped.pedFechaNacimiento
+			from Persona per
+			inner join Beneficiario ben on per.perId = ben.benPersona
+			inner join PersonaDetalle ped on per.perId = ped.pedPersona
+			where per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+            and ben.benEstadoBeneficiarioAfiliado = 'ACTIVO'
+        </query>
+    </named-native-query>
+	<named-native-query name="Consultar.novedades.activas.beneficiario.por.numero.identificacion.y.tipo.identificacion">
+        <description>Consulta novedades activas beneficiario por numero identificacion y tipo identificacion</description>
+        <query>
+        	select p.perRazonSocial,p.perPrimerNombre, p.perPrimerApellido, p.perSegundoNombre, p.perSegundoApellido,
+			p.perNumeroIdentificacion, p.perTipoIdentificacion, sno.snoEstadoSolicitud, sol.solCanalRecepcion, 
+			sol.solUsuarioRadicacion, sol.solTipoTransaccion, sol.solClasificacion, sol.solResultadoProceso
+			from Persona per
+			join SolicitudNovedadPersona snp on per.perId = snp.snpPersona
+			join Beneficiario b on b.benId = snp.snpBeneficiario 
+			join Persona p on p.perId = b.benPersona 
+			join SolicitudNovedad sno on sno.snoId = snp.snpSolicitudNovedad
+			join Solicitud sol on sol.solId = sno.snoSolicitudGlobal
+			where p.perNumeroIdentificacion = :numIdentificacion
+			and p.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+	<named-native-query name="Consultar.datos.beneficiario.fallecido.por.numero.identificacion.y.tipo.identificacion">
+        <description>Consultar beneficiario fallecido por numero identificacion y tipo identificacion</description>
+        <query>
+			select per.perRazonSocial,per.perPrimerNombre, per.perPrimerApellido, per.perSegundoNombre, per.perSegundoApellido,
+			per.perNumeroIdentificacion, per.perTipoIdentificacion, ben.benTipoBeneficiario, ben.benEstadoBeneficiarioAfiliado, ped.pedFallecido, ped.pedFechaNacimiento
+			from Persona per
+			inner join Beneficiario ben on per.perId = ben.benPersona
+			inner join PersonaDetalle ped on per.perId = ped.pedPersona
+			where ped.pedFallecido = '1'
+            and per.perNumeroIdentificacion = :numIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+    </named-native-query>
+    <!-- fin 96686 -->
+
+   <!-- ====================== MASIVO TRANSFERENCIA -->
+    <named-native-query name="verificar.codigo.banco.archivo.masivo"
+        result-set-mapping="verificar.codigo.banco.archivo.masivo.mapping">
+        <query>
+            select 
+                case 
+                    when exists (select * from banco where banCodigoPILA = :codigoBanco) 
+                        then 1 
+                        else 0 
+                    end as existe
+        </query>
+    </named-native-query>
+    <named-native-query name="novedades.consultar.solicitudes.novedad.empleador.sin.canal.recepcion.native"
+                        result-set-mapping="novedades.consultar.solicitudes">
+        <query>
+            SELECT DISTINCT
+            solNov.snoId AS idSolicitudNovedad,
+            solNov.snoEstadoSolicitud AS estadoSolicitud,
+            solNov.snoNovedad AS idNovedad,
+            solNov.snoObservaciones AS observacionesNovedad,
+            solNov.snoCargaMultiple AS cargaMultiple,
+            COALESCE(per.perNumeroIdentificacion, perBen.perNumeroIdentificacion) AS numeroIdentificacion,
+            COALESCE(per.perTipoIdentificacion, perBen.perTipoIdentificacion) AS tipoIdentificacion,
+            sol.solCanalRecepcion AS canalRecepcion,
+            sol.solClasificacion AS clasificacion,
+            sol.solNumeroRadicacion AS numeroRadicacion,
+            sol.solUsuarioRadicacion AS usuarioRadicacion,
+            DATEDIFF_BIG(MILLISECOND, '1970-01-01 00:00:00', sol.solFechaRadicacion) AS fechaRadicacion,
+            DATEDIFF_BIG(MILLISECOND, '1970-01-01 00:00:00', sol.solFechaCreacion) AS fechaCreacion,
+            sol.solResultadoProceso AS resultadoProceso,
+            sol.solId AS idSolicitud,
+            sol.solTipoTransaccion AS tipoTransaccion
+            FROM SolicitudNovedad solNov
+            LEFT JOIN SolicitudNovedadEmpleador solNovEmp ON solNov.snoId = solNovEmp.sneIdSolicitudNovedad
+            LEFT JOIN Empleador emp ON solNovEmp.sneIdEmpleador = emp.empId
+            LEFT JOIN Empresa empEmp ON emp.empEmpresa = empEmp.empId
+            LEFT JOIN Persona empPer ON empEmp.empPersona = empPer.perId
+            LEFT JOIN SolicitudNovedadPersona solNovPer ON solNov.snoId = solNovPer.snpSolicitudNovedad
+            LEFT JOIN RolAfiliado rol ON solNovPer.snpRolAfiliado = rol.roaId
+            LEFT JOIN Afiliado afi ON afi.afiId = rol.roaAfiliado
+            LEFT JOIN Persona per ON per.perId = afi.afiPersona
+            LEFT JOIN Beneficiario ben on ben.benId = solNovPer.snpBeneficiario
+            LEFT JOIN Persona perBen ON perBen.perId = ben.benPersona
+            LEFT JOIN Empleador rolEmp ON rol.roaEmpleador = rolEmp.empId
+            LEFT JOIN Empresa rolEmpEmp ON rolEmp.empEmpresa = rolEmpEmp.empId
+            LEFT JOIN Persona rolEmpPer ON rolEmpEmp.empPersona = rolEmpPer.perId
+            LEFT JOIN Solicitud sol ON sol.solId = solNov.snoSolicitudGlobal
+            WHERE
+            ((empPer.perNumeroIdentificacion = :numeroIdentificacion AND empPer.perTipoIdentificacion = :tipoIdentificacion)
+            OR
+            (rolEmpPer.perNumeroIdentificacion = :numeroIdentificacion AND rolEmpPer.perTipoIdentificacion = :tipoIdentificacion))
+        </query>
+    </named-native-query>
+    <named-native-query name="novedades.consultar.solicitudes.novedad.empleador"
+                        result-set-mapping="novedades.consultar.solicitudes">
+        <query>
+          SELECT DISTINCT
+            solNov.snoId AS idSolicitudNovedad,
+            solNov.snoEstadoSolicitud AS estadoSolicitud,
+            solNov.snoNovedad AS idNovedad,
+            solNov.snoObservaciones AS observacionesNovedad,
+            solNov.snoCargaMultiple AS cargaMultiple,
+            COALESCE(per.perTipoIdentificacion, perBen.perTipoIdentificacion) AS tipoIdentificacion,
+            COALESCE(per.perNumeroIdentificacion, perBen.perNumeroIdentificacion) AS numeroIdentificacion,
+            sol.solCanalRecepcion AS canalRecepcion,
+            sol.solClasificacion AS clasificacion,
+            sol.solNumeroRadicacion AS numeroRadicacion,
+            sol.solUsuarioRadicacion AS usuarioRadicacion,
+            DATEDIFF_BIG(MILLISECOND, '1970-01-01', sol.solFechaRadicacion) AS fechaRadicacion,
+            DATEDIFF_BIG(MILLISECOND, '1970-01-01', sol.solFechaCreacion) AS fechaCreacion,
+            sol.solResultadoProceso AS resultadoProceso,
+            sol.solId AS idSolicitud,
+            sol.solTipoTransaccion AS tipoTransaccion
+            FROM SolicitudNovedad solNov
+            LEFT JOIN SolicitudNovedadEmpleador solNovEmp ON solNov.snoId = solNovEmp.sneIdSolicitudNovedad
+            LEFT JOIN Empleador emp ON solNovEmp.sneIdEmpleador = emp.empId
+            LEFT JOIN Empresa empEmp ON emp.empEmpresa = empEmp.empId
+            LEFT JOIN Persona empPer ON empEmp.empPersona = empPer.perId
+            LEFT JOIN SolicitudNovedadPersona solNovPer ON solNov.snoId = solNovPer.snpSolicitudNovedad
+            LEFT JOIN RolAfiliado rol ON solNovPer.snpRolAfiliado = rol.roaId
+            LEFT JOIN Afiliado afi ON afi.afiId = rol.roaAfiliado
+            LEFT JOIN Persona per ON per.perId = afi.afiPersona
+            LEFT JOIN Beneficiario ben ON ben.benId = solNovPer.snpBeneficiario
+            LEFT JOIN Persona perBen ON perBen.perId = ben.benPersona
+            LEFT JOIN Empleador rolEmp ON rol.roaEmpleador = rolEmp.empId
+            LEFT JOIN Empresa rolEmpEmp ON rolEmp.empEmpresa = rolEmpEmp.empId
+            LEFT JOIN Persona rolEmpPer ON rolEmpEmp.empPersona = rolEmpPer.perId
+            LEFT JOIN Solicitud sol ON sol.solId = solNov.snoSolicitudGlobal
+            WHERE
+            ((empPer.perNumeroIdentificacion = :numeroIdentificacionEmpleador AND empPer.perTipoIdentificacion = :tipoIdentificacionEmpleador)
+            OR (rolEmpPer.perNumeroIdentificacion = :numeroIdentificacionEmpleador AND rolEmpPer.perTipoIdentificacion = :tipoIdentificacionEmpleador))
+            AND (:numeroIdentificacionSolicitante IS NULL OR per.perNumeroIdentificacion = :numeroIdentificacionSolicitante)
+            AND (:tipoIdentificacionSolicitante IS NULL OR per.perTipoIdentificacion = :tipoIdentificacionSolicitante)
+            AND (:numeroSolicitud IS NULL OR sol.solNumeroRadicacion = :numeroSolicitud)
+            AND (
+                (:fechaInicio IS NOT NULL AND :fechaFin IS NOT NULL AND
+                        sol.solFechaRadicacion BETWEEN :fechaInicio AND :fechaFin)
+                    OR (:fechaInicio IS NULL OR :fechaFin IS NULL)
+                )
+            AND solNov.snoEstadoSolicitud != 'CERRADA'
+        </query>
+    </named-native-query>
+
+    <named-native-query name="novedades.consultar.solicitudes.empleador.cerradas"
+                        result-set-mapping="novedades.consultar.solicitudes">
+        <query>
+         SELECT DISTINCT
+            solNov.snoId AS idSolicitudNovedad,
+            solNov.snoEstadoSolicitud AS estadoSolicitud,
+            solNov.snoNovedad AS idNovedad,
+            solNov.snoObservaciones AS observacionesNovedad,
+            solNov.snoCargaMultiple AS cargaMultiple,
+            COALESCE(per.perNumeroIdentificacion, perBen.perNumeroIdentificacion) AS numeroIdentificacion,
+            COALESCE(per.perTipoIdentificacion, perBen.perTipoIdentificacion) AS tipoIdentificacion,
+            sol.solCanalRecepcion AS canalRecepcion,
+            sol.solClasificacion AS clasificacion,
+            sol.solNumeroRadicacion AS numeroRadicacion,
+            sol.solUsuarioRadicacion AS usuarioRadicacion,
+            DATEDIFF_BIG(MILLISECOND, '1970-01-01', sol.solFechaRadicacion) AS fechaRadicacion,
+            DATEDIFF_BIG(MILLISECOND, '1970-01-01', sol.solFechaCreacion) AS fechaCreacion,
+            sol.solResultadoProceso AS resultadoProceso,
+            sol.solId AS idSolicitud,
+            sol.solTipoTransaccion AS tipoTransaccion
+            FROM SolicitudNovedad solNov
+            LEFT JOIN SolicitudNovedadEmpleador solNovEmp ON solNov.snoId = solNovEmp.sneIdSolicitudNovedad
+            LEFT JOIN Empleador emp ON solNovEmp.sneIdEmpleador = emp.empId
+            LEFT JOIN Empresa empEmp ON emp.empEmpresa = empEmp.empId
+            LEFT JOIN Persona empPer ON empEmp.empPersona = empPer.perId
+            LEFT JOIN SolicitudNovedadPersona solNovPer ON solNov.snoId = solNovPer.snpSolicitudNovedad
+            LEFT JOIN RolAfiliado rol ON solNovPer.snpRolAfiliado = rol.roaId
+            LEFT JOIN Afiliado afi ON afi.afiId = rol.roaAfiliado
+            LEFT JOIN Persona per ON per.perId = afi.afiPersona
+            LEFT JOIN Beneficiario ben ON ben.benId = solNovPer.snpBeneficiario
+            LEFT JOIN Persona perBen ON perBen.perId = ben.benPersona
+            LEFT JOIN Empleador rolEmp ON rol.roaEmpleador = rolEmp.empId
+            LEFT JOIN Empresa rolEmpEmp ON rolEmp.empEmpresa = rolEmpEmp.empId
+            LEFT JOIN Persona rolEmpPer ON rolEmpEmp.empPersona = rolEmpPer.perId
+            LEFT JOIN Solicitud sol ON sol.solId = solNov.snoSolicitudGlobal
+            WHERE
+            ((empPer.perNumeroIdentificacion = :numeroIdentificacionEmpleador AND empPer.perTipoIdentificacion = :tipoIdentificacionEmpleador)
+            OR
+            (rolEmpPer.perNumeroIdentificacion = :numeroIdentificacionEmpleador AND rolEmpPer.perTipoIdentificacion = :tipoIdentificacionEmpleador))
+            AND (:numeroIdentificacionSolicitante IS NULL OR per.perNumeroIdentificacion = :numeroIdentificacionSolicitante)
+            AND (:tipoIdentificacionSolicitante IS NULL OR per.perTipoIdentificacion = :tipoIdentificacionSolicitante)
+            AND (:numeroSolicitud IS NULL OR sol.solNumeroRadicacion = :numeroSolicitud)
+            AND (
+                :fechaInicio IS NULL OR :fechaFin IS NULL OR
+                (sol.solFechaRadicacion BETWEEN :fechaInicio AND :fechaFin)
+            )
+            AND solNov.snoEstadoSolicitud  = 'CERRADA'
+            UNION ALL
+            SELECT DISTINCT
+            sap.sapId AS idSolicitudNovedad,
+            sap.sapEstadoSolicitud AS estadoSolicitud,
+            NULL AS idNovedad,
+            NULL AS observacionesNovedad,
+            NULL AS cargaMultiple,
+            per.perNumeroIdentificacion AS numeroIdentificacion,
+            per.perTipoIdentificacion AS tipoIdentificacion,
+            sol.solCanalRecepcion AS canalRecepcion,
+            sol.solClasificacion AS clasificacion,
+            sol.solNumeroRadicacion AS numeroRadicacion,
+            sol.solUsuarioRadicacion AS usuarioRadicacion,
+            DATEDIFF_BIG(MILLISECOND, '1970-01-01', sol.solFechaRadicacion) AS fechaRadicacion,
+            DATEDIFF_BIG(MILLISECOND, '1970-01-01', sol.solFechaCreacion) AS fechaCreacion,
+            sol.solResultadoProceso AS resultadoProceso,
+            sol.solId AS idSolicitud,
+            sol.solTipoTransaccion AS tipoTransaccion
+            FROM SolicitudAfiliacionPersona sap
+            INNER JOIN RolAfiliado rol ON sap.sapRolAfiliado = rol.roaId
+            INNER JOIN Afiliado afi ON rol.roaAfiliado = afi.afiId
+            INNER JOIN Persona per ON per.perId = afi.afiPersona
+            INNER JOIN Empleador emp ON rol.roaEmpleador = emp.empId
+            INNER JOIN Empresa empEmp ON emp.empEmpresa = empEmp.empId
+            INNER JOIN Persona empPer ON empEmp.empPersona = empPer.perId
+            INNER JOIN Solicitud sol ON sol.solId = sap.sapSolicitudGlobal
+            WHERE
+            ((empPer.perNumeroIdentificacion = :numeroIdentificacionEmpleador AND empPer.perTipoIdentificacion = :tipoIdentificacionEmpleador))
+            AND (:numeroIdentificacionSolicitante IS NULL OR per.perNumeroIdentificacion = :numeroIdentificacionSolicitante)
+            AND (:tipoIdentificacionSolicitante IS NULL OR per.perTipoIdentificacion = :tipoIdentificacionSolicitante)
+            AND (:numeroSolicitud IS NULL OR sol.solNumeroRadicacion = :numeroSolicitud)
+            AND (
+                :fechaInicio IS NULL OR :fechaFin IS NULL OR
+                (sol.solFechaRadicacion BETWEEN :fechaInicio AND :fechaFin)
+            )
+            AND sap.sapEstadoSolicitud  = 'CERRADA'
+        </query>
+    </named-native-query>
+
+    <named-native-query name="validaciones.afiliado.principal.novedadMasiva.transfeerncia"
+        result-set-mapping="validaciones.afiliado.principal.novedadMasiva.transfeerncia.mapping">
+        <query>
+            WITH UltimoRegistro AS (
+                SELECT 
+                    a.afiId,a.afiPersona,
+                    r.roaEstadoAfiliado,
+                    r.roaFechaIngreso,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY a.afiId 
+                        ORDER BY r.roaFechaIngreso DESC
+            ) AS rn
+            FROM 
+                Afiliado a
+                JOIN RolAfiliado r ON r.roaAfiliado = a.afiId
+                JOIN Persona p on p.perId = a.afiPersona
+                 WHERE p.pernumeroIdentificacion = :numeroDocumento
+                AND p.perTipoIdentificacion = :tipoDocumento)
+
+            SELECT DISTINCT
+                        CASE
+							WHEN isnull(roaEstadoAfiliado,'INACTIVO') != 'ACTIVO' THEN 'El afiliado principal no está en estado Activo.'
+
+							WHEN isnull((select distinct benEstadoBeneficiarioAfiliado
+													from GrupoFamiliar grf
+													left join Beneficiario on grfId = benGrupoFamiliar
+													where  benEstadoBeneficiarioAfiliado = 'ACTIVO'
+													and ur.afiId = grf.grfAfiliado
+													 ),'INACTIVO') != 'ACTIVO'
+
+							THEN 'los grupos familiares en relación del afiliado principal no está en estado Activo.'
+
+                            WHEN  (select distinct benEstadoBeneficiarioAfiliado
+													from GrupoFamiliar grf
+													left join Beneficiario on grfId = benGrupoFamiliar
+													where  benEstadoBeneficiarioAfiliado = 'ACTIVO'
+													and ur.afiId = grf.grfAfiliado
+													 ) = 'ACTIVO' 
+							and (select isnull(count(*),0)
+								from GrupoFamiliar gr2
+								LEFT JOIN AdminSubsidioGrupo asg2 ON asg2.asgGrupoFamiliar = gr2.grfId
+								where gr2.grfAfiliado = gr.grfAfiliado
+								and asg2.asgAfiliadoEsAdminSubsidio = 1 ) &gt;= 1 
+							THEN 'VALIDACION_EXITOSA'
+							WHEN  (select distinct benEstadoBeneficiarioAfiliado
+													from GrupoFamiliar grf
+													join Beneficiario on grfId = benGrupoFamiliar
+													where  benEstadoBeneficiarioAfiliado = 'ACTIVO'
+													and ur.afiId = grf.grfAfiliado
+													 ) = 'ACTIVO'
+							and (select isnull(count(*),0)
+								from GrupoFamiliar gr2
+								LEFT JOIN AdminSubsidioGrupo asg2 ON asg2.asgGrupoFamiliar = gr2.grfId
+								where gr2.grfAfiliado = gr.grfAfiliado
+								and asg2.asgAfiliadoEsAdminSubsidio = 1 ) = 0 
+							THEN 'El afiliado principal no es el mismo administrador del subsidio.'
+                            WHEN EXISTS(
+                                SELECT * FROM MedioTransferencia JOIN AdminSubsidioGrupo asg2 ON asgMedioDePago = mdpId WHERE asg2.asgId = asg.asgId  AND metCobroJudicial = 1
+                            ) THEN 'El administrador del subsidio presenta cobro judicial. El registro no será procesado.'
+                        END 
+						AS validacion
+            FROM UltimoRegistro ur
+                LEFT JOIN GrupoFamiliar gr ON ur.afiId = gr.grfAfiliado
+                LEFT JOIN AdminSubsidioGrupo asg ON asg.asgGrupoFamiliar = gr.grfId 
+            WHERE ur.rn = 1;
+        </query>
+    </named-native-query> 
+
+    <named-native-query name="validaciones.relacion.afiliado.cetificadosMasivos"
+        result-set-mapping="validaciones.afiliado.principal.novedadMasiva.transfeerncia.mapping">
+        <query>
+            select
+                CASE
+                    WHEN not exists(
+                        select
+                            *
+                        from
+                            Solicitud s
+                            join SolicitudAfiliacionPersona sap on s.solId = sap.sapSolicitudGlobal
+                        where
+                            sap.sapRolAfiliado = r1.roaId
+                            and (
+                                solResultadoProceso = 'APROBADA'
+                                AND sapEstadoSolicitud = 'CERRADA'
+                            )
+                    ) THEN 'Trabajador aún no ha finalizado su solicitud de afiliación'
+                    WHEN not exists(
+                        select
+                            *
+                        from
+                            Empleador
+                        where
+                            empId = r1.roaEmpleador
+                    ) THEN 'El trabajador no tiene relación con el empleador'
+                    WHEN (
+                        select
+                            r1.roaEstadoAfiliado
+                        from
+                            Empleador
+                        where
+                            empId = r1.roaEmpleador
+                    ) != 'ACTIVO' THEN 'Trabajador no se encuentra activo con empleador'
+                    ELSE 'VALIDACION_EXITOSA'
+                END AS validacion
+            from
+                Persona p1
+                join Afiliado a1 on a1.afiPersona = p1.perId
+                join RolAfiliado r1 on r1.roaAfiliado = a1.afiId
+            where
+                p1.perNumeroIdentificacion = :numeroDocumento
+                and p1.perTipoIdentificacion = :tipoDocumento
+                and r1.roaEmpleador = :idEmpleador
+        </query>
+    </named-native-query> 
+    <named-stored-procedure-query
+            name="procedure.usp.consultar.tiempos.multiafiliacion"
+            procedure-name="USP_Consultar_tiempos_multiafiliacion">
+        <parameter class="java.lang.String" mode="IN" name="numeroIdentificacion"/>
+        <parameter class="java.lang.String" mode="IN" name="estadoAfiliado"/>
+    </named-stored-procedure-query>
+    <named-stored-procedure-query
+            name="procedure.usp.desafiliacion.empleador.trabajadores.masivo"
+            procedure-name="dbo.USP_DesafiliacionEmpleador_Trabajadores_Masiva">
+        <parameter class="java.lang.String" mode="IN" name="numerRadicacionEmpresa"/>
+        <parameter class="java.math.BigInteger" mode="IN" name="idEmpledor"/>
+    </named-stored-procedure-query>
+    <!-- Result Mapping -->
+    <sql-result-set-mapping name="novedades.consultar.afiliado.por.estado.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+        <column-result name="roaEstadoAfiliado" class="java.lang.String"/>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="novedades.consultar.data.afiliados.Mapping">
+        <constructor-result target-class="com.asopagos.novedades.dto.DatosAfiliadoRetiroDTO">
+            <column name="idAfiliado" class="java.lang.Long"/>
+            <column name="fechaRetiro" class="java.util.Date"/>
+            <column name="radicado" class="java.lang.String"/>
+            <column name="transaccion" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="consultar.hallazgos.confirmacion.abonos.mapping">
+        <constructor-result target-class="com.asopagos.dto.ResultadoHallazgosValidacionArchivoDTO">
+            <column name="error" class="java.lang.String"/>
+            <column name="nombreCampo" class="java.lang.String"/>
+            <column name="numeroLinea" class="java.lang.Long"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+    
+    
+    <sql-result-set-mapping name="consultar.respuestas.confirmacion.abonos.mapping">
+        <constructor-result target-class="com.asopagos.dto.modelo.ConfirmacionAbonoBancarioCargueDTO">
+            <column name="tipoIdentificacion" class="java.lang.String"/>
+            <column name="numeroIdentificacion" class="java.lang.String"/>
+            <column name="casId" class="java.lang.String"/>
+            <column name="tipoCuenta" class="java.lang.String"/>
+            <column name="numeroCuenta" class="java.lang.String"/>
+            <column name="valorTransferencia" class="java.lang.String"/>
+            <column name="resultadoAbono" class="java.lang.String"/>
+            <column name="motivoRechazoAbono" class="java.lang.String"/>
+            <column name="fechaConfirmacionAbono" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="verificar.codigo.banco.archivo.masivo.mapping">
+        <column-result name="existe" class="java.lang.Boolean"/>
+    </sql-result-set-mapping>
+    <sql-result-set-mapping name="validaciones.afiliado.principal.novedadMasiva.transfeerncia.mapping">
+        <column-result name="validacion" class="java.lang.String"/>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="novedades.consultar.solicitudes">
+        <constructor-result target-class="com.asopagos.dto.modelo.SolicitudNovedadEnProcesoDTO">
+            <column name="idSolicitudNovedad" class="java.lang.Long"/>
+            <column name="estadoSolicitud" class="java.lang.String"/>
+            <column name="idNovedad" class="java.lang.Long"/>
+            <column name="observacionesNovedad" class="java.lang.String"/>
+            <column name="cargaMultiple" class="java.lang.Boolean"/>
+            <column name="tipoIdentificacion" class="java.lang.String"/>
+            <column name="numeroIdentificacion" class="java.lang.String"/>
+            <column name="canalRecepcion" class="java.lang.String"/>
+            <column name="clasificacion" class="java.lang.String"/>
+            <column name="numeroRadicacion" class="java.lang.String"/>
+            <column name="usuarioRadicacion" class="java.lang.String"/>
+            <column name="fechaRadicacion" class="java.lang.Long"/>
+            <column name="fechaCreacion" class="java.lang.Long"/>
+            <column name="resultadoProceso" class="java.lang.String"/>
+            <column name="idSolicitud" class="java.lang.Long"/>
+            <column name="tipoTransaccion" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+</entity-mappings>

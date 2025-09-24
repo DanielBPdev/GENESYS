@@ -1,0 +1,1169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd" version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<!-- INICIO CONSULTAS HU 401 -->
+
+	<!-- Archivos operador informacion -->
+	<named-query name="PilaService.PilaIndicePlanilla.PendientesPorProcesarInformacion">
+		<description>cuenta los archivos que esten pendientes por procesar</description>
+		<query>
+            SELECT count(registro)
+            FROM IndicePlanilla registro 
+            WHERE (registro.estadoArchivo= com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.DESCARGADO
+            OR registro.estadoArchivo= com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.CARGADO
+            OR registro.estadoArchivo= com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.CARGADO_REPROCESO
+            OR registro.estadoArchivo= com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.CARGADO_REPROCESO_ACTUAL)
+        </query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ProcesoFinalizado">
+		<description>cuenta los archivos que esten pendientes por procesar</description>
+		<query>
+			SELECT COUNT(DISTINCT i)
+            FROM EstadoArchivoPorBloque ieb, IndicePlanilla i
+            WHERE ieb.indicePlanilla.id = i.id
+			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO
+			AND ieb.accionBloque10 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.PROCESO_FINALIZADO
+			<!-- 			AND i.tipoArchivo IN ( -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I, -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR) -->
+			AND CAST(i.fechaProceso AS date) &gt;= :fechaInicio
+		</query>
+	</named-query>
+
+	<named-native-query name="PilaService.PilaIndicePlanilla.ArchivosBandejaGestionOI">
+		<description>cuenta los archivos que esten en la bandeja de gestion despues de bloque 6</description>
+		<query>
+            
+                select COUNT(*) as totalPlanillas
+				from (
+					select registroDetalladoAporte.redId
+					from staging.RegistroGeneral registroGeneralAporte,  
+						 staging.RegistroDetallado registroDetalladoAporte
+					WHERE registroGeneralAporte.regId = registroDetalladoAporte.redRegistroGeneral AND
+							( 
+								<!-- registroDetalladoAporte.redOUTEstadoRegistroAporte = 'NO_OK' OR 
+								registroDetalladoAporte.redOUTEstadoRegistroAporte = 'NO_VALIDADO_BD' OR  -->
+								registroDetalladoAporte.redOUTEstadoRegistroAporte = 'PENDIENTE_POR_REGISTO_RELACION_APORTE'
+							)
+					AND registroGeneralAporte.regRegistroControlManual is null
+					AND registroGeneralAporte.regOUTEnProceso = 0
+             		AND ISNULL(registroDetalladoAporte.redCorrecciones, '') != 'A'
+					AND (registroGeneralAporte.regEsSimulado = '0'
+						OR registroDetalladoAporte.redOUTRegistrado = '1'
+						OR registroDetalladoAporte.redOUTRegistradoAporte = '1'
+						OR registroDetalladoAporte.redOUTRegistradoNovedad = '1')
+					group by registroDetalladoAporte.redId
+				) consultaPlanillas
+          
+        </query>
+	</named-native-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ArchivosPendientesProcesoManualOI">
+		<description>cuenta los archivos que esten pendientes por procesar</description>
+		<query>
+            SELECT COUNT(i)
+            FROM IndicePlanilla i 
+            WHERE i.habilitadoProcesoManual='1'
+        </query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ProcesoFinalizadoManual">
+		<description>cuenta los archivos que esten pendientes por procesar</description>
+		<query>
+			SELECT COUNT(DISTINCT i)
+			FROM EstadoArchivoPorBloque ieb, IndicePlanilla i
+			WHERE ieb.indicePlanilla.id = i.id
+			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO
+			AND ieb.accionBloque10 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.PROCESO_FINALIZADO_MANUAL
+			<!-- 			AND i.tipoArchivo IN ( -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I,  -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR -->
+			<!-- 			) -->
+			AND CAST(i.fechaProceso AS date) &gt;= :fechaInicio
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ProcesoFinalizadoManualTotal">
+		<description>cuenta los archivos que esten pendientes por procesar</description>
+		<query>           
+			SELECT  COUNT (DISTINCT i)
+			FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6, 
+			PilaArchivoIRegistro1 i1, EstadoArchivoPorBloque ieb,
+			IndicePlanilla i
+			WHERE f.id = fr6.indicePlanilla
+			AND fr6.numeroPlanilla = i1.numPlanilla
+			AND (
+				ISNUMERIC(fr6.idAportante) = 1 AND CAST(fr6.idAportante AS java.lang.Long) = CAST(i1.idAportante AS java.lang.Long)
+				OR ISNUMERIC(fr6.idAportante) = 0 AND fr6.idAportante = i1.idAportante
+			)
+			AND i1.indicePlanilla = ieb.indicePlanilla
+			AND i1.numPlanilla = i.idPlanilla
+			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO
+			AND ieb.accionBloque10 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.PROCESO_FINALIZADO_MANUAL
+			AND (i.fechaProceso &gt;= :fechaInicio )
+        </query>
+	</named-query>
+
+
+	<named-query name="PilaService.PilaIndicePlanilla.ArchivosCargadosControl">
+		<description>cuenta los archivos que esten pendientes por procesar</description>
+		<query>
+			SELECT count(registro)
+            FROM IndicePlanilla registro 
+            WHERE registro.fechaProceso &gt;= :fechaInicio
+			<!--             AND registro.estadoArchivo IN  -->
+			<!--             (com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.CARGADO, -->
+			<!--             com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.CARGADO_REPROCESO, -->
+			<!--             com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.CARGADO_REPROCESO_ACTUAL) -->
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ArchivosEnProcesoControl">
+		<description>cuenta los archivos que esten pendientes por procesar</description>
+		<query>
+            SELECT count(registro)
+            FROM IndicePlanilla registro 
+            WHERE registro.estadoArchivo NOT IN (:estados)
+            AND (registro.habilitadoProcesoManual IS NULL OR registro.habilitadoProcesoManual = '0')
+            AND registro.fechaProceso &gt;= :fechaInicio
+        </query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ArchivosInconsistentesOIControl">
+		<description>cuenta los archivos que esten con inconsistencias hasta bloque 6</description>
+		<query>
+            SELECT COUNT(i)
+            FROM IndicePlanilla i 
+            WHERE CAST(i.fechaProceso AS date) &gt;= :fechaInicio 
+            AND i.estadoArchivo IN (:estados)
+        </query>
+	</named-query>
+
+	<named-native-query name="PilaBandejaService.PilaErrorValidacionLog.ConteoInconsistenciasTotal.Pila">
+		<description>retorna el conteo de reprocesos sobre una planilla</description>
+		<query>
+			SELECT SUM(cantidad)from(
+				SELECT count(*) cantidad FROM PilaIndicePlanilla
+					INNER JOIN (
+						SELECT pevIndicePlanilla, pevBloqueValidacion, count(*) registros
+						FROM (
+							SELECT MAX(pevId) ultId, pevIndicePlanilla, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+							FROM PilaErrorValidacionLog 
+							WHERE pevBloqueValidacion != 'BLOQUE_4_OI'
+							AND pevTipoError != 'TIPO_0'
+			    	        AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+							GROUP BY pevIndicePlanilla, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+						) AS T
+						GROUP BY pevIndicePlanilla, pevBloqueValidacion
+					) AS inc ON inc.pevIndicePlanilla = pipId
+					LEFT JOIN (
+						SELECT CAST(f6.pf6NumeroPlanilla AS BIGINT) numPlanilla, f.pioNombreArchivo, f9.pf9ValorTotalRecaudo 
+						FROM PilaIndicePlanillaOF f
+						INNER JOIN PilaArchivoFRegistro6 f6 ON f.pioId = f6.pf6IndicePlanillaOF 
+						INNER JOIN PilaArchivoFRegistro9 f9 ON f.pioId = f9.pf9IndicePlanillaOF
+						INNER JOIN (SELECT MAX(f1.pioFechaProceso) maxPio,CAST(f61.pf6NumeroPlanilla AS BIGINT) pf6NumeroPlanilla
+							FROM PilaIndicePlanillaOF f1, PilaArchivoFRegistro6 f61
+							WHERE f1.pioId = f61.pf6IndicePlanillaOF
+							GROUP BY CAST(f61.pf6NumeroPlanilla AS BIGINT)) maxPl ON maxPl.maxPio = f.pioFechaProceso
+																				AND maxPl.pf6NumeroPlanilla = CAST(f6.pf6NumeroPlanilla AS BIGINT)
+					) AS fin ON fin.numPlanilla = CAST(pipIdPlanilla AS BIGINT)
+				WHERE 1 = 1 
+				AND pipEstadoArchivo IN (:estados)
+				UNION 
+				SELECT COUNT(*)cantidad FROM PilaIndicePlanillaOF
+				INNER JOIN (
+				    SELECT pevIndicePlanillaOF, pevBloqueValidacion, COUNT(*) registros
+				    FROM (
+				        SELECT MAX(pevId) ultId, pevIndicePlanillaOF, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+				        FROM PilaErrorValidacionLog 
+				        WHERE pevTipoError != 'TIPO_0'
+				        AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+				        GROUP BY pevIndicePlanillaOF, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+				    ) AS T
+				    GROUP BY pevIndicePlanillaOF, pevBloqueValidacion
+				) AS inc ON inc.pevIndicePlanillaOF = pioId
+				LEFT JOIN PilaArchivoFRegistro6 ON pf6IndicePlanillaOF = pioId
+				WHERE 1 = 1
+				AND (pioEstadoArchivo IN (:estadosOF)
+				    OR pf6EstadoConciliacion IN (:estadosF6)))AS T  
+        </query>
+	</named-native-query>
+	<named-query name="PilaService.PilaIndicePlanilla.ArchivosBandejaGestionOIControl">
+		<description>cuenta los archivos que esten en la bandeja de gestion despues de bloque 6</description>
+		<query>
+            SELECT COUNT(i)
+            FROM IndicePlanilla i 
+            WHERE CAST(i.fechaProceso AS date) &gt;= :fechaInicio
+            AND i.estadoArchivo IN (
+            	com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD,
+            	com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES )
+        </query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ArchivosPendientesProcesoManualOIControl">
+		<description>cuenta los archivos que esten pendientes por procesar</description>
+		<query>
+            SELECT count(registro)
+            FROM IndicePlanilla registro 
+            WHERE registro.habilitadoProcesoManual='1'
+            AND registro.fechaProceso &gt;= :fechaInicio
+        </query>
+	</named-query>
+
+	<!-- Consultas para operador financiero -->
+
+	<named-query name="PilaService.PilaIndicePlanillaOF.ProcesadosFinalizados">
+		<description>Archivos OI relacionados con estado igual Recaudo Notificado</description>
+		<query>
+			SELECT COUNT(f)
+			FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6, 
+			PilaArchivoIRegistro1 i1, EstadoArchivoPorBloque ieb,
+			IndicePlanilla i
+			WHERE f.id = fr6.indicePlanilla
+			AND fr6.numeroPlanilla = i1.numPlanilla
+			<!-- 			AND ( -->
+			<!-- 				ISNUMERIC(fr6.idAportante) = 1 AND CAST(fr6.idAportante AS java.lang.Long) = CAST(i1.idAportante AS java.lang.Long) -->
+			<!-- 				OR ISNUMERIC(fr6.idAportante) = 0 AND fr6.idAportante = i1.idAportante -->
+			<!-- 			) -->
+			AND CAST(fr6.codOperadorInformacion AS java.lang.Short) = i1.codOperador
+			AND i1.indicePlanilla = ieb.indicePlanilla
+			AND i1.numPlanilla = i.idPlanilla
+			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO
+			<!-- 			AND i.tipoArchivo IN ( -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I,  -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR -->
+			<!-- 			) -->
+			AND i.fechaProceso &gt;= :fechaDesde
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanillaOF.ArchivosConInconsistencias">
+		<description>Archivos OF con estado Estructura con inconsistencia</description>
+		<query>
+			SELECT COUNT(DISTINCT f.id)
+			FROM EstadoArchivoPorBloqueOF bf, IndicePlanillaOF f
+			WHERE f.id = bf.indicePlanillaOF.id
+			AND f.fechaProceso &gt;= :fechaDesde
+			AND (
+				bf.estadoBloque1 = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ESTRUCTURA_VALIDADA_CON_INCONSISTENCIA
+				OR bf.estadoBloque6 = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ARCHIVO_FINANCIERO_PENDIENTE_CONCILIACION
+			)			
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanillaOF.EnBandejasDeGestion">
+		<description>Archivos OI relacionados con estado igual a Pendiente por gestionar error en 
+		validación vs BD o Pendiente por registro y relación de aportes</description>
+		<query>
+			SELECT COUNT(f)
+			FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6, 
+			PilaArchivoIRegistro1 i1, EstadoArchivoPorBloque ieb,
+			IndicePlanilla i
+			WHERE f.id = fr6.indicePlanilla
+			AND fr6.numeroPlanilla = i1.numPlanilla
+			<!-- 			AND ( -->
+			<!-- 				ISNUMERIC(fr6.idAportante) = 1 AND CAST(fr6.idAportante AS java.lang.Long) = CAST(i1.idAportante AS java.lang.Long) -->
+			<!-- 				OR ISNUMERIC(fr6.idAportante) = 0 AND fr6.idAportante = i1.idAportante -->
+			<!-- 			) -->
+			AND CAST(fr6.codOperadorInformacion AS java.lang.Short) = i1.codOperador
+			AND i1.indicePlanilla = ieb.indicePlanilla
+			AND i1.numPlanilla = i.idPlanilla
+			AND i.estadoArchivo IN (
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES
+			)
+			AND i.tipoArchivo = com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I
+			AND i.fechaProceso &gt;= :fechaDesde
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanillaOF.PendientesProcesarManual">
+		<description>Archivos OI relacionados con estado igual a Cargado - Manual</description>
+		<query>
+			SELECT COUNT(f)
+			FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6, 
+			PilaArchivoIRegistro1 i1, EstadoArchivoPorBloque ieb,
+			IndicePlanilla i, EstadoArchivoPorBloqueOF bf
+			WHERE f.id = fr6.indicePlanilla
+			AND f.id = bf.indicePlanillaOF.id
+			AND fr6.numeroPlanilla = i1.numPlanilla
+			<!-- 			AND ( -->
+			<!-- 				ISNUMERIC(fr6.idAportante) = 1 AND CAST(fr6.idAportante AS java.lang.Long) = CAST(i1.idAportante AS java.lang.Long) -->
+			<!-- 				OR ISNUMERIC(fr6.idAportante) = 0 AND fr6.idAportante = i1.idAportante -->
+			<!-- 			) -->
+			AND CAST(fr6.codOperadorInformacion AS java.lang.Short) = i1.codOperador
+			AND i1.indicePlanilla = ieb.indicePlanilla
+			AND i1.numPlanilla = i.idPlanilla
+			<!-- 			AND i.tipoArchivo IN ( -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I,  -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR -->
+			<!-- 			) -->
+			AND i.tipoCargaArchivo = com.asopagos.enumeraciones.pila.TipoCargaArchivoEnum.MANUAL
+			AND i.fechaProceso &gt;= :fechaDesde
+			<!-- 			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.CARGADO -->
+			AND ieb.estadoBloque1 IS NULL
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanillaOF.ProcesadosFinalizadosManual">
+		<description>Archivos OI relacionados con estado igual a Recaudo notificado - manual</description>
+		<query>
+			SELECT COUNT(f)
+			FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6, 
+			PilaArchivoIRegistro1 i1, EstadoArchivoPorBloque ieb,
+			IndicePlanilla i
+			WHERE f.id = fr6.indicePlanilla
+			AND fr6.numeroPlanilla = i1.numPlanilla
+			<!-- 			AND ( -->
+			<!-- 				ISNUMERIC(fr6.idAportante) = 1 AND CAST(fr6.idAportante AS java.lang.Long) = CAST(i1.idAportante AS java.lang.Long) -->
+			<!-- 				OR ISNUMERIC(fr6.idAportante) = 0 AND fr6.idAportante = i1.idAportante -->
+			<!-- 			) -->
+			AND CAST(fr6.codOperadorInformacion AS java.lang.Short) = i1.codOperador
+			AND i1.indicePlanilla = ieb.indicePlanilla
+			AND i1.numPlanilla = i.idPlanilla
+			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO
+			AND ieb.accionBloque10 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.PROCESO_FINALIZADO_MANUAL
+			<!-- 			AND i.tipoArchivo IN ( -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I,  -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR -->
+			<!-- 			) -->
+			AND i.fechaProceso &gt;= :fechaDesde
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanillaOF.ArchivosCargadosExitosamente">
+		<description>Archivos OF con estado estado Cargado exitosamente</description>
+		<query>
+			SELECT COUNT(f)
+			FROM IndicePlanillaOF f, EstadoArchivoPorBloqueOF bf
+			WHERE f.id = bf.indicePlanillaOF.id
+			<!-- 			AND bf.estadoBloque0 =  -->
+			<!-- 				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.CARGADO_EXITOSAMENTE -->
+			AND CAST(f.fechaRecibo AS date) &gt;= :fechaDesde
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanillaOF.ArchivoConsistente">
+		<description>Archivos OI relacionados con estado igual a Archivo Consistente</description>
+		<query>
+			SELECT COUNT(f)
+			FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6, 
+			PilaArchivoIRegistro1 i1, EstadoArchivoPorBloque ieb,
+			IndicePlanilla i
+			WHERE f.id = fr6.indicePlanilla
+			AND fr6.numeroPlanilla = i1.numPlanilla
+			<!-- 			AND ( -->
+			<!-- 				ISNUMERIC(fr6.idAportante) = 1 AND CAST(fr6.idAportante AS java.lang.Long) = CAST(i1.idAportante AS java.lang.Long) -->
+			<!-- 				OR ISNUMERIC(fr6.idAportante) = 0 AND fr6.idAportante = i1.idAportante -->
+			<!-- 			) -->
+			AND CAST(fr6.codOperadorInformacion AS java.lang.Short) = i1.codOperador
+			AND i1.indicePlanilla = ieb.indicePlanilla
+			AND i1.numPlanilla = i.idPlanilla
+			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ARCHIVO_CONSISTENTE
+			AND i.tipoArchivo IN (
+				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I, 
+				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR
+			)
+			AND i.fechaProceso &gt;= :fechaDesde
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaArchivoFRegistro6.RegistrosFcargados">
+		<description>Registros dentro de los archivos F cargados al sistema</description>
+		<query>
+			SELECT COUNT(fr6)
+			FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6			
+			WHERE f.id = fr6.indicePlanilla
+			AND cast(f.fechaRecibo as date) &gt;= :fechaDesde
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaArchivoFRegistro6.RegistrosFEnEstadoArchivo">
+		<description>Registros dentro de los archivos F en archivos con estado Cargado exitosamente</description>
+		<query>
+            SELECT COUNT(fr6)
+            FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6          
+            WHERE f.id = fr6.indicePlanilla
+            AND cast(f.fechaRecibo as date) &gt;= :fechaDesde
+            AND (:usarEstados = 0 OR f.estado IN (:estadosArchivo))
+        </query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ArchivosProcesadosFinalizadosCriterios">
+		<description>Consultas la lista de archivos con recaudo notificado</description>
+		<query>
+			SELECT DISTINCT new com.asopagos.pila.dto.ArchivosProcesadosFinalizadosOFDTO(
+				  i.id	
+				, i.fechaRecibo
+				, i.idPlanilla
+				, i.tipoArchivo
+				,	CASE
+					WHEN i.tipoArchivo IN (
+						com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I
+						, com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR) 
+						THEN (
+							SELECT i1.tipoPlanilla 
+							FROM PilaArchivoIRegistro1 i1 
+							WHERE i1.indicePlanilla.id = i.id
+						)
+				END AS tipoPlanilla		
+				, i.tamanoArchivo 
+				, ieb.estadoBloque0
+				, i.nombreArchivo
+				, ieb.estadoBloque2
+				, ieb.tipoArchivo
+				, ieb.estadoBloque3
+				, ieb.estadoBloque4
+				, ieb.estadoBloque5
+				, ieb.estadoBloque6
+				, ieb.estadoBloque8
+				, ieb.estadoBloque9
+				, ieb.estadoBloque10
+				, i.estadoArchivo
+				, ieb.estadoBloque1
+				, 'OPERADOR_INFORMACION'
+			)
+			FROM EstadoArchivoPorBloque ieb, IndicePlanilla i
+			WHERE ieb.indicePlanilla.id = i.id
+			AND (:numeroPlanilla IS NULL OR i.idPlanilla = :numeroPlanilla)
+			AND (:fechaInicio IS NULL OR i.fechaRecibo &gt;= :fechaInicio )
+			AND (:fechaFin IS NULL OR CAST(i.fechaRecibo AS date) &lt;= :fechaFin )
+			AND (:fechaProceso IS NULL OR CAST(i.fechaRecibo AS date) &gt;= :fechaProceso )
+			AND (:tipoNumDocumento IS NULL OR i.nombreArchivo LIKE :tipoNumDocumento)
+			AND (:idBanco IS NULL OR i.idPlanilla IN (
+				SELECT pf6.numeroPlanilla 
+				FROM PilaArchivoFRegistro6 pf6, IndicePlanillaOF f
+				WHERE f.id = pf6.indicePlanilla.id
+				AND f.codigoBancoRecaudador = :idBanco)
+			)
+		</query>
+		<hint name="fechaRecibo" value="i.fechaRecibo" />
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ArchivosProcesadosFinalizadosCriteriosOF">
+		<description>Consultas la lista de archivos de Operador Financiero</description>
+		<query>
+			SELECT DISTINCT new com.asopagos.pila.dto.ArchivosProcesadosFinalizadosOFDTO(
+				pio.id
+				, pio.fechaRecibo
+				, pio.tipoArchivo
+				, pio.tamanoArchivo
+				, pio.nombreArchivo
+				, peo.estadoBloque0
+				, peo.estadoBloque1
+				, peo.estadoBloque6
+				, pio.estado
+				, 'OPERADOR_FINANCIERO'
+			)
+			FROM EstadoArchivoPorBloqueOF peo, IndicePlanillaOF pio
+			WHERE peo.indicePlanillaOF = pio.id
+			AND (:numeroPlanilla IS NULL OR :numeroPlanilla IN 
+				(SELECT pf6.numeroPlanilla
+				FROM PilaArchivoFRegistro6 pf6 
+				WHERE pf6.indicePlanilla = pio.id
+				AND pf6.estadoConciliacion != com.asopagos.enumeraciones.pila.EstadoConciliacionArchivoFEnum.REGISTRO_6_ANULADO)
+			)
+			AND (:fechaInicio IS NULL OR pio.fechaRecibo &gt;= :fechaInicio )
+			AND (:fechaFin IS NULL OR CAST(pio.fechaProceso AS date) &lt;= :fechaFin )
+			AND (:fechaProceso IS NULL OR CAST(pio.fechaProceso AS date) &gt;= :fechaProceso )
+			AND (:tipoNumDocumento IS NULL OR :tipoNumDocumento IN (
+				SELECT CASE WHEN ISNUMERIC(pf6.idAportante) = 1 
+					THEN CAST(CAST(pf6.idAportante AS java.lang.Long) AS java.lang.String) 
+					ELSE pf6.idAportante END
+				FROM PilaArchivoFRegistro6 pf6
+				WHERE pf6.indicePlanilla = pio.id 
+				AND pf6.estadoConciliacion != com.asopagos.enumeraciones.pila.EstadoConciliacionArchivoFEnum.REGISTRO_6_ANULADO)
+			)
+			AND (:idBanco IS NULL OR pio.codigoBancoRecaudador = :idBanco)
+		</query>
+		<hint name="fechaRecibo" value="pio.fechaRecibo" />
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.VerArchivosProcesadosFinalizadosOI">
+		<description></description>
+		<query>
+			SELECT DISTINCT new com.asopagos.pila.dto.ArchivosProcesadosFinalizadosOFDTO(
+				  i.id	
+				, i.fechaRecibo
+				, i.idPlanilla
+				, i.tipoArchivo
+				,	CASE
+					WHEN i.tipoArchivo IN (
+						com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I
+						, com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR) 
+						THEN (
+							SELECT i1.tipoPlanilla 
+							FROM PilaArchivoIRegistro1 i1 
+							WHERE i1.indicePlanilla.id = i.id
+						)
+				END AS tipoPlanilla		
+				, i.tamanoArchivo 
+				, ieb.estadoBloque0
+				, i.nombreArchivo
+				, ieb.estadoBloque2
+				, ieb.tipoArchivo
+				, ieb.estadoBloque3
+				, ieb.estadoBloque4
+				, ieb.estadoBloque5
+				, ieb.estadoBloque6
+				, ieb.estadoBloque8
+				, ieb.estadoBloque9
+				, ieb.estadoBloque10
+				, i.estadoArchivo
+				, ieb.estadoBloque1
+				, 'OPERADOR_INFORMACION'
+			)
+			FROM EstadoArchivoPorBloque ieb, IndicePlanilla i
+			WHERE ieb.indicePlanilla.id = i.id
+			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO
+			AND ieb.accionBloque10 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.PROCESO_FINALIZADO
+			<!-- 			AND i.tipoArchivo IN ( -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I,  -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR -->
+			<!-- 			) -->
+			AND CAST(i.fechaProceso AS date) &gt;= :fechaProceso
+		</query>
+		<hint name="fechaRecibo" value="i.fechaRecibo" />
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ArchivosProcesadosFinalizadosManualCriterios">
+		<description>Consultas la lista de archivos con recaudo notificado</description>
+		<query>
+			SELECT DISTINCT new com.asopagos.pila.dto.ArchivosProcesadosFinalizadosOFDTO(
+				  i.id	
+				, i.fechaRecibo
+				, i.idPlanilla
+				, i.tipoArchivo
+				, i1.tipoPlanilla
+				, i.tamanoArchivo 
+				, ieb.estadoBloque0
+				, i.nombreArchivo
+				, ieb.estadoBloque2
+				, ieb.tipoArchivo
+				, ieb.estadoBloque3
+				, ieb.estadoBloque4
+				, ieb.estadoBloque5
+				, ieb.estadoBloque6
+				, ieb.estadoBloque8
+				, ieb.estadoBloque9
+				, ieb.estadoBloque10
+				, i.estadoArchivo
+				, ieb.estadoBloque1
+				, 'OPERADOR_INFORMACION'
+			)
+			FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6, 
+			PilaArchivoIRegistro1 i1, EstadoArchivoPorBloque ieb,
+			IndicePlanilla i
+			
+			WHERE f.id = fr6.indicePlanilla
+			AND fr6.numeroPlanilla = i1.numPlanilla
+			AND (
+				ISNUMERIC(fr6.idAportante) = 1 AND CAST(fr6.idAportante AS java.lang.Long) = CAST(i1.idAportante AS java.lang.Long)
+				OR ISNUMERIC(fr6.idAportante) = 0 AND fr6.idAportante = i1.idAportante
+			)
+			AND i1.indicePlanilla = ieb.indicePlanilla
+			AND i1.numPlanilla = i.idPlanilla
+			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO
+			AND ieb.accionBloque10 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.PROCESO_FINALIZADO_MANUAL
+			<!-- 			AND i.tipoArchivo IN ( -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I,  -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR -->
+			<!-- 			) -->
+			AND (:tipoIdentificacion IS NULL OR i1.tipoDocAportante = :tipoIdentificacion)
+			AND (:numeroIdentificacion IS NULL OR i1.idAportante = :numeroIdentificacion)				
+			AND (:digitoVerificacion IS NULL OR i1.digVerAportante = :digitoVerificacion)
+			AND (:fechaInicio IS NULL OR CAST(i.fechaProceso AS date) &gt;= :fechaInicio)
+			AND (:fechaFin IS NULL OR CAST(i.fechaProceso AS date) &lt;= :fechaFin)
+			AND (:idBanco IS NULL OR f.codigoBancoRecaudador = :idBanco )
+			AND (:numeroPlanilla IS NULL OR i.idPlanilla = :numeroPlanilla)
+			AND (i.fechaProceso &gt;= :fechaProceso )
+		</query>
+		<hint name="fechaRecibo" value="i.fechaRecibo" />
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.VerArchivosProcesadosFinalizados">
+		<description>Consultas la lista de archivos con recaudo notificado, sin criterios</description>
+		<query>
+			SELECT new com.asopagos.pila.dto.ArchivosProcesadosFinalizadosOFDTO(
+				  i.id
+				, i.fechaRecibo
+				, i.idPlanilla
+				, i.tipoArchivo
+				, i1.tipoPlanilla
+				, i.tamanoArchivo 
+				, ieb.estadoBloque0
+				, i.nombreArchivo
+				, ieb.estadoBloque2
+				, ieb.tipoArchivo
+				, ieb.estadoBloque3
+				, ieb.estadoBloque4
+				, ieb.estadoBloque5
+				, ieb.estadoBloque6
+				, ieb.estadoBloque8
+				, ieb.estadoBloque9
+				, ieb.estadoBloque10
+				, i.estadoArchivo
+				, ieb.estadoBloque1
+				, 'OPERADOR_INFORMACION'
+			)
+			FROM IndicePlanillaOF f, PilaArchivoFRegistro6 fr6, 
+			PilaArchivoIRegistro1 i1, EstadoArchivoPorBloque ieb,
+			IndicePlanilla i			
+			WHERE f.id = fr6.indicePlanilla
+			AND fr6.numeroPlanilla = i1.numPlanilla
+			<!-- 			AND ( -->
+			<!-- 				ISNUMERIC(fr6.idAportante) = 1 AND CAST(fr6.idAportante AS java.lang.Long) = CAST(i1.idAportante AS java.lang.Long) -->
+			<!-- 				OR ISNUMERIC(fr6.idAportante) = 0 AND fr6.idAportante = i1.idAportante -->
+			<!-- 			) -->
+			AND CAST(fr6.codOperadorInformacion AS java.lang.Short) = i1.codOperador
+			AND i1.indicePlanilla = ieb.indicePlanilla
+			AND i1.numPlanilla = i.idPlanilla
+			AND i.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO
+			<!-- 			AND i.tipoArchivo IN ( -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_I,  -->
+			<!-- 				com.asopagos.enumeraciones.pila.TipoArchivoPilaEnum.ARCHIVO_OI_IR -->
+			<!-- 			) -->
+			AND i.fechaProceso &gt;= :fechaDesde
+		</query>
+		<hint name="fechaRecibo" value="i.fechaRecibo" />
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.VerDetalleBloqueArchivo">
+		<description></description>
+		<query>
+			SELECT new com.asopagos.pila.dto.DetalleBloqueValidacionArchivoDTO
+			(
+				ieb.estadoBloque0,
+				ieb.estadoBloque1,
+				ieb.estadoBloque2,
+				ieb.estadoBloque3,
+				ieb.estadoBloque4,
+				ieb.estadoBloque5,
+				ieb.estadoBloque6,
+				ieb.estadoBloque7,
+				ieb.estadoBloque8,
+				ieb.estadoBloque9,
+				ieb.estadoBloque10,				
+				ieb.fechaBloque0,				
+				ieb.fechaBloque1,				
+				ieb.fechaBloque2,				
+				ieb.fechaBloque3,				
+				ieb.fechaBloque4,				
+				ieb.fechaBloque5,				
+				ieb.fechaBloque6,				
+				ieb.fechaBloque7,				
+				ieb.fechaBloque8,				
+				ieb.fechaBloque9,				
+				ieb.fechaBloque10,
+				i.usuarioProceso
+			)
+			FROM EstadoArchivoPorBloque ieb, IndicePlanilla i
+			WHERE ieb.indicePlanilla = i.id
+			AND (:idPlanilla IS NULL OR ieb.indicePlanilla.id = :idPlanilla)
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.VerDetalleBloqueArchivoOF">
+		<description></description>
+		<query>
+			SELECT new com.asopagos.pila.dto.DetalleBloqueValidacionArchivoDTO
+			(
+				ieb.estadoBloque0,
+				ieb.estadoBloque1,
+				ieb.estadoBloque6,				
+				ieb.fechaBloque0,				
+				ieb.fechaBloque1,				
+				ieb.fechaBloque6,
+				i.usuario
+			)
+			FROM EstadoArchivoPorBloqueOF ieb, IndicePlanillaOF i
+			WHERE ieb.indicePlanillaOF = i.id
+			AND (:idPlanilla IS NULL OR ieb.indicePlanillaOF.id = :idPlanilla)
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.VerCabeceraDetalleArchivo">
+		<description>Muestra la informacion de cabecera para el detalle del archivo</description>
+		<query>
+			SELECT new com.asopagos.pila.dto.CabeceraDetalleArchivoDTO(
+				i1.tipoDocAportante,
+				i1.idAportante,
+				i1.digVerAportante,
+				i.idPlanilla,
+				i.estadoArchivo,
+				i.nombreArchivo,
+				i.tipoArchivo,
+				i.idDocumento,
+				i.versionDocumento
+			)
+			FROM PilaArchivoIRegistro1 i1, IndicePlanilla i
+			WHERE i.id = i1.indicePlanilla.id
+			AND (:idPlanilla IS NULL OR i1.indicePlanilla.id = :idPlanilla) 		
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ConsultarArchivosRelacionados">
+		<description>Consulta la lista de nombres de archivo a partir del indice de planilla</description>
+		<query>
+			SELECT i.nombreArchivo
+			FROM IndicePlanilla i
+			WHERE i.idPlanilla = :numeroPlanilla
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaProceso.ConsultarExistenciaProcesosPila">
+		<description>Consulta de procesos PILA por tipo y estado</description>
+		<query> 
+			SELECT ppr
+			FROM ProcesoPila ppr
+			WHERE ppr.estadoProceso = :estadoProceso
+			AND ppr.tipoProceso IN (:listaTipos)
+		</query>
+	</named-query>
+
+	<!-- Fin Consulta para operador financiero -->
+
+	<!-- Control operador informacion -->
+
+	<!-- FIN CONSULTAS HU 401 -->
+
+	<!-- INICIO CONSULTAS HU 410 -->
+	<named-query name="PilaService.PilaEstadoBloque.ConsultarCantidadPlanillaPendienteGestionManual">
+		<description>Consulta de la de planillas marcadas para la gestión manual de PILA 2</description>
+		<query>
+			SELECT COUNT(eb) 
+			FROM EstadoArchivoPorBloque as eb
+			WHERE ((eb.accionBloque6 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.PASAR_A_CRUCE_CON_BD_MANUAL
+					AND eb.estadoBloque7 IS NULL)
+				OR (eb.estadoBloque7 = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD)
+				OR (eb.accionBloque7 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.REGISTRAR_RELACIONAR_APORTE_MANUAL
+					AND eb.estadoBloque8 IS NULL)
+                OR (eb.estadoBloque8 = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES)
+				OR (eb.accionBloque8 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.REGISTRAR_NOVEDADES_PILA_MANUAL
+					AND eb.estadoBloque9 IS NULL)
+				OR (eb.accionBloque9 = com.asopagos.enumeraciones.pila.AccionProcesoArchivoEnum.NOTIFICAR_RECAUDO_MANUAL
+					AND eb.estadoBloque10 IS NULL))
+			AND eb.indicePlanilla.habilitadoProcesoManual = 1
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaArchivoIRegsitro1.ConsultarNumeroPlanillaAsociada">
+		<description>Consulta del número de planilla asociado a una planilla de corrección</description>
+		<query>
+			SELECT i1.numPlanillaAsociada
+			FROM PilaArchivoIRegistro1 i1
+			WHERE i1.numPlanilla = :numeroPlanilla
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaArchivoIRegsitro2.ConsultarSubtipoCotizante">
+		<description>Consulta de un código de subtipo de cotizante en registro 2</description>
+		<query>
+			SELECT i2.subTipoCotizante
+			FROM PilaArchivoIRegistro2 i2 
+			WHERE i2.id = :idRegistro2
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaEstadoBloque.ConsultarEstadoPlanilla">
+		<description>Consulta de una planilla y sus estados por bloque con base en el ID de índice de planilla</description>
+		<query>
+			SELECT eb
+			FROM EstadoArchivoPorBloque as eb
+			WHERE eb.indicePlanilla.id = :idIndicePlanilla
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.PilaIndicePlanilla.ConsultarFechaProcesamientoPlanilla">
+		<description>Consulta de la fecha de procesamiento de un índice de planilla</description>
+		<query>
+			SELECT i.fechaProceso
+			FROM IndicePlanilla i 
+			WHERE i.id = :idIndicePlanilla
+		</query>
+	</named-query>
+	<!-- FIN CONSULTAS HU 410 -->
+
+	<named-query name="PilaService.IndicePlanilla.consultarIndicePlanillaPorId">
+		<description>Consulta el registro de indice planilla por id</description>
+		<query>
+            SELECT indicePlanilla
+            FROM   IndicePlanilla indicePlanilla 
+            WHERE  indicePlanilla.id=:idIndicePlanilla
+          
+        </query>
+	</named-query>
+	<named-query name="PilaService.EstadoArchivoPorBloque.consultarEstadoArchivoPorBloquePorId">
+		<description>Consulta el registro de EstadoArchivoPorBloque de archivo de planilla PILA</description>
+		<query>
+			SELECT estadoArchivoBloque
+            FROM EstadoArchivoPorBloque estadoArchivoBloque LEFT JOIN FETCH estadoArchivoBloque.indicePlanilla
+            WHERE EstadoArchivoBloque.indicePlanilla.id = :idIndicePlanilla
+        </query>
+	</named-query>
+
+	<named-query name="PilaService.EstadoArchivoPorBloque.consultarEstadoArchivoPorBloquePorNumeroYTipo">
+		<description>Consulta el registro de EstadoArchivoPorBloque de archivo de planilla PILA por # de planilla y tipo</description>
+		<query>
+			SELECT estadoArchivoBloque
+            FROM EstadoArchivoPorBloque estadoArchivoBloque LEFT JOIN FETCH estadoArchivoBloque.indicePlanilla
+            WHERE estadoArchivoBloque.indicePlanilla.idPlanilla = :idPlanilla
+            AND estadoArchivoBloque.tipoArchivo IN (:tiposArchivo)			
+            AND (estadoArchivoBloque.indicePlanilla.estadoArchivo IN (:estados)
+				OR estadoArchivoBloque.estadoBloque4 IN (:estados))
+        </query>
+	</named-query>
+
+	<named-query name="PilaService.TemAporte.ConsultarAporteSimuladoPorRegistroSimulado">
+		<description>Consulta de un aporte simulado relacionado a un registro detallado específico</description>
+		<query>
+			SELECT tap
+			FROM TemAporte tap
+			WHERE tap.idTransaccion = :idRegistroDetallado
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.AporteTemporal.consultaAporteSimulado">
+		<description>Consulta el registro temporal de un aporte</description>
+		<query>
+			SELECT ta
+			FROM TemAporte ta
+			WHERE ta.registroDetallado = :idRegistroDetallado
+        </query>
+	</named-query>
+
+	<named-query name="PilaService.TemAporte.eliminarAporteTemporal">
+		<description>Sentencia para el borrado de una entrada de TemAporte a partir del ID de su registro detallado</description>
+		<query>
+			DELETE FROM TemAporte WHERE idTransaccion = :idRegistroDetallado
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.TemAportante.eliminarAportanteTemporal">
+		<description>Sentencia para el borrado de una entrada de TemAportante a partir del ID de su registro detallado</description>
+		<query>
+			DELETE FROM TemAportante WHERE idTransaccion = :idRegistroDetallado
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.TemCotizante.eliminarCotizanteTemporal">
+		<description>Sentencia para el borrado de una entrada de TemCotizante a partir del ID de su registro detallado</description>
+		<query>
+			DELETE FROM TemCotizante WHERE idTransaccion = :idRegistroDetallado
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.temAporte.consultarAportesARelacionar">
+		<description>Consulta los temporales de aportes</description>
+		<query>
+			SELECT ta
+			FROM TemAporte ta
+			WHERE ta.registroDetallado = :idRegistroDetallado
+        </query>
+	</named-query>
+
+	<named-query name="PilaService.TemNovedad.ConsultarNovedadesTemporalesPorRegistroDetallado">
+		<description>Consulta de novedades temporales en staging asociadas a un registro detallado</description>
+		<query>
+			SELECT tnv
+			FROM TemNovedad tnv
+			WHERE tnv.registroDetallado = :idRegistroDetallado
+		</query>
+	</named-query>
+
+	<!-- DEPRECADO -->
+	<named-query name="PilaService.TemNovedad.EliminarNovedadesTemporalesEspecificas">
+		<description>Sentencia que elimina las entradas de TemNovedad de acuerdo a listado</description>
+		<query>
+			DELETE FROM TemNovedad tn WHERE tn IN (:listadoNovedades) 
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.TemAporte.ConsultarAportesTemporalesPorRegistroGeneral">
+		<description>Consulta de los aportes temporales asociados a un registro general</description>
+		<query>
+			SELECT tap
+			FROM TemAporte tap 
+			WHERE tap.registroGeneral = :idRegistroGeneral
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.TemNovedad.ConsultarNovedadesTemporalesPorRegistroGeneral">
+		<description>Consulta de novedades temporales en staging asociadas a un registro general</description>
+		<query>
+			SELECT tnv
+			FROM TemNovedad tnv 
+			WHERE tnv.registroGeneral = :idRegistroGeneral
+		</query>
+	</named-query>
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="PilaService.HistorialEstadoBloque.ConsultarHistorialPorBloque" result-set-mapping="PilaService.HistorialEstadoBloque.ConsultarHistorialPorBloque.mapping">
+		<description>Consulta del historico de estados por bloque de validación</description>
+		<query>
+			SELECT heb.* 
+			FROM HistorialEstadoBloque heb 
+			WHERE  (
+					('OPERADOR_INFORMACION' = :tipoOperador 
+						AND heb.hebIdIndicePlanilla = :idPlanilla)
+					OR ('OPERADOR_FINANCIERO' = :tipoOperador 
+						AND heb.hebIdIndicePlanillaOF = :idPlanilla)
+				)
+			and heb.hebBloque = :bloque
+			ORDER BY heb.hebFechaEstado ASC
+		</query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.NovedadesDetallePila.ConsultarTodasNovedades">
+		<description>Consulta de todas las novedades en una planilla por id</description>
+		<query>
+			select
+				red.redNumeroIdentificacionCotizante as numeroIdentificacion,
+				rdn.rdnOUTTipoAfiliado as tipoCotizanteRaw,
+				rdn.rdnDateTimeInsert as fechaRadicacion,
+				case when rdn.rdnTipotransaccion is null then rdn.rdnTipoNovedad else rdn.rdnTipotransaccion end as resultado,
+				red.redUsuarioAccion as usuarioAccion
+			from staging.RegistroDetalladoNovedad rdn
+			inner join staging.RegistroDetallado red on red.redId = rdn.rdnRegistroDetallado
+			inner join staging.RegistroGeneral reg on  reg.regId = red.redRegistroGeneral
+			where reg.regId = :idRegistroGeneral
+		</query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.PilaIndicePlanilla.ArchivosInconsistentesOI">
+		<description>cuenta los archivos que esten con inconsistencias hasta bloque 6</description>
+		<query>
+            SELECT COUNT(*)
+            FROM PilaIndicePlanilla
+            INNER JOIN (
+                SELECT pevIndicePlanilla, count(*) registros
+                FROM PilaErrorValidacionLog 
+                WHERE pevBloqueValidacion != 'BLOQUE_4_OI'
+                AND pevTipoError != 'TIPO_0'
+                AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+                GROUP BY pevIndicePlanilla
+            ) AS inc ON inc.pevIndicePlanilla = pipId
+            WHERE pipEstadoArchivo IN (:estados) 
+        </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.PilaArchivoFRegistro6.RegistrosFInconsistencias">
+		<description>Registros dentro de los archivos F en archivos con estado Cargado exitosamente</description>
+		<query>
+            SELECT COUNT(*)
+			FROM PilaIndicePlanillaOF
+			INNER JOIN (
+			    SELECT pevIndicePlanillaOF, COUNT(*) registros
+			    FROM (
+			        SELECT MAX(pevId) ultId, pevIndicePlanillaOF, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+			        FROM PilaErrorValidacionLog 
+			        WHERE pevTipoError != 'TIPO_0'
+			        AND ISNULL(pevEstadoInconsistencia, '') = 'PENDIENTE_GESTION'
+			        GROUP BY pevIndicePlanillaOF, pevNumeroLinea, pevBloqueValidacion, pevCodigoError, pevNombreCampo
+			    ) AS T
+			    GROUP BY pevIndicePlanillaOF
+			) AS inc ON inc.pevIndicePlanillaOF = pioId
+			LEFT JOIN PilaArchivoFRegistro6 ON pf6IndicePlanillaOF = pioId
+			WHERE (pioEstadoArchivo IN (:estadosOF)
+			    OR pf6EstadoConciliacion IN (:estadosF6))
+            AND (:fechaDesde IS NULL OR CAST(pioFechaRecibo as DATE) &gt;= :fechaDesde)
+        </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.IndicePlanilla.consultarIdOriginal">
+		<description>Consulta de ID de índice de planilla original</description>
+		<query>
+            SELECT pi1o.pi1IndicePlanilla
+			FROM PilaArchivoIRegistro1 pi1 
+			INNER JOIN PilaArchivoIRegistro1 pi1o ON (
+			    pi1.pi1NumPlanillaAsociada = pi1o.pi1NumPlanilla
+			    AND pi1.pi1FechaPagoAsociado = pi1o.pi1FechaPago
+			    AND pi1.pi1TipoDocAportante = pi1o.pi1TipoDocAportante
+			    AND pi1.pi1IdAportante = pi1o.pi1IdAportante
+			)
+			WHERE pi1.pi1IndicePlanilla = :idOriginal
+        </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.IndicePlanilla.indicePlanillaByRegGeneral">
+		<description>Consulta de ID de índice de planilla original</description>
+		<query>
+            select pl.pipId from PilaIndicePlanilla pl
+            inner join staging.RegistroGeneral r on r.regRegistroControl = pl.pipId
+            where r.regId in (:regGenerales)
+        </query>
+	</named-native-query>
+
+
+	<named-native-query name="PilaService.PilaEstadoBloque.ConsultarPlanillaPendienteGestionManual" result-set-mapping="PilaService.PilaEstadoBloque.ConsultarPlanillaPendienteGestionManual.mapping">
+		<description>Consulta de planillas marcadas para la gestión manual de PILA 2</description>
+		<query>
+            SELECT top(:cantidadPlanillas)
+            	pipNombreArchivo, 
+			    pipIdPlanilla, 
+			    pipTipoArchivo, 
+			    pi1.pi1TipoPlanilla, 
+			    pi1.pi1PeriodoAporte, 
+			    pipFechaRecibo, 
+			    pi1.pi1TipoDocAportante, 
+			    pi1.pi1IdAportante, 
+			    pi1.pi1RazonSocial, 
+			    pipEstadoArchivo, 
+			    pipId, 
+			    pipIdentificadorDocumento,
+			    pipVersionDocumento, 
+			    CASE 
+			        WHEN pebAccionBloque6 = 'PASAR_A_CRUCE_CON_BD_MANUAL' AND pebEstadoBloque7 IS NULL THEN 'PILA2_FASE_1'
+			        WHEN pebEstadoBloque7 = 'PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD' THEN 'PILA2_FASE_1' 
+			        WHEN pebAccionBloque7 = 'REGISTRAR_RELACIONAR_APORTE_MANUAL' AND pebEstadoBloque8 IS NULL THEN 'PILA2_FASE_2'
+			        WHEN pebEstadoBloque8 = 'PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES' THEN 'PILA2_FASE_2'
+			        WHEN pebAccionBloque8 = 'REGISTRAR_NOVEDADES_PILA_MANUAL' AND pebEstadoBloque9 IS NULL THEN 'PILA2_FASE_3'
+			        WHEN pebAccionBloque9 = 'NOTIFICAR_RECAUDO_MANUAL' AND pebEstadoBloque10 IS NULL THEN 'PILA2_FASE_4'
+			    END fase,
+			    pipMotivoProcesoManual, 
+			    pi1o.pi1IndicePlanilla
+			FROM PilaIndicePlanilla 
+			INNER JOIN PilaEstadoBloque ON pebIndicePlanilla = pipId 
+			INNER JOIN PilaArchivoIRegistro1 pi1 ON pi1.pi1IndicePlanilla = pipId
+			LEFT JOIN PilaArchivoIRegistro1 pi1o ON (
+			    pi1.pi1NumPlanillaAsociada = pi1o.pi1NumPlanilla
+			    AND pi1.pi1FechaPagoAsociado = pi1o.pi1FechaPago
+			    AND pi1.pi1TipoDocAportante = pi1o.pi1TipoDocAportante
+			    AND pi1.pi1IdAportante = pi1o.pi1IdAportante
+			)
+			LEFT JOIN staging.RegistroGeneral reg ON pipId = reg.regRegistroControl
+			LEFT JOIN staging.PlanillasCandidatasReproceso pcr ON reg.regId = pcr.pcrIdRegistroGeneral 
+			WHERE (reg.regId IS NULL OR (reg.regId IS NOT NULL AND pcr.pcrId IS NULL))
+			AND pipHabilitadoProcesoManual = 1
+			and pipEstadoArchivo not in ('ANULADO', 'RECAUDO_NOTIFICADO')
+			AND (
+			    (pebAccionBloque6 = 'PASAR_A_CRUCE_CON_BD_MANUAL' AND pebEstadoBloque7 IS NULL AND pebEstadoBloque8 IS NULL AND pebEstadoBloque9 IS NULL AND pebEstadoBloque10 IS NULL)
+			)
+			AND (:fechaIngreso IS NULL OR CONVERT(VARCHAR(10), pipFechaProceso, 121) = :fechaIngreso)
+			AND (:numeroPlanilla IS NULL OR pipIdPlanilla = :numeroPlanilla)
+			ORDER BY pipFechaRecibo DESC
+        </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.GestionIncosistencia.actualizarEstadoInconsistencias">
+		<description>Sentencia para la actualización del estado de ejecucion gestion inconsistencias</description>
+		<query>
+	       UPDATE PilaEjecucionGestionInconsistencia
+            SET pegEjecucionActiva = :activo, pegEstado = :estado, pegFechaUltimaEjecucion = :fecha
+            WHERE pegProceso = :proceso
+	   </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.GestionIncosistencia.consultarEstadoInconsistencias">
+		<description>Sentencia para consultar del estado de ejecucion gestion inconsistencias</description>
+		<query>
+	       SELECT peg.pegEjecucionActiva
+			FROM PilaEjecucionGestionInconsistencia peg 
+			WHERE peg.pegProceso = :proceso
+	   </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.GestionIncosistencia.validarBloqueoProceso410Automatico">
+		<description>Sentencia para consultar del estado de ejecucion gestion inconsistencias</description>
+		<query>
+	       SELECT peg.pegEjecucionActiva 
+	       	FROM PilaEjecucionGestionInconsistencia peg 
+			WHERE peg.pegProceso = :proceso
+			AND peg.pegEjecucionActiva = 1
+			AND DATEDIFF(hour, peg.pegFechaUltimaEjecucion, dbo.getLocalDate()) >= 48
+	   </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.consultar.datos.empleador.por.registro.detallado">
+		<query>
+			select top 1 r.regTipoIdentificacionAportante, r.regNumeroIdentificacionAportante
+			from staging.RegistroGeneral as r 
+			inner join staging.RegistroDetallado as rd on rd.redRegistroGeneral = r.regId
+			where rd.redId = :idRegDetallado
+        </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.consultar.datos.afiliacion.por.registro.detallado">
+		<query>
+			select top 1
+				redSalarioBasico,
+				rdnFechaInicioNovedad,
+				redOUTTipoAfiliado,
+				redHorasLaboradas,
+				redTipoCotizante,
+				regFechaPagoAporte
+			from staging.RegistroGeneral as r with (nolock)
+			inner join staging.RegistroDetallado as rd with (nolock) on r.regId = rd.redRegistroGeneral
+			inner join staging.RegistroDetalladoNovedad as rdn with (nolock) on rd.redId = rdn.rdnRegistroDetallado
+			where rd.redId = :idRegDetallado
+			and rdn.rdnTipoNovedad = 'NOVEDAD_ING'
+        </query>
+	</named-native-query>
+
+
+	<named-native-query name="PilaService.consultar.planillas.pendientes.mundo.dos">
+		<query>
+			select top 10 regNumPlanilla
+			from staging.RegistroGeneral
+			where regNumPlanilla in (select pipIdPlanilla
+			from pilaindiceplanilla
+			where pipEstadoArchivo = 'RECAUDO_CONCILIADO')
+        </query>
+	</named-native-query>
+
+
+	<!-- ESPACIO PARA NAMED STORED PROCEDURES -->
+	<named-stored-procedure-query name="PilaService.StoredProcedures.USP_ExecutePILA2" procedure-name="USP_ExecutePILA2">
+		<parameter class="java.lang.Long" mode="IN" name="iIdIndicePlanilla" />
+		<parameter class="java.lang.String" mode="IN" name="sFase" />
+		<parameter class="java.lang.Boolean" mode="IN" name="bSimulado" />
+		<parameter class="java.lang.String" mode="IN" name="sUsuarioProceso" />
+		<parameter class="java.lang.Long" mode="IN" name="iIdentificadorPaquete" />
+		<parameter class="java.lang.Boolean" mode="IN" name="bReanudarTransaccion" />
+		<parameter class="java.lang.Long" mode="OUT" name="iIdTransaccion" />
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query name="PilaService.StoredProcedures.USP_ExecutePILA2CopiarPlanilla" procedure-name="USP_ExecutePILA2CopiarPlanilla">
+		<parameter class="java.lang.Long" mode="IN" name="iIdIndicePlanilla" />
+		<parameter class="java.lang.String" mode="IN" name="sFase" />
+		<parameter class="java.lang.Boolean" mode="IN" name="bSimulado" />
+		<parameter class="java.lang.String" mode="IN" name="sUsuarioProceso" />
+		<parameter class="java.lang.Long" mode="IN" name="iIdentificadorPaquete" />
+		<parameter class="java.lang.Boolean" mode="IN" name="bBorrarBloqueStaging" />
+		<parameter class="java.lang.Long" mode="OUT" name="IdTransaccion"></parameter>
+	</named-stored-procedure-query>
+
+	<!-- REFACTOR PILA MAYO 2020 INICIO -->
+
+
+	<!-- REFACTOR PILA MAYO 2020 FIN -->
+
+	<!-- MAPEO DE NAMED QUERIES NATIVAS -->
+	<sql-result-set-mapping name="PilaService.HistorialEstadoBloque.ConsultarHistorialPorBloque.mapping">
+		<entity-result entity-class="com.asopagos.entidades.pila.procesamiento.HistorialEstadoBloque"></entity-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="PilaService.PilaEstadoBloque.ConsultarPlanillaPendienteGestionManual.mapping">
+		<constructor-result target-class="com.asopagos.pila.dto.PlanillaGestionManualDTO">
+			<column name="pipNombreArchivo" class="java.lang.String" />
+			<column name="pipIdPlanilla" class="java.lang.Long" />
+			<column name="pipTipoArchivo" class="java.lang.String" />
+			<column name="pi1TipoPlanilla" class="java.lang.String" />
+			<column name="pi1PeriodoAporte" class="java.lang.String" />
+			<column name="pipFechaRecibo" class="java.util.Date" />
+			<column name="pi1TipoDocAportante" class="java.lang.String" />
+			<column name="pi1IdAportante" class="java.lang.String" />
+			<column name="pi1RazonSocial" class="java.lang.String" />
+			<column name="pipEstadoArchivo" class="java.lang.String" />
+			<column name="pipId" class="java.lang.Long" />
+			<column name="pipIdentificadorDocumento" class="java.lang.String" />
+			<column name="pipVersionDocumento" class="java.lang.String" />
+			<column name="fase" class="java.lang.String" />
+			<column name="pipMotivoProcesoManual" class="java.lang.String" />
+			<column name="pi1IndicePlanilla" class="java.lang.Long" />
+		</constructor-result>
+	</sql-result-set-mapping>
+</entity-mappings>

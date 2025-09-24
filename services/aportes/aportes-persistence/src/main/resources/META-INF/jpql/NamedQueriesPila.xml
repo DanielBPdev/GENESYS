@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	<named-query name="Aportes.consultar.indice.planilla">
+		<query>		
+			SELECT ind FROM IndicePlanilla ind WHERE ind.idPlanilla=:numPlanilla 
+			AND ind.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO
+			AND ind.tipoArchivo IN (:lista)
+		</query>
+	</named-query>
+	
+	<named-query name="Aporte.Consultar.IndicePlanilla.listadoIds">
+	   <description>Consulta de índice de planilla por listado de IDs</description>
+	   <query>
+	       SELECT new com.asopagos.dto.modelo.IndicePlanillaModeloDTO(pip)
+	       FROM IndicePlanilla pip
+	       WHERE pip.id IN (:idsPlanilla)
+	   </query>
+	</named-query>
+	
+	<named-query name="Aportes.consultarAporteTemporal">
+		<query>
+			select new com.asopagos.aportes.dto.AporteDTO(tap,tct,tema)
+			from TemAportante tap, TemCotizante tct,TemAporte tema 
+			where tema.idTransaccion=tap.idTransaccion 
+			and tct.idTransaccion=tap.idTransaccion 
+			and tema.registroGeneral=:idRegistroGeneral
+			order by tap.idTransaccion ASC
+		</query>
+	</named-query> 	
+	<!--Posible cambio 14/02/2022 ordenamiento novedades-->
+<named-query name="Consultar.Novedad.Temporal">
+		<query>
+			SELECT nov FROM TemNovedad nov
+			WHERE nov.registroGeneral=:idRegistroGeneral 
+			ORDER BY nov.numeroIdCotizante,nov.fechaInicioNovedad,nov.tipoTransaccion
+		</query>
+	</named-query>
+	<!--<named-native-query name="Consultar.Novedad.Temporal">
+		<query>
+			SELECT nov.* FROM TemNovedad nov
+			WHERE nov.tenRegistroGeneral= :idRegistroGeneral 
+			order by tenNumeroIdCotizante, tenFechaInicioNovedad, tenTipoTransaccion
+		</query>
+	</named-native-query>-->
+	<named-query name="Aportes.Consultar.TemAporte">
+		<description>Consulta registros de la tabla TemAporte, por identfiicador de registro general</description>
+		<query>
+			SELECT t FROM TemAporte t
+			WHERE t.registroGeneral = :idRegistroGeneral 
+		</query>
+	</named-query>
+	
+	<named-query name="Aportes.consultar.actualizacionAportes">
+		<description>Consulta de peticiones de actualización de aportes</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.TemAporteActualizadoModeloDTO(taa) 
+			FROM TemAporteActualizado taa 
+			WHERE (:procesoManual IS NULL OR marcaAporteManual = :procesoManual)
+			AND (:conIds = FALSE OR registroModificador IN (:idsRegistrosOrigen))
+		</query>
+	</named-query>
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="Aportes.consultar.indice.planilla.aportante" result-set-mapping="Aporte.PilaIndicePlanilla.mapping">
+		<query>		
+			select ind.* from pilaIndiceplanilla ind
+			inner join staging.registroGeneral rg on rg.regRegistroControl=ind.pipId
+			inner join staging.registrodetallado rd on rd.redRegistroGeneral = rg.regid
+			WHERE ind.pipidPlanilla=:numPlanilla 
+			AND rd.redid = :registroDetallado
+			AND ind.pipestadoArchivo = 'RECAUDO_NOTIFICADO'
+			AND ind.piptipoArchivo IN (:lista)
+
+			
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Aportes.Borrar.TemNovedad">
+		<description>Borra registros de la tabla TemNovedad, por identificador de transacción</description>
+		<query>
+			DELETE FROM TemNovedad
+			WHERE tenIdTransaccion IN (:idTransaccion)
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.consultar.cantidad.notificacion.planillas.n">
+		<description>CONSULTA LA TABLA aporteDetalladoRegistroControlN  PARA NOTIFICAR PLANILLA SI EXISTE </description>
+		<query>
+		select count(*) 
+			from staging.RegistroDetalladoPlanillaN with (nolock)
+			where redRegistroGeneral in  (select distinct r.regId
+			from dbo.PilaIndicePlanilla as p with (nolock)
+			inner join staging.registroGeneral as r with (nolock) on p.pipId = r.regRegistroControl
+			where p.pipId =:idRegistroGeneral) and redRegistroDetalladoAnterior not in (-2, -3)
+
+        </query>
+	</named-native-query>
+    
+    <named-native-query name="Aportes.Borrar.TemNovedad.detalle">
+        <description>Borra registros de la tabla TemNovedad, por identificador de registro detallado novedad</description>
+        <query>
+            DELETE FROM TemNovedad
+            WHERE tenRegistroDetalladoNovedad IN (:idTransaccion)
+			and exists (select 1 from core.solicitudNovedadPila where spiIdRegistroDetalladoNovedad = tenRegistroDetalladoNovedad)
+        </query>
+    </named-native-query>
+	
+	<named-native-query name="Aportes.Borrar.TemAporte">
+		<description>Borra registros de la tabla TemAporte, por identificador de transacción</description>
+		<query>
+			DELETE FROM TemAporte
+			WHERE temIdTransaccion IN (:idTransaccion)
+		</query>
+	</named-native-query>
+	<named-native-query name="Aportes.Borrar.TemAportante">
+		<description>Borra registros de la tabla TemAportante, por identificador de transacción</description>
+		<query>
+			DELETE FROM TemAportante
+			WHERE tapIdTransaccion IN (:idTransaccion)
+		</query>
+	</named-native-query>
+	<named-native-query name="Aportes.Borrar.TemCotizante">
+		<description>Borra registros de la tabla TemCotizante, por identificador de transacción</description>
+		<query>
+			DELETE FROM TemCotizante
+			WHERE tctIdTransaccion IN (:idTransaccion)
+		</query>
+	</named-native-query>
+	<named-native-query name="Aportes.Borrar.TemAporteProcesado">
+		<description>Borra registros de la tabla TemAporteProcesado, por identificador de RegistroGeneral</description>
+		<query>
+			DELETE FROM TemAporteProcesado 
+			WHERE tprAporteGeneral = :idRegistroGeneral
+		</query>
+	</named-native-query>
+    <named-native-query name="Aportes.Borrar.TemAporteProcesado.masivo">
+        <description>Borra registros de la tabla TemAporteProcesado, por identificador de RegistroGeneral</description>
+        <query>
+            DELETE FROM TemAporteProcesado 
+            WHERE tprAporteGeneral IN (:idRegistroGeneral)
+        </query>
+    </named-native-query>
+	
+	<named-native-query name="Aportes.Borrar.TemAporteActualizado">
+		<description>Borra registros de la tabla TemAporteActualizado, por identificador de registro detallado</description>
+		<query>
+			while 1 = 1
+			begin
+				DELETE top (500) FROM TemAporteActualizado
+				WHERE taaId IN (:idPeticion)
+				if @@ROWCOUNT = 0
+				break;
+			end
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Aportes.Consultar.PlanillaSinTemAporteProcesado">
+		<description>Consulta las planillas sin finalizar y sin TemAporteProcesado</description>
+		<query>
+			SELECT reg.regId, COUNT(*) tamPlanilla, 
+				CASE WHEN pip.pipEstadoArchivo = 'PROCESADO_NOVEDADES' THEN 1 ELSE 0 END tieneNov
+			FROM staging.RegistroGeneral reg
+			INNER JOIN staging.RegistroDetallado red ON red.redRegistroGeneral = reg.regId
+			INNER JOIN dbo.PilaIndicePlanilla pip ON reg.regRegistroControl = pip.pipId
+			WHERE pip.pipEstadoArchivo IN ('PROCESADO_NOVEDADES', 'PROCESADO_SIN_NOVEDADES')
+			AND red.redId NOT IN (
+				SELECT temIdTransaccion 
+				FROM dbo.TemAporte 
+				WHERE temIdTransaccion not in (SELECT temIdTransaccion FROM dbo.TemAporte WHERE temMarcaAporteManual = 1 OR temMarcaAporteSimulado = 1)
+				UNION
+				SELECT tapIdTransaccion 
+				FROM dbo.TemAportante 
+				WHERE tapIdTransaccion not in (SELECT temIdTransaccion FROM dbo.TemAporte WHERE temMarcaAporteManual = 1 OR temMarcaAporteSimulado = 1)
+				UNION
+				SELECT tctIdTransaccion 
+				FROM dbo.TemCotizante 
+				WHERE tctIdTransaccion not in (SELECT temIdTransaccion FROM dbo.TemAporte WHERE temMarcaAporteManual = 1 OR temMarcaAporteSimulado = 1)
+				UNION
+				SELECT tenIdTransaccion 
+				FROM dbo.TemNovedad 
+				WHERE tenIdTransaccion not in (SELECT temIdTransaccion FROM dbo.TemAporte WHERE temMarcaAporteManual = 1 OR temMarcaAporteSimulado = 1)
+			)
+			AND reg.regId NOT IN (SELECT tprAporteGeneral FROM TemAporteProcesado)
+			GROUP BY reg.regId, pip.pipEstadoArchivo
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Aportes.TemAporteProcesado.idRegistroGeneral.masivo">
+		<description>Consulta para obtener los ID de TemAporteProcesado por un listado de id de registro general</description>
+		<query>
+			SELECT DISTINCT tprAporteGeneral 
+			FROM TemAporteProcesado WHERE tprAporteGeneral in (:idRegistroGeneral)
+		</query>
+	</named-native-query>
+    
+    <named-native-query name="Aporte.Consultar.temAporte.planillas.numAportes"
+        result-set-mapping="Aporte.Consultar.temAporte.planillas.numAportes.mapping">
+        <description>Consulta planillas a registrar con su cantidad de aportes</description>
+        <query>
+            SELECT temRegistroGeneral, COUNT(temRegistroGeneral) registros
+            FROM TemAporte 
+            WHERE temMarcaAporteManual = 0 
+            AND temMarcaAporteSimulado = 0 
+            AND temEnProceso = 0 
+            GROUP BY temRegistroGeneral 
+            ORDER BY registros ASC
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Consultar.datos.planilla.pago.obligatorio">
+		<query>
+			SELECT regValTotalApoObligatorio
+			FROM staging.RegistroGeneral
+			WHERE regNumPlanilla = :idPlanilla
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.datos.planilla.valor.mora">
+		<query>
+			SELECT regValorIntMora
+			FROM staging.RegistroGeneral
+			WHERE regNumPlanilla = :idPlanilla
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.datos.planilla.total.recaudo">
+		<query>
+			SELECT regValTotalApoObligatorio + regValorIntMora as total
+			FROM staging.RegistroGeneral
+			WHERE regNumPlanilla = :idPlanilla
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.datos.planilla.pago.obligatorio.cotizante">
+		<query>
+			SELECT rd.redAporteObligatorio
+			FROM staging.RegistroDetallado rd
+			INNER JOIN staging.RegistroGeneral rg
+			ON rd.redRegistroGeneral = rg.regId
+			WHERE rg.regNumPlanilla = :idPlanilla
+			AND rd.redNumeroIdentificacionCotizante = :idIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.datos.planilla.pago.obligatorio.cotizante.mora">
+		<query>
+			SELECT rd.redOUTValorMoraCotizante
+			FROM staging.RegistroDetallado rd
+			INNER JOIN staging.RegistroGeneral rg
+			ON rd.redRegistroGeneral = rg.regId
+			WHERE rg.regNumPlanilla = :idPlanilla
+			AND rd.redNumeroIdentificacionCotizante = :idIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.datos.planilla.pago.obligatorio.cotizante.total">
+		<query>
+			SELECT rd.redAporteObligatorio + rd.redOUTValorMoraCotizante as total
+			FROM staging.RegistroDetallado rd
+			INNER JOIN staging.RegistroGeneral rg
+			ON rd.redRegistroGeneral = rg.regId
+			WHERE rg.regNumPlanilla = :idPlanilla
+			AND rd.redNumeroIdentificacionCotizante = :idIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.datos.planilla.tarifa.aportante">
+		<query>
+			SELECT MAX(rg.regOUTTarifaEmpleador) as tarifa_cotizante
+			FROM staging.RegistroGeneral rg
+			INNER JOIN staging.RegistroDetallado rd
+			ON rg.regId = rd.redRegistroGeneral
+			WHERE rg.regNumeroIdentificacionAportante = :idNumeroIdentificacionAportante
+			AND rg.regTipoIdentificacionAportante = :idTipoIdentificacionAportante
+			AND rd.redRegistroGeneral = :idRegistroGeneral
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Consultar.datos.planilla.tarifa.cotizante">
+		<query>
+			SELECT rg.regOUTTarifaEmpleador
+			FROM staging.RegistroGeneral rg
+			INNER JOIN staging.RegistroDetallado rd
+			ON rg.regId = rd.redRegistroGeneral
+			WHERE rg.regNumPlanilla = :idPlanilla
+			OR rg.regId = :idRegistro
+		</query>
+	</named-native-query>
+
+    <named-native-query name="Aporte.Consultar.temAporte.planillas.numAportes.idplanilla"
+        result-set-mapping="Aporte.Consultar.temAporte.planillas.numAportes.mapping">
+        <description>Consulta planillas a registrar con su cantidad de aportes</description>
+        <query>
+            <!-- SELECT temRegistroGeneral, COUNT(temRegistroGeneral) registros
+            FROM TemAporte 
+            INNER JOIN staging.RegistroGeneral rg on rg.regId = temRegistroGeneral
+            WHERE rg.regRegistroControl = :idPlanilla
+            AND temMarcaAporteManual = 0 
+            AND temMarcaAporteSimulado = 0 
+            AND temEnProceso = 0 
+            GROUP BY temRegistroGeneral 
+            ORDER BY registros ASC -->
+			select r.regId as temRegistroGeneral,COUNT(r.regId) registros
+			from dbo.PilaIndicePlanilla as p
+			inner join staging.RegistroGeneral as r on p.pipId = r.regRegistroControl
+			where p.pipId =:idPlanilla
+			GROUP BY r.regId 
+        </query>
+    </named-native-query>
+    
+    <named-native-query name="Aporte.Consultar.temAporte.planillas.numNovedades"
+        result-set-mapping="Aporte.Consultar.temAporte.planillas.numNovedades.mapping">
+        <description>Consulta planillas a registrar con su cantidad de novedades</description>
+        <query>
+            SELECT COUNT(tenRegistroGeneral) registros, tenRegistroGeneral
+            FROM TemNovedad 
+            WHERE tenMarcaNovedadManual = 0 
+            AND tenMarcaNovedadSimulado = 0
+            AND tenEnProceso = 0 
+            GROUP BY tenRegistroGeneral 
+            ORDER BY registros ASC
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Aporte.Consultar.temAporte.planillas.numNovedades.futuras"
+        result-set-mapping="Aporte.Consultar.temAporte.planillas.numNovedades.futuras.mapping">
+        <description>Consulta planillas a registrar con su cantidad de novedades</description>
+        <query>
+            SELECT COUNT(tenRegistroGeneral) registros, tenRegistroGeneral
+            FROM TemNovedad tem
+            JOIN staging.RegistroGeneral rg ON tem.tenRegistroGeneral = rg.regId 
+            WHERE tenMarcaNovedadManual = 0 
+            AND tenMarcaNovedadSimulado = 0
+            AND tenEnProceso = 0 
+            AND rg.regOUTNovedadFuturaProcesada = 1
+            GROUP BY tenRegistroGeneral 
+            ORDER BY registros ASC
+        </query>
+    </named-native-query>
+    
+    <named-native-query name="Aporte.Consultar.temAporte.planillas.numNovedades.idplanilla"
+        result-set-mapping="Aporte.Consultar.temAporte.planillas.numNovedades.mapping">
+        <description>Consulta planillas a registrar con su cantidad de novedades</description>
+        <query>
+            SELECT COUNT(tenRegistroGeneral) registros, tenRegistroGeneral
+            FROM TemNovedad 
+            INNER JOIN staging.RegistroGeneral rg on rg.regId = tenRegistroGeneral
+            WHERE rg.regRegistroControl = :idPlanilla
+            AND tenMarcaNovedadManual = 0 
+            AND tenMarcaNovedadSimulado = 0
+            <!--AND tenEnProceso = 0 -->
+            GROUP BY tenRegistroGeneral 
+            ORDER BY registros ASC
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Aporte.Consultar.Planillas.Correccion">
+	   <description>Consulta las planillas de correccion por medio de las originales</description>
+	   <query>
+	       SELECT pai.pi1NumPlanillaAsociada, pai.pi1NumPlanilla
+	       FROM PilaArchivoIRegistro1 pai where  pai.pi1NumPlanillaAsociada IN  (:numeroPlanilla)
+	   </query>
+	</named-native-query>
+    
+    <named-native-query name="Aporte.Consultar.temAporte.planillas.procesar"
+    	result-set-mapping="Aporte.Consultar.temAporte.planillas.procesar.mapping">
+    	<description>Consulta de planillas a registrar con su cantidad de aportes</description>
+    	<query>
+    		SELECT tem.*, tap.*, tct.*
+			FROM TemAporte tem
+			LEFT JOIN TemAportante tap ON tem.temIdTransaccion = tap.tapIdTransaccion 
+			LEFT JOIN TemCotizante tct ON tem.temIdTransaccion = tct.tctIdTransaccion 
+			WHERE tem.temRegistroGeneral = :idRegistroGeneral
+			AND tem.temMarcaAporteManual = 0 
+            AND tem.temMarcaAporteSimulado = 0
+			ORDER BY tem.temIdTransaccion ASC
+    	</query>
+    </named-native-query>
+
+	
+    
+    <named-native-query name="Aporte.Consultar.temNovedad.planillas.procesar"
+    	result-set-mapping="Aporte.Consultar.temNovedad.planillas.procesar.mapping">
+    	<description>Consulta de planillas a registrar con su cantidad de novedades</description>
+    	<query>
+		SELECT 
+		CASE WHEN ten.tenMarcaNovedadManual = 0 THEN 'PILA' ELSE 'APORTE_MANUAL' END canal, 
+		case when spi.spiIdRegistroDetalladoNovedad is not null then 1 else 0 end as novedadexistenteCore,
+		ten.*
+		FROM TemNovedad as ten with (nolock)
+		inner join (select r.regId, rdn.rdnRegistroDetallado, rdn.rdnId
+							from dbo.PilaIndicePlanilla as p
+							inner join staging.RegistroGeneral as r on p.pipId = r.regRegistroControl
+							inner join staging.RegistroDetallado as rd on r.regId = rd.redRegistroGeneral
+							inner join staging.RegistroDetalladoNovedad as rdn on rd.redId = rdn.rdnRegistroDetallado
+							where r.regId = :idRegistroGeneral) as a on ten.tenRegistroGeneral = a.regId and ten.tenRegistroDetallado = a.rdnRegistroDetallado and ten.tenRegistroDetalladoNovedad = a.rdnId
+		left join core.SolicitudNovedadPila as spi on ten.tenRegistroDetallado = spi.spiRegistroDetallado and ten.tenRegistroDetalladoNovedad = spi.spiIdRegistroDetalladoNovedad
+		WHERE ten.tenRegistroGeneral = :idRegistroGeneral
+		AND ten.tenMarcaNovedadManual = 0 
+		AND ten.tenMarcaNovedadSimulado = 0
+		and (spi.spiRegistroDetallado is null and spi.spiIdRegistroDetalladoNovedad is null)
+		order by tenNumeroIdCotizante, tenFechaInicioNovedad, tenTipoTransaccion
+
+    	</query>
+    </named-native-query>
+
+
+
+    <named-native-query name="Aporte.Consultar.TemAporteProcesado"
+        result-set-mapping="Aporte.Consultar.TemAporteProcesado.mapping">
+        <description>Consulta de TemAporteProcesado para determinar el envío de comunicados</description>
+        <query>
+            SELECT DISTINCT tprAporteGeneral, tprAporte
+            FROM TemAporteProcesado
+            WHERE (tprPresentaNovedades = 0 
+                OR (tprNovedadesProcesadas = 1 AND tprPresentaNovedades = 1))
+        </query>
+    </named-native-query>
+    
+   <!-- modificado 25/01/2022
+    <named-native-query name="Aporte.Consultar.TemAporteProcesadoByIdPlanilla"
+        result-set-mapping="Aporte.Consultar.TemAporteProcesado.mapping">
+        <description>Consulta de TemAporteProcesado para determinar el envío de comunicados</description>
+        <query>
+            SELECT DISTINCT tprAporteGeneral, tprAporte
+            FROM TemAporteProcesado
+            INNER JOIN staging.RegistroGeneral rg on rg.regId = tprAporteGeneral
+            WHERE rg.regRegistroControl = :idPlanilla
+            AND (tprPresentaNovedades = 0 
+                OR (tprNovedadesProcesadas = 1 AND tprPresentaNovedades = 1))
+        </query>
+    </named-native-query>-->
+	 <named-native-query name="Aporte.Consultar.TemAporteProcesadoByIdPlanilla"
+        result-set-mapping="Aporte.Consultar.TemAporteProcesado.mapping">
+        <description>Consulta de TemAporteProcesado para determinar el envío de comunicados</description>
+        <query>
+     	select r.regId as tprAporteGeneral, count(*) as tprAporte
+		from staging.RegistroGeneral as r
+		inner join staging.RegistroDetallado as rd on r.regId = rd.redRegistroGeneral
+		where r.regRegistroControl = :idPlanilla
+		group by r.regId
+        </query>
+    </named-native-query>
+
+    
+    <named-native-query name="Aporte.Actualizar.TemAporteProcesado">
+    	<description>Sentencia para la actualización de los registros de temAporteProcesado</description>
+    	<query>
+    		UPDATE tpr
+			SET tpr.tprNovedadesProcesadas = 1
+			FROM TemAporteProcesado tpr
+			LEFT JOIN TemNovedad ten ON tpr.tprAporteGeneral = ten.tenRegistroGeneral
+			WHERE tpr.tprPresentaNovedades = 1 
+			AND tpr.tprNovedadesProcesadas = 0
+			AND ten.tenId IS NULL
+    	</query>
+    </named-native-query>
+    
+    <named-native-query name="Aporte.Actualizar.TemAporteProcesadoByIdPlanilla">
+    	<description>Sentencia para la actualización de los registros de temAporteProcesado</description>
+    	<query>
+    		UPDATE tpr
+			SET tpr.tprNovedadesProcesadas = 1
+			FROM TemAporteProcesado tpr
+                        INNER JOIN staging.RegistroGeneral rg on rg.regId = tpr.tprAporteGeneral
+			LEFT JOIN TemNovedad ten ON tpr.tprAporteGeneral = ten.tenRegistroGeneral
+			WHERE rg.regRegistroControl = :idPlanilla
+                        AND tpr.tprPresentaNovedades = 1 
+			AND tpr.tprNovedadesProcesadas = 0
+			AND ten.tenId IS NULL
+    	</query>
+    </named-native-query>
+    
+    <named-native-query name="Aporte.Actualizar.TemAporte.marcarProceso">
+        <description>Actualización de marca de proceso para aportes</description>
+        <query>
+            UPDATE tem
+            SET temEnProceso = :enProceso
+            FROM TemAporte tem
+            WHERE temRegistroGeneral IN (:idsRegistroGeneral)
+            AND tem.temMarcaAporteManual = 0 
+            AND tem.temMarcaAporteSimulado = 0
+        </query>
+    </named-native-query>
+    
+    <named-native-query name="Aporte.Actualizar.TemNovedad.marcarProceso">
+        <description>Actualización de marca de proceso para novedades</description>
+        <query>
+            UPDATE ten
+            SET tenEnProceso = :enProceso
+            FROM TemNovedad ten
+            WHERE tenRegistroGeneral IN (:idsRegistroGeneral)
+            AND ten.tenMarcaNovedadManual = 0 
+            AND ten.tenMarcaNovedadSimulado = 0
+            
+        </query>
+    </named-native-query>
+    
+    <!-- REFACTOR PILA MAYO 2020 INICIO -->
+    
+    <!-- REFACTOR PILA MAYO 2020 FIN -->
+    
+    <!-- ESPACIO PARA STORED PROCEDURES -->
+	<named-stored-procedure-query
+			name="SP.consulta.Aporte.Consultar.temNovedad.planillas.procesar"
+			procedure-name="ASP_ConsultaNovedadesPlanillasPilaB9">
+		<parameter
+				class="java.lang.Long"
+				mode="IN"
+				name="idRegistroGeneral"
+		/>
+		<result-set-mapping>Aporte.Consultar.temNovedad.planillas.procesar.mapping</result-set-mapping>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name ="Aportes.StoredProcedures.ASP_ValidarProcesadoNovedades" 
+		procedure-name="dbo.ASP_ValidarProcesadoNovedades">
+		<parameter class="java.lang.Long" mode="IN" name="registroGeneral" />
+		<parameter class="java.lang.Boolean" mode="OUT" name="validar" />
+	</named-stored-procedure-query>
+	
+<named-stored-procedure-query 
+		name ="Aportes.StoredProcedures.ASP_ProcesadoNovedades" 
+		procedure-name="dbo.ASP_ProcesadoNovedades">
+		<parameter class="java.lang.Long" mode="IN" name="idRegistroGeneral" />
+		<parameter class="java.lang.Boolean" mode="OUT" name="resul" />
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query 
+		name ="Aportes.StoredProcedures.USP_ExecuteBloqueStaging" 
+		procedure-name="dbo.USP_ExecuteBloqueStaging">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="IdTransaccion"/>
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query 
+		name ="Aportes.StoredProcedures.USP_ExecutePILA2Fase1Validacion" 
+		procedure-name="dbo.USP_ExecutePILA2Fase1Validacion">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="idTransaccion"/>
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="sFase"/>			
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name="Aportes.StoredProcedures.USP_GetNotificacionesRegistro" 
+		procedure-name="dbo.USP_GetNotificacionesRegistro">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="IdRegistroGeneral"/>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name="Aportes.StoredProcedures.USP_GetNotificacionesRegistroEspecial" 
+		procedure-name="dbo.USP_GetNotificacionesRegistroEspecial">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="IdRegistroGeneral"/>
+			<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="TipoIdentificacionCotizante"/>
+			<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="NumeroIdentificacionCotizante"/>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name ="Aportes.StoredProcedures.USP_DeleteBloqueStaging" 
+		procedure-name="dbo.USP_DeleteBloqueStaging">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="IdTransaccion"/>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name ="Aportes.StoredProcedures.USP_ExecutePILA2Fase2RegistrarRelacionarAportes" 
+		procedure-name="dbo.USP_ExecutePILA2Fase2RegistrarRelacionarAportes">
+		<parameter class="java.lang.Long" mode="IN" name="IdTransaccion" />
+		<parameter class="java.lang.Boolean" mode="IN" name="EsSimulado" />
+		<parameter class="java.lang.Boolean" mode="IN" name="EsProcesoManual" />			
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name ="Aportes.StoredProcedures.USP_ExecutePILA2Fase3RegistrarRelacionarNovedades" 
+		procedure-name="dbo.USP_ExecutePILA2Fase3RegistrarRelacionarNovedades">
+		<parameter class="java.lang.Long" mode="IN" name="IdTransaccion" />
+		<parameter class="java.lang.Boolean" mode="IN" name="EsSimulado" />
+		<parameter class="java.lang.Boolean" mode="IN" name="EsRegistroManual" />
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name ="Aportes.StoredProcedures.USP_ValidarNovedadesEmpleadorActivoSUCURSALES" 
+		procedure-name="dbo.USP_ValidarNovedadesEmpleadorActivoSUCURSALES">
+		<parameter class="java.lang.Long" mode="IN" name="IdTransaccion" />
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name="Aportes.StoredProcedures.USP_SolicitarEvaluacionNovedadFutura" 
+		procedure-name="dbo.USP_SolicitarEvaluacionNovedadFutura">
+		<parameter class="java.util.Date" mode="IN" name="dFechaActual"/>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query name="Aportes.StoredProcedures.USP_VerificarCumplimientoSucursal" 
+		procedure-name="USP_VerificarCumplimientoSucursal">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="IdRegistroGeneral"
+		/>
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="codigoSucursalPILA"
+		/>
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="codigoSucursalPrincipal"
+		/>
+		<parameter
+			class="java.lang.Boolean"
+			mode="OUT"
+			name="cumpleSucursal"
+		/>
+	</named-stored-procedure-query>
+	<named-stored-procedure-query 
+		name="Aportes.StoredProcedures.USP_GET_RevalidarPila2Fase1" 
+		procedure-name="USP_GET_RevalidarPila2Fase1">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="iIdRegistroGeneral"
+		/>
+	</named-stored-procedure-query>
+	
+	<!-- MAPEO PARA NAMED QUEIRIES NATIVOS -->
+	<sql-result-set-mapping name="Aporte.Consultar.temAporte.planillas.numAportes.mapping">
+	   <constructor-result target-class="com.asopagos.aportes.dto.InformacionPlanillasRegistrarProcesarDTO">
+	       <column name="temRegistroGeneral" class="java.lang.Long"/>
+	       <column name="registros" class="java.lang.Integer"/>
+	   </constructor-result>
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="Aporte.Consultar.temAporte.planillas.numNovedades.mapping">
+	   <constructor-result target-class="com.asopagos.aportes.dto.InformacionPlanillasRegistrarProcesarDTO">
+	       <column name="registros" class="java.lang.Integer"/>
+	       <column name="tenRegistroGeneral" class="java.lang.Long"/>
+	   </constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="Aporte.Consultar.temAporte.planillas.numNovedades.futuras.mapping">
+	   <constructor-result target-class="com.asopagos.aportes.dto.InformacionPlanillasRegistrarProcesarDTO">
+	       <column name="registros" class="java.lang.Integer"/>
+	       <column name="tenRegistroGeneral" class="java.lang.Long"/>
+	   </constructor-result>
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="Aporte.PilaIndicePlanilla.mapping">
+		<entity-result entity-class="com.asopagos.entidades.pila.procesamiento.IndicePlanilla"/>
+
+	</sql-result-set-mapping>
+		<sql-result-set-mapping name="Aporte.Consultar.temAporte.planillas.procesar.mapping">
+		<entity-result entity-class="com.asopagos.entidades.pila.temporal.TemAporte"/>
+		<entity-result entity-class="com.asopagos.entidades.pila.temporal.TemAportante"/>
+		<entity-result entity-class="com.asopagos.entidades.pila.temporal.TemCotizante"/>
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="Aporte.Consultar.temNovedad.planillas.procesar.mapping">
+		<constructor-result target-class="com.asopagos.aportes.dto.NovedadesProcesoAportesDTO">
+			<column name="canal" class="java.lang.String"/>
+			<column name="tenRegistroDetallado" class="java.lang.Long"/>
+			<column name="tenRegistroGeneral" class="java.lang.Long"/>
+			<column name="tenIdTransaccion" class="java.lang.Long"/>
+			<column name="tenTipoIdAportante" class="java.lang.String"/>
+			<column name="tenNumeroIdAportante" class="java.lang.String"/>
+			<column name="tenMarcaNovedadSimulado" class="java.lang.Boolean"/>
+			<column name="tenMarcaNovedadManual" class="java.lang.Boolean"/>
+			<column name="tenTipoTransaccion" class="java.lang.String"/>
+			<column name="tenEsIngreso" class="java.lang.Boolean"/>
+			<column name="tenEsRetiro" class="java.lang.Boolean"/>
+			<column name="tenTipoIdCotizante" class="java.lang.String"/>
+			<column name="tenNumeroIdCotizante" class="java.lang.String"/>
+			<column name="tenFechaInicioNovedad" class="java.util.Date"/>
+			<column name="tenFechaFinNovedad" class="java.util.Date"/>
+			<column name="tenAccionNovedad" class="java.lang.String"/>
+			<column name="tenMensajeNovedad" class="java.lang.String"/>
+			<column name="tenTipoCotizante" class="java.lang.String"/>
+			<column name="tenValor" class="java.lang.String"/>
+			<column name="tenEsTrabajadorReintegrable" class="java.lang.Boolean"/>
+			<column name="tenEsEmpleadorReintegrable" class="java.lang.Boolean"/>
+			<column name="tenRegistroDetalladoNovedad" class="java.lang.Long"/>
+			<column name="tenId" class="java.lang.Long"/>	
+			<column name="novedadexistenteCore" class="java.lang.Boolean"/>
+			<column name="beneficiarios" class="java.lang.String"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="Aporte.Consultar.TemAporteProcesado.mapping">
+	   <constructor-result target-class="com.asopagos.aportes.dto.DatosComunicadoPlanillaDTO">
+	       <column name="tprAporteGeneral" class="java.lang.Long"/>
+	       <column name="tprAporte" class="java.lang.Integer"/>
+	   </constructor-result>
+	</sql-result-set-mapping>
+	
+	<!-- REFACTOR PILA FASE 3 -->
+	<named-stored-procedure-query name="Aporte.consultar.infoAportante.procesar"
+		procedure-name="USP_ConsultarInfoAportanteProcesar">
+		<parameter class="java.lang.Long" mode="IN" name="idRegistroGeneral"/>
+		<result-set-mapping>Aporte_consultar_infoAportante_procesar_mapping</result-set-mapping>
+    </named-stored-procedure-query>
+    <sql-result-set-mapping name="Aporte_consultar_infoAportante_procesar_mapping">
+    	<entity-result entity-class="com.asopagos.entidades.pila.temporal.TemAportante"/>
+		<column-result name="idPersona" class="java.lang.Long"/>
+		<column-result name="idEmpresa" class="java.lang.Long"/>
+		<column-result name="idEmpleador" class="java.lang.Long"/>
+		<column-result name="estadoEmpleador" class="java.lang.String"/>
+		<column-result name="tieneCotizanteDependienteReintegrable" class="java.lang.Boolean"/>
+		<column-result name="periodoAporte" class="java.lang.String"/>
+		<column-result name="modalidadRecaudoAporte" class="java.lang.String"/>
+	</sql-result-set-mapping>
+	
+    <named-stored-procedure-query name="Aporte.consultar.infoCotizante.porCrear"
+		procedure-name="USP_ConsultarInfoCotizantePorCrear">
+		<parameter 
+		class="java.lang.Long"
+		 mode="IN" 
+		name="idRegistroGeneral" />
+
+		<result-set-mapping>Aporte_consultar_infoCotizante_porCrear_mapping</result-set-mapping>
+    </named-stored-procedure-query>
+    <sql-result-set-mapping name="Aporte_consultar_infoCotizante_porCrear_mapping">
+    	<entity-result entity-class="com.asopagos.entidades.pila.temporal.TemCotizante"/>
+	</sql-result-set-mapping>
+	
+	<named-native-query name="Aportes.consultar.CantidadAportesTemprales">
+        <description>Consulta la cantidad de aportes temporales de una planilla</description>
+        <query>
+            SELECT COUNT(1) 
+			FROM TemAporte 
+			INNER JOIN staging.RegistroGeneral ON temRegistroGeneral = regId
+			WHERE regRegistroControl = :idPlanilla
+        </query>
+    </named-native-query>
+
+	<named-native-query name="Aportes.consultar.movimiento.historico.pila">
+		<query>
+			select reg.regId, reg.regNumPlanilla, reg.regPeriodoAporte, reg.regOUTTarifaEmpleador from staging.registroGeneral reg
+			where reg.regId in (:idRegistroGenerales)
+		</query>
+	</named-native-query>
+	
+</entity-mappings>

@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd" version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<!--<named-query name="novedades.composite.consultar.solicitud.por.idSolicitudGlobal">
+		<query>
+			SELECT sn
+			FROM SolicitudNovedad sn
+			LEFT JOIN FETCH sn.solicitudGlobal
+			WHERE sn.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>-->
+	<named-native-query name="novedades.composite.consultar.solicitud.por.idSolicitudGlobal">
+		<query>
+			SELECT top 1 sn.*
+			FROM SolicitudNovedad sn
+			LEFT JOIN Solicitud s on s.solId=sn.snoSolicitudGlobal
+			WHERE sn.snoSolicitudGlobal = :idSolicitud
+        </query>
+	</named-native-query>
+	<named-native-query name="consultar.si.existe.analisis.novedad.fovis">
+		<query>
+		select COUNT(*) as cantidad from SolicitudAnalisisNovedadFovis
+		inner join SolicitudNovedad on sanSolicitudNovedad = snoId
+		inner join ParametrizacionNovedad on snoNovedad = novid
+		where sanPersona = :idPersona
+        </query>
+	</named-native-query>
+
+	<named-native-query name="consultar.fecha.ultimo.retiro.por.rolAfiliado">
+		<query>
+			select top 1 hra.hraFechaRetiro from dbo.SolicitudNovedadPersona snp with(nolock)
+			inner join dbo.Afiliado  afi on afi.afiPersona = snp.snpPersona
+			inner join dbo.HistoricoRolAfiliado hra with(nolock)  on hra.hraAfiliado = afi.afiId
+			where snp.snpSolicitudNovedad = :idSolicitudNovedad
+			order by hra.hraFechaRetiro desc
+        </query>
+	</named-native-query>
+	<named-native-query name="consultar.fecha.retiro.por.idrolAfiliado">
+		<query>
+			select r.roaFechaRetiro from RolAfiliado r with(nolock) where r.roaAfiliado = :idAfiliado and roaFechaRetiro is not null
+        </query>
+	</named-native-query>
+	<named-native-query name="consultar.fecha.retiro.por.idrolAfiliado.hitoricoRolAfiliado">
+		<query>
+				select top 1  h.hraFechaRetiro from HistoricoRolAfiliado h with(nolock)
+					inner join Afiliado a on h.hraAfiliado=a.afiId
+					inner join RolAfiliado r on r.roaAfiliado=a.afiId
+					where r.roaEmpleador=h.hraEmpleador
+					and r.roaId =:idRolAfiliado
+					order by h.hraFechaRetiro desc
+        </query>
+	</named-native-query>
+
+	<named-native-query name="consultar.cantidad.beneficiarios.afiliado">
+		<query>
+				select COUNT(*) from Beneficiario b with(nolock) where b.benAfiliado  = :idAfiliado and b.benEstadoBeneficiarioAfiliado = 'INACTIVO' 
+        </query>
+	</named-native-query>
+	<named-native-query name="consultar.datos.empleador.y.sucursal">
+		<query>
+			select top 1 em.empId, sue.sueId from Persona per
+			inner join Empresa emp on emp.empPersona = per.perId
+			inner join Empleador em on em.empEmpresa = emp.empId
+			inner join SucursalEmpresa sue on sue.sueEmpresa = emp.empId
+			where per.perNumeroIdentificacion = :cedula
+			and  per.perTipoIdentificacion = :tipoIdentificacion
+			and (:sucursal is null or sueSucursalPrincipal = :sucursal)
+        </query>
+	</named-native-query>
+	<named-native-query name="consultar.exist.archivo.consola">
+		<query>
+			select count(cecnombrearchivo) as cant from consolaestadocarguemasivo 
+                        where cecnombrearchivo = :nombrearchivo
+		</query>
+	</named-native-query>
+
+	<named-native-query name="consultar.datos.empleador.solo">
+		<query>
+			select top 1 em.empId, em.empEstadoEmpleador, em.empMotivoDesafiliacion from Persona per
+			inner join Empresa emp on emp.empPersona = per.perId
+			inner join Empleador em on em.empEmpresa = emp.empId
+			where per.perNumeroIdentificacion = :cedula
+			and  per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+	</named-native-query>
+
+	<named-native-query name="Novedad.buscar.persona">
+		<query>
+			select per.perId from Persona per with(nolock)
+			where per.perNumeroIdentificacion = :numeroIdentificacion
+			and  per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+	</named-native-query>
+
+	<named-native-query name="Buscar.Solicitud.Novedad.Persona">
+		<query>
+			select  snp.snpId
+			from SolicitudNovedadPersona snp
+			where
+			snp.snpRolAfiliado = :rolAfiliado and
+			snp.snpPersona = :persona and
+			snp.snpSolicitudNovedad = :solicitudNovedad
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Buscar.Solicitud.Novedad.Pila">
+		<query>
+			select  spiId
+			from SolicitudNovedadPila
+			where
+			spiSolicitudNovedad = :solicitudNovedad and
+			spiRegistroDetallado = :regDet
+		</query>
+	</named-native-query>
+	
+	        <named-native-query name="consultar.info.admin.subsidio">
+            <query>
+                select cas.casId, cas.casFechaHoraCreacionRegistro, cas.casUsuarioCreacionRegistro,cas.casTipoTransaccionSubsidio,
+                cas.casEstadoTransaccionSubsidio,cas.casOrigenTransaccion, cas.casMedioDePagoTransaccion,
+                cas.casValorOriginalTransaccion, cas.casCodigoBanco, cas.casNombreBanco, cas.casTipoCuentaAdmonSubsidio,
+                cas.casNumeroCuentaAdmonSubsidio, cas.casTipoIdentificacionTitularCuentaAdmonSubsidio,
+                cas.casNumeroIdentificacionTitularCuentaAdmonSubsidio,cas.casNombreTitularCuentaAdmonSubsidio,
+                cas.casValorRealTransaccion, cas.casFechaHoraTransaccion,cas.casUsuarioTransaccion,
+                cas.casFechaHoraUltimaModificacion, cas.casUsuarioUltimaModificacion, cas.casAdministradorSubsidio,
+                per.perRazonSocial, per.perTipoIdentificacion,	per.perNumeroIdentificacion, cas.casMedioDePago,cas.casSolicitudLiquidacionSubsidio,
+                cas.casNumeroTarjetaAdmonSubsidio
+                from CuentaAdministradorSubsidio cas,Persona per, AdministradorSubsidio adm
+                where adm.asuPersona = per.perId
+                and  cas.casAdministradorSubsidio = adm.asuId
+                and per.perTipoIdentificacion = :tipoIdenAdminSubsidio
+                and per.perNumeroIdentificacion = :numeroIdenAdminSubsidio
+                and cas.casId = :casId
+            </query>
+        </named-native-query>
+
+		<named-native-query name="consultar.empleador.por.rol.afiliado">
+			<query>
+				SELECT e.empId, e.empEstadoEmpleador, e.empMotivoDesafiliacion FROM RolAfiliado r
+				INNER JOIN empleador e on e.empId = r.roaEmpleador
+				where r.roaId = :rolAfiliado
+			</query>
+		</named-native-query>
+        
+        <named-native-query name="consultar.parametro.ejecucion.bonos.automaticos">
+            <query>
+                select prmValor from Parametro where prmNombre = 'CONTROL_EJECUCION_ABONOS_AUTOMATICOS'
+            </query>
+        </named-native-query>
+		
+		         <named-native-query name="consultar.parametro.consultar.sitio.pago">
+            <query>
+                select sipId from parametro prm
+                inner join SitioPago si on si.sipNombre = prm.prmValor
+                where prm.prmNombre = 'SITIO_DE_PAGO_CONFIRMACIÓN_CARGUE_MASIVO'
+            </query>
+        </named-native-query>
+		<named-native-query name="consultar.solicitud.item.chequeo">
+            <query>
+		select top 1 i.ichSolicitud from solicitud
+		inner join solicitudafiliacionpersona on sapsolicitudglobal = solid
+		inner join rolafiliado on roaid = saprolafiliado
+		inner join afiliado on afiid = roaafiliado
+		inner join persona p1 on p1.perid = AFIPERSONA
+		inner join ItemChequeo i on i.ichSolicitud = solId
+		inner join empleador e on e.empid = roaempleador
+		inner join empresa em on em.empid = e.empempresa
+		inner join persona p2 on p2.perid = em.emppersona
+		where p1.pernumeroidentificacion = :numeroIdentificacionAfiliado
+		and p1.pertipoidentificacion = :tipoIdentificacionAfiliado
+		and p2.pernumeroidentificacion = :numeroIdentificacionEmpleador
+		and p2.pertipoidentificacion = :tipoIdentificacionEmpleador
+		order by ichid desc
+		</query>
+        </named-native-query>
+		<named-native-query name="consultar.solicitud.item.chequeo.beneficiario">
+            <query>
+		select max(a.ichSolicitud) from(
+		SELECT ichSolicitud FROM ItemChequeo
+		INNER JOIN SOLICITUD ON SOLID = ichSolicitud
+		inner  JOIN SolicitudNovedad ON snoSolicitudGlobal = solId
+		inner JOIN SolicitudNovedadPersona ON snpSolicitudNovedad = snoId
+		inner join beneficiario on benid =snpBeneficiario
+		INNER JOIN PERSONA ben ON ben.PERID = benPersona
+		inner join persona afi on afi.perid = snpPersona
+		WHERE ben.perNumeroIdentificacion = :numeroIdentificacionBeneficiario
+		and ben.perTipoIdentificacion = :tipoIdentificacionBeneficiario
+		and afi.perNumeroIdentificacion = :numeroIdentificacionAfiliado
+		and afi.perTipoIdentificacion = :tipoIdentificacionAfiliado
+		AND solTipoTransaccion in (:tipoTransaccion)
+		union all
+		SELECT  ichSolicitud FROM ItemChequeo
+		INNER JOIN SOLICITUD ON SOLID = ichSolicitud
+		INNER JOIN PERSONA ben  ON ben.PERID = ichPersona
+		inner JOIN SolicitudAfiliacionPersona ON sapSolicitudGlobal = solId
+		inner join RolAfiliado on roaid = sapRolAfiliado
+		inner join afiliado on afiid = roaAfiliado
+		inner join persona afi on afi.perid = afiPersona
+		WHERE ben.perNumeroIdentificacion = :numeroIdentificacionBeneficiario
+		and ben.perTipoIdentificacion = :tipoIdentificacionBeneficiario
+		and afi.perNumeroIdentificacion = :numeroIdentificacionAfiliado
+		and afi.perTipoIdentificacion = :tipoIdentificacionAfiliado) a
+		</query>
+        </named-native-query>
+				<named-query name="consultar.item.chequeo.persona">
+            <query>
+                select i from ItemChequeo i
+				where solicitudGlobal = :solicitudGlobal
+				and i.persona.numeroIdentificacion = :numeroIdentificacion
+				and i.persona.tipoIdentificacion = :tipoIdentificacion
+            </query>
+        </named-query>
+
+<named-query name="consultar.grupo.familiar">
+            <query>   
+                SELECT b FROM GrupoFamiliar b
+                WHERE b.idGrupoFamiliar = :idGrupoFamiliar
+            </query>
+        </named-query>	
+        
+	<named-query name="consultar.medio.pago.persona.id">
+            <query>   
+                SELECT b FROM MedioPagoPersona b 
+                WHERE b.idPersona = :idPersona
+            </query>
+        </named-query>	
+
+        <named-query name="Afiliados.buscar.persona.idDocumento">
+                        <description>Busca la persona por el tipo y numero documento</description>
+                        <query>
+                        SELECT per FROM Persona per 
+                                LEFT JOIN FETCH per.ubicacionPrincipal ubi
+                        WHERE per.tipoIdentificacion = :tipoIdentificacion
+                        AND per.numeroIdentificacion = :numeroIdentificacion
+                </query>
+        </named-query>
+
+		<named-query name="consultar.solicitud.afiliacion">
+                        <description>Busca la persona por el tipo y numero documento</description>
+                        <query>
+                        SELECT per FROM SolicitudAfiliacionPersona per 
+                        WHERE per.solicitudGlobal.idSolicitud = :idSolicitud
+                </query>
+        </named-query>
+
+	<named-native-query name= "consultar.idBanco.por.codigoPila"
+		result-set-mapping = "consultar.idBanco.por.codigoPila.mapping">
+		<query>
+			select banid from banco where bancodigoPila = :codigoBanco
+		</query>
+	</named-native-query>
+
+	<named-native-query name= "consultar.persona.cambioMasivo.transferencia"
+		result-set-mapping = "consultar.persona.cambioMasivo.transferencia.mapping">
+		<query>
+			select UPPER(concat(perPrimerNombre,' ',perSegundoNombre,' ', perPrimerApellido,' ', perSegundoApellido)) 
+				as nombreTitular
+			from Persona 
+			where perNumeroIdentificacion = :numeroIdentificacionTitular
+				and perTipoIdentificacion = :tipoIdentificacionTitular 
+		</query>
+	</named-native-query>
+
+	<named-native-query name= "consultar.archivo.masivo.certificados"
+		result-set-mapping = "consultar.archivo.masivo.certificados.mapping">
+		<query>
+			select top 1 * 
+				from ControlCertificadosMasivos 
+			where ccmNombreArchivo 
+				like '%Certificado_afiliacion%' 
+				and ccmIdEmpleador = :idEmpleador order by 1 desc
+		</query>
+	</named-native-query>
+
+	<named-native-query name= "consultar.ultimo.archivo.certificados.masivos"
+		result-set-mapping = "consultar.ultimo.archivo.certificados.masivos.mapping">
+		<query>
+			select top 1 ccmIdArchivoECM as idECM
+					from ControlCertificadosMasivos 
+				where ccmNombreArchivo 
+					like '%Certificado_afiliacion%' 
+					and ccmIdEmpleador = :idEmpleador
+					and convert(Date,ccmFechaGeneracion )= convert(Date,dbo.getLocalDate()) order by ccmid desc
+		</query>
+	</named-native-query>
+
+	<named-native-query name="consultar.solicitud.novedad.pila">
+		<query>
+			select spiId from SolicitudNovedadPila
+			where spiIdRegistroDetalladoNovedad = :idRegistroDetalladoNovedad
+			and spiRegistroDetallado = :idRegistroDetallado
+		</query>
+	</named-native-query>
+
+
+    <named-stored-procedure-query
+		name="StoredProcedures.actualizar.reintegros.beneficiario.afiliado.novedades.pila"
+		procedure-name="APS_ActualizarReintegrosBneficiariosAfiliadosNovedadesPila">
+		<parameter class="java.lang.Long" mode="IN" name="sapRolAfiliado" />
+		<parameter class="java.lang.Long" mode="IN" name="sapSolicitudGlobal" />
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query name="stored.procedure.novedades.composite.insertar.analisis.postulacion.fovis" procedure-name="USP_ExecuteInsertarAnalisisPostulacionFovis">
+
+		<parameter class="java.lang.String" mode="IN" name="EstadoSolicitud" />
+		<parameter class="java.math.BigInteger" mode="IN" name="IdPostulacionFovis" />
+		<parameter class="java.math.BigInteger" mode="IN" name="IdSolicitudNovedad" />
+		<parameter class="java.lang.String" mode="IN" name="Observaciones" />
+		<parameter class="java.lang.Long" mode="IN" name="IdSolicitudGlobal" />
+		<parameter class="java.math.BigInteger" mode="IN" name="IdPersonaNovedad" />
+	</named-stored-procedure-query>
+	
+	<named-native-query name="novedades.composite.monitoreo.novedades">
+			<query>
+			 INSERT INTO registroLog VALUES (dbo.getLocalDate(),:puntoEjecucion,:ubicacion)
+			</query>
+	</named-native-query>
+
+	<sql-result-set-mapping name ="consultar.idBanco.por.codigoPila.mapping">
+		<column-result name="banid" class="java.lang.Long" />
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name ="consultar.persona.cambioMasivo.transferencia.mapping">
+		<column-result name="nombreTitular" class="java.lang.String" />
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="consultar.archivo.masivo.certificados.mapping">
+		<constructor-result target-class="com.asopagos.entidades.transversal.core.ControlCertificadosMasivos">
+			<column name="ccmId" class="java.lang.Long" />
+			<column name="ccmIdArchivoECM" class="java.lang.String" />
+			<column name="ccmNombreArchivo" class="java.lang.String" />
+			<column name="ccmIdEmpleador" class="java.lang.Long" />
+			<column name="ccmTipoCertificado" class="java.lang.String" />
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name ="consultar.ultimo.archivo.certificados.masivos.mapping">
+		<column-result name="idECM" class="java.lang.String" />
+	</sql-result-set-mapping>
+
+</entity-mappings>

@@ -1,0 +1,16 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.asopagos.coreaas.services</groupId>
+    <artifactId>services</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
+  </parent>
+  <artifactId>afiliacion-empleadores-web-composite</artifactId>
+  <packaging>pom</packaging>
+  <name>Afiliación empleadores web composite</name>
+  <description>Este proyecto agrupa los proyectos que definen los servicios de composición para el servicio de afiliación de empresas web</description>
+  <modules>
+  	<module>afiliacion-empleadores-web-composite-api</module>
+  	<module>afiliacion-empleadores-web-composite-service</module>
+  </modules>
+</project>

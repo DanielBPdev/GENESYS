@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="AfiliacionEmpleadoresComposite.consultar.solicitud.global">
+		<query>
+			SELECT global FROM SolicitudAfiliacionEmpleador sol
+			JOIN sol.solicitudGlobal global
+			where sol.idSolicitudAfiliacionEmpleador = :idSolicitudAfiliacionEmpleador
+		</query>
+	</named-query>
+	
+	<named-query name="AfiliacionEmpleadoresComposite.consultar.solicitud.especifica">
+		<query>
+			SELECT sae.idSolicitudAfiliacionEmpleador FROM SolicitudAfiliacionEmpleador sae
+			JOIN sae.solicitudGlobal
+			where sae.solicitudGlobal.idSolicitud = :idSolicitudGlobal
+		</query>
+	</named-query>
+        
+        <named-native-query name="AfiliacionEmpleadoresComposite.consultarEncabezadoAportesFuturos">
+		<description>Extracción de información de Aporte General Encabezado</description>
+		<query>
+			select
+			ROW_NUMBER() OVER(ORDER BY e.apgId ) as consecutivoEncabezado,
+			e.apgRegistroGeneral as operacionRecaudo,
+			e.apgFechaRecaudo as fechaRegistro,
+			DATEDIFF (DAY, e.apgFechaRecaudo , GETDATE()) as antiguedadRecaudo,
+			e.apgFechaRecaudo as  fechaPago,
+			e.apgTipoSolicitante as tipoEntidad,
+			CASE
+			     WHEN apgTipoSolicitante = 'EMPLEADOR'
+			               THEN (
+								select top 1 pp.perTipoIdentificacion from Empresa p
+								inner join Persona pp on pp.perId = p.empPersona
+								where p.empId = e.apgEmpresa
+						   )
+			               ELSE (select top 1 p.perTipoIdentificacion from Persona p where p.perId = e.apgPersona)
+			       END as tipoIdentificacionEntidad,
+			CASE
+			     WHEN apgTipoSolicitante = 'EMPLEADOR'
+			               THEN (
+								select top 1 pp.perNumeroIdentificacion from Empresa p
+								inner join Persona pp on pp.perId = p.empPersona
+								where p.empId = e.apgEmpresa
+						   )
+			               ELSE (select top 1 p.perNumeroIdentificacion from Persona p where p.perId = e.apgPersona)
+			       END as numeroIdentificacionEntidad,
+			CASE
+			     WHEN apgTipoSolicitante = 'EMPLEADOR'
+			               THEN (
+								select top 1 p.empNombreComercial from Empresa p
+								where p.empId = e.apgEmpresa
+						   )
+			               ELSE (select top 1 p.perRazonSocial from Persona p where p.perId = e.apgPersona)
+			       END as razonSocial,
+			e.apgValTotalApoObligatorio as montoAporte,
+			e.apgValorIntMora as montoInteres ,
+			(select SUM (d.apdAporteObligatorio) from AporteDetallado d where d.apdAporteGeneral = e.apgId) as montoTotal,
+			e.apgEstadoAporteAportante as estadoAporte ,
+			e.apgPagadorPorTerceros as pagoSiMismo,
+			e.apgApoConDetalle as aporteConDetalle,
+			e.apgFormaReconocimientoAporte as tipoReconocimiento,
+			CAST(e.apgFechaProcesamiento  AS date)as fechaMovimiento,
+			e.apgFormaReconocimientoAporte as formaReconocimiento,
+			e.apgApoConDetalle as  detalleEncabezado,
+                        e.apgId
+			from 
+			AporteGeneral e
+                        where
+                        e.apgFechaRecaudo between :fechaInicio and :fechaFin
+                        and (e.apgFechaRecaudo = :antiguedadRecaudo or :antiguedadRecaudo = '1969-12-31' )
+                        and e.apgMarcaPeriodo = 'PERIODO_FUTURO'
+                        and e.apgEstadoRegistroAporteAportante = 'REGISTRADO'
+                        and 
+                        (
+                            e.apgTipoSolicitante = :tipoSolicitantePensionado
+                            or
+                            e.apgTipoSolicitante = :tipoSolicitanteEmpeador
+                            or
+                            e.apgTipoSolicitante = :tipoSolicitanteIndependiente
+                        )
+                    
+
+
+
+		</query>
+	</named-native-query>
+        
+        <named-native-query name="AfiliacionEmpleadoresComposite.consultarDetalleAportesFuturos">
+		<description>Extracción de información de Aporte Detallado </description>
+		<query>
+			select
+                        ROW_NUMBER() OVER(ORDER BY d.apdId ) as consecutivoDetalle,
+                        e.apgRegistroGeneral as operacionRecaudo,
+                        e.apgFechaRecaudo  as fechaRegistroAporte,
+                        DATEDIFF (DAY, e.apgFechaRecaudo , GETDATE()) as antiguedadRecaudo,
+                        d.apdFechaMovimiento as fechaPago,
+                        d.apdTipoCotizante as tipoPersona,
+                        p.perTipoIdentificacion as tipoIdentificacion,
+                        p.perNumeroIdentificacion as numeroIdentificacion,
+                        p.perRazonSocial as nombres,
+                        d.apdValorSaldoAporte as montoAporte, 
+                        d.apdValorIntMora as montoInteres,
+                        (d.apdValorSaldoAporte + d.apdValorIntMora) as montoTotal,
+                        d.apdFormaReconocimientoAporte as tipoReconocimiento, 
+                        d.apdFormaReconocimientoAporte as formaReconocimiento
+                        from 
+                        AporteDetallado d
+			inner join AporteGeneral e on e.apgId = d.apdAporteGeneral
+			inner join Persona p on p.perId = d.apdPersona
+			WHERE
+			d.apdAporteGeneral = :aporteGeneral
+		</query>
+	</named-native-query>
+
+	<named-native-query name="AfiliacionEmpleadoresComposite.consultarDatosCreacionUsuariosKeyCload">
+		<description>tabla CreacionUsuariosEmpresasKeycload </description>
+		<query>
+		select email,primerapellido,primernombre,tipoIdentificacion,numIdentificacion,idSolicitudGlobal from CreacionUsuariosEmpresasKeycload 
+		where Estado =:estado
+		</query>
+	</named-native-query>
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+</entity-mappings>

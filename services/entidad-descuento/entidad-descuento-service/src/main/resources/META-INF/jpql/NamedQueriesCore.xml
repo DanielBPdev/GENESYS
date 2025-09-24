@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	
+	<named-query name="EntidadDescuento.buscarTodas.DTO.EXTERNA">
+		<description>Busca todas las entidades de descuento Externas, las que estan referenciadas con una empresa</description>
+		<query>
+		    SELECT new com.asopagos.entidaddescuento.dto.EntidadDescuentoModeloDTO (ed,em,ub)
+			FROM Empresa em, UbicacionEmpresa uem
+			LEFT JOIN em.persona per, EntidadDescuento ed
+			LEFT JOIN uem.ubicacion ub
+			WHERE (ed.idEmpresa = em.idEmpresa
+			AND em.idEmpresa = uem.idEmpresa
+			AND uem.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL)
+        </query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.buscarTodas.DTO.INTERNA">
+		<description>Busca todas las entidades de descuento Internas, que no estan referenciadas con una empresa</description>
+		<query>
+		    SELECT new com.asopagos.entidaddescuento.dto.EntidadDescuentoModeloDTO (ed)
+			FROM EntidadDescuento ed
+			WHERE (ed.idEmpresa IS NULL)
+        </query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.consultar.entidadPorId">
+		<description>Consulta que permite obtener la información de una entidad de descuento a partir del identificador parametrizado</description>
+		<query>
+		    SELECT new com.asopagos.entidaddescuento.dto.EntidadDescuentoModeloDTO (ed)
+			FROM EntidadDescuento ed
+			WHERE ed.idEntidadDescuento = :idEntidadDescuento
+        </query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.buscar.prioridades">
+		<description>Busca las prioridades asginadas a las entidades de descuento existentes</description>
+		<query>
+		SELECT ed.prioridad FROM EntidadDescuento ed
+        </query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.buscar.prioridad">
+		<description>Busca si la prioridad existe registrada</description>
+		<query>
+		SELECT ed.idEntidadDescuento FROM EntidadDescuento ed
+		WHERE ed.prioridad = :prioridad
+        </query>
+	</named-query>
+	  
+	<named-query name="EntidadDescuento.buscar.DTO.codigo.EXTERNA">
+		<description>Consulta que devuelve un DTO de la entidad de descuento con sus datos y los de la empresa buscada por el código</description>
+		<query>		
+			SELECT new com.asopagos.entidaddescuento.dto.EntidadDescuentoModeloDTO (ed,em,ub)
+			FROM Empresa em, UbicacionEmpresa uem
+			LEFT JOIN em.persona per, EntidadDescuento ed
+			LEFT JOIN uem.ubicacion ub
+			WHERE ed.idEmpresa = em.idEmpresa
+			AND em.idEmpresa = uem.idEmpresa
+			AND uem.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL 
+			AND ed.codigo = :codigoEntidadDescuento			
+		</query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.buscar.DTO.codigo.INTERNA">
+		<description>Consulta que devuelve un DTO de la entidad de descuento internas por medio del código</description>
+		<query>	
+		    SELECT new com.asopagos.entidaddescuento.dto.EntidadDescuentoModeloDTO (ed)
+			FROM EntidadDescuento ed
+			WHERE (ed.idEmpresa IS NULL)	
+			AND ed.codigo = :codigoEntidadDescuento	
+    	</query>
+	</named-query>
+	  
+	<named-query name="EntidadDescuento.buscar.DTO.nombre.EXTERNA">
+		<description>Consulta que devuelve un DTO de la entidad de descuento con sus datos y los de la empresa buscada por el nombre</description>
+		<query>		
+			SELECT new com.asopagos.entidaddescuento.dto.EntidadDescuentoModeloDTO (ed,em,ub)
+			FROM Empresa em, UbicacionEmpresa uem
+			LEFT JOIN em.persona per, EntidadDescuento ed
+			LEFT JOIN uem.ubicacion ub
+			WHERE ed.idEmpresa = em.idEmpresa
+			AND em.idEmpresa = uem.idEmpresa
+			AND uem.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL 
+			AND per.razonSocial LIKE :nombreEntidadDescuento		
+		</query>
+	</named-query>	
+	
+	<named-query name="EntidadDescuento.buscar.DTO.nombre.INTERNA">
+		<description>Consulta que devuelve un DTO de la entidad de descuento con sus datos y los de la empresa buscada por el nombre</description>
+		<query>		
+		    SELECT new com.asopagos.entidaddescuento.dto.EntidadDescuentoModeloDTO (ed)
+			FROM EntidadDescuento ed
+			WHERE (ed.idEmpresa IS NULL)	
+			AND ed.nombreEntidad LIKE :nombreEntidadDescuento			
+		</query>
+	</named-query>	
+	
+	<named-query name="EntidadDescuento.buscar.DTO.codigo.nombre.EXTERNA">
+		<description>Consulta que devuelve un DTO de la entidad de descuento con sus datos y los de la empresa buscada por código y nombre</description>
+		<query>		
+			SELECT new com.asopagos.entidaddescuento.dto.EntidadDescuentoModeloDTO (ed,em,ub)
+			FROM Empresa em, UbicacionEmpresa uem
+			LEFT JOIN em.persona per, EntidadDescuento ed
+			LEFT JOIN uem.ubicacion ub
+			WHERE ed.idEmpresa = em.idEmpresa
+			AND em.idEmpresa = uem.idEmpresa
+			AND uem.tipoUbicacion = com.asopagos.enumeraciones.core.TipoUbicacionEnum.UBICACION_PRINCIPAL 
+			AND ed.codigo = :codigoEntidadDescuento	
+			AND per.razonSocial = :nombreEntidadDescuento	
+		</query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.buscar.DTO.codigo.nombre.INTERNA">
+		<description>Consulta que devuelve un DTO de la entidad de descuento con sus datos y los de la empresa buscada por código y nombre</description>
+		<query>	
+		    SELECT new com.asopagos.entidaddescuento.dto.EntidadDescuentoModeloDTO (ed)
+			FROM EntidadDescuento ed
+			WHERE (ed.idEmpresa IS NULL)
+			AND ed.codigo = :codigoEntidadDescuento		
+			AND ed.nombreEntidad = :nombreEntidadDescuento	
+			
+		</query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.buscar.codigo.mayor">
+		<description>Consulta que devuelve el código mayor que se haya registrado en la entidad de descuento</description>
+		<query>		
+			SELECT MAX(ed.codigo) FROM EntidadDescuento ed		
+		</query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.buscar.id">
+		<description>Consulta que busca una entidad de descuento a partir del id</description>
+		<query>		
+			SELECT ed FROM EntidadDescuento ed	WHERE ed.idEntidadDescuento = :idEntidad	
+		</query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.buscar.idEmpresa">
+		<description>Consulta que busca una entidad de descuento a partir del id de la empresa</description>
+		<query>		
+			SELECT ed FROM EntidadDescuento ed	
+			WHERE ed.idEmpresa = :empresaId	
+		</query>
+	</named-query>
+	
+    <named-query name="EntidadDescuento.buscar.nombre.INTERNA">
+		<description>Consulta que devuelve una entidad de descuento </description>
+		<query>	
+		    SELECT ed 
+			FROM EntidadDescuento ed
+			WHERE (ed.idEmpresa IS NULL)	
+			AND ed.nombreEntidad = :nombreEntidadDescuento				
+		</query>
+	</named-query>
+	
+	<named-query name="EntidadDescuento.buscar.estado.ACTIVA">
+		<description>Consulta que permite obtener la lista de entidades de descuento activas</description>
+		<query>	
+		    SELECT ed.idEntidadDescuento 
+			FROM EntidadDescuento ed
+			WHERE ed.estado = com.asopagos.enumeraciones.subsidiomonetario.entidadDescuento.EstadoEntidadDescuentoEnum.ACTIVA				
+		</query>
+	</named-query>
+	
+	<named-query name="novedades.buscar.file.nombreCampos">
+		<query>   
+		SELECT new com.asopagos.dto.DefinicionCamposCargaDTO(fieldl.label,fieldl.fieldLoadCatalog.name) 
+		FROM FieldDefinitionLoad fieldl 
+		LEFT JOIN fieldl.fieldLoadCatalog flc
+		WHERE fieldl.lineDefinition.fileDefinition.id = :idFileDefinition
+	   </query>
+	</named-query>
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->	
+	<named-native-query name="EntidadDescuento.consultarMedioPago.grupoAdminSubsidio">
+		<query>   
+		select mdp.mdpTipo from AdminSubsidioGrupo asg 
+		join GrupoFamiliar gf on gf.grfId = asg.asgGrupoFamiliar 
+		join AdministradorSubsidio asu on asu.asuId = asg.asgAdministradorSubsidio 
+		join Persona per on per.perId = asu.asuPersona 
+		join MedioDePago mdp on mdp.mdpId = asg.asgMedioDePago 
+		where per.perNumeroIdentificacion = :perNumeroIdentificacion 
+		and per.perTipoIdentificacion = :perTipoIdentificacion 
+		and gf.grfNumero =:numeroGrupoFamiliar
+		and asg.asgMedioPagoActivo = 1
+	   </query>
+	</named-native-query>
+	
+	<named-native-query name="EntidadDescuento.consultarArchivoSalida.entidadSolicitud">
+		<query>   
+		SELECT asd.asdCodigoIdentificacionECMSalida FROM ArchivoSalidaDescuentoSubsidio asd
+		JOIN SolicitudLiquidacionSubsidio sls ON sls.slsId = asd.asdSolicitudLiquidacionSubsidio
+		JOIN Solicitud sol ON sol.solId = sls.slsSolicitudGlobal
+		WHERE sol.solNumeroRadicacion =:numeroRadicacion
+		AND asd.asdEntidadDescuento =:idEntidadDescuento 
+	   </query>
+	</named-native-query>
+	<!-- ESPACIO PARA NAMED STORED PROCEDURES -->
+</entity-mappings>

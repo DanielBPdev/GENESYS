@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="pilaStaging_PU" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>jboss/datasources/pilaDS</jta-data-source>
+        <mapping-file>META-INF/jpql/NamedQueriesStaging.xml</mapping-file>
+        
+        <class>com.asopagos.entidades.pila.staging.RegistroGeneral</class>
+        <class>com.asopagos.entidades.pila.staging.RegistroDetallado</class>
+        <class>com.asopagos.entidades.pila.staging.RegistroDetalladoNovedad</class>
+        <class>com.asopagos.entidades.pila.staging.Transaccion</class>
+        <class>com.asopagos.entidades.pila.staging.ControlEjecucionPlanillas</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="none" />
+			
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+			<property name="hibernate.connection.autocommit" value="true"/>
+			<property name="hibernate.default_schema" value="staging"/>
+			<property name="hibernate.default_catalog" value="${pila.database}"/>
+			
+			<property name="hibernate.integration.envers.enabled" value="false"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="false"/>
+		</properties>
+       
+	</persistence-unit>
+	
+	<persistence-unit name="pila_PU" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jboss/datasources/pilaDS</jta-data-source>
+		<mapping-file>META-INF/jpql/NamedQueriesPila.xml</mapping-file>
+		
+		<class>com.asopagos.entidades.pila.procesamiento.IndicePlanilla</class>
+		<class>com.asopagos.entidades.pila.temporal.TemAportante</class>
+		<class>com.asopagos.entidades.pila.temporal.TemAporte</class>
+		<class>com.asopagos.entidades.pila.temporal.TemCotizante</class>
+		<class>com.asopagos.entidades.pila.temporal.TemNovedad</class>
+		<class>com.asopagos.entidades.pila.temporal.TemAporteActualizado</class>
+		<class>com.asopagos.entidades.pila.procesamiento.ErrorValidacionLog</class>
+		<class>com.asopagos.entidades.pila.staging.RegistroGeneral</class>
+        <class>com.asopagos.entidades.pila.staging.RegistroDetallado</class>
+		<class>com.asopagos.entidades.ccf.aportes.ControladorCarteraAportes</class>
+		<class>com.asopagos.entidades.ccf.aportes.ControladorCarteraPlanilla</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="none" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+			<property name="hibernate.connection.autocommit" value="true" />
+			<property name="hibernate.default_schema" value="dbo"/>
+			<property name="hibernate.default_catalog" value="${pila.database}"/>
+			<!-- events -->
+			<!--property name="hibernate.ejb.event.post-load" value="com.asopagos.audit.event.AuditQueryEventListener"/ -->
+			<!-- envers -->
+			<property name="hibernate.integration.envers.enabled" value="false"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="false"/>
+		</properties>
+
+	</persistence-unit>
+
+</persistence>

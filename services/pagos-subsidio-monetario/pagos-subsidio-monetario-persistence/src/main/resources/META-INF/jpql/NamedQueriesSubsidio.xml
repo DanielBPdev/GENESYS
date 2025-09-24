@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	
+	<named-native-query name="PagosSubsidioMonetario.consultar.fechas.programadas.sub.fallecimiento">
+		<description>Consulta que devuelve las fechas de pagos de los subsidios de acuerdo al periodo pagado y la fecha parametrizada</description>
+		<query>
+			SELECT DISTINCT pcf.pcfPeriodo,pcf.pcfFechaProgramadaPago
+			FROM ProyeccionCuotaFallecimiento pcf
+			JOIN ResultadoValidacionLiquidacion rvl ON rvl.rvlId = pcf.pcfResultadoValidacionLiquidacion
+			WHERE rvl.rvlNumeroRadicado IN (:numeroRadicado)
+			ORDER BY pcf.pcfPeriodo
+		</query>
+	</named-native-query>
+
+	<!-- ESPACIO PARA STORED PROCEDURES -->
+
+</entity-mappings>

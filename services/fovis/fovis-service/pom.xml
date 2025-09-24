@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>com.asopagos.coreaas.services</groupId>
+    <artifactId>fovis</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>fovis-service</artifactId>
+  <packaging>war</packaging>
+  <name>FOVIS Service</name>
+  <description>Aplicación Web que implementa los servicios backend de fovis-service</description>
+
+	<properties>
+		<fabric8.skip>false</fabric8.skip>
+	</properties>
+  
+  <dependencies>		
+        <dependency>
+            <groupId>com.asopagos.coreaas.services</groupId>
+            <artifactId>fovis-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.heinsohn.lion.components.common</groupId>
+            <artifactId>lion-common-jpa2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.heinsohn.lion.components.common</groupId>
+            <artifactId>lion-commonHot</artifactId>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>com.heinsohn.lion.components.cache</groupId>
+            <artifactId>lion-cacheMain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.heinsohn.lion.components.cache</groupId>
+            <artifactId>lion-cacheHot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.heinsohn.lion.components.fileCommon</groupId>
+            <artifactId>lion-fileCommon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.heinsohn.lion.components.fileProcessing</groupId>
+            <artifactId>lion-fileProcessingMain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.heinsohn.lion.components.fileProcessing</groupId>
+            <artifactId>lion-fileProcessingHot</artifactId>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>com.heinsohn.lion.components.fileGenerator</groupId>
+            <artifactId>lion-fileGeneratorMain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.heinsohn.lion.components.fileGenerator</groupId>
+            <artifactId>lion-fileGeneratorHot</artifactId>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.juniversalchardet</groupId>
+            <artifactId>juniversalchardet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise.concurrent</groupId>
+            <artifactId>javax.enterprise.concurrent-api</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!-- Maven will append the version to the finalName (which is the name 
+        given to the generated war, and hence the context root) -->
+        <finalName>FovisService</finalName>
+        <plugins>
+           <plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+        </plugins>
+    </build>
+    
+    <profiles>
+	</profiles>
+	
+</project>

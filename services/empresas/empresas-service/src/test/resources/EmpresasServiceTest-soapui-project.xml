@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="7e62fb70-a28d-4823-85ae-508756f89b4d" activeEnvironment="Default" name="EmpresasServiceTest" resourceRoot="" soapui-version="5.2.1" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="1cb9b165-21b2-4223-a27e-342daef965cb" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://localhost:8080</con:endpoint></con:endpoints><con:resource name="Rest" path="/EmpresasService/rest" id="8213bcff-780c-40df-a012-83eab93617c4"><con:settings/><con:parameters/><con:resource name="empresas" path="empresas" id="87ded144-6ed2-49b9-a357-16dcb30c0cdb"><con:settings/><con:parameters/><con:resource name="1" path="9" id="49e17cb3-2607-49b0-99cd-c1632d90b6cc"><con:settings/><con:parameters/><con:resource name="ubicaciones" path="ubicaciones" id="f6853f03-e190-4792-b9a4-8a512ce040ef"><con:settings/><con:parameters/><con:method name="consultarUbicacionesEmpresa" id="ba82a7e9-ec28-4769-84bc-937940bd324e" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element xmlns:ubic="http://localhost/EmpresasService/rest/empresas/1/ubicaciones">ubic:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="5bcb4e35-ad54-481e-82f9-5896fe2fed06" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/EmpresasService/rest/empresas/1/ubicaciones</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="crearUbicacionesEmpresa" id="2dcaedd6-2c3d-4078-b6c1-654917cf3196" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:ubic="http://localhost/EmpresasService/rest/empresas/9/ubicaciones">ubic:Fault</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="e57269d7-5cf0-46a1-865c-f34b4f6c8aca" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>[{
+      "ubicacion":       { 
+         "direccionFisica": "sdfgdfsdfg",
+         "indicativoTelFijo": "8",
+         "telefonoCelular": "3183412492",
+         "autorizacionEnvioEmail": true,
+         "municipio":          {
+            "idMunicipio": 1093,
+            "codigo": "91430",
+            "nombre": "LA VICTORIA",
+            "idDepartamento": 1
+         }
+      },
+      "tipoUbicacion": "UBICACION_PRINCIPAL"
+}
+]</con:request><con:originalUri>http://localhost/EmpresasService/rest/empresas/9/ubicaciones</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="actualizarUbicacionesEmpresa" id="42a36be6-58aa-4173-b750-3624b6f61667" method="PUT"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="de404346-73de-4171-995f-0cbe3d75388e" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>[{
+      "ubicacion":       { 
+         "direccionFisica": "sdfgdfsdfg",
+         "indicativoTelFijo": "8",
+         "telefonoCelular": "3183412492",
+         "autorizacionEnvioEmail": false,
+         "municipio":          {
+            "idMunicipio": 1093,
+            "codigo": "91430",
+            "nombre": "LA VICTORIA",
+            "idDepartamento": 1
+         }
+      },
+      "tipoUbicacion": "UBICACION_PRINCIPAL"
+}
+]</con:request><con:originalUri>http://localhost/EmpresasService/rest/empresas/38/ubicaciones</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="sucursales" path="sucursales" id="fb2673a1-aa7a-475c-b107-c8825a0e6238"><con:settings/><con:parameters/><con:method name="consultarSucursalesEmpresa" id="fb60487a-8b02-4e49-b85e-fd3c4e752232" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element xmlns:suc="http://localhost/EmpresasService/rest/empresas/38/sucursales">suc:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="917e7cfd-c528-4064-b0d2-d025f49f9f53" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/EmpresasService/rest/empresas/38/sucursales</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="actualizarSucursalEmpresa" id="7cb2ec79-94b6-41d1-9387-2891e03a2bf7" method="PUT"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:suc="http://localhost/EmpresasService/rest/empresas/9/sucursales">suc:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/plain</con:mediaType><con:status>400</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="894cbbbc-8ed0-475a-94ce-042fb507aedd" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>[{
+   "idSucursalEmpresa": 1,
+   "idEmpresa": 9,
+   "codigo": "1",
+   "nombre": "Oficina Principal",
+   "ubicacion":    {
+      "idUbicacion": 62,
+      "direccionFisica": "dfgdfdfdfg",
+      "codigoPostal": "1111",
+      "telefonoFijo": "3025478",
+      "indicativoTelFijo": "8",
+      "telefonoCelular": "3149741236",
+      "municipio":       {
+         "idMunicipio": 1088,
+         "codigo": "88564",
+         "nombre": "PROVIDENCIA",
+         "idDepartamento": 4
+      }
+   },
+   "codigoCIIU":    {
+      "idCodigoCIIU": 107,
+      "codigo": "1922",
+      "descripcion": "Actividad de mezcla de combustibles."
+   },
+   "medioDePagoSubsidioMonetario":    {
+      "idParametrizacionMedioDePago": 4,
+      "medioPago": "Pago en ventanilla"
+   }
+}]</con:request><con:originalUri>http://localhost/EmpresasService/rest/empresas/9/sucursales</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="crearSucursalEmpresa" id="641c2a56-a79f-42cc-9dc1-e600105f9684" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:suc="http://localhost/EmpresasService/rest/empresas/9/sucursales">suc:Fault</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/plain</con:mediaType><con:status>400</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="974922be-0c03-418c-bf39-c31b97295b17" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>[{
+   
+   "idEmpresa": 9,
+   "codigo": "1",
+   "nombre": "Oficina Principal",
+   "ubicacion":    {
+      
+      "direccionFisica": "dfgdfdfdfg",
+      "codigoPostal": "1111",
+      "telefonoFijo": "3025478",
+      "indicativoTelFijo": "8",
+      "telefonoCelular": "3149741236",
+      "municipio":       {
+         "idMunicipio": 1088,
+         "codigo": "88564",
+         "nombre": "PROVIDENCIA",
+         "idDepartamento": 4
+      }
+   },
+   "codigoCIIU":    {
+      "idCodigoCIIU": 107,
+      "codigo": "1922",
+      "descripcion": "Actividad de mezcla de combustibles."
+   },
+   "medioDePagoSubsidioMonetario":    {
+      "idParametrizacionMedioDePago": 4,
+      "medioPago": "Pago en ventanilla"
+   }
+}]</con:request><con:originalUri>http://localhost/EmpresasService/rest/empresas/9/sucursales</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:resource></con:resource></con:resource></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>

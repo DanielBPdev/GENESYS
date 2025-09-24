@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<named-query name="Aportes.aporte.general.consultar.persona.solicitante.masivo" >
+		<query>
+			SELECT new com.asopagos.aportes.dto.SolicitanteDTO
+				(apg.idPersona,apg.idEmpresa, per.tipoIdentificacion,per.numeroIdentificacion,
+				apg.tipoSolicitante,per.primerNombre, per.segundoNombre,
+				per.primerApellido, per.segundoApellido, per.razonSocial)
+				FROM AporteGeneral apg, Persona per
+				WHERE apg.idPersona = per.idPersona
+				AND per.tipoIdentificacion =:tipoIdentificacion
+				AND per.numeroIdentificacion =:numeroIdentificacion
+            	AND (apg.periodoAporte = :periodo OR :periodo IS  NULL)
+				GROUP BY apg.idPersona,apg.idEmpresa, per.tipoIdentificacion,per.numeroIdentificacion,
+				apg.tipoSolicitante,per.primerNombre, per.segundoNombre,
+				per.primerApellido, per.segundoApellido, per.razonSocial
+		</query>
+	</named-query>
+	<named-query name="Aportes.masivos.persona.tipo.numero.identificacion">
+		<query>
+			Select new com.asopagos.dto.PersonaDTO(per)
+			from Persona per
+			where per.tipoIdentificacion=:tipoIdentificacion
+			and per.numeroIdentificacion=:numeroIdentificacion
+		</query>
+	</named-query>
+
+	<named-query name="Aportes.masivos.empresa.id.persona">
+		<query>
+			SELECT new com.asopagos.dto.EmpresaDTO(emp)
+			From Empresa emp
+			where emp.persona.idPersona=:idPersona
+		</query>
+	</named-query>
+
+	<named-query name="Consultar.movimiento.aporte.masivos.general">
+		<query>
+			SELECT new com.asopagos.dto.modelo.AporteGeneralModeloDTO(apg, 
+			(SELECT count(mov.idMovimientoAporte) FROM MovimientoAporte mov WHERE mov.idAporteGeneral=apg.id
+				AND mov.tipoAjuste IN (:movimientos)))
+			FROM AporteGeneral apg
+			WHERE apg.id IN (:idsAporte)
+		</query>
+	</named-query>
+
+	<named-query name="Aportes.masivos.Consultar.Empresa.buscar.idPersona.masivo">
+		<description>Busca empresas por listado de id de persona</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.EmpresaModeloDTO(emp) FROM Empresa emp
+			WHERE emp.persona.idPersona IN (:idPersonas)
+		</query>
+	</named-query>
+
+	<named-query name="Aportes.masivos.Consultar.Empresa.buscar.id.masivo">
+		<description>Busca empresas por listado de id</description>
+		<query>
+			SELECT e 
+			FROM Empresa e 
+            JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+            WHERE e.idEmpresa IN (:idEmpresas)
+		</query>
+	</named-query>
+
+
+	<named-query name="Consultar.Solicitud.Por.Radicado">
+		<description>Busca empresas por listado de id</description>
+		<query>
+			SELECT s
+			FROM Solicitud s
+			where s.numeroRadicacion = :radicado
+		</query>
+	</named-query>
+
+	<named-query name="Aportes.masivos.consultar.PilaEstadoTransitoriaGestion">
+		<query>
+			SELECT pet 
+			FROM PilaEstadoTransitorio pet 
+			WHERE pet.pilaIndicePlanilla = :idAporteGeneral
+			AND (pet.estado = com.asopagos.enumeraciones.aportes.PilaEstadoTransitorioEnum.FALLIDO OR (pet.accion = com.asopagos.enumeraciones.aportes.PilaAccionTransitorioEnum.NOTIFICAR_PLANILLA AND pet.estado = com.asopagos.enumeraciones.aportes.PilaEstadoTransitorioEnum.EXITOSO)) 
+		</query>
+	</named-query>
+
+	<named-query name="Aportes.masivos.Consultar.SolicitudAporte.ListadoId.RegistroGeneral">
+		<description>Consulta de solicitud de aporte por listado de ids de registro general</description>
+		<query>
+            SELECT new com.asopagos.dto.modelo.SolicitudAporteModeloDTO(sa)
+            FROM SolicitudAporte sa
+            WHERE sa.idRegistroGeneral IN (:idsRegistroGeneral)
+        </query>
+	</named-query>
+
+	<named-query name="Aportes.masivos.Consultar.Persona.buscar.listaId">
+		<description>Busca una persona por id</description>
+		<query>
+            SELECT new com.asopagos.dto.modelo.PersonaModeloDTO(per) FROM Persona per
+            WHERE per.idPersona in (:idPersonas)
+        </query>
+	</named-query>
+
+
+	<named-query name="Archivos.Aportes.Masivos.Buscar.File.Nombre.Campos">
+		<query>   
+		SELECT new com.asopagos.dto.DefinicionCamposCargaDTO(fieldl.label,fieldl.fieldLoadCatalog.name) 
+		FROM FieldDefinitionLoad fieldl 
+		LEFT JOIN fieldl.fieldLoadCatalog flc
+		WHERE fieldl.lineDefinition.fileDefinition.id = :idFileDefinition
+	   </query>
+	</named-query>
+
+	<named-native-query name="Aportes.Consultar.Persona.buscar.listaIdEmpresa"
+		result-set-mapping="Aportes.Consultar.Persona.buscar.listaIdEmpresa.mapping">
+		<query>
+            SELECT per.*, emp.*, ubi.*
+			FROM Persona per
+			INNER JOIN Empresa emp ON emp.empPersona = per.perId
+			LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+			WHERE emp.empId IN (:idEmpresas)
+	   </query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.masivos.consultar.SolicitudesDevolucion">
+	<query>
+             DECLARE @rad varchar(20) = (select top(1) s.solNumeroRadicacion from Solicitud s where s.solId = :idSolicitud)
+            SELECT sol.solId
+			FROM Solicitud sol
+			WHERE sol.solNumeroRadicacion like @rad+'%'
+			AND solId != :idSolicitud
+	   </query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.masivos.Consultar.pagoSubsidio.cotizante">
+		<description>Consulta de pago de subsidio para un listado de cotizantes</description>
+		<query>
+	       SELECT CAST(T.perTipoIdentificacion AS VARCHAR) tipoIdentificacion, 
+	           CAST(T.perNumeroIdentificacion AS VARCHAR) numeroIdentificacion, 
+	           CAST(T.periodo AS VARCHAR) periodoAporte
+	       FROM (
+                SELECT per.perTipoIdentificacion, per.perNumeroIdentificacion, datos.periodo 
+				FROM dbo.Persona per
+				INNER JOIN dbo.Afiliado afi ON afi.afiPersona = per.perId
+				INNER JOIN dbo.DetalleSubsidioAsignado dsa ON dsa.dsaAfiliadoPrincipal = afi.afiId
+				INNER JOIN (SELECT 
+				    tipoIdentificacion = JSON_VALUE(j.[value],'$.tipoIdentificacion'), 
+				    numeroIdentificacion = JSON_VALUE(j.[value],'$.numeroIdentificacion'), 
+				    periodo = JSON_VALUE(j.[value],'$.periodo') 
+				FROM OPENJSON (:parametros) J) datos ON per.perTipoIdentificacion = datos.tipoIdentificacion 
+				    AND per.perNumeroIdentificacion = datos.numeroIdentificacion 
+                    AND CONVERT(VARCHAR(7), dsa.dsaPeriodoLiquidado, 121) = datos.periodo
+				UNION
+				SELECT per.perTipoIdentificacion, per.perNumeroIdentificacion, datos.periodo 
+				FROM dbo.Persona per
+				INNER JOIN dbo.Afiliado afi ON afi.afiPersona = per.perId
+				INNER JOIN dbo.DetalleSubsidioAsignadoProgramado dpr ON dpr.dprAfiliadoPrincipal = afi.afiId
+				INNER JOIN (SELECT 
+				    tipoIdentificacion = JSON_VALUE(j.[value],'$.tipoIdentificacion'), 
+				    numeroIdentificacion = JSON_VALUE(j.[value],'$.numeroIdentificacion'), 
+				    periodo = JSON_VALUE(j.[value],'$.periodo') 
+                FROM OPENJSON (:parametros) J) datos ON per.perTipoIdentificacion = datos.tipoIdentificacion 
+				    AND per.perNumeroIdentificacion = datos.numeroIdentificacion 
+				    AND CONVERT(VARCHAR(7), dpr.dprPeriodoLiquidado, 121) = datos.periodo
+            ) AS T
+	   </query>
+	</named-native-query>
+
+	
+	<named-native-query name="Aportes.Masivos.Popular.Datos.Masivo.Archivo.Aportes">
+		<query>
+				select c.cecNumRegistroProcesado, cecNumRegistroConErrores from ConsolaEstadoCargueMasivo c
+				where c.cecCargueId = :cargueId
+				and  cecTipoProcesoMasivo = 'CARGUE_APORTES_MASIVOS'
+		   </query>
+		</named-native-query>
+
+	<named-query
+		name="Aportes.aporte.general.consultar.persona.empresa.solicitante.masivo">
+		<query>
+			SELECT new com.asopagos.aportes.dto.SolicitanteDTO
+			(apg.idPersona,apg.idEmpresa, per.tipoIdentificacion,per.numeroIdentificacion,
+			apg.tipoSolicitante,per.primerNombre, per.segundoNombre,
+			per.primerApellido, per.segundoApellido,
+			per.razonSocial)
+			FROM AporteGeneral apg, Empresa empr, Persona per
+			WHERE apg.idEmpresa
+			= empr.idEmpresa
+			AND empr.persona.idPersona = per.idPersona
+			AND
+			per.tipoIdentificacion =:tipoIdentificacion
+			AND
+			per.numeroIdentificacion =:numeroIdentificacion
+			AND (apg.periodoAporte = :periodo OR :periodo IS  NULL)
+			Group by apg.idPersona,apg.idEmpresa, per.tipoIdentificacion,per.numeroIdentificacion,
+			apg.tipoSolicitante,per.primerNombre, per.segundoNombre,
+			per.primerApellido, per.segundoApellido,
+			per.razonSocial
+		</query>
+	</named-query>
+	
+	<named-native-query name="Archivos.Aportes.Masivos.Buscar.Id.Consola">
+		<query>
+			SELECT top 1 cec.cecId FROM ConsolaEstadoCargueMasivo cec
+			WHERE cec.cecCargueId = :idCargue
+			and  cecTipoProcesoMasivo = 'CARGUE_APORTES_MASIVOS'
+		</query>
+	</named-native-query>
+	<named-native-query name="Aportes.Masivos.Popular.Correccion.Aportante.Core">
+		<query>
+			select p.perRazonSocial,
+			ag.apgValorIntMora, p.perPrimerNombre,
+			p.perSegundoNombre, p.perPrimerApellido,
+			p.perSegundoApellido, ag.apgValTotalApoObligatorio 
+			from AporteGeneral ag
+			join Empresa e on e.empId = ag.apgEmpresa
+			join Persona p on p.perId = e.empPersona
+			where ag.apgId = :idAporte
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.Masivos.Popular.Correccion.Aportante.Core.Cotizante">
+		<query>
+			select ad.apdTarifa, ad.apdDiasCotizados from AporteDetallado ad
+			where apdRegistroDetallado = :apdId
+
+		</query>
+	</named-native-query>
+
+
+	<named-native-query name="Aportes.Masivos.Consultar.Estado.Afiliacion.Persona">
+		<query>
+			select v.roaEstadoAfiliado from VW_EstadoAfiliacionPersonaCaja v
+			where v.perNumeroIdentificacion = :numeroIdentificacion
+			and v.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+
+
+	<named-native-query name="Aportes.Masivos.Consultar.Estado.Afiliacion.Empleador">
+		<query>
+			select v.empEstadoEmpleador from VW_EstadoAfiliacionEmpleadorCaja v
+			where v.perNumeroIdentificacion = :numeroIdentificacion
+			and v.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+
+	<sql-result-set-mapping name="GrupoFamiliarOutDTOMapping">
+		<constructor-result target-class="com.asopagos.aportes.dto.SolicitanteDTO">
+			<column name="apgPersona" class="java.lang.Long"/>
+			<column name="apgEmpresa" class="java.lang.Long"/>
+			<column name="perTipoIdentificacion" class="java.lang.String"/>
+			<column name="pernumeroIdentificacion" class="java.lang.String"/>
+			<column name="apgtipoSolicitante" class="java.lang.String"/>
+			<column name="perprimerNombre" class="java.lang.String"/>
+			<column name="PersegundoNombre" class="java.lang.String"/>
+			<column name="perprimerApellido" class="java.lang.String"/>	
+			<column name="persegundoApellido" class="java.lang.String"/>			
+			<column name="perrazonSocial" class="java.lang.String"/>			
+			<column name="roaEstadoAfiliado" class="java.lang.String"/>			
+
+		</constructor-result>
+	</sql-result-set-mapping>
+	<sql-result-set-mapping name="Aportes.Consultar.Persona.buscar.listaIdEmpresa.mapping">
+		<entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+		<entity-result entity-class="com.asopagos.entidades.ccf.personas.Empresa"></entity-result>
+		<entity-result entity-class="com.asopagos.entidades.ccf.core.Ubicacion"></entity-result>
+	</sql-result-set-mapping>
+
+
+	<named-stored-procedure-query
+		name="PilaService.StoredProcedures.USP_SM_GET_CotizanteConSubsidioPeriodo"
+		procedure-name="USP_SM_GET_CotizanteConSubsidioPeriodo">
+		<parameter
+			class="java.lang.String"
+			mode="IN"
+			name="sTipoDocumentoCotizante"
+		/>
+		<parameter
+			class="java.lang.String"
+			mode="IN"
+			name="sNumeroIdentificacionCotizante"
+		/>
+		<parameter
+			class="java.lang.String"
+			mode="IN"
+			name="sPeriodoAporte"
+		/>
+		<parameter
+			class="java.lang.Boolean"
+			mode="OUT"
+			name="bTieneSubsidio"
+		/>
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query 
+		name ="ASP_SimularAportesDevolucionMasivosCore" 
+		procedure-name="ASP_SimularAportesDevolucionMasivosCore">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="radicado"/>
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="idMedioPago"/>
+					
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query
+			name="ASP_JsonCruceAportes"
+			procedure-name="ASP_JsonCruceAportes">
+		<parameter
+				class="java.lang.String"
+				mode="IN"
+				name="Aportes"
+		/>
+	</named-stored-procedure-query>
+	
+	
+	
+</entity-mappings>

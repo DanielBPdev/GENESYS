@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="Consultar.cargue.pensionados.25.anios">
+		<query>
+			SELECT cec FROM ConsolaEstadoCargueMasivo cec
+			WHERE cec.cargueId = :idCargue
+			and  cec.tipoProcesoMasivo = com.asopagos.enumeraciones.core.TipoProcesoMasivoEnum.CARGUE_PENSIONADOS_25_ANIOS
+		</query>
+	</named-query>
+		<named-query name="Consultar.cargue.traslados">
+		<query>
+			SELECT cec FROM ConsolaEstadoCargueMasivo cec
+			WHERE cec.cargueId = :idCargue
+			and  cec.tipoProcesoMasivo = com.asopagos.enumeraciones.core.TipoProcesoMasivoEnum.CARGUE_TRASLADO_EMPRESAS_CCF
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Personas.solicitud.persona.id.global">
+		<query>
+			SELECT solPer FROM SolicitudAfiliacionPersona solPer JOIN FETCH
+			solPer.rolAfiliado JOIN FETCH solPer.solicitudGlobal where
+			solPer.solicitudGlobal.idSolicitud= :idSolicitudGlobal
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Personas.solicitud.id">
+		<query> 
+			SELECT sol
+			FROM Solicitud sol
+			where sol.idSolicitud= :idSolicitud
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Personas.persona.identificacion">
+		<query>
+			SELECT per
+			FROM Persona per
+			where per.numeroIdentificacion= :numIdentificacion
+			and per.tipoIdentificacion= :tipoIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Personas.afiliado.id">
+		<query>
+			SELECT afi
+			FROM Afiliado afi join fetch afi.persona
+			where afi.idAfiliado= :idAfiliado
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Personas.personas.id">
+		<query>
+			SELECT per
+			FROM Persona per LEFT JOIN FETCH per.ubicacionPrincipal ubi
+			where per.idPersona= :idPersona
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Personas.rol.afiliado">
+		<query>
+			SELECT rol
+			FROM RolAfiliado rol
+			where rol.afiliado.idAfiliado= :idRolAfiliado
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Personas.afiliado.identificacion.persona">
+		<query>
+			SELECT afi
+			FROM Afiliado afi
+			where afi.persona.numeroIdentificacion= :numIdentificacion and
+			afi.persona.tipoIdentificacion= :tipoIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Personas.rolAfiliado.identificacion">
+		<query>
+			SELECT rol FROM RolAfiliado rol WHERE rol.tipoAfiliado= :tipoAfiliado
+			and rol.afiliado.persona.numeroIdentificacion= :numIdentificacion and
+			rol.afiliado.persona.tipoIdentificacion= :tipoIdentificacion
+		</query>
+	</named-query>
+		<named-query name="Afiliaciones.solicitudes.por.numeroRadicacion.canal">
+		<query> 
+		SELECT sol FROM SolicitudAfiliacionPersona sol 
+		LEFT JOIN FETCH sol.solicitudGlobal soli
+		WHERE soli.canalRecepcion IN :canalRecepcion 
+		and soli.numeroRadicacion = :numeroRadicacion 
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Persona.empleador.id">
+		<query>
+			SELECT empl FROM Empleador empl WHERE empl.idEmpleador= :idEmpleador
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Persona.sucursal.empleador.id">
+		<query>
+			SELECT sue FROM SucursalEmpresa sue
+			WHERE sue.idEmpresa = (
+			SELECT em.idEmpresa
+			FROM Empleador emp
+			JOIN emp.empresa em
+			WHERE emp.idEmpleador = :idEmpleador
+			)
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Persona.rolAfiliado.id">
+		<query>
+			SELECT rolA FROM RolAfiliado rolA join fetch rolA.afiliado left join fetch
+			rolA.empleador WHERE rolA.idRolAfiliado= :idRolAfiliado
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.persona.solicitud.tipo.numero.identificacion">
+		<query>
+			SELECT sol FROM SolicitudAfiliacionPersona sol
+			LEFT JOIN FETCH sol.rolAfiliado rol
+			LEFT JOIN FETCH rol.afiliado afi
+			LEFT JOIN FETCH afi.persona per
+			WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+			ORDER BY sol.idSolicitudAfiliacionPersona DESC
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.persona.solicitud.tipo.numero.iden.afiliado">
+		<query>
+			SELECT sol FROM SolicitudAfiliacionPersona sol
+			JOIN FETCH sol.rolAfiliado rol
+			JOIN FETCH rol.afiliado afi
+			JOIN FETCH afi.persona per
+			WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+			AND rol.tipoAfiliado = :tipoAfiliado
+			ORDER BY sol.idSolicitudAfiliacionPersona DESC
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.personas.por.afiliado.numero.tipo.identificacion">
+		<query>
+			SELECT afi FROM Afiliado afi 
+			LEFT JOIN FETCH afi.persona per WHERE per.tipoIdentificacion= :tipoIdentificacion 
+			and perNumeroIdentificacion= :numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Personas.rol.id.afiliado">
+		<query>
+			SELECT rol
+			FROM RolAfiliado rol
+			where rol.afiliado.idAfiliado= :idAfiliado
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.solicitudes.por.id.rol.afiliado">
+		<query> 
+		SELECT sol FROM SolicitudAfiliacionPersona sol 
+		LEFT JOIN FETCH sol.rolAfiliado roa 
+		LEFT JOIN FETCH sol.solicitudGlobal soli
+		WHERE roa.idRolAfiliado= :idRolAfiliado 
+		and soli.canalRecepcion IN :canalRecepcion 
+		and roa.tipoAfiliado IN :tipoAfiliadoEnum
+		</query>
+	</named-query>
+
+	<named-query name="Afiliaciones.solicitudes.por.id.rol.afiliado.numeroRadicacion">
+		<query> 
+		SELECT sol FROM SolicitudAfiliacionPersona sol 
+		LEFT JOIN FETCH sol.rolAfiliado roa 
+		LEFT JOIN FETCH sol.solicitudGlobal soli
+		WHERE roa.idRolAfiliado= :idRolAfiliado 
+		and soli.canalRecepcion IN :canalRecepcion 
+		and roa.tipoAfiliado IN :tipoAfiliadoEnum
+		and soli.numeroRadicacion = :numeroRadicacion 
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.solicitudes.por.id.rol.afiliado.estado">
+		<query> 
+		SELECT sol FROM SolicitudAfiliacionPersona sol 
+		LEFT JOIN FETCH sol.rolAfiliado roa 
+		LEFT JOIN FETCH sol.solicitudGlobal soli
+		WHERE roa.idRolAfiliado= :idRolAfiliado 
+		and soli.canalRecepcion IN :canalRecepcion 
+		and roa.tipoAfiliado IN :tipoAfiliadoEnum 
+		and sol.estadoSolicitud= :estadoSolicitud
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.solicitudes.por.id.rol.afiliado.estado.numeroRadicacion">
+		<query> 
+		SELECT sol FROM SolicitudAfiliacionPersona sol 
+		LEFT JOIN FETCH sol.rolAfiliado roa 
+		LEFT JOIN FETCH sol.solicitudGlobal soli
+		WHERE roa.idRolAfiliado= :idRolAfiliado 
+		and soli.canalRecepcion IN :canalRecepcion 
+		and roa.tipoAfiliado IN :tipoAfiliadoEnum 
+		and sol.estadoSolicitud= :estadoSolicitud
+		and soli.numeroRadicacion = :numeroRadicacion 
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.personaDetalle.persona.id">
+		<query>
+			SELECT pdt
+			FROM PersonaDetalle pdt
+			WHERE pdt.idPersona= :idPersona
+		</query>
+	</named-query>
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="Afiliaciones.solicitudes.buscarSolicitudesSinInstanciaProceso">
+		<query>
+			SELECT sol.solId, sol.solNumeroRadicacion, sap.sapEstadoSolicitud FROM Solicitud sol
+			JOIN SolicitudAfiliacionPersona sap ON sol.solId = sap.sapSolicitudGlobal
+			WHERE sol.solInstanciaProceso IS NULL
+			AND sol.solFechaRadicacion > :fechaInicial
+			AND sap.sapEstadoSolicitud IN (:estados)
+			AND sol.solCanalRecepcion IN (:canales)
+		</query>
+	</named-native-query>
+	<named-native-query name="Consultar.calsificacion.pensionado">
+		<query>
+			select solClasificacion, roaId from solicitud join SolicitudAfiliacionPersona on sapSolicitudGlobal = solid
+			join rolafiliado on roaId = sapRolAfiliado
+			join Afiliado on afiId = roaAfiliado
+			join Persona on perId = afiPersona
+			where perTipoIdentificacion = :tipoIdentificacion
+            AND perNumeroIdentificacion = :numeroIdentificacion
+			and roaTipoAfiliado = 'PENSIONADO'
+			and solFechaRadicacion = (select max(solFechaRadicacion) from solicitud join SolicitudAfiliacionPersona on sapSolicitudGlobal = solid
+			join rolafiliado on roaId = sapRolAfiliado
+			join Afiliado on afiId = roaAfiliado
+			join Persona on perId = afiPersona
+			where perTipoIdentificacion = :tipoIdentificacion
+            AND perNumeroIdentificacion = :numeroIdentificacion
+			and roaTipoAfiliado = 'PENSIONADO')
+		</query>
+	</named-native-query>
+	<named-native-query name="Consultar.datos.existente.no.pensionado">
+		<query>
+			select per.perTipoIdentificacion, per.perNumeroIdentificacion, per.perPrimerNombre, per.perSegundoNombre,
+			per.perPrimerApellido, per.perSegundoApellido, pd.pedFechaNacimiento, dep.depNombre, mun.munNombre, u.ubiDireccionFisica,
+			pd.pedGenero, pd.pedEstadoCivil, u.ubiTelefonoFijo, u.ubiTelefonoCelular, u.ubiEmail from Persona per 
+			join PersonaDetalle pd on pd.pedPersona = per.perId
+			join Ubicacion u on u.ubiId = per.perUbicacionPrincipal
+			join Municipio mun on mun.munId = u.ubiMunicipio
+			join Departamento dep on dep.depId = munDepartamento
+			where perTipoIdentificacion = :tipoIdentificacion
+            AND perNumeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-native-query>
+</entity-mappings> 

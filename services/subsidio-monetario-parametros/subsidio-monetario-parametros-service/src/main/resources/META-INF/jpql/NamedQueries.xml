@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="SubsidioMonetario.buscarTodas.parametrizacion">
+		<description>Busca todas las parametrizaciones</description>
+		<query>
+		    SELECT pls FROM ParametrizacionLiquidacionSubsidio pls
+		    WHERE (:anio IS NULL OR anioVigenciaParametrizacion = :anio)		    
+		    ORDER BY anioVigenciaParametrizacion DESC,idParametrizacionLiquidacionSubsidio DESC
+        </query>
+	</named-query>
+
+	<named-query name="SubsidioMonetario.buscarPorId.parametrizacion">
+		<description>Busca parametrizacion por id</description>
+		<query>
+		    SELECT pls FROM ParametrizacionLiquidacionSubsidio pls 
+		    where pls.idParametrizacionLiquidacionSubsidio = :idParametrizacionLiquidacionSubsidio
+        </query>
+	</named-query>
+
+	<named-query name="SubsidioMonetario.buscarTodas.condicion">
+		<description>Busca todas las condiciones</description>
+		<query>
+		    SELECT pcs FROM ParametrizacionCondicionesSubsidio pcs		     
+		    WHERE (:anio IS NULL OR anioVigenciaParametrizacion = :anio)
+		    ORDER BY anioVigenciaParametrizacion DESC,idParametrizacionCondicionesSubsidio DESC
+        </query>
+	</named-query>
+
+	<named-query name="SubsidioMonetario.buscarPorId.condicion">
+		<description>Busca condicion por id</description>
+		<query>
+		    SELECT pcs FROM ParametrizacionCondicionesSubsidio pcs
+		    where pcs.idParametrizacionCondicionesSubsidio = :idParametrizacionCondicionesSubsidio
+        </query>
+	</named-query>
+	
+	<named-query name="SubsidioMonetario.cosultar.condicion.intervalo">
+		<description>Consulta que permite obtener la parametrización de condiciones para un periodo</description>
+		<query>
+		    SELECT pcs FROM ParametrizacionCondicionesSubsidio pcs
+		    WHERE pcs.fechaPeriodoInicial &lt;=:periodo AND pcs.fechaPeriodoFinal &gt;=:periodo
+        </query>
+	</named-query>
+	
+	<named-query name="SubsidioMonetario.cosultar.liquidacion.intervalo">
+		<description>Consulta que permite obtener la parametrización de condiciones para un periodo</description>
+		<query>
+		    SELECT pls FROM ParametrizacionLiquidacionSubsidio pls
+		    WHERE pls.fechaPeriodoInicial &lt;=:periodo AND pls.fechaPeriodoFinal &gt;=:periodo
+		    ORDER BY idParametrizacionLiquidacionSubsidio DESC
+        </query>
+	</named-query>
+	
+
+	<named-query name="SubsidioMonetario.cosultar.cajasCompensacion">
+		<description>Consulta que permite la información de las cajas de compensación</description>
+		<query>
+		    SELECT ccf FROM CajaCompensacion ccf
+        </query>
+	</named-query>
+	
+		<named-query name="SubsidioMonetario.consultar.anios.condicion.parametrizados.subsidio">
+		<description>Consulta que se obtiene los anios parametrizados en condiciones de subsidio monetario</description>
+		<query>
+			SELECT DISTINCT anioVigenciaParametrizacion
+			FROM ParametrizacionCondicionesSubsidio
+			ORDER BY anioVigenciaParametrizacion
+		</query>
+	</named-query>
+	
+	<named-query name="SubsidioMonetario.consultar.anios.concepto.parametrizados.subsidio">
+		<description>Consulta que se obtiene los anios parametrizados en condiciones de subsidio monetario</description>
+		<query>
+			SELECT DISTINCT anioVigenciaParametrizacion
+			FROM ParametrizacionLiquidacionSubsidio
+			ORDER BY anioVigenciaParametrizacion
+		</query>
+	</named-query>
+	
+
+</entity-mappings>

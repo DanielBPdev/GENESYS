@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+        version="2.1">
+    
+    <!--
+        ESPACIO PARA NAMED QUERIES JPA
+    -->
+    
+    <!--
+        ESPACIO PARA NAMED QUERIES NATIVOS
+    -->    
+    
+    <named-native-query name="listas.consultarCuentasBancariasRecaudo">
+		<description>Extracción de información de Cuentas Bancarias</description>
+		<query>
+			SELECT 
+                        ID,
+                        BANCO,
+                        TIPO,
+                        NUMERO_CUENTA,
+                        TIPO_RECAUDO 
+                        FROM CUENTAS_BANCARIAS
+		</query>
+	</named-native-query>
+      
+</entity-mappings>

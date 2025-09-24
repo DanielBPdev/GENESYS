@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>services</artifactId>  
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>listas</artifactId>
+	<packaging>pom</packaging>
+	<name>Listas</name>
+	<description>Proyecto padre para los servicios de listas</description>
+	
+	<modules>
+		<module>listas-api</module>
+		<module>listas-service</module>
+	</modules>
+	
+    <dependencies>
+    </dependencies>	
+
+</project>

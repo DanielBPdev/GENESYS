@@ -1,0 +1,2428 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<named-query name="Fovis.Consultar.ProyectoSolucionVivienda.Oferente">
+		<description>Consulta que obtiene la lista de proyectos asociados a un oferente</description>
+		<query>
+			SELECT psv
+			FROM ProyectoSolucionVivienda psv, Oferente ofe, Persona per		
+			WHERE psv.idOferente = ofe.idOferente
+			AND ofe.idPersona=per.idPersona 
+			AND per.tipoIdentificacion=:tipoIdentificacion
+			AND per.numeroIdentificacion=:numeroIdentificacion
+		</query>
+	</named-query>
+	
+	<named-query name="Fovis.Consultar.ProyectoSolucionVivienda.Oferente.regNoReg">
+		<description>Consulta que obtiene la lista de proyectos asociados a un oferente, filtrando registrados</description>
+		<query>
+			SELECT psv
+			FROM ProyectoSolucionVivienda psv, Oferente ofe, Persona per		
+			WHERE psv.idOferente = ofe.idOferente
+			AND ofe.idPersona=per.idPersona 
+			AND per.tipoIdentificacion=:tipoIdentificacion
+			AND per.numeroIdentificacion=:numeroIdentificacion
+			AND psv.registrado =:registrado
+		</query>
+	</named-query>
+
+	<named-query name="Parametrizacion.consultarDatosGeneralesFovis">
+		<description>Busca los parámetros generales para la gestión de FOVIS</description>
+		<query>
+			SELECT pafo 
+			FROM ParametrizacionFOVIS pafo
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.Modalidad.consultarParametrizacionModalidades">
+		<description>Busca la parametrización de modalidades de FOVIS</description>
+		<query>
+			SELECT pamo 
+			FROM ParametrizacionModalidad pamo
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.RangoSVFModalidad.consultarRangosSVFPorModalidad">
+		<description>Busca los rangos registrados para una determinada modalidad</description>
+		<query>
+			SELECT rtv 
+			FROM RangoTopeValorSFV rtv
+			WHERE  rtv.modalidad = :modalidad
+			ORDER BY rtv.valorMinimo ASC
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.FormaDePago.consultarFormasDePagoPorModalidad">
+		<description>Busca las formas de pago resgistradas para la Modalidad</description>
+		<query>
+			SELECT fpm
+			FROM FormaPagoModalidad fpm
+			WHERE fpm.modalidad = :modalidad
+        </query>
+	</named-query>
+
+	<named-query name="Parametrizacion.Dec14672019.consultarTopePorMunicipio">
+		<description>Busca el tope maximo permitido por el Decreto 1467 del 2019 para la adquisicion de vivienda urbana de FOVIS</description>
+		<query>
+			SELECT dec.valorTope
+			FROM Dec14672019 dec
+			WHERE dec.munId = :munId
+		</query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.MediosPagoCCF.consultarMediosDePagoAplicanFovis">
+		<description>Busca los medios de pago que aplican para FOVIS</description>
+		<query>
+			SELECT mpccf 
+			FROM MediosPagoCCF mpccf
+			WHERE mpccf.aplicaFOVIS = TRUE
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.CicloAsignacion.consultarCiclosAsignacionPorAnio">
+		<description>Busca los ciclos de asignación Activos que aplican para el año a consultar</description>
+		<query>
+			SELECT ca 
+			FROM CicloAsignacion ca
+			WHERE ca.cicloActivo = TRUE
+				AND YEAR(ca.fechaInicio) = :anio AND YEAR(ca.fechaFin) = :anio
+			ORDER BY ca.fechaInicio ASC
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.RangoTopeValorSFV.removerRangosTopeValorSFVPorModalidad">
+		<description>Elimina los rangos que están registrados para una modalidad</description>
+		<query>
+			DELETE FROM RangoTopeValorSFV rtv
+			WHERE rtv.modalidad = :modalidad
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.FormaPagoModalidad.removerFormasPagoPorModalidad">
+		<description>Elimina las formas de pago registradas para una modalidad</description>
+		<query>
+			DELETE FROM FormaPagoModalidad fpm
+			WHERE fpm.modalidad = :modalidad
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.CicloModalidad.removerModalidadesPorCiclo">
+		<description>Emimina los registros de las modalidades asociadas al ciclo</description>
+		<query>
+			DELETE FROM CicloModalidad cim
+			WHERE cim.idCicloAsignacion = :idCicloAsignacion
+        </query>
+	</named-query>
+
+	<named-query name="MediosDePagoCCF.consultarMedioDePagoPorId">
+		<description>Busca los medios de pago por el identificador de la tabla</description>
+		<query>
+			SELECT mpccf 
+			FROM MediosPagoCCF mpccf
+			WHERE mpccf.medioPago =:medioPago
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.consultar.solicitudPostulacion.idSolicitudGlobal">
+		<description>Busca una solicitud de postulacion por el id de la solicitud global</description>
+		<query>
+			SELECT sp
+			FROM SolicitudPostulacion sp
+			LEFT JOIN FETCH sp.solicitudGlobal
+			WHERE sp.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.CicloAsignacion.consultarCiclosNoPredecesores">
+		<description>Busca los ciclos de asignación que no son predecesores de otros</description>
+		<query>
+			SELECT ca 
+			FROM CicloAsignacion ca
+			WHERE ca.cicloActivo = TRUE
+				AND ca.idCicloAsignacion NOT IN ( 
+					SELECT cap.cicloPredecesor FROM CicloAsignacion cap WHERE cap.cicloActivo = TRUE AND cap.cicloPredecesor IS NOT NULL )
+			ORDER BY ca.fechaInicio
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.consultar.postulacionFOVIS.idPostulacion">
+		<description>Busca una postulacion FOVIS por el id</description>
+		<query>
+			SELECT pf 
+			FROM PostulacionFOVIS pf
+            WHERE pf.idPostulacion = :idPostulacion
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.consultar.PersonaDetalle.idPostulacion">
+		<description>Busca las personas detalle asociadas a una postulacion FOVIS</description>
+		<query>
+			SELECT perd 
+			FROM PostulacionFOVIS pof, IntegranteHogar inh, JefeHogar jeh, Afiliado afi, Persona per, PersonaDetalle perd
+			WHERE pof.jefeHogar = inh.idJefeHogar 
+				AND inh.idJefeHogar = jeh.idJefeHogar
+				AND jeh.idAfiliado = afi.idAfiliado
+				AND afi.persona.idPersona = per.idPersona
+				AND per.idPersona = perd.idPersona
+				AND pof.idPostulacion = :idPostulacion
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.Consultar.Solicitud.NumeroRadicado">
+		<description>Consulta una solicitud global por número de radicado</description>
+		<query>
+			SELECT sol 
+			FROM Solicitud sol
+			WHERE numeroRadicacion = :numeroRadicado
+        </query>
+	</named-query>
+
+	<named-query name="Fovis.Consultar.Departamento.ExcepcionFOVIS">
+		<description>Consulta que obtiene el departamento con la marca de excepción que aplica al Subsidio Familiar de Vivienda urbano</description>
+		<query>
+			SELECT dep 
+			FROM Departamento dep
+			WHERE dep.excepcionAplicaFOVIS = TRUE
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.CicloAsignacion.consultarCiclosAsignacionPorEstado">
+		<description>Busca los ciclos de asignación Activos para el estado a consultar</description>
+		<query>
+			SELECT ca 
+			FROM CicloAsignacion ca
+			WHERE ca.cicloActivo = TRUE
+			AND ca.estadoCicloAsignacion = :estadoCicloAsignacion
+        </query>
+	</named-query>
+
+	<!--<named-query
+		name="Parametrizacion.PostualcionFOVIS.postulacionesParaControlInterno">
+		<description>Busca los datos de las postulaciones que aplican para envío a control interno</description>
+		<query>
+			SELECT pof, spo, afi, sol.numeroRadicacion, sol.fechaRadicacion, pof.modalidad, perDet, jeh
+			FROM PostulacionFOVIS pof
+			, SolicitudPostulacion spo
+			, Solicitud sol
+			, JefeHogar jeh
+			, Afiliado afi
+			, PersonaDetalle perDet
+			WHERE (pof.idPostulacion = spo.idPostulacionFOVIS)
+			AND (spo.solicitudGlobal = sol.idSolicitud)
+			AND (pof.jefeHogar = jeh.idJefeHogar)
+			AND (jeh.idAfiliado = afi.idAfiliado)
+			AND (afi.persona.idPersona = perDet.idPersona)
+			AND pof.idCicloAsignacion = :idCicloAsignacion
+			AND ((pof.estadoHogar = :estadoHogar AND spo.estadoSolicitud = :estadoPostulacion)
+			OR pof.estadoHogar in (:estadosHogar)
+			AND EXISTS(
+			SELECT 1
+			FROM SolicitudVerificacionFovis svf
+			WHERE svf.idPostulacionFOVIS = pof.idPostulacion
+			AND (svf.estadoSolicitud NOT IN('ASIGNADA_A_CONTROL_INTERNO')
+			OR svf.estadoSolicitud IS NULL)
+			)
+			)ORDER BY pof.idPostulacion ASC
+        </query>
+	</named-query>-->
+
+	<named-query name="FOVIS.consultar.IntegranteHogar.idPostulacion">
+		<description>Busca los integrantes del hogar asociadas a una postulacion FOVIS</description>
+		<query>
+			SELECT inh 
+			FROM PostulacionFOVIS pof, IntegranteHogar inh
+			WHERE pof.jefeHogar = inh.idJefeHogar 
+			AND pof.idPostulacion = inh.idPostulacion
+			 AND pof.idPostulacion = :idPostulacion
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.CicloModalidad.consultarModalidadesPorCiclo">
+		<description>Consulta las modalidades por Ciclo</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.CicloModalidadModeloDTO(cicloModalidad.idCicloModalidad, ca, cicloModalidad.modalidad) 
+			FROM CicloModalidad cicloModalidad, CicloAsignacion ca
+			WHERE cicloModalidad.idCicloAsignacion = ca.idCicloAsignacion
+			AND cicloModalidad.idCicloAsignacion =:idCicloAsignacion
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.CicloModalidad.consultarModalidadesPorCicloHabilitadas">
+		<description>Consulta las modalidades por Ciclo</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.CicloModalidadModeloDTO(cmo.idCicloModalidad, ca, cmo.modalidad) 
+			FROM CicloModalidad cmo, CicloAsignacion ca, ParametrizacionModalidad pmo
+			WHERE cmo.idCicloAsignacion = ca.idCicloAsignacion
+				AND pmo.nombre = cmo.modalidad
+				AND cmo.idCicloAsignacion =:idCicloAsignacion
+				AND pmo.estado =:habilitada
+        </query>
+	</named-query>
+
+	<named-query name="search.nameField.file">
+		<query>   
+        SELECT new com.asopagos.dto.DefinicionCamposCargaDTO(fieldl.label,fieldl.fieldLoadCatalog.name) 
+        FROM FieldDefinitionLoad fieldl 
+        LEFT JOIN fieldl.fieldLoadCatalog flc
+        WHERE fieldl.lineDefinition.fileDefinition.id = :idFileDefinition
+       </query>
+	</named-query>
+
+	<named-query name="Parametrizacion.CicloAsignacion.consultarCicloSucesor">
+		<description>Consulta el ciclo sucesor de un ciclo determinado</description>
+		<query>
+			SELECT ca 
+			FROM CicloAsignacion ca
+			WHERE ca.cicloActivo = TRUE
+				AND ca.fechaInicio > :fecha
+			ORDER BY ca.fechaInicio ASC
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.Modalidad.consultarParametrizacionPorModalidad">
+		<description>Busca la parametrización de modalidades de FOVIS por modalidad</description>
+		<query>
+			SELECT pamo 
+			FROM ParametrizacionModalidad pamo
+			WHERE pamo.nombre =:modalidad
+        </query>
+	</named-query>
+
+	<named-query name="Parametrizacion.ParametrizacionFOVIS.consultarPorNombre">
+		<description>Consulta la parametrizacion Fovis por el nombre</description>
+		<query>
+			SELECT paf 
+			FROM ParametrizacionFOVIS paf
+			WHERE paf.parametro = :nombre
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.CicloAsignacion.consultarPorCicloPredecesor">
+		<description>Consulta el ciclo de asignación activo que tiene asignado el ciclo predecesor a consultar</description>
+		<query>
+			SELECT ca 
+			FROM CicloAsignacion ca
+			WHERE ca.cicloPredecesor = :idCicloPredecesor
+				AND ca.cicloActivo = TRUE
+        </query>
+	</named-query>
+
+	<named-query name="Fovis.Consultar.Historico.Postulacion.Jefe">
+		<description>Consulta que obtiene el histórico de postulaciones FOVIS para el jefe de hogar</description>
+		<query>	
+			SELECT DISTINCT new com.asopagos.dto.fovis.PostulacionDTO(sol.numeroRadicacion, sol.fechaRadicacion, pof.estadoHogar, spo.estadoSolicitud, jeh.estadoHogar, pof.idPostulacion)
+			FROM PostulacionFOVIS pof, SolicitudPostulacion spo, Solicitud sol, JefeHogar jeh, Persona per, Afiliado afi			 
+			WHERE spo.idPostulacionFOVIS = pof.idPostulacion
+			AND spo.solicitudGlobal.idSolicitud = sol.idSolicitud
+			AND jeh.idJefeHogar = pof.jefeHogar			
+			AND afi.idAfiliado = jeh.idAfiliado
+			AND afi.persona.idPersona = per.idPersona			 			
+			AND per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+        </query>
+	</named-query>
+
+	<named-query name="Fovis.Consultar.Historico.Postulacion.Integrantes">
+		<description>Consulta que obtiene el histórico de postulaciones FOVIS para los integrantes del hogar. Se consulta por jefe del hogar</description>
+		<query>
+			SELECT DISTINCT new com.asopagos.dto.fovis.PostulacionDTO(sol.numeroRadicacion, sol.fechaRadicacion, pof.estadoHogar, spo.estadoSolicitud, inh.tipoIntegranteHogar, inh.estadoHogar, pof.idPostulacion)
+			FROM PostulacionFOVIS pof, SolicitudPostulacion spo, Solicitud sol, IntegranteHogar inh, Persona per			 
+			WHERE spo.idPostulacionFOVIS = pof.idPostulacion
+			AND spo.solicitudGlobal.idSolicitud = sol.idSolicitud
+			AND per.idPersona = inh.idPersona
+			AND inh.idPostulacion = pof.idPostulacion
+			AND per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion			
+        </query>
+	</named-query>
+
+	<named-query name="Fovis.Ubicacion.consultarUbicacionId">
+		<description>Consulta una Ubicacion por identificación.</description>
+		<query>
+			SELECT ub FROM Ubicacion ub
+			WHERE ub.idUbicacion =:idUbicacion
+		</query>
+	</named-query>
+
+	<named-query name="Fovis.ConsultarSolicitudUsuario">
+		<description>Consulta una solicitud por usuario.</description>
+		<query>
+			SELECT sol
+			FROM SolicitudPostulacion spo
+			JOIN spo.solicitudGlobal sol
+			WHERE sol.usuarioRadicacion  =:nombreUsuario
+			AND sol.clasificacion =:clasificacion
+			AND (spo.estadoSolicitud !=:estadoSolicitud
+			OR spo.estadoSolicitud IS NULL)
+			ORDER BY sol.idSolicitud DESC
+		</query>
+	</named-query>
+
+	<named-query
+		name="Fovis.SolicitudPostulacion.consultarPorEstadosYDatosPersonaJefeHogar">
+		<description>Consulta una las solicitudes de postulacion por estados y los datos del jefe de hogar.</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.SolicitudPostulacionModeloDTO(spo)
+			FROM SolicitudPostulacion spo, PostulacionFOVIS pof, JefeHogar jeh, Afiliado afi
+			INNER JOIN spo.solicitudGlobal sol
+			WHERE spo.idPostulacionFOVIS = pof.idPostulacion
+				AND jeh.idJefeHogar = pof.jefeHogar
+				AND afi.idAfiliado = jeh.idAfiliado
+				AND afi.persona.tipoIdentificacion = :tipoIdentificacion
+				AND afi.persona.numeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query name="Fovis.ConsultarPostulacionesCicloAsignacion">
+		<description>Consulta las postulaciones por ciclo.</description>
+		<query>
+			SELECT pof, spo, afi, sol.numeroRadicacion, pof.modalidad, perDet, jeh
+			FROM PostulacionFOVIS pof, SolicitudPostulacion spo, Solicitud sol, JefeHogar jeh, Afiliado afi, PersonaDetalle perDet
+			WHERE pof.idPostulacion = spo.idPostulacionFOVIS
+			AND spo.solicitudGlobal.idSolicitud = sol.idSolicitud
+			AND pof.jefeHogar = jeh.idJefeHogar
+			AND jeh.idAfiliado = afi.idAfiliado
+			AND afi.persona.idPersona = perDet.idPersona
+			AND pof.idCicloAsignacion =:idCicloAsignacion
+			AND pof.estadoHogar IN (:estadosHogar)
+		</query>
+	</named-query>
+
+	<named-query name="Parametrizacion.CicloAsignacion.consultarPorId">
+		<description>Consulta el ciclo de asignación opor el id</description>
+		<query>
+			SELECT ca 
+			FROM CicloAsignacion ca
+			WHERE ca.idCicloAsignacion = :idCicloAsignacion
+        </query>
+	</named-query>
+
+	<named-query name="Fovis.Consultar.CondicionEspecial.Persona">
+		<description>Consulta que obtiene la lista de condiciones especiales de una persona, por identificación</description>
+		<query>
+			SELECT cep
+			FROM CondicionEspecialPersona cep, Persona per
+			WHERE cep.idPersona = per.idPersona
+			AND per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+			AND cep.idPostulacionFOVIS = :idPostulacion
+			AND cep.activa =:activa
+        </query>
+	</named-query>
+
+	<named-query
+		name="FOVIS.CicloAsignacion.consultarCiclosNoPredecesoresConExcepcion">
+		<description>Busca los ciclos de asignación que no son predecesores de otros, excluyendo los id de ciclos que lleguen</description>
+		<query>
+			SELECT ca 
+			FROM CicloAsignacion ca
+			WHERE ca.cicloActivo = TRUE
+				AND ca.idCicloAsignacion NOT IN ( 
+					SELECT cap.cicloPredecesor FROM CicloAsignacion cap WHERE cap.cicloActivo = TRUE AND cap.cicloPredecesor IS NOT NULL )
+				AND ca.idCicloAsignacion NOT IN (:idCiclosAsignacion)
+			ORDER BY ca.fechaInicio
+        </query>
+	</named-query>
+
+    <named-query name="Fovis.Consultar.Miembros.Hogar">
+        <description>Consultar los miembros de un hogar a partir de la postulacion.</description>
+        <query>
+            SELECT new com.asopagos.dto.modelo.IntegranteHogarModeloDTO(per,ped,inh)
+            FROM IntegranteHogar inh, Persona per, PersonaDetalle ped
+            WHERE inh.idPersona = per.idPersona
+            AND per.idPersona = ped.idPersona
+            AND inh.idPostulacion = :idPostulacion
+            AND inh.estadoHogar = :estadoHogar
+        </query>
+    </named-query>
+
+	<named-query
+		name="FOVIS.CicloAsignacion.consultarCiclosNoPredecesoresConPredecesor">
+		<description>Busca los ciclos de asignación que no son predecesores de otros, excluyendo los id de ciclos que lleguen e incluyendo el id predecesor que llegue</description>
+		<query>
+			SELECT ca 
+			FROM CicloAsignacion ca
+			WHERE ca.cicloActivo = TRUE
+				AND ((ca.idCicloAsignacion NOT IN ( 
+					SELECT cap.cicloPredecesor FROM CicloAsignacion cap WHERE cap.cicloActivo = TRUE AND cap.cicloPredecesor IS NOT NULL )
+						AND ca.idCicloAsignacion NOT IN (:idCiclosAsignacion))
+					OR ca.idCicloAsignacion = :idCicloPredecesor)
+			ORDER BY ca.fechaInicio
+        </query>
+	</named-query>
+
+	<named-query
+		name="Parametrizacion.CicloAsignacion.consultarCicloSucesorConExcepcion">
+		<description>Consulta el ciclo sucesor de un ciclo determinado excluyendo los identificadores designados</description>
+		<query>
+			SELECT ca 
+			FROM CicloAsignacion ca
+			WHERE ca.cicloActivo = TRUE
+				AND ca.idCicloAsignacion NOT IN (:idCiclosAsignacion)
+				AND ca.cicloPredecesor IN (:idCiclosAsignacion)
+				AND ca.fechaInicio >= :fecha
+			ORDER BY ca.fechaInicio ASC
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.find.numeroPostulacion.persona.jefeHogar">
+		<query>
+            SELECT sol.numeroRadicacion
+            FROM SolicitudPostulacion spo
+            JOIN spo.solicitudGlobal sol,
+            PostulacionFOVIS pof,
+            JefeHogar jeh,
+            Afiliado afi
+            JOIN afi.persona per
+            WHERE pof.idPostulacion = spo.idPostulacionFOVIS
+            AND jeh.idJefeHogar = pof.jefeHogar
+            AND afi.idAfiliado = jeh.idAfiliado
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND pof.estadoHogar != :estadoHogar
+            AND spo.estadoSolicitud NOT IN (:estadosSolicitudPostulacion)
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.find.numeroPostulacion.persona.integranteHogar">
+		<query>
+            SELECT sol.numeroRadicacion
+            FROM SolicitudPostulacion spo
+            JOIN spo.solicitudGlobal sol,
+            PostulacionFOVIS pof,
+            IntegranteHogar inh,
+            Persona per
+            WHERE pof.idPostulacion = spo.idPostulacionFOVIS
+            AND inh.idJefeHogar = pof.jefeHogar
+            AND per.idPersona = inh.idPersona
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND pof.estadoHogar != :estadoHogar
+            AND spo.estadoSolicitud NOT IN (:estadosSolicitudPostulacion)
+        </query>
+	</named-query>
+
+	<named-query name="find.archivo.cruce.id">
+		<description>Consulta el registro del cargue de archivo por el id</description>
+		<query>
+            SELECT cac 
+            FROM CargueArchivoCruceFovis cac
+            WHERE cac.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.cruce.detalle.id.solicitud">
+		<description>Consulta todos los cruces con su detalle por el id de la solicitud asociada</description>
+		<query>
+            SELECT new com.asopagos.dto.CruceDetalleDTO(per, crd, cru) 
+            FROM SolicitudPostulacion spo
+            JOIN spo.solicitudGlobal sol,
+            SolicitudGestionCruce sgc,
+            Cruce cru,
+            CruceDetalle crd, 
+            Persona per
+            WHERE spo.idSolicitudPostulacion = sgc.idSolicitudPostulacion
+            AND sgc.idSolicitudGestionCruce = cru.idSolicitudGestionCruce
+            AND cru.idCruce = crd.idCruce
+            AND cru.idPersona = per.idPersona
+            AND sol.idSolicitud = :idSolicitud
+            AND sgc.tipoCruce = :tipoCruce
+        </query>
+	</named-query>
+
+	<named-query name="find.cruce.detalle.tipoInformacion.identificacion">
+		<description>Consulta los cruces con su detalle por el tipo informacion y la identificacion asociada</description>
+		<query>
+            SELECT new com.asopagos.dto.CruceDetalleDTO(crc, crd) 
+            FROM CruceDetalle crd, Cruce crc
+            WHERE crd.idCruce = crc.idCruce 
+            AND crd.tipo = :tipo
+            AND crd.numeroIdentificacion = :identificacion
+        </query>
+	</named-query>
+
+	<named-query name="find.cruce.detalle.numeroPostulacion.cargue ">
+		<description>Consulta los cruces con su detalle por el numero de postulacion, el identificador del cargue y el estado</description>
+		<query>
+            SELECT new com.asopagos.dto.CruceDetalleDTO(crc, crd) 
+            FROM CruceDetalle crd, Cruce crc
+            WHERE crd.idCruce = crc.idCruce 
+            AND crc.estadoCruce = :estadoCruce
+            AND crc.numeroPostulacion = :numeroPostulacion
+            AND crc.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.solicitud.postulacion.numeroPostulacion">
+		<description>Consulta los cruces con su detalle por el numero de postulacion </description>
+		<query>
+            SELECT spo
+            FROM SolicitudPostulacion spo
+            JOIN spo.solicitudGlobal sol
+            WHERE sol.numeroRadicacion = :numeroPostulacion
+        </query>
+	</named-query>
+
+    <named-query name="find.solicitud.postulacion.by.listNumeroPostulacion">
+        <description>Consulta los cruces con su detalle por el numero de postulacion </description>
+        <query>
+            SELECT new com.asopagos.dto.modelo.SolicitudPostulacionModeloDTO(spo, sol)
+            FROM SolicitudPostulacion spo
+            JOIN spo.solicitudGlobal sol
+            WHERE sol.numeroRadicacion IN (:numeroPostulacion)
+        </query>
+    </named-query>
+
+	<named-query name="find.solicitud.gestion.cruce.id">
+		<description>Consulta la solicitud gestion cruce por el id</description>
+		<query>
+            SELECT sgc
+            FROM SolicitudGestionCruce sgc
+            WHERE sgc.idSolicitudGestionCruce = :idSolicitud
+        </query>
+	</named-query>
+
+     <named-query name="fovis.calcular.total.ahorro.previo.by.idPostulacion">
+         <description>Consulta que obtiene el monto total de ahorro previo de un hogar, por ciclo de asignación</description>
+         <query>
+            SELECT SUM(ahp.valor)
+            FROM AhorroPrevio ahp
+            WHERE ahp.idPostulacion = :idPostulacion
+        </query>
+    </named-query>
+
+     <named-query name="fovis.calcular.total.recurso.complementario.by.idPostulacion">
+         <description>Consulta que obtiene el monto total de ahorro previo de un hogar, por ciclo de asignación</description>
+         <query>
+             SELECT SUM(rec.valor)
+             FROM RecursoComplementario rec
+             WHERE rec.postulacion = :idPostulacion
+         </query>
+     </named-query>
+
+	<named-query
+		name="FOVIS.find.solicitudGestionCruce.by.idSolicitudPostulacion.tipoCruce">
+		<description>Consulta la solicitud gestion cruce por el id</description>
+		<query>
+            SELECT new com.asopagos.dto.SolicitudGestionCruceDTO(sgc)
+            FROM SolicitudGestionCruce sgc
+            WHERE sgc.idSolicitudPostulacion = :idSolicitudPostulacion
+            	AND sgc.tipoCruce = :tipoCruce
+        </query>
+	</named-query>
+
+    <named-query
+        name="FOVIS.find.solicitudGestionCruce.by.listIdSolicitudPostulacion.tipoCruce">
+        <description>Consulta la solicitud gestion cruce por el id</description>
+        <query>
+            SELECT new com.asopagos.dto.SolicitudGestionCruceDTO(sgc)
+            FROM SolicitudGestionCruce sgc
+            WHERE sgc.idSolicitudPostulacion IN (:idSolicitudPostulacion)
+                AND sgc.tipoCruce = :tipoCruce
+        </query>
+    </named-query>
+    
+    <named-query
+		name="FOVIS.find.solicitudGestionCruce.by.idSolicitudPostulacion">
+		<description>Consulta la solicitud gestion cruce por el id</description>
+		<query>
+            SELECT new com.asopagos.dto.SolicitudGestionCruceDTO(sgc)
+            FROM SolicitudGestionCruce sgc
+            WHERE sgc.idSolicitudPostulacion = :idSolicitudPostulacion
+        </query>
+	</named-query>
+	
+	<named-query
+		name="FOVIS.find.solicitudGestionCruce.by.idSolicitudPostulacion.and.estadoCruceHogar">
+		<description>Consulta la solicitud gestion cruce por el id solicitud postulacion y estado </description>
+		<query>
+            SELECT sgc
+            FROM SolicitudGestionCruce sgc
+            WHERE sgc.idSolicitudPostulacion = :idSolicitudPostulacion
+            AND sgc.estadoCruceHogar =:estadoCruceHogar
+        </query>
+	</named-query>
+
+	<named-query
+		name="FOVIS.find.solicitudGestionCruce.by.tipoCruce.estadoCruce">
+		<description>Consulta la solicitud gestion cruce por tipo de Cruce y Estado.</description>
+		<query>
+            SELECT sgc
+            FROM SolicitudGestionCruce sgc
+            WHERE sgc.tipoCruce = :tipoCruce
+            AND sgc.estadoSolicitudGestionCruce =:estadoSolicitudGestionCruce
+            AND sgc.estadoCruceHogar =:estadoCruceHogar
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.find.Cruce.by.idSolicitudGestionCruce">
+		<description>Consulta el cruce por el id de la solicitud gestión cruce</description>
+		<query>
+            SELECT cru
+            FROM Cruce cru, SolicitudGestionCruce sgc
+            WHERE cru.idSolicitudGestionCruce = sgc.idSolicitudGestionCruce
+            AND sgc.idSolicitudPostulacion = :idSolicitudPostulacion
+        </query>
+	</named-query>
+
+	<named-query name="Fovis.Consultar.Asignaciones.Previas.Hogar">
+		<description>Consulta que obtiene la lista de asignaciones previas de un hogar, por jefe de hogar y resultado de la asignación</description>
+		<query>
+            SELECT pof 
+            FROM PostulacionFOVIS pof, JefeHogar jeh, Afiliado afi, Persona per
+            WHERE pof.jefeHogar = jeh.idJefeHogar
+            AND jeh.idAfiliado = afi.idAfiliado
+            AND afi.persona.idPersona = per.idPersona
+            AND per.tipoIdentificacion = :tipoIdentificacionJefeHogar
+            AND per.numeroIdentificacion = :numeroIdentificacionJefeHogar
+            AND pof.resultadoAsignacion = :resultadoAsignacion
+        </query>
+	</named-query>
+
+	<named-query name="Fovis.Consultar.ParametrizacionModalidad.Nombre">
+		<description>Consulta que obtiene la parametrización por nombre de una modalidad FOVIS</description>
+		<query>
+            SELECT pmo 
+            FROM ParametrizacionModalidad pmo
+            WHERE pmo.nombre = :nombreParametrizacionModalidad
+        </query>
+	</named-query>
+
+	<named-query name="Fovis.Consultar.AhorroPrevio">
+		<description>Consulta que obtiene un registro de ahorro previo por id de postulación y tipo de ahorro</description>
+		<query>
+            SELECT ahp 
+            FROM AhorroPrevio ahp
+            WHERE ahp.idPostulacion = :idPostulacion
+            AND ahp.nombreAhorro = :tipoAhorro
+        </query>
+	</named-query>
+
+	<named-query name="FOVIS.condicionEspecial.consultarCondiciones">
+		<description>Consulta la cantidad de escalamientos si resultados de análisis por una solicitud</description>
+		<query>
+			SELECT cep
+			FROM CondicionEspecialPersona cep
+			WHERE cep.idPersona =:idPersona
+		</query>
+	</named-query>
+
+
+	<named-query
+		name="fovis.consultar.postulaciones.asignacion.porEstadoHogarSolicitudGlobal">
+		<description>Consulta que obtiene la lista de postulaciones que aplican para asignación FOVIS</description>
+		<query>
+			SELECT pof
+			FROM PostulacionFOVIS pof, SolicitudAsignacion saf 
+			JOIN saf.solicitudGlobal
+			WHERE saf.idSolicitudAsignacion=pof.idSolicitudAsignacion 
+			AND pof.estadoHogar IN :listaEstadoHogar
+			AND saf.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>
+
+	<named-query name="fovis.consultar.solicitudAsignacion">
+		<description>Consulta el registro de Solicitud de Asignación por identificador</description>
+		<query>
+			SELECT sa
+			FROM SolicitudAsignacion sa LEFT JOIN FETCH sa.solicitudGlobal
+			WHERE sa.idSolicitudAsignacion = :idSolicitud
+		</query>
+	</named-query>
+
+	<named-query
+		name="fovis.consultar.postulaciones.asignacion.porSolicitudYResultadoAsignacion">
+		<description>Consulta que obtiene la lista de obtiene la lista de postulaciones por solicitud de asignación y resultado de asignación</description>
+		<query>
+            SELECT pof 
+            FROM PostulacionFOVIS pof
+            WHERE pof.idSolicitudAsignacion = :idSolicitudAsignacion 
+            AND pof.resultadoAsignacion = :resultadoAsignacion
+        </query>
+	</named-query>
+
+
+
+	<named-query name="Fovis.Consultar.SolicitudGlobal.Postulacion">
+		<description>Consulta que obtiene la información de una solicitud global de postulación FOVIS, por identificador de la postulación</description>
+		<query>
+			SELECT sol
+			FROM Solicitud sol, SolicitudPostulacion spo, PostulacionFOVIS pof
+			WHERE pof.idPostulacion = spo.idPostulacionFOVIS
+			AND spo.solicitudGlobal.idSolicitud = sol.idSolicitud
+			AND pof.idPostulacion = :idPostulacion
+		</query>
+	</named-query>
+
+	<named-query name="Fovis.Consultar.Cruces.Ejecucion">
+		<description>Consulta los cruces por Ejecucion de proceso asincrono</description>
+		<query>
+            SELECT new com.asopagos.dto.CruceDetalleDTO(per, crd, cru) FROM EjecucionProcesoAsincrono eps, Cruce cru, CruceDetalle crd, Persona per
+			WHERE eps.id = cru.idEjecucionProcesoAsincrono
+			AND cru.idCruce = crd.idCruce <!--Se reemplaza idCruceDetalle por idCruce GLPI 55884-->
+			AND per.idPersona = cru.idPersona
+			AND eps.id =:idProcesoEjecucionAsincrono
+        </query>
+	</named-query>
+
+	<named-query name="fovis.consultarCiclosAsignacionCerradosPorAnio">
+		<description>Busca los ciclos de asignación cerrados que aplican para el año a consultar</description>
+		<query>
+			SELECT cicloAsignacion 
+			FROM CicloAsignacion cicloAsignacion
+			WHERE cicloAsignacion.estadoCicloAsignacion='CERRADO'
+				AND YEAR(cicloAsignacion.fechaInicio) = :anio AND YEAR(cicloAsignacion.fechaFin) = :anio
+			ORDER BY cicloAsignacion.fechaInicio ASC
+        </query>
+	</named-query>
+
+
+	<named-query
+		name="FOVIS.consultar.solicitudPostulacion.idSolicitudPostulacion">
+		<description>Busca una solicitud de postulacion por el id de la solicitud </description>
+		<query>
+            SELECT sp
+            FROM SolicitudPostulacion sp
+            LEFT JOIN FETCH sp.solicitudGlobal
+            WHERE sp.idSolicitudPostulacion = :idSolicitud
+        </query>
+	</named-query>
+	
+
+	<named-query name="find.hoja.afiliado.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja afiliado por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisAfiliado cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.beneficiario.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja benficiario por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisBeneficiario cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.beneficiarioarriendo.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja benficiario arriendo por id archivo cruce</description>
+		<query>
+			SELECT cargueHoja
+			FROM CargueArchivoCruceFovisBeneficiarioArriendo cargueHoja
+			WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+		</query>
+	</named-query>
+
+	<named-query name="find.hoja.catastros.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja catastros por id archivo cruce</description>
+		<query>
+			SELECT cargueHoja
+			FROM CargueArchivoCruceFovisCatastros cargueHoja
+			WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+		</query>
+	</named-query>
+
+	<named-query name="find.hoja.catant.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja cat ant por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisCatAnt cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.catbog.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja cat bog por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisCatBog cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.catcali.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja cat cali por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisCatCali cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.catmed.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja cat med por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisCatMed cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.cedula.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja cedula por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisCedula cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.fechascorte.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja fechas corte por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisFechasCorte cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.igac.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja igac por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisIGAC cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.nuevohogar.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja nuevo hogar por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisNuevoHogar cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.reunidos.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja reunidos por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisReunidos cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.sisben.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja sisben por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisSisben cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query name="find.hoja.unidos.archivo.cruce.id">
+		<description>Consulta la informacion de la hoja unidos por id archivo cruce</description>
+		<query>
+            SELECT cargueHoja 
+            FROM CargueArchivoCruceFovisUnidos cargueHoja
+            WHERE cargueHoja.idCargueArchivoCruceFovis = :idCargue
+        </query>
+	</named-query>
+
+	<named-query
+		name="Fovis.Consultar.Asignaciones.Previas.Hogar.Persona.Modalidad">
+		<description>Consulta que obtiene la lista de postulaciones por los datos del jefe o integrante hogar con estado hogar asignado sin prorroga y una determinada modalidad</description>
+		<query>
+            SELECT pof 
+			FROM PostulacionFOVIS pof, JefeHogar jeh, Afiliado afi, Persona perj, IntegranteHogar inh, Persona peri
+			WHERE pof.jefeHogar = jeh.idJefeHogar
+			AND jeh.idAfiliado = afi.idAfiliado
+			AND afi.persona.idPersona = perj.idPersona
+			AND (jeh.idJefeHogar = inh.idJefeHogar or inh.idIntegranteHogar IS NULL)
+			AND (peri.idPersona = inh.idPersona or peri.idPersona IS NULL)
+			AND ((perj.tipoIdentificacion = :tipoIdentificacionPersona AND perj.numeroIdentificacion = :numeroIdentificacionPersona)
+				OR (peri.tipoIdentificacion = :tipoIdentificacionPersona AND peri.numeroIdentificacion = :numeroIdentificacionPersona))
+			AND pof.modalidad = :modalidad
+			AND pof.estadoHogar = :estadoHogar
+        </query>
+	</named-query>
+
+	<named-query name="fovis.ConsultarResponsablesUltimaActaAsignacion">
+		<description>Consulta los responsables de la ultima acta de asignación generada</description>
+		<query>
+			SELECT actaAsignacion
+			FROM ActaAsignacionFOVIS actaAsignacion			
+			ORDER BY actaAsignacion.idActaAsignacion DESC
+		</query>
+	</named-query>
+
+    <named-query name ="fovis.consultar.actaAsignacion.por.solicitudGlobal">
+        <description>Consulta si existe un acta de asignación previamente registrada para la solicitud global enviada</description>
+        <query>
+            SELECT aaf
+            FROM ActaAsignacionFOVIS aaf, SolicitudAsignacion saf
+            JOIN saf.solicitudGlobal sol
+            WHERE aaf.idSolicitudAsignacion = saf.idSolicitudAsignacion
+            AND sol.idSolicitud = :idSolicitud
+        </query>
+    </named-query>
+
+	<named-query name="fovis.consultar.solicitudAsignacion.PorSolicitudGlobal">
+		<description>Consulta el registro de Solicitud de Asignación por identificador</description>
+		<query>
+			SELECT sa
+			FROM SolicitudAsignacion sa LEFT JOIN FETCH sa.solicitudGlobal
+			WHERE sa.solicitudGlobal = :idSolicitud
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.consultar.IntegranteHogar.noRelacionadosActivos">
+		<description>Consulta los integrantes del hogar activos que no vengan relacionados en los parámetros</description>
+		<query>
+			SELECT inh 
+			FROM IntegranteHogar inh
+			WHERE inh.idJefeHogar = :idJefeHogar
+			AND inh.idPostulacion = :idPostulacion
+			AND inh.idIntegranteHogar NOT IN (:integrantesExcluir)
+			AND inh.estadoHogar = :estadoIntegrante
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.consultar.IntegranteHogar..por.JefeHogar.estado">
+		<description>Consulta los integrantes del hogar por el jefe del hogar la postulación y el estado del integrante</description>
+		<query>
+			SELECT inh 
+			FROM IntegranteHogar inh
+			WHERE inh.idJefeHogar = :idJefeHogar
+			AND inh.idPostulacion = :idPostulacion
+			AND inh.estadoHogar = :estadoIntegrante
+		</query>
+	</named-query>
+
+	<named-query name="FOVIS.consultar.DocumentoEstadoSolicitud">
+		<description>Consulta los integrantes del hogar activos que no vengan relacionados en los parámetros</description>
+		<query>
+			SELECT dae 
+			FROM DocumentoAdministracionEstadoSolicitud dae
+			WHERE dae.idSolicitudGlobal =:idSolicitudGlobal
+			AND dae.tipoDocumentoAdjunto =:tipoDocumentoAdjunto
+		</query>
+	</named-query>
+
+
+	<named-query name="Fovis.licencia.consultarLicenciaIdProyectoVivienda">
+		<description>Consulta una Licencia por identificación de los proyectos de vivienda</description>
+		<query>
+			SELECT li FROM Licencia li
+			WHERE li.idProyectoSolucionVivienda IN (:idProyectos)
+		</query>
+	</named-query>
+
+	<named-query
+		name="Fovis.licenciaDetalle.consultarLicenciaDetallePorIdsLicencia">
+		<description>Consulta una Licencia Detalle por identificación de las licencias.</description>
+		<query>
+			SELECT lid FROM LicenciaDetalle lid
+			WHERE lid.idLicencia IN (:idLicencias)
+		</query>
+	</named-query>
+
+
+	<named-query name="fovis.consultar.ActaAsignacionPorIdSolicitudAsignacion">
+		<description>Consulta el registro del Acta de Asignación por identificador de la solicitud de asignacion</description>
+		<query>
+			SELECT ac
+			FROM ActaAsignacionFOVIS ac
+			WHERE ac.idSolicitudAsignacion = :idSolicitud
+			ORDER BY ac.idActaAsignacion DESC
+		</query>
+	</named-query>
+
+
+	<named-query
+		name="Fovis.MedioDePago.consultarMedioPagoProyecto">
+		<description>Consulta los medios de pago asociados al proyecto.</description>
+		<query>
+			SELECT medioPago, medioPagoProyecto
+			FROM MedioPagoProyectoVivienda medioPagoProyecto, MedioDePago medioPago
+			WHERE medioPago.idMedioPago = medioPagoProyecto.idMedioPago
+			AND medioPagoProyecto.idProyectoVivienda =:idProyectoVivienda
+		</query>
+	</named-query>
+	
+	<named-query name="Fovis.MedioDePago.consultarMedioPagoActivoProyecto">
+		<description>Consulta el medio de pago asociado al proyecto</description>
+		<query>
+			SELECT medioPago
+			FROM MedioPagoProyectoVivienda mpp, MedioDePago medioPago
+			WHERE mpp.idMedioPago = medioPago.idMedioPago
+			AND mpp.idProyectoVivienda =:idProyectoVivienda
+			AND mpp.activo =:medioActivo
+		</query>
+	</named-query>
+	
+	<named-query name="Fovis.Consultar.DocumentoSoporte.Por.ProyectoSolucionVivienda">
+		<description>Consulta que obtiene la lista de documentos soporte de un determinado proyesto de vivienda</description>
+		<query>
+			SELECT new com.asopagos.dto.modelo.DocumentoSoporteModeloDTO(dos)
+			FROM DocumentoSoporte dos, DocumentoSoporteProyectoVivienda dspv			
+			WHERE dos.idDocumentoSoporte = dspv.idDocumentoSoporte
+				AND dspv.idProyectoVivienda = :idProyecto
+		</query>
+	</named-query>
+	
+	<named-query name="Personas.buscar.salario.afiliado.estado">
+		<description>Busca la sumatoria del salario de un afiliado con un determinado estado</description>
+		<query>
+		SELECT afi.idAfiliado, SUM(rolAfi.valorSalarioMesadaIngresos)
+		FROM RolAfiliado rolAfi 
+		JOIN rolAfi.afiliado afi
+		JOIN afi.persona per
+		WHERE per.tipoIdentificacion = :tipoIdentificacion
+		AND per.numeroIdentificacion = :numeroIdentificacion
+		AND rolAfi.estadoAfiliado = :estadoAfiliado
+		GROUP BY afi.idAfiliado
+        </query>
+	</named-query>
+	
+	<named-query name="Beneficiario.buscar.detalle.por.tipo.nroIdentificacion.estado.y.jefehogar">
+		<description>Consulta que obtiene el beneficiariodetalle por los datos de la persona, estado, y el identificador del jefe del hogar</description>
+        <query>
+            SELECT bde FROM Beneficiario ben, JefeHogar jeh, BeneficiarioDetalle bde, PersonaDetalle pde
+            JOIN ben.persona per
+            JOIN ben.afiliado afi
+            WHERE per.idPersona = pde.idPersona 
+            AND bde.idPersonaDetalle = pde.idPersonaDetalle
+            AND afi.idAfiliado = jeh.idAfiliado
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND ben.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado
+            AND jeh.idJefeHogar = :idJefeHogar
+        </query>
+    </named-query>
+
+    <named-query name="FOVIS.consultar.integranteHogar.por.tipo.numeroId.postulacionId">
+        <description>Consulta el integrante de hogar por tipo y numero de identificacion y la postulación</description>
+        <query>
+            SELECT new com.asopagos.dto.modelo.IntegranteHogarModeloDTO(per, inh)
+            FROM IntegranteHogar inh,
+                Persona per
+            WHERE inh.idPersona = per.idPersona
+            AND inh.estadoHogar = :estadoHogar
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND inh.idPostulacion = :idPostulacion
+        </query>
+    </named-query>
+
+	<named-query name="find.cruce.detalle.id.solicitudGestion">
+		<description>Consulta todos los cruces con su detalle por el id de la solicitud asociada</description>
+		<query>
+            SELECT new com.asopagos.dto.CruceDetalleDTO(per, crd, cru) 
+            FROM SolicitudGestionCruce sgc,
+            Cruce cru,
+            CruceDetalle crd, 
+            Persona per
+            WHERE sgc.idSolicitudGestionCruce = cru.idSolicitudGestionCruce
+            AND cru.idCruce = crd.idCruce
+            AND cru.idPersona = per.idPersona
+            AND sgc.idSolicitudGestionCruce = :idSolicitudGestion
+         </query>
+	</named-query>            
+            
+
+	<named-query name="FOVIS.consultar.solicitudVerificacionFovis.idSolicitudGlobal">
+		<description>Busca una solicitud de verificación Fovis por el id de la solicitud global</description>
+		<query>
+			SELECT svf
+			FROM SolicitudVerificacionFovis svf
+			JOIN FETCH svf.solicitudGlobal
+			WHERE svf.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+	</named-query>
+	
+	<named-query name="Fovis.Consultar.Hogares.CruceInternoEnProceso">
+		<description>Consulta que obtiene la lista de hogares que que tienen cruces internos en proceso</description>
+		<query>
+			SELECT pof
+			FROM PostulacionFOVIS pof, SolicitudPostulacion spo, CicloAsignacion cia, SolicitudGestionCruce sgc
+			WHERE spo.idPostulacionFOVIS = pof.idPostulacion 
+			AND pof.idCicloAsignacion = cia.idCicloAsignacion
+			AND spo.idSolicitudPostulacion = sgc.idSolicitudPostulacion
+			AND cia.nombre = :nombreCicloAsignacion
+			AND pof.estadoHogar IN :listaEstadoHogar
+			AND sgc.tipoCruce = :tipoCruce
+			AND sgc.estadoSolicitudGestionCruce != :estadoSolicitudGestionCruce
+        </query>
+	</named-query>	
+	
+	<named-query name="find.cruce.detalle.todosTiposInformacion.tipoIdentificacion">
+		<description>Consulta los cruces con su detalle por el tipo informacion y la identificacion asociada</description>
+		<query>
+            SELECT new com.asopagos.dto.CruceDetalleDTO(crc, crd) 
+            FROM CruceDetalle crd, Cruce crc
+            WHERE crd.idCruce = crc.idCruce 
+            AND crd.numeroIdentificacion = :identificacion
+        </query>
+	</named-query>
+
+    <named-query name="find.info.postulacion.by.numeroRadicado">
+        <description>Busca la informacion de la solicitud de postulacion por el numero de radicado</description>
+        <query>
+            SELECT new com.asopagos.dto.fovis.SolicitudPostulacionFOVISDTO(spo, pof, cia, jeh, per, ped)
+            FROM SolicitudPostulacion spo
+            JOIN spo.solicitudGlobal sol,
+            PostulacionFOVIS pof,
+            CicloAsignacion cia,
+            JefeHogar jeh,
+            Afiliado afi
+            JOIN afi.persona per,
+            PersonaDetalle ped
+            WHERE spo.idPostulacionFOVIS = pof.idPostulacion
+            AND pof.idCicloAsignacion = cia.idCicloAsignacion
+            AND pof.jefeHogar = jeh.idJefeHogar
+            AND jeh.idAfiliado = afi.idAfiliado
+            AND per.idPersona = ped.idPersona
+            AND sol.numeroRadicacion = :numeroRadicado
+        </query>
+    </named-query>
+
+	<named-query name="find.info.postulacion.by.numeroRadicado.cruce">
+		<description>Busca la informacion de la solicitud de postulacion y el cruce realizado por el numero de radicado </description>
+		<query>
+			SELECT new com.asopagos.dto.fovis.SolicitudPostulacionFOVISDTO(spo, pof, cia, jeh, per, ped, sgc)
+			FROM SolicitudPostulacion spo,
+			SolicitudGestionCruce sgc
+			JOIN sgc.solicitudGlobal sol,
+			PostulacionFOVIS pof,
+			CicloAsignacion cia,
+			JefeHogar jeh,
+			Afiliado afi
+			JOIN afi.persona per,
+			PersonaDetalle ped
+			WHERE spoId = sgcSolicitudPostulacion
+			AND spoPostulacionFOVIS = pofid
+			AND pofCicloAsignacion = ciaid
+			AND pofjefeHogar = jehid
+			AND jehAfiliado = afiid
+			AND perid = pedPersona
+			AND sol.numeroRadicacion = :numeroRadicado
+		</query>
+	</named-query>
+
+    <named-query name="FOVIS.consultar.solicitudGestionCruceFovis.idSolicitudGlobal">
+        <description>Busca una solicitud de gestion de cruce Fovis por el id de la solicitud global</description>
+        <query>
+            SELECT sgc
+            FROM SolicitudGestionCruce sgc
+            JOIN FETCH sgc.solicitudGlobal
+            WHERE sgc.solicitudGlobal.idSolicitud = :idSolicitud
+        </query>
+    </named-query>
+
+    <named-query name="fovis.consultar.postulacion.info.ahorro">
+        <description>Consulta que obtiene los ahorros por id de postulación</description>
+        <query>
+            SELECT ahp 
+            FROM AhorroPrevio ahp
+            WHERE ahp.idPostulacion = :idPostulacion
+        </query>
+    </named-query>
+
+    <named-query name="fovis.consultar.postulacion.info.recursoComplementario">
+        <description>Consulta que obtiene los recursos complementarios por id de postulación</description>
+        <query>
+            SELECT rec 
+            FROM RecursoComplementario rec
+            WHERE rec.postulacion = :idPostulacion
+        </query>
+    </named-query>
+
+    <named-query name="consultar.ciclos.asignacion.con.predecesor">
+        <query>
+            SELECT cia
+            FROM CicloAsignacion cia
+            WHERE cia.cicloActivo = TRUE
+            AND cia.cicloPredecesor IS NOT NULL
+            AND cia.estadoCicloAsignacion != :estadoCicloAsignacion
+            ORDER BY cia.idCicloAsignacion DESC
+        </query>
+    </named-query>
+
+    <named-query name="consultar.postulaciones.by.ciclo.and.resultado.asignacion">
+        <query>
+            SELECT pof 
+            FROM PostulacionFOVIS pof, CicloAsignacion cia
+            WHERE pof.idCicloAsignacion = cia.idCicloAsignacion
+            AND pof.idCicloAsignacion IN (:idCicloAsignacion) 
+            AND pof.resultadoAsignacion = :resultadoAsignacion
+            AND cia.estadoCicloAsignacion = :estadoCicloAsignacion
+        </query>
+    </named-query>
+    
+    <named-query name="consultar.postulaciones.by.ciclo.and.novedad.tipo.transaccion">
+        <query>
+            SELECT pof
+			FROM SolicitudNovedadFovis snf, Solicitud sol, ParametrizacionNovedad nov, SolicitudNovedadPersonaFovis spf, PostulacionFOVIS pof, CicloAsignacion cia
+			WHERE snf.solicitudGlobal = sol.idSolicitud
+			AND nov.idNovedad = snf.idParametrizacionNovedad
+			AND spf.idSolicitudNovedadFovis = snf.idSolicitudNovedadFovis
+			AND spf.idPostulacionFovis = pof.idPostulacion
+			AND pof.idCicloAsignacion = cia.idCicloAsignacion
+			AND sol.resultadoProceso = com.asopagos.enumeraciones.afiliaciones.ResultadoProcesoEnum.APROBADA
+			AND (nov.novedad = com.asopagos.enumeraciones.core.TipoTransaccionEnum.HABILITACION_POSTULACION_SUSPENDIDA_CAMBIO_ANIO
+			OR nov.novedad = com.asopagos.enumeraciones.core.TipoTransaccionEnum.HABILITACION_POSTULACION_RECHAZADA)
+			AND snf.estadoSolicitud = com.asopagos.enumeraciones.fovis.EstadoSolicitudNovedadFovisEnum.NOV_FOVIS_CERRADA
+			AND pof.idCicloAsignacion IN (:idCicloAsignacion)
+			AND cia.estadoCicloAsignacion = :estadoCicloAsignacion
+        </query>
+    </named-query>
+
+    <named-query name="fovis.consultar.info.by.idPostulacion">
+        <query>
+            SELECT new com.asopagos.dto.fovis.SolicitudPostulacionFOVISDTO(spo, pof, cia, jeh, per, ped)
+            FROM SolicitudPostulacion spo
+            JOIN spo.solicitudGlobal sol,
+            PostulacionFOVIS pof,
+            CicloAsignacion cia,
+            JefeHogar jeh,
+            Afiliado afi
+            JOIN afi.persona per,
+            PersonaDetalle ped
+            WHERE spo.idPostulacionFOVIS = pof.idPostulacion
+            AND pof.idCicloAsignacion = cia.idCicloAsignacion
+            AND pof.jefeHogar = jeh.idJefeHogar
+            AND jeh.idAfiliado = afi.idAfiliado
+            AND per.idPersona = ped.idPersona
+            AND pof.idPostulacion = :idPostulacion
+        </query>
+    </named-query>
+
+    <named-query name="fovis.consultar.ahorros.previos.by.idPostulacion">
+        <query>
+            SELECT new com.asopagos.dto.modelo.AhorroPrevioModeloDTO(ahp)
+            FROM AhorroPrevio ahp
+            WHERE ahp.idPostulacion =:idPostulacion
+        </query>
+    </named-query>
+
+    <named-query name="fovis.consultar.recursos.complementarios.by.idPostulacion">
+        <description>Consulta para obtener la lista de recursos complementarios asociados a una postulacion</description>
+        <query>
+            SELECT  new com.asopagos.dto.modelo.RecursoComplementarioModeloDTO(rec)
+            FROM RecursoComplementario rec
+            WHERE rec.postulacion =:idPostulacion
+        </query>
+    </named-query>
+
+    <named-query name="fovis.consultar.postulaciones.asignacion.by.id.solicitudAsignacion">
+        <query>
+            SELECT new com.asopagos.dto.PostulacionAsignacionDTO(pas)
+            FROM PostulacionAsignacion pas
+            WHERE pas.idSolicitudAsignacion = :idSolicitudAsignacion
+        </query>
+    </named-query>
+
+    <named-query name="consultar.jefeHogar.by.id">
+        <query>
+            SELECT jeh
+            FROM JefeHogar jeh
+            WHERE jeh.idJefeHogar = :idJefeHogar
+        </query>
+    </named-query>
+
+    <named-query name="consultar.lista.integrantesHogar.by.id">
+        <query>
+            SELECT inh
+            FROM IntegranteHogar inh
+            WHERE inh.idIntegranteHogar IN (:listIdIntegrante)
+        </query>
+    </named-query>
+
+    <named-query name="fovis.consultar.listaChequeo.by.solicitud.persona.clasificacion">
+        <query>
+            SELECT new com.asopagos.dto.ItemChequeoDTO(
+                ich.requisito.idRequisito, ich.requisito.descripcion, rcc.tipoRequisito, 
+                ich.identificadorDocumento, ich.versionDocumento, ich.estadoRequisito, 
+                ich.cumpleRequisito,ich.formatoEntregaDocumento, 
+                ich.comentarios, ich.cumpleRequisitoBack, ich.comentariosBack,
+                rcc.textoAyuda, rcc.idRequisitoTipoSolicitanteCaja, ich.fechaRecepcionDocumentos
+            )
+            FROM ItemChequeo ich, RequisitoCajaClasificacion rcc
+            WHERE ich.solicitudGlobal.idSolicitud = :idSolicitud
+            AND ich.persona.idPersona = :idPersona
+            AND rcc.clasificacion = :clasificacion
+            AND rcc.requisito = ich.requisito
+            AND rcc.tipoTransaccion =  ich.solicitudGlobal.tipoTransaccion
+        </query>
+    </named-query>
+
+	<named-query name="consultar.calificaciones.postulacion">
+		<query>
+			SELECT caf
+			FROM CalificacionPostulacion caf
+			WHERE caf.idPostulacion = :idPostulacion
+			AND caf.idCicloAsignacion = :idCiclo
+		</query>
+	</named-query>
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+	<named-native-query name="PostulacionFOVIS.cantidadPostulacionesPorCiclo">
+		<description>Consulta si existen postulaciones asociadas al ciclo relacionado</description>
+		<query>
+			SELECT COUNT (pf.pofId)
+			FROM PostulacionFOVIS pf
+			WHERE pf.pofCicloAsignacion = :idCicloAsignacion
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="FOVIS.EscalamientoSolicitud.cantidadEscalamientosSinResultado">
+		<description>Consulta la cantidad de escalamientos si resultados de análisis por una solicitud</description>
+		<query>
+			SELECT COUNT(eso.esoId)
+			FROM EscalamientoSolicitud eso
+			WHERE eso.esoSolicitud = :idSolicitud AND eso.esoResultadoAnalista IS NULL
+		</query>
+	</named-native-query>
+
+	<named-native-query
+		name="FOVIS.recursoComplementario.consultarPorNombrePostulacion">
+		<description>Consulta si el recurso complementario ya existe para la postulación y con el nombre asociado</description>
+		<query>
+			SELECT rc.recId
+			FROM RecursoComplementario rc
+			WHERE rc.recNombre  =:nombre
+			AND rc.recPostulacionFOVIS =:idPostulacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="FOVIS.ahorroPrevio.consultarPorNombrePostulacion">
+		<description>Consulta si el ahorro previo ya existe para la postulación y con el nombre asociado</description>
+		<query>
+			SELECT ap.ahpId
+			FROM AhorroPrevio ap
+			WHERE ap.ahpNombreAhorro  =:nombre
+			AND ap.ahpPostulacionFOVIS =:idPostulacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="FOVIS.Consultar.Postulantes">
+		<description>Consultar los postulantes a FOVIS. Se genera un listado con los postulantes para ser mostrado en pantallas.</description>
+		<query>
+			SELECT DISTINCT pjh.perNumeroIdentificacion a, pih.perNumeroIdentificacion b
+			FROM PostulacionFOVIS pf
+			JOIN JefeHogar jh ON jh.jehId = pf.pofJefeHogar
+			LEFT JOIN IntegranteHogar ih ON (ih.inhJefeHogar = jh.jehId AND ih.inhPostulacionFovis = pf.pofId AND ih.inhEstadoHogar = :estadoFOVIShogar )
+			JOIN SolicitudPostulacion sp ON sp.spoPostulacionFOVIS = pf.pofId
+			JOIN Afiliado afi ON jh.jehAfiliado = afi.afiId
+			JOIN Persona pjh ON pjh.perId = afi.afiPersona
+			JOIN CicloAsignacion ca ON ca.ciaId = pf.pofCicloAsignacion
+			LEFT JOIN Persona pih ON (pih.perId = ih.inhPersona AND pih.perTipoIdentificacion NOT IN ( :tipoIdentificacion ))
+			WHERE ((pf.pofEstadoHogar IN (:estadosHogarSinRestriccion))
+			OR (pf.pofEstadoHogar IN (:estadosHogarRestringidos) AND sp.spoEstadoSolicitud IN (:estadosSolicitudPostulacion)))
+			AND jh.jehEstadoHogar = :estadoFOVIShogar AND ca.ciaId = :idCicloAsignacion
+        </query>
+	</named-native-query>
+
+	<named-native-query name="FOVIS.find.solicitud.postulacion.by.numeroCedula">
+		<query>
+            SELECT perPos.spoId, perPos.spoSolicitudGlobal,
+                perPos.spoPostulacionFOVIS, perPos.spoEstadoSolicitud,
+                perPos.spoObservaciones, perPos.perNumeroIdentificacion, perPos.solNumeroRadicacion
+            FROM ( SELECT spo.spoId, spo.spoSolicitudGlobal, spo.spoPostulacionFOVIS,
+                    spo.spoEstadoSolicitud, spo.spoObservaciones, pof.pofEstadoHogar,
+                    per.perTipoIdentificacion, per.perNumeroIdentificacion, sol.solNumeroRadicacion,
+                    sol.solResultadoProceso, inh.inhEstadoHogar
+                FROM SolicitudPostulacion spo
+                JOIN Solicitud sol ON sol.solId = spo.spoSolicitudGlobal
+                JOIN PostulacionFOVIS pof ON pof.pofId = spo.spoPostulacionFOVIS
+                JOIN IntegranteHogar inh ON (inh.inhJefeHogar = pof.pofJefeHogar AND inh.inhPostulacionFovis = pof.pofId)
+                JOIN Persona per ON per.perId = inh.inhPersona
+                UNION
+                SELECT spo.spoId, spo.spoSolicitudGlobal, spo.spoPostulacionFOVIS,
+                    spo.spoEstadoSolicitud, spo.spoObservaciones, pof.pofEstadoHogar,
+                    per.perTipoIdentificacion, per.perNumeroIdentificacion, sol.solNumeroRadicacion,
+                    sol.solResultadoProceso, jeh.jehEstadoHogar
+                FROM SolicitudPostulacion spo
+                JOIN Solicitud sol ON sol.solId = spo.spoSolicitudGlobal
+                JOIN PostulacionFOVIS pof ON pof.pofId = spo.spoPostulacionFOVIS
+                JOIN JefeHogar jeh ON jeh.jehId =pof.pofJefeHogar
+                JOIN Afiliado afi ON afi.afiId = jeh.jehAfiliado
+                JOIN Persona per ON per.perId = afi.afiPersona) perPos
+            WHERE perPos.inhEstadoHogar = :estadoPersonaHogar
+            AND (perPos.pofEstadoHogar IN (:estadoHogar) OR (perPos.pofEstadoHogar IN (:estadoHogarRestriccion) AND perPos.spoEstadoSolicitud NOT IN (:estadosSolicitudPostulacion)))
+            AND perPos.pertipoIdentificacion = :tipoIdentificacion
+            AND perPos.pernumeroIdentificacion IN (:listNumeroIdentificacion)
+        </query>
+	</named-native-query>
+
+	<named-native-query name="Fovis.Consultar.Fechas.Ahorro.Programado">
+		<description>Consulta que obtiene la diferencia en meses entre la fecha menor de ahorro previo y la fecha fin de postulación, este cálculo se evaluará durante el puntaje FOVIS</description>
+		<query>
+			SELECT CASE WHEN (DATEPART(DAY,cia.ciaFechaFin) - DATEPART(DAY,ahp.fechaInicio)) &lt; 0 THEN DATEDIFF(MONTH, ahp.fechaInicio, cia.ciaFechaFin) - 1 ELSE DATEDIFF(MONTH, ahp.fechaInicio, cia.ciaFechaFin) END
+			FROM (SELECT fecAhp.ahpPostulacionFOVIS, MIN (fecAhp.fechaInicial) AS fechaInicio
+			    FROM ( SELECT ahp.ahpPostulacionFOVIS, (SELECT MIN(fechas) FROM (VALUES (ahp.ahpFechaInicial), (ahp.ahpFechaInmovilizacion), (ahp.ahpFechaAdquisicion)) AS v (fechas)) AS fechaInicial
+			        FROM AhorroPrevio ahp) AS fecAhp
+			    GROUP BY fecAhp.ahpPostulacionFOVIS) AS ahp
+			JOIN PostulacionFovis pof ON (ahp.ahpPostulacionFOVIS = pof.pofId)
+			JOIN CicloAsignacion cia ON (pof.pofCicloAsignacion = cia.ciaId)
+			WHERE ahp.ahpPostulacionFOVIS = :idPostulacionFOVIS
+		</query>
+	</named-native-query>
+
+	<named-native-query name="FOVIS.ConsultarPersonaTipoNumeroIdentificacion">
+		<description>Consulta que obtiene las fechas que se evaluarán durante el puntaje FOVIS relacionado a ahorro programado</description>
+		<query>
+			SELECT per.perId
+			FROM Persona per
+			WHERE per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="fovis.Consultar.CartasAsignacionPorAnoCiclo">
+		<description>Consultar las cartas de asignacion por ano y ciclo de asignacion seleccionado. Se genera un listado con la informacion para ser mostrado en pantallas.</description>
+		<query>
+			SELECT solicitudGlPos.solNumeroRadicacion,
+			       persona.perTipoidentificacion AS tipoIdentificacionJefeHogar,
+				   persona.perNumeroidentificacion AS numeroIdentificacionJefeHogar,
+			       persona.perPrimerNombre + CASE WHEN persona.perSegundoNombre IS NOT NULL
+				   THEN ' ' + persona.perSegundoNombre ELSE '' END	AS nombresJefeHogar,
+				   persona.perPrimerApellido + CASE WHEN persona.perSegundoApellido IS NOT NULL
+				   THEN ' ' + persona.perSegundoApellido ELSE '' END	AS apellidosJefeHogar,
+				   postulacion.pofModalidad,
+				   postulacion.pofIdentificardorDocumentoActaAsignacion AS cartaAsignacionPostulacion,
+				   actaAsignacion.aafIdentificadorDocumentoConsolidado AS consolidadoCartasAsignacion
+			FROM Solicitud solicitudGlobal,
+				 SolicitudAsignacion solicitudAsignacion ,
+				 SolicitudPostulacion solicitudPostulacion ,
+				 Solicitud solicitudGlPos,
+				 ActaAsignacionFovis actaAsignacion ,
+				 PostulacionFOVIS postulacion,
+				 JefeHogar jefeHogar ,
+				 Afiliado afiliado ,
+				 Persona persona ,
+				 CicloAsignacion cicloAsignacion
+			WHERE solicitudGlobal.solId                     = solicitudAsignacion.safSolicitudGlobal
+				  AND actaAsignacion.aafSolicitudAsignacion = solicitudAsignacion.safId
+				  AND solicitudAsignacion.safId		        = postulacion.pofSolicitudAsignacion
+				  AND solicitudPostulacion.spoPostulacionFOVIS	= postulacion.pofId
+				  AND solicitudGlPos.solId					= solicitudPostulacion.spoSolicitudGlobal
+				  AND postulacion.pofCicloAsignacion		= cicloAsignacion.ciaId
+				  AND postulacion.pofJefeHogar				= jefeHogar.jehId
+				  AND jefeHogar.jehAfiliado					= afiliado.afiId
+				  AND afiliado.afiPersona					= persona.perId
+				  AND cicloAsignacion.ciaId					= postulacion.pofCicloAsignacion
+				  AND cicloAsignacion.ciaId = :idCicloAsignacion
+				  AND postulacion.pofIdentificardorDocumentoActaAsignacion is not null
+				  AND actaAsignacion.aafIdentificadorDocumentoConsolidado is not null
+				  AND Postulacion.pofresultadoAsignacion = 'ESTADO_ASIGNADO'
+        </query>
+	</named-native-query>
+
+	<named-native-query name="fovis.ConsultarAnosCicloAsignacionEstadoCerrado">
+		<description>Consulta que obtiene una lista de años de los ciclos de asignacion que se encuentran en estado cerrado</description>
+		<query>
+			SELECT DISTINCT DATEPART(year, cicloAsignacion.ciaFechaInicio) as anoCicloAsignacion
+			FROM CicloAsignacion cicloAsignacion
+			WHERE cicloAsignacion.ciaEstadoCicloAsignacion='CERRADO'
+		</query>
+	</named-native-query>
+
+	<named-native-query name="fovis.ConsultarDatosGenerarSoporteActaAsignacion">
+		<description>Consulta que obtiene los datos para generar el soporte de acta de asignación</description>
+		<query>
+			SELECT cicloAsignacion.ciaFechaInicio, cicloAsignacion.ciaFechaFin,
+       			   cicloAsignacion.ciaNombre,cicloAsignacion.ciaValorDisponible,
+       			   solicitudAsignacion.safFechaAceptacion
+			FROM Solicitud solicitudGlobal,
+				 SolicitudAsignacion solicitudAsignacion,
+				 CicloAsignacion cicloAsignacion
+			WHERE  solicitudGlobal.solId = solicitudAsignacion.safSolicitudGlobal
+			      AND solicitudAsignacion.safCicloAsignacion = cicloAsignacion.ciaId
+			      AND solicitudGlobal.solId = :idSolicitudGlobal
+		</query>
+	</named-native-query>
+
+	<named-native-query	name="fovis.Consultar.HistoricoSolicitudPostulacion">
+		<description>Consulta el historico de las solicitudes de postulacion</description>
+		<query>
+			SELECT solicitudGlobal.solId, solicitudGlobal.solNumeroRadicacion, solicitudGlobal.solFechaRadicacion,
+				   solicitudPostulacion.spoId, solicitudPostulacion.spoPostulacionFOVIS, solicitudPostulacion.spoEstadoSolicitud,
+				   comunicado.comIdentificaArchivoComunicado
+			FROM Solicitud solicitudGlobal,
+				 SolicitudPostulacion solicitudPostulacion,
+				 PostulacionFOVIS postulacion,
+				 Comunicado comunicado
+			WHERE solicitudGlobal.solId   = solicitudPostulacion.spoSolicitudGlobal
+				  AND postulacion.pofId   = solicitudPostulacion.spoPostulacionFOVIS
+				  AND comunicado.comSolicitud = solicitudPostulacion.spoSolicitudGlobal
+				  AND (solicitudGlobal.solNumeroRadicacion = :numeroSolicitud OR :numeroSolicitud IS NULL)
+				  AND (solicitudPostulacion.spoEstadoSolicitud = :estadoSolicitudPostulacion OR :estadoSolicitudPostulacion IS NULL)
+				  AND (solicitudGlobal.solNumeroRadicacion = :fechaExactaRadicacion OR :fechaExactaRadicacion IS NULL)
+		</query>
+	</named-native-query>
+
+	<named-native-query	name="fovis.Consultar.HistoricoSolicitudPostulacionRangoFechas">
+		<description>Consulta el historico de las solicitudes de postulacion</description>
+		<query>
+			SELECT solicitudGlobal.solId, solicitudGlobal.solNumeroRadicacion, solicitudGlobal.solFechaRadicacion,
+				   solicitudPostulacion.spoId, solicitudPostulacion.spoPostulacionFOVIS, solicitudPostulacion.spoEstadoSolicitud,
+				   comunicado.comIdentificaArchivoComunicado
+			FROM Solicitud solicitudGlobal,
+				 SolicitudPostulacion solicitudPostulacion,
+				 PostulacionFOVIS postulacion,
+				 Comunicado comunicado
+			WHERE solicitudGlobal.solId   = solicitudPostulacion.spoSolicitudGlobal
+				  AND postulacion.pofId   = solicitudPostulacion.spoPostulacionFOVIS
+				  AND comunicado.comSolicitud = solicitudPostulacion.spoSolicitudGlobal
+				  AND (solicitudGlobal.solNumeroRadicacion = :numeroSolicitud OR :numeroSolicitud IS NULL)
+				  AND (solicitudPostulacion.spoEstadoSolicitud = :estadoSolicitudPostulacion OR :estadoSolicitudPostulacion IS NULL)
+				  AND (solicitudGlobal.solNumeroRadicacion = :fechaExactaRadicacion OR :fechaExactaRadicacion IS NULL)
+				  AND solicitudGlobal.solNumeroRadicacion BETWEEN :fechaInicio AND :fechaFin
+		</query>
+	</named-native-query>
+
+    <named-native-query name="fovis.consultar.cantidadAvanceCalificacion">
+        <query>
+            SELECT cantidad.ciclo,
+                MAX(cantidad.total) AS total,
+                CASE WHEN MAX(cantidad.pendiente) IS NULL THEN 0 ELSE MAX(cantidad.pendiente) END AS pendiente
+            FROM (SELECT pofCicloAsignacion AS ciclo, COUNT (DISTINCT pofId) AS total, NULL AS pendiente
+                FROM PostulacionFOVIS
+                JOIN CicloAsignacion ON (pofCicloAsignacion = ciaId)
+                JOIN SolicitudPostulacion ON (pofId = spoPostulacionFovis)
+                JOIN SolicitudGestionCruce sgc ON (spoId = sgc.sgcSolicitudPostulacion AND sgc.sgcTipoCruce IN (:tipoCruce) AND sgc.sgcEstadoCruceHogar NOT IN (:estadoCruceHogar) AND sgc.sgcEstado = :estadoSolicitudGestionCruce)
+                LEFT JOIN SolicitudGestionCruce sgcr ON (spoId = sgcr.sgcSolicitudPostulacion AND sgcr.sgcTipoCruce IN (:tipoCruce) AND (sgcr.sgcEstadoCruceHogar IN (:estadoCruceHogar) AND sgcr.sgcEstado = :estadoSolicitudGestionCruce OR sgcr.sgcEstadoCruceHogar IS NULL))
+                WHERE pofEstadoHogar IN (:listaEstadoHogar)
+                AND sgcr.sgcId IS NULL
+                GROUP BY pofCicloAsignacion
+                UNION
+                SELECT pofCicloAsignacion , NULL, COUNT (DISTINCT pofId)
+                FROM PostulacionFOVIS
+                JOIN CicloAsignacion ON (pofCicloAsignacion = ciaId)
+                JOIN SolicitudPostulacion ON (pofId = spoPostulacionFovis)
+                JOIN EjecucionProcesoAsincrono ON (epsIdProceso = ciaId)
+                JOIN SolicitudGestionCruce sgc ON (spoId = sgc.sgcSolicitudPostulacion AND sgc.sgcTipoCruce IN (:tipoCruce) AND sgc.sgcEstadoCruceHogar NOT IN (:estadoCruceHogar) AND sgc.sgcEstado = :estadoSolicitudGestionCruce)
+                LEFT JOIN SolicitudGestionCruce sgcr ON (spoId = sgcr.sgcSolicitudPostulacion AND sgcr.sgcTipoCruce IN (:tipoCruce) AND (sgcr.sgcEstadoCruceHogar IN (:estadoCruceHogar) AND sgcr.sgcEstado = :estadoSolicitudGestionCruce OR sgcr.sgcEstadoCruceHogar IS NULL))
+                WHERE pofEstadoHogar IN (:listaEstadoHogar)
+                AND sgcr.sgcId IS NULL
+                AND pofPuntaje IS NOT NULL
+                AND pofFechaCalificacion IS NOT NULL
+                AND pofFechaCalificacion >= epsFechaInicio
+                AND epsProcesoCancelado IS NULL
+                AND epsRevisado = 0
+                AND epsTipoProceso = 'CALCULO_PUNTAJE'
+                GROUP BY pofCicloAsignacion) AS cantidad
+            WHERE cantidad.ciclo = :idCicloAsignacion
+            GROUP BY cantidad.ciclo
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Fovis.Consultar.Estado.Cruces.Hogar"
+						result-set-mapping="Fovis.Consultar.Estado.Cruces.Hogar.Mapping">
+        <description>Consulta que obtiene el estado de los cruces del hogar el tipo y numero de identificacion del jefe de hogar</description>
+        <query>
+            SELECT crd.*,
+                cru.*,
+                per.*,
+                sgc.sgcTipoCruce as tipoCruce,
+                CASE WHEN inh.inhTipoIntegrante IS NULL THEN 'JEFE_HOGAR' ELSE inh.inhTipoIntegrante END AS clasificacion,
+                sgc.sgcEstadoCruceHogar as estadoCruceHogar
+            FROM SolicitudGestionCruce sgc
+            JOIN Cruce cru ON sgc.sgcId = cru.cruSolicitudGestionCruce
+            JOIN CruceDetalle crd ON crd.crdCruce = cru.cruId
+            JOIN Persona per ON cru.cruPersona = per.perId
+            LEFT JOIN IntegranteHogar inh ON inh.inhPersona = per.perId
+            WHERE cru.cruNumeroPostulacion = :numeroRadicacion
+        </query>
+    </named-native-query>
+
+    <named-native-query name="FOVIS.consultar.solicitudPostulacion.by.idSolicitudGlobal.solicutGestionCruceFovis.solicutVerificacionFovis"
+        result-set-mapping="FOVIS.consultar.solicitudPostulacion.by.idSolicitudGlobal.solicutGestionCruceFovis.solicutVerificacionFovis.Mapping">
+        <description>Busca una solicitud de postulacion Fovis por el id de la solicitud global de gestion cruce fovis o de verificación fovis</description>
+        <query>
+            SELECT spo.*
+            FROM (SELECT spo.* , sgc.sgcSolicitudGlobal AS solGlobal, sgc.sgcTipoCruce AS tipoCruce, sgc.sgcId AS idSolGestion
+                FROM SolicitudGestionCruce sgc
+                JOIN SolicitudPostulacion spo ON sgc.sgcSolicitudPostulacion = spo.spoId
+                UNION
+                SELECT spo.*, svf.svfsolicitudGlobal, svf.svfTipo, svf.svfId
+                FROM SolicitudVerificacionFovis svf
+                JOIN PostulacionFOVIS pof ON svf.svfPostulacionFovis = pof.pofId
+                JOIN SolicitudPostulacion spo ON spo.spoPostulacionFOVIS = pof.pofId) spo
+            JOIN Solicitud sol ON spo.solGlobal = sol.solId
+            AND sol.solId = :idSolicitud
+        </query>
+    </named-native-query>
+
+    <named-native-query name="fovis.consultar.postulacion.info.basica"
+        result-set-mapping="fovis.consultar.postulacion.info.basica.Mapping">
+        <description>Consulta la información de la postulación fovis a partir de la informacion de radicacion y /o jefe hogar</description>
+        <query>
+            SELECT *
+            FROM PostulacionFOVIS pof
+            JOIN SolicitudPostulacion spo ON (pof.pofId = spo.spoPostulacionFOVIS)
+            JOIN Solicitud sol ON (spo.spoSolicitudGlobal = sol.solId)
+            JOIN JefeHogar jeh ON (pof.pofJefeHogar = jeh.jehId)
+            JOIN Afiliado afi ON (jeh.jehAfiliado = afi.afiId)
+            JOIN Persona per ON (afi.afiPersona = per.perId)
+            JOIN CicloAsignacion cia ON (pof.pofCicloAsignacion = cia.ciaId)
+            LEFT JOIN (SELECT sld.sldPostulacionFOVIS, MAX(vis.visId) AS codigoVisita
+                FROM SolicitudLegalizacionDesembolso sld
+                JOIN LegalizacionDesembolso lgd ON (sld.sldLegalizacionDesembolso = lgd.lgdId)
+                JOIN Visita vis ON (lgd.lgdVisita = vis.visId)
+                GROUP BY sld.sldPostulacionFOVIS) visit ON (visit.sldPostulacionFOVIS = pof.pofId)
+            LEFT JOIN (SELECT sld.sldPostulacionFovis, SUM(lgd.lgdMontoDesembolsado) AS montoDesembolsado
+                FROM SolicitudLegalizacionDesembolso sld
+                JOIN LegalizacionDesembolso lgd ON sld.sldLegalizacionDesembolso = lgd.lgdId
+                WHERE lgd.lgdSubsidioDesembolsado = 1
+                GROUP BY sld.sldPostulacionFovis) desem ON (desem.sldPostulacionFOVIS = pof.pofId)
+            WHERE (1 = (CASE WHEN :numeroRadicado IS NULL THEN 1 ELSE 0 END) OR (sol.solNumeroRadicacion = :numeroRadicado))
+            AND (1 = (CASE WHEN :tipoIdentificacion IS NULL THEN 1 ELSE 0 END) OR (per.perTipoIdentificacion = :tipoIdentificacion))
+            AND (1 = (CASE WHEN :numeroIdentificacion IS NULL THEN 1 ELSE 0 END) OR (per.perNumeroIdentificacion = :numeroIdentificacion))
+        </query>
+    </named-native-query>
+
+    <named-native-query name="fovis.consultar.postulacion.info.proyecto"
+        result-set-mapping="fovis.consultar.postulacion.info.proyecto.Mapping">
+        <description>Consulta la información del proyecto asociado a la postulación</description>
+        <query>
+            SELECT psv.*, ofe.*, per.*,
+                ubi.ubiDireccionFisica AS direccionProyecto
+            FROM ProyectoSolucionVivienda psv
+            JOIN Oferente ofe ON (psv.psvOferente = ofe.ofeId)
+            JOIN Persona per ON (ofe.ofePersona = per.perId)
+            LEFT JOIN Ubicacion ubi ON (psv.psvUbicacionProyecto = ubi.ubiId)
+            WHERE psv.psvId = :idProyecto
+        </query>
+    </named-native-query>
+
+    <named-native-query name="fovis.consultar.HistoricoAsignacionFOVIS">
+        <description>Consultar el historico de asignacion fovis</description>
+        <query>
+            SELECT pof.pofId,
+                cia.ciaNombre,
+                sol.solNumeroRadicacion,
+                per.perTipoIdentificacion,
+                per.perNumeroIdentificacion,
+                CONCAT(per.perPrimerNombre, ' ',
+                    CASE WHEN per.perSegundoNombre IS NOT NULL THEN CONCAT(per.perSegundoNombre, ' ') ELSE '' END,
+                    per.perPrimerApellido, ' ',
+                    CASE WHEN per.perSegundoApellido IS NOT NULL THEN per.perSegundoApellido ELSE '' END) AS nombreCompleto,
+                pof.pofModalidad,
+                caf.cafPuntaje,
+                pof.pofValorSFVSolicitado,
+                pas.pasDocumentoActaAsignacion,
+                saf.safUsuario,
+                pas.pasResultadoAsignacion,
+                aaf.aafFechaActaAsignacionFovis,
+                saf.safFechaAceptacion,
+                pas.pasPrioridadAsignacion,
+                pof.pofInfoAsignacion,
+                pas.pasRecursoPrioridad
+            FROM SolicitudAsignacion saf
+            JOIN Solicitud sol ON (saf.safSolicitudGlobal = sol.solId)
+            JOIN ActaAsignacionFovis aaf ON (aaf.aafSolicitudAsignacion = saf.safId AND aaf.aafIdentificadorDocumentoConsolidado IS NOT NULL)
+            JOIN PostulacionAsignacion pas ON (saf.safId = pas.pasSolicitudAsignacion)
+            JOIN CalificacionPostulacion caf ON (pas.pasCalificacionPostulacion = caf.cafId)
+            JOIN PostulacionFOVIS pof ON (pas.pasPostulacionFovis = pof.pofId)
+            JOIN CicloAsignacion cia ON (pas.pasCicloAsignacion = cia.ciaId)
+            JOIN SolicitudPostulacion spo ON (spo.spoPostulacionFovis = pof.pofId)
+            JOIN Solicitud solpof ON (spo.spoSolicitudGlobal = solpof.solId)
+            JOIN JefeHogar jeh ON (pof.pofJefeHogar = jeh.jehId)
+            JOIN Afiliado afi ON (jeh.jehAfiliado = afi.afiId)
+            JOIN Persona per ON (afi.afiPersona = per.perId)
+            WHERE sol.solResultadoProceso NOT IN ('CANCELADA', 'DESISTIDA')
+            AND solpof.solNumeroRadicacion = :numeroRadicacion
+        </query>
+    </named-native-query>
+
+    <named-native-query name="fovis.consultar.cantidad.procesos.asignacion.by.id.postulacion">
+        <query>
+            SELECT COUNT(pas.pasId) AS cantidadAsignaciones
+            FROM SolicitudAsignacion saf
+            JOIN Solicitud sol ON (saf.safSolicitudGlobal = sol.solId)
+            JOIN ActaAsignacionFovis aaf ON (aaf.aafSolicitudAsignacion = saf.safId AND aaf.aafIdentificadorDocumentoConsolidado IS NOT NULL)
+            JOIN PostulacionAsignacion pas ON (saf.safId = pas.pasSolicitudAsignacion)
+            WHERE sol.solResultadoProceso = 'APROBADA'
+            AND saf.safEstadoSolicitudAsignacion = 'CERRADA'
+            AND pas.pasPostulacionFovis = :idPostulacion
+        </query>
+    </named-native-query>
+
+    <named-native-query name="fovis.consultar.info.proyecto.by.idPostulacion"
+        result-set-mapping="fovis.consultar.info.proyecto.by.idPostulacion.Mapping">
+        <query>
+            SELECT psv.*, ubiPro.*
+            FROM ProyectoSolucionVivienda psv
+            JOIN PostulacionFovis pof ON (psv.psvId = pof.pofProyectoSolucionVivienda)
+            LEFT JOIN Ubicacion ubiPro ON (psv.psvUbicacionProyecto = ubiPro.ubiId)
+            WHERE pof.pofId = :idPostulacion
+        </query>
+    </named-native-query>
+
+    <named-native-query name="fovis.consultar.info.miembros.hogar.by.idPostulacion"
+        result-set-mapping="fovis.consultar.info.miembros.hogar.by.idPostulacion.Mapping">
+        <query>
+            SELECT *
+            FROM (SELECT jeh.jehId AS idJefeHogar,
+                NULL AS idIntegranteHogar,
+                jeh.jehEstadoHogar AS estadoHogar,
+                jeh.jehIngresoMensual AS ingresosMensuales,
+                per.perTipoIdentificacion AS tipoIdentificacion,
+                per.perNumeroIdentificacion AS numeroIdentificacion,
+                per.perRazonSocial AS nombresApellidos,
+                'JEFE_HOGAR' AS parentesco,
+                pof.pofId AS idPostulacion
+            FROM JefeHogar jeh
+            JOIN Afiliado Afi ON (jeh.jehAfiliado = afi.afiId)
+            JOIN Persona per ON (afi.afiPersona = per.perId)
+            JOIN PostulacionFOVIS pof ON (jeh.jehId = pof.pofJefeHogar)
+            UNION
+            SELECT inh.inhJefeHogar,
+                inh.inhId,
+                inh.inhEstadoHogar,
+                inh.inhSalarioMensual,
+                per.perTipoIdentificacion,
+                per.perNumeroIdentificacion,
+                per.perRazonSocial,
+                inh.inhTipoIntegrante,
+                inh.inhPostulacionFovis
+            FROM  IntegranteHogar inh
+            JOIN Persona per ON (inh.inhPersona = per.perId))mhg
+            WHERE mhg.idPostulacion = :idPostulacion
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Fovis.Consultar.Hogares.Calificacion.Postulacion"
+        result-set-mapping="entity.postulacion.fovis.mapping">
+        <description>Consulta que obtiene la lista de hogares que aplican para cómputo de calificación de postulación FOVIS</description>
+        <query>
+            SELECT DISTINCT pof.*
+            FROM PostulacionFovis pof
+            JOIN CicloAsignacion cia ON (pof.pofCicloAsignacion = cia.ciaId)
+            JOIN SolicitudPostulacion spo ON (pof.pofId = spo.spoPostulacionFovis)
+            JOIN SolicitudGestionCruce sgc ON (spo.spoId = sgc.sgcSolicitudPostulacion AND sgc.sgcEstadoCruceHogar NOT IN (:estadoCruceHogar) AND sgc.sgcEstado = :estadoSolicitudGestionCruce)
+            LEFT JOIN SolicitudGestionCruce sgcr ON (spo.spoId = sgcr.sgcSolicitudPostulacion AND (sgcr.sgcEstadoCruceHogar IN (:estadoCruceHogar) AND sgcr.sgcEstado = :estadoSolicitudGestionCruce OR sgcr.sgcEstadoCruceHogar IS NULL))
+			LEFT JOIN Solicitud sol ON solId = sgcr.sgcSolicitudGlobal
+			WHERE pofEstadoHogar IN (:listaEstadoHogar)
+            AND cia.ciaId = :idCicloAsignacion
+			AND (sgcr.sgcId IS NULL OR (sol.solInstanciaProceso IS NOT NULL AND sgcr.sgcId IS NOT NULL ))
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Fovis.Consultar.Hogares.Calificacion.Postulacion.NovedadReclamanteProcedente"
+        result-set-mapping="entity.postulacion.fovis.mapping">
+        <description>Busca las postulaciones con Reclamaciones procedentes</description>
+        <query>
+            SELECT DISTINCT pof.*
+            FROM PostulacionFovis pof
+            JOIN CicloAsignacion cia ON (pof.pofCicloAsignacion = cia.ciaId)
+            JOIN SolicitudPostulacion spo ON (pof.pofId = spo.spoPostulacionFovis)
+            JOIN SolicitudGestionCruce sgc ON (spo.spoId = sgc.sgcSolicitudPostulacion AND sgc.sgcTipoCruce = :tipoCruce AND sgc.sgcEstadoCruceHogar NOT IN (:estadoCruceHogar) AND sgc.sgcEstado = :estadoSolicitudGestionCruce)
+            LEFT JOIN SolicitudGestionCruce sgcr ON (spo.spoId = sgcr.sgcSolicitudPostulacion AND sgcr.sgcTipoCruce = :tipoCruce AND (sgcr.sgcEstadoCruceHogar IN (:estadoCruceHogar) AND sgcr.sgcEstado = :estadoSolicitudGestionCruce OR sgcr.sgcEstadoCruceHogar IS NULL))
+            JOIN SolicitudNovedadPersonaFovis spf ON (pof.pofId = spf.spfPostulacionFovis)
+            JOIN SolicitudNovedadFovis snf ON (spf.spfSolicitudNovedadFovis = snf.snfId)
+            JOIN Solicitud sol ON (snf.snfSolicitudGlobal = sol.solId)
+            WHERE pofEstadoHogar IN (:listaEstadoHogar)
+            AND cia.ciaId = :idCicloAsignacion
+            AND sgcr.sgcId IS NULL
+            AND sol.solTipoTransaccion = 'HABILITACION_POSTULACION_RECHAZADA'
+            AND snf.snfEstadoSolicitud = 'NOV_FOVIS_CERRADA'
+            AND sol.solResultadoProceso = 'APROBADA'
+            AND pof.pofMotivoHabilitacion = 'RECLAMACION_PROCEDENTE'
+        </query>
+    </named-native-query>
+
+    <named-native-query name="fovis.consultar.info.oferente.by.idPostulacion"
+        result-set-mapping="fovis.consultar.info.oferente.by.idPostulacion.mapping">
+        <query>
+            SELECT *
+            FROM PostulacionFOVIS pof
+            JOIN Oferente ofe ON (pof.pofOferente = ofe.ofeId)
+            JOIN Persona per ON (ofe.ofePersona = per.perId)
+            LEFT JOIN Empresa emp ON (ofe.ofeEmpresa = emp.empId)
+            LEFT JOIN Persona perEmp ON (emp.empPersona = perEmp.perId)
+            LEFT JOIN ARL arl ON (emp.empArl = arl.arlId)
+            LEFT JOIN CodigoCIIU cii ON (emp.empCodigoCIIU = cii.ciiId)
+            LEFT JOIN Ubicacion ubi ON (per.perUbicacionPrincipal = ubi.ubiId)
+            LEFT JOIN Municipio mun ON (ubi.ubiMunicipio = mun.munId)
+            WHERE pof.pofId = :idPostulacion
+        </query>
+    </named-native-query>
+   <!-- 49270BORRADOKT comentado ya que el glpi 49270 contempla la tabla LegalizacionDesembolosoProveedor pero esta nunca se inserta y no se utiliza
+    <named-native-query name="fovis.consultar.info.proveedor.by.idPostulacion">
+        <query>
+            select
+			leg.id,leg.idProveedor,leg.idPersona,leg.sldId,leg.numeroRadicacion,leg.valorADesembolsar,leg.porcentajeASembolsar,leg.fecha,
+			perNumeroIdentificacion,perRazonSocial,perTipoIdentificacion,perPrimerNombre,perSegundoNombre,perPrimerApellido,perSegundoApellido,
+			provEstado,provCuentaBancaria,
+			banCodigoPILA,banNombre,banMedioPago,banCodigo,
+			provTipoCuenta,provNumeroCuenta,provTipoIdentificacionTitular,provNumeroIdentificacionTitular,provDigitoVerificacionTitular,
+			provNombreTitularCuenta,provConcepto
+			from legalizacionDesembolosoProveedor leg
+			join proveedor prov on prov.provId = leg.idProveedor
+			join persona on prov.provPersona = persona.perId
+			join Banco on prov.provBanco = banco.banId
+			WHERE numeroRadicacion = :numeroRadicacion
+        </query>
+    </named-native-query>-->
+
+    <named-native-query name="fovis.consultar.inhabilidad.persona.postulacion"
+        result-set-mapping="fovis.consultar.inhabilidad.persona.postulacion.Mapping">
+        <description> Consula  inhabilidad al subsidio fovis de las personas de una postulación </description>
+        <query>
+            SELECT *
+            FROM (SELECT isf.*, afi.afiPersona AS idPersona, pof.pofId AS idPostulacion
+                FROM InhabilidadSubsidioFovis isf
+                JOIN JefeHogar jeh ON (isf.isfJefeHogar = jeh.jehId)
+                JOIN Afiliado afi ON (jeh.jehAfiliado = afi.afiId)
+                JOIN PostulacionFovis pof ON (jeh.jehId = pof.pofJefeHogar)
+                UNION
+                SELECT isf.*, inh.inhPersona, inh.inhPostulacionFovis
+                FROM InhabilidadSubsidioFovis isf
+                JOIN IntegranteHogar inh ON (isf.isfIntegranteHogar = inh.inhId)) inhabilidadIntegrante
+            WHERE inhabilidadIntegrante.isfInhabilitadoParaSubsidio = '1'
+            AND inhabilidadIntegrante.idPostulacion = :idPostulacion
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Parametrizacion.CicloAsignacion.consultarCiclosAsignacionPorModalidad"
+        result-set-mapping="Parametrizacion.CicloAsignacion.consultarCiclosAsignacionPorModalidad.Mapping">
+        <description> Consulta los ciclos de asignación de acuerdo a una modalidad </description>
+        <query>
+            SELECT *
+			FROM CicloAsignacion
+			JOIN CicloModalidad ON cmoCicloAsignacion = ciaId
+			WHERE ciaCicloActivo = 1
+				AND ciaEstadoCicloAsignacion = 'VIGENTE'
+				AND cmoModalidad = :modalidad
+        </query>
+    </named-native-query>
+
+    <named-native-query name="Fovis.jefeHogar.HogarPerdioSubsidioNoPago">
+		<query>
+			SELECT DISTINCT pof.pofId
+			FROM Persona per
+			INNER JOIN Afiliado afi ON per.perId = afi.afiPersona
+			INNER JOIN JefeHogar jeh ON afi.afiId = jeh.jehAfiliado
+			INNER JOIN PostulacionFOVIS pof ON jeh.jehId = pof.pofJefeHogar
+			INNER JOIN PostulacionAsignacion pas ON pas.pasPostulacionFovis = pof.pofId
+			WHERE per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+			AND pof.pofHogarPerdioSubsidioNoPago = 1
+
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="fovis.consultar.SMMLV.anio">
+		<query>
+			SELECT p.pafValorString
+			FROM ParametrizacionFOVIS p
+			WHERE p.pafValorNumerico = :anio
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Parametrizacion.PostualcionFOVIS.postulacionesParaControlInterno"
+						result-set-mapping="Parametrizacion.PostualcionFOVIS.postulacionesParaControlInterno.Mapping">
+		<query>
+			SELECT DISTINCT
+			pof.*, spo.*, afi.*,
+			sol.solNumeroRadicacion as radicado,
+			sol.solFechaRadicacion as fechaRadicado,
+			pof.pofModalidad as modalidad,
+			ped.*, jeh.*
+			FROM PostulacionFOVIS pof
+			JOIN SolicitudPostulacion spo ON spo.spoPostulacionFOVIS = pof.pofId
+			JOIN Solicitud sol ON sol.solId = spo.spoSolicitudGlobal
+			JOIN JefeHogar jeh ON jeh.jehId = pof.pofJefeHogar
+			JOIN Afiliado afi ON afi.afiId = jeh.jehAfiliado
+			JOIN PersonaDetalle ped ON ped.pedPersona = afi.afiPersona
+			LEFT JOIN SolicitudVerificacionFovis svf ON svf.svfPostulacionFOVIS = pof.pofId
+			WHERE pof.pofCicloAsignacion = :idCicloAsignacion
+			AND (
+			(pof.pofEstadoHogar = :estadoHogar AND spo.spoEstadoSolicitud = :estadoPostulacion)
+			OR
+			(pof.pofEstadoHogar IN (:estadosHogar) AND
+			(svf.svfEstadoSolicitud IS NULL OR svf.svfEstadoSolicitud != :estadoSolicitudVerificacion)
+			)
+			)
+			AND NOT EXISTS (
+			SELECT 1
+			FROM SolicitudVerificacionFovis svfDos
+			WHERE svfDos.svfPostulacionFOVIS = pof.pofId
+			AND svfDos.svfEstadoSolicitud = :estadoSolicitudVerificacion
+			)
+			ORDER BY pof.pofId ASC
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="fovis.consultar.recursos.prioridad">
+		<query>
+			SELECT lrp.lrpRecursoPrioridad
+			FROM ListaRecursosPrioridad lrp
+			WHERE lrp.lrpEstado = :estado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="fovis.consultar.recursos.prioridad.postulacion">
+		<query>
+			SELECT pa.pasRecursoPrioridad
+			FROM PostulacionAsignacion pa
+			WHERE pa.pasPostulacionFovis = :idPostulacion
+			AND pa.pasSolicitudAsignacion = :idSolicitudAsignacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="fovis.consultar.tareas.heredadas.solicitud"
+						result-set-mapping="fovis.consultar.tareas.heredadas.solicitud.cruce.Mapping">
+		<query>
+			SELECT DISTINCT
+			sol.solId					AS idSolicitud,
+			sp.solNumeroRadicacion		AS numeroRadicado,
+			sol.solNumeroRadicacion		AS numeroRadicadoCruce,
+			perTipoIdentificacion		AS tipoIdentificacion,
+			perNumeroIdentificacion 	AS numeroIdentificacion,
+			perRazonSocial				AS nombres,
+			sp.solFechaRadicacion		AS fechaRadicacion,
+			sol.solTipoTransaccion		AS tipoTransaccion,
+			svfResultado			    AS estadoCruce,
+			ciaNombre					AS cicloAsignacion,
+			sp.solTipoTransaccion		AS tipoTransaccionPostulacion
+			FROM solicitud sol
+			INNER JOIN solicitudVerificacionFovis ON sol.solId = svfSolicitudGlobal
+			INNER JOIN SolicitudPostulacion ON svfPostulacionFOVIS = spoPostulacionFOVIS
+			INNER JOIN Solicitud sp on sp.solId = spoSolicitudGlobal
+			INNER JOIN	PostulacionFOVIS ON pofId = spoPostulacionFOVIS
+			INNER JOIN JefeHogar ON pofJefeHogar = jehId
+			INNER JOIN Afiliado ON jehAfiliado = afiId
+			INNER JOIN Persona ON afiPersona = perId
+			INNER JOIN CicloAsignacion ON pofCicloAsignacion = ciaId
+			WHERE sol.solNumeroRadicacion LIKE :numeroRadicacion||'%'
+			ORDER BY svfResultado ASC
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="fovis.consultar.redireccionamiento.tarea"
+						result-set-mapping="fovis.consultar.redireccionamiento.tarea.Mapping">
+		<query>
+			SELECT top 1
+			itatarea as idTarea,
+			'ruleNav' 			as ruleNav,
+			solInstanciaProceso as idInstanciaProceso,
+			GETDATE() 			as fechaActivacion,
+			solid 				as idSolicitud,
+			solNumeroRadicacion as numeroRadicado,
+			solTipoTransaccion 	as tipoTransaccion
+			FROM solicitud
+			LEFT JOIN InicioTarea ON itaproceso = solInstanciaProceso
+			WHERE solNumeroRadicacion = :numeroRadicacion
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="fovis.consultar.tareas.heredadas.solicitud.cruce"
+						result-set-mapping="fovis.consultar.tareas.heredadas.solicitud.cruce.Mapping">
+		<query>
+			SELECT DISTINCT
+			sol.solId AS idSolicitud,
+			sp.solNumeroRadicacion AS numeroRadicado,
+			sol.solNumeroRadicacion AS numeroRadicadoCruce,
+			perTipoIdentificacion AS tipoIdentificacion,
+			perNumeroIdentificacion AS numeroIdentificacion,
+			perRazonSocial AS nombres,
+			sp.solFechaRadicacion AS fechaRadicacion,
+			sol.solTipoTransaccion AS tipoTransaccionTarea,
+			sp.solTipoTransaccion AS tipoTransaccion,
+			CASE
+			WHEN cruEstadoCruce = 'NUEVO' THEN ''
+			ELSE cruEstadoCruce
+			END AS estadoCruce,
+			ciaNombre AS cicloAsignacion,
+			sp.solTipoTransaccion AS tipoTransaccionPostulacion
+			FROM solicitud sol
+			INNER JOIN SolicitudGestionCruce ON sol.solId = sgcSolicitudGlobal
+			INNER JOIN SolicitudPostulacion ON sgcSolicitudPostulacion = spoId
+			INNER JOIN Solicitud sp ON sp.solId = spoSolicitudGlobal
+			INNER JOIN Cruce ON cruSolicitudGestionCruce = sgcid
+			INNER JOIN PostulacionFOVIS ON pofId = spoPostulacionFOVIS
+			INNER JOIN JefeHogar ON pofJefeHogar = jehId
+			INNER JOIN Afiliado ON jehAfiliado = afiId
+			INNER JOIN Persona ON afiPersona = perId
+			INNER JOIN CicloAsignacion ON pofCicloAsignacion = ciaId
+			WHERE sol.solNumeroRadicacion LIKE :numeroRadicacion||'%'
+			AND (
+			cruEstadoCruce = 'CRUCE_RATIFICADO' OR
+			NOT EXISTS (
+			SELECT 1
+			FROM Cruce c
+			WHERE c.cruSolicitudGestionCruce = sgcid
+			AND c.cruEstadoCruce = 'CRUCE_RATIFICADO'
+			)
+			)
+			ORDER BY
+			CASE
+			WHEN cruEstadoCruce = 'NUEVO' THEN ''
+			ELSE cruEstadoCruce
+			END ASC;
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+    <named-native-query name="fovis.consultar.solicitud"
+                        result-set-mapping="fovis.consultar.solicitud.Mapping">
+        <query>
+            SELECT *
+            FROM solicitud
+            WHERE solInstanciaProceso = :instanciaProceso
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-native-query>
+
+	<named-native-query name="fovis.consultar.postulaciones.por.ciclo"
+						result-set-mapping="Parametrizacion.PostualcionFOVIS.postulacionesParaControlInterno.Mapping">
+		<query>
+			SELECT DISTINCT
+			pof.*, spo.*, afi.*,
+			sol.solNumeroRadicacion as radicado,
+			sol.solFechaRadicacion as fechaRadicado,
+			pof.pofModalidad as modalidad,
+			ped.*, jeh.*
+			FROM PostulacionFOVIS pof
+			JOIN SolicitudPostulacion spo ON spo.spoPostulacionFOVIS = pof.pofId
+			JOIN Solicitud sol ON sol.solId = spo.spoSolicitudGlobal
+			JOIN JefeHogar jeh ON jeh.jehId = pof.pofJefeHogar
+			JOIN Afiliado afi ON afi.afiId = jeh.jehAfiliado
+			JOIN PersonaDetalle ped ON ped.pedPersona = afi.afiPersona
+			WHERE pof.pofCicloAsignacion = :idCicloAsignacion
+			ORDER BY pof.pofId ASC
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="fovis.consultar.novedades.rango.fecha"
+						result-set-mapping="entity.postulacion.fovis.mapping">
+		<query>
+			SELECT distinct
+			pof.*
+			FROM postulacionfovis pof
+			JOIN SolicitudNovedadPersonaFovis spf ON spf.spfPostulacionFovis = pof.pofId
+			JOIN SolicitudNovedadFovis snf ON spf.spfSolicitudNovedadFovis = snf.snfId
+			JOIN Solicitud solnf ON snf.snfSolicitudGlobal = solnf.solId
+			WHERE pofcicloAsignacion = :idCicloAsignacion AND solnf.solfecharadicacion BETWEEN :fechaInicio AND :fechaFin
+			AND snfEstadoSolicitud = 'NOV_FOVIS_CERRADA'
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="fovis.consultar.resultado.ejecucion">
+		<query>
+			SELECT rep.repfechaejecucion
+			FROM ResultadoEjecucionProgramada rep
+			WHERE rep.repid = :id
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Fovis.Consultar.Hogares.Calificacion.Postulacion.ejecucion"
+						result-set-mapping="entity.postulacion.fovis.mapping">
+		<description>Consulta que obtiene la lista de hogares que aplican para cómputo de calificación de postulación FOVIS</description>
+		<query>
+			SELECT DISTINCT pof.*
+			FROM PostulacionFovis pof
+			JOIN CicloAsignacion cia ON (pof.pofCicloAsignacion = cia.ciaId)
+			JOIN SolicitudPostulacion spo ON (pof.pofId = spo.spoPostulacionFovis)
+			JOIN SolicitudGestionCruce sgc ON (spo.spoId = sgc.sgcSolicitudPostulacion AND sgc.sgcEstadoCruceHogar NOT IN (:estadoCruceHogar) AND sgc.sgcEstado = :estadoSolicitudGestionCruce)
+			LEFT JOIN SolicitudGestionCruce sgcr ON (spo.spoId = sgcr.sgcSolicitudPostulacion AND (sgcr.sgcEstadoCruceHogar IN (:estadoCruceHogar) AND sgcr.sgcEstado = :estadoSolicitudGestionCruce OR sgcr.sgcEstadoCruceHogar IS NULL))
+			LEFT JOIN Solicitud sol ON solId = sgcr.sgcSolicitudGlobal
+			WHERE pofEstadoHogar IN (:listaEstadoHogar)
+			AND cia.ciaId = :idCicloAsignacion
+			AND (sgcr.sgcId IS NULL OR (sol.solInstanciaProceso IS NOT NULL AND sgcr.sgcId IS NOT NULL ))
+			AND pof.pofPuntaje IS NOT NULL
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Fovis.Consultar.Hogares.Calificacion.Postulacion.Rango"
+						result-set-mapping="entity.postulacion.fovis.mapping">
+		<description>Consulta que obtiene la lista de hogares que aplican para cómputo de calificación de postulación FOVIS</description>
+		<query>
+			SELECT DISTINCT pof.*
+			FROM PostulacionFovis pof
+			JOIN CicloAsignacion cia ON (pof.pofCicloAsignacion = cia.ciaId)
+			JOIN SolicitudPostulacion spo ON (pof.pofId = spo.spoPostulacionFovis)
+			JOIN SolicitudGestionCruce sgc ON (spo.spoId = sgc.sgcSolicitudPostulacion AND sgc.sgcEstadoCruceHogar NOT IN (:estadoCruceHogar) AND sgc.sgcEstado = :estadoSolicitudGestionCruce)
+			LEFT JOIN SolicitudGestionCruce sgcr ON (spo.spoId = sgcr.sgcSolicitudPostulacion AND (sgcr.sgcEstadoCruceHogar IN (:estadoCruceHogar) AND sgcr.sgcEstado = :estadoSolicitudGestionCruce OR sgcr.sgcEstadoCruceHogar IS NULL))
+			LEFT JOIN Solicitud sol ON solId = sgcr.sgcSolicitudGlobal
+			WHERE pofEstadoHogar IN (:listaEstadoHogar)
+			AND cia.ciaId = :idCicloAsignacion
+			AND (sgcr.sgcId IS NULL OR (sol.solInstanciaProceso IS NOT NULL AND sgcr.sgcId IS NOT NULL ))
+			AND (pof.pofFechaCalificacion NOT BETWEEN :fechaInicio AND :fechaFin OR pofPuntaje IS NULL)
+		</query>
+	</named-native-query>
+
+	<named-query
+			name="Parametrizacion.consultar.cicloAsignacion">
+		<description>Busca los ciclos de asignación Activos para el estado a consultar</description>
+		<query>
+			SELECT ca
+			FROM CicloAsignacion ca
+			WHERE ca.cicloActivo = TRUE
+			AND ca.estadoCicloAsignacion != :estadoCicloAsignacion
+			AND ca.fechaAsignacionPlanificada = :fecha
+		</query>
+	</named-query>
+
+	<named-query
+			name="Parametrizacion.consultar.cicloAsignacion.ejecucion">
+		<description>Busca los ciclos de asignación Activos para el estado a consultar</description>
+		<query>
+			SELECT ca
+			FROM CicloAsignacion ca
+			WHERE ca.cicloActivo = TRUE
+			AND ca.estadoCicloAsignacion != :estadoCicloAsignacion
+		</query>
+	</named-query>
+
+	<named-query
+			name="Consultar.ciclo.calificado.48horas">
+		<description>Busca si el ciclo fue calificado en las ultimas 48 horas </description>
+		<query>
+			SELECT count(cafId) FROM CalificacionPostulacion
+			WHERE cafCicloAsignacion = :idCicloAsignacion
+			AND cafFechaCalificacion BETWEEN :fechaInicio AND :fechaFin
+		</query>
+	</named-query>
+
+	<named-query
+			name="Parametrizacion.consultar.cicloAsignacion.modalidad"> 
+		<description>Busca los ciclos de asignación Activos para el estado a consultar</description> 
+		<query>
+			SELECT DISTINCT ca
+			FROM CicloAsignacion ca, CicloModalidad cm 
+			WHERE ca.idCicloAsignacion = cm.idCicloAsignacion 
+			AND ca.estadoCicloAsignacion != :estadoCicloAsignacion
+			AND cm.modalidad = :modalidad
+		</query>
+	</named-query>
+
+	<named-stored-procedure-query
+			name="stored.procedure.fovis.consultar.novedades.pendientes"
+			procedure-name="dbo.USP_Calculo_Novedades_Fovis_Pendientes">
+		<parameter class="java.math.BigInteger" mode="IN" name="idCicloAsignacion"/>
+		<result-set-mapping>entity.postulacion.fovis.mapping</result-set-mapping>
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query
+			name="stored.procedure.fovis.consultar.informacionArhivoCruces"
+			procedure-name="dbo.SP_FOVIS_Procesos_archivo_Cruces">
+		<parameter class="java.math.BigInteger" mode="IN" name="idCargue"/>
+
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query
+			name="stored.procedure.fovis.consultar.ingresosHogar"
+			procedure-name="dbo.USP_REP_CalcularIngresosFovis">
+		<parameter class="java.math.BigInteger" mode="IN" name="idPostulacion"/>
+		<parameter class="java.lang.String" mode="IN" name="tipoIdentificacion"/>
+		<parameter class="java.lang.String" mode="IN" name="numeroIdentificacion"/>
+	</named-stored-procedure-query>
+
+	<sql-result-set-mapping name="stored.procedure.fovis.consultar.ingresosHogar.mapping">
+		<column-result name="sumatoriaHogar" class="java.math.BigDecimal"/>
+	</sql-result-set-mapping>
+
+	<named-native-query name="consulta.Modalidad.En.Ciclo.Vigente">
+		<query>
+			SELECT ca.* FROM CicloAsignacion ca
+			INNER JOIN CicloModalidad cm on cm.cmoCicloAsignacion =ca.ciaid
+			WHERE ca.ciaEstadoCicloAsignacion = 'VIGENTE' and cm.cmoModalidad = 'ADQUISICION_VIVIENDA_NUEVA_RURAL'
+        </query>
+	</named-native-query>
+
+	<named-native-query name="Fovis.ConsultarPostulacionesCrucesInternos"
+						result-set-mapping="fovis.postulacionesParaCrucesInternos.Mapping">
+		<description>Consulta las postulaciones por ciclo.</description>
+		<query>
+			SELECT DISTINCT pof.*, spo.*, afi.*, sol.solNumeroRadicacion as radicado, perDet.*, jeh.*, sgc.sgcFechaValidacionCruce as fecha
+			FROM PostulacionFOVIS pof
+			INNER JOIN SolicitudPostulacion spo ON pof.pofid = spo.spopostulacionfovis
+			INNER JOIN Solicitud sol ON spo.spoSolicitudGlobal = sol.solid
+			INNER JOIN JefeHogar jeh ON pof.pofjefeHogar = jeh.jehid
+			INNER JOIN Afiliado afi ON jeh.jehAfiliado = afi.afiid
+			INNER JOIN PersonaDetalle perDet ON afi.afiPersona = perDet.pedPersona
+			LEFT JOIN SolicitudGestionCruce sgc ON sgc.sgcsolicitudPostulacion = spo.spoId
+			AND (sgc.sgctipoCruce != 'EXTERNO' OR sgc.sgctipoCruce IS NULL)
+			AND sgc.sgcFechaValidacionCruce = (
+			SELECT MAX(sgcInner.sgcFechaValidacionCruce)
+			FROM SolicitudGestionCruce sgcInner
+			WHERE sgcInner.sgcsolicitudPostulacion = sgc.sgcsolicitudPostulacion
+			)
+			WHERE
+			pof.pofCicloAsignacion = :idCicloAsignacion AND
+			pof.pofEstadoHogar IN (:estadosHogar)
+			AND spo.spoId NOT IN (
+			SELECT sgcSolicitudPostulacion
+			FROM SolicitudGestionCruce sgc
+			WHERE sgc.sgcTipoCruce = 'INTERNO' AND sgcEstado != 'CERRADA'
+			)
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+
+    <!-- Result Mapping -->
+    <sql-result-set-mapping name="Fovis.Consultar.Estado.Cruces.Hogar.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.Cruce"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.CruceDetalle"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+        <column-result name="tipoCruce" class="java.lang.String"/>
+        <column-result name="clasificacion" class="java.lang.String"/>
+        <column-result name="estadoCruceHogar" class="java.lang.String"/>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="FOVIS.consultar.solicitudPostulacion.by.idSolicitudGlobal.solicutGestionCruceFovis.solicutVerificacionFovis.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.SolicitudPostulacion"></entity-result>
+        <column-result name="tipoCruce"  class="java.lang.String"/>
+        <column-result name="idSolGestion"  class="java.math.BigInteger"/>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="fovis.consultar.postulacion.info.basica.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.PostulacionFOVIS"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.SolicitudPostulacion"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.fovis.parametricas.CicloAsignacion"></entity-result>
+        <column-result name="codigoVisita" class="java.math.BigDecimal"/>
+        <column-result name="montoDesembolsado" class="java.math.BigDecimal"/>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="fovis.consultar.postulacion.info.proyecto.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.ProyectoSolucionVivienda"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+        <column-result name="direccionProyecto" class="java.lang.String"/>
+    </sql-result-set-mapping>
+    
+    <sql-result-set-mapping name="fovis.consultar.info.proyecto.by.idPostulacion.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.ProyectoSolucionVivienda"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.core.Ubicacion"></entity-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="fovis.consultar.info.miembros.hogar.by.idPostulacion.Mapping">
+        <constructor-result target-class="com.asopagos.dto.fovis.MiembroHogarDTO">
+            <column name="estadoHogar" />
+            <column name="idIntegranteHogar" class="java.lang.Long"/>
+            <column name="idJefeHogar" class="java.lang.Long"/>
+            <column name="ingresosMensuales" class="java.math.BigDecimal"/>
+            <column name="nombresApellidos" />
+            <column name="numeroIdentificacion" />
+            <column name="parentesco" />
+            <column name="tipoIdentificacion" />
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="entity.postulacion.fovis.mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.PostulacionFOVIS"></entity-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="fovis.consultar.info.oferente.by.idPostulacion.mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.Oferente"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Empresa"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.core.Ubicacion"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.transversal.core.CodigoCIIU"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.transversal.core.Municipio"></entity-result>
+    </sql-result-set-mapping>
+    
+    <!--<sql-result-set-mapping name="fovis.consultar.info.proveedor.by.idPostulacion.mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.Proveedor"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Persona"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.personas.Empresa"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.ccf.core.Ubicacion"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.transversal.core.CodigoCIIU"></entity-result>
+        <entity-result entity-class="com.asopagos.entidades.transversal.core.Municipio"></entity-result>
+    </sql-result-set-mapping>-->
+
+    <sql-result-set-mapping name="fovis.consultar.inhabilidad.persona.postulacion.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.InhabilidadSubsidioFovis"></entity-result>
+    </sql-result-set-mapping>
+    
+    <sql-result-set-mapping name="Parametrizacion.CicloAsignacion.consultarCiclosAsignacionPorModalidad.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.fovis.parametricas.CicloAsignacion"></entity-result>
+    </sql-result-set-mapping>
+
+	<sql-result-set-mapping name="Parametrizacion.PostualcionFOVIS.postulacionesParaControlInterno.Mapping">
+		<entity-result entity-class="com.asopagos.entidades.ccf.fovis.PostulacionFOVIS"></entity-result>
+		<entity-result entity-class="com.asopagos.entidades.ccf.fovis.SolicitudPostulacion"></entity-result>
+		<entity-result entity-class="com.asopagos.entidades.ccf.personas.Afiliado"></entity-result>
+		<column-result name="radicado" class="java.lang.String"/>
+		<column-result name="fechaRadicado" class="java.util.Date"/>
+		<column-result name="modalidad" class="java.lang.String"/>
+		<entity-result entity-class="com.asopagos.entidades.ccf.personas.PersonaDetalle"></entity-result>
+		<entity-result entity-class="com.asopagos.entidades.ccf.fovis.JefeHogar"></entity-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="fovis.postulacionesParaCrucesInternos.Mapping">
+		<entity-result entity-class="com.asopagos.entidades.ccf.fovis.PostulacionFOVIS"></entity-result>
+		<entity-result entity-class="com.asopagos.entidades.ccf.fovis.SolicitudPostulacion"></entity-result>
+		<entity-result entity-class="com.asopagos.entidades.ccf.personas.Afiliado"></entity-result>
+		<column-result name="radicado" class="java.lang.String"/>
+		<entity-result entity-class="com.asopagos.entidades.ccf.personas.PersonaDetalle"></entity-result>
+		<entity-result entity-class="com.asopagos.entidades.ccf.fovis.JefeHogar"></entity-result>
+		<column-result name="fecha" class="java.util.Date"/>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="fovis.consultar.tareas.heredadas.solicitud.Mapping">
+		<entity-result entity-class="com.asopagos.entidades.ccf.general.Solicitud"></entity-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="fovis.consultar.redireccionamiento.tarea.Mapping">
+		<constructor-result target-class="com.asopagos.fovis.dto.RedireccionarTareaDTO">
+			<column name="idTarea" class="java.lang.Integer"/>
+			<column name="ruleNav" />
+			<column name="idInstanciaProceso" class="java.lang.Long"/>
+			<column name="fechaActivacion" class="java.util.Date"/>
+			<column name="idSolicitud" class="java.lang.Long"/>
+			<column name="numeroRadicado" />
+			<column name="tipoTransaccion" />
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="fovis.consultar.tareas.heredadas.solicitud.cruce.Mapping">
+		<constructor-result target-class="com.asopagos.fovis.dto.TareasHeredadasDTO">
+			<column name="idSolicitud" class="java.lang.Long"/>
+			<column name="numeroRadicado" class="java.lang.String"/>
+			<column name="numeroRadicadoCruce" class="java.lang.String"/>
+			<column name="tipoIdentificacion" class="java.lang.String"/>
+			<column name="numeroIdentificacion" class="java.lang.String"/>
+			<column name="nombres" class="java.lang.String"/>
+			<column name="fechaRadicacion" class="java.util.Date"/>
+			<column name="tipoTransaccion" class="java.lang.String"/>
+			<column name="estadoCruce" class="java.lang.String"/>
+			<column name="cicloAsignacion" class="java.lang.String"/>
+			<column name="tipoTransaccionPostulacion" class="java.lang.String"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+    <sql-result-set-mapping name="fovis.consultar.solicitud.Mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.general.Solicitud"></entity-result>
+    </sql-result-set-mapping>
+
+</entity-mappings>

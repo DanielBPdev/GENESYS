@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<!-- INICIO CONSULTAS HU 401 -->
+	<named-query name="PilaService.Banco.consultarBancosParametrizados">
+		<description>consultar los bancos parametrizados en el sistema</description>
+		<query>
+            SELECT bancos
+            FROM Banco bancos 
+           </query>
+	</named-query>
+
+	<named-query
+		name="PilaService.AporteDetallado.consultarTotalAportesRelacionados">
+		<description>consultar la cantidad totla de aportes con estado relacionado</description>
+		<query>
+            SELECT sum(aporteD.aporteObligatorio)
+            FROM AporteDetallado aporteD,AporteGeneral aporteG
+            WHERE aporteD.estadoRegistroAporteCotizante = com.asopagos.enumeraciones.aportes.EstadoRegistroAporteEnum.RELACIONADO
+            AND aporteD.idAporteGeneral = aporteG.id
+            AND aporteG.idRegistroGeneral = :idRegistroGeneral
+           </query>
+	</named-query>
+
+	<named-query
+		name="PilaService.AporteDetallado.consultarTotalAportesRegistrados">
+		<description>consultar la cantidad total de aportes con el estado registrado</description>
+		<query>
+            SELECT sum(aporteD.aporteObligatorio)
+            FROM AporteDetallado aporteD,AporteGeneral aporteG
+            WHERE aporteD.estadoRegistroAporteCotizante = com.asopagos.enumeraciones.aportes.EstadoRegistroAporteEnum.REGISTRADO
+            AND aporteD.idAporteGeneral = aporteG.id
+            AND aporteG.idRegistroGeneral = :idRegistroGeneral 
+           </query>
+	</named-query>
+
+	<named-query
+		name="PilaService.AporteDetallado.ConsultarDetalleAportesPorPlanilla">
+		<description>consultar los detalles del detalle de un aporte</description>
+		<query>
+            SELECT new com.asopagos.dto.modelo.AporteDetalladoPlanillaDTO(
+            aporteD.id,
+        	aporteD.tipoCotizante,
+        	per.numeroIdentificacion,        
+       	 	aporteD.estadoRegistroAporteArchivo,
+        	aporteG.estadoRegistroAporteAportante,
+        	aporteG.fechaProcesamiento,
+        	aporteD.aporteObligatorio,
+        	aporteD.usuarioAprobadorAporte)
+            FROM AporteDetallado aporteD,AporteGeneral aporteG,Persona per
+            WHERE aporteD.idAporteGeneral = aporteG.id
+            AND aporteD.idPersona = per.idPersona 
+            AND aporteG.idRegistroGeneral = :idRegistroGeneral    
+        </query>
+        <hint name="idAporte" value="aporteD.id"></hint>
+	</named-query>
+
+
+	<!-- FIN CONSULTAS HU 401 -->
+
+	<!-- INICIO CONSULTAS HU 410 -->
+
+	<named-query name="PilaService.DiasFestivos.ConsultarDiasFestivos">
+		<description>Consulta de las fechas de días festivos parametrizados</description>
+		<query>
+			SELECT df
+			FROM DiasFestivos df
+		</query>
+	</named-query>
+
+	<named-query name="PilaService.RolAfiliado.ConsultarPorFechaIngRetPosterior">
+		<description>Consulta de roles de afiliado con fecha de ingreso o retiro posterior</description>
+		<query>
+			SELECT COUNT(ra)
+			FROM RolAfiliado ra
+			WHERE ra.afiliado.persona.tipoIdentificacion = :tipoIdCotizante
+			AND ra.afiliado.persona.numeroIdentificacion = :numeroIdCotizante
+			AND ra.tipoAfiliado = :tipoAfiliado
+			AND (:tipoIdAportante IS NULL OR ra.empleador.empresa.persona.tipoIdentificacion = :tipoIdAportante)
+			AND (:numeroIdAportante IS NULL OR ra.empleador.empresa.persona.numeroIdentificacion = :numeroIdAportante)
+			AND (:fechaIngreso IS NULL OR ra.fechaIngreso = :fechaIngreso)
+			AND (:fechaRetiro IS NULL OR ra.fechaRetiro = :fechaRetiro)
+		</query>
+	</named-query>
+	
+	<named-query name="PilaService.AporteDetallado.ConsultarAporteDetalladoPorRegistro">
+		<description>Consulta de aportes detallados a partir de un ID de registro detallado</description>
+		<query>
+			SELECT ad
+			FROM AporteDetallado ad
+			WHERE ad.idRegistroDetallado = :idRegistroDetallado
+		</query>
+	</named-query>
+	
+	<named-query name="PilaService.NovedadDetalle.ConsultarNovedadesVigentesPorCotizante">
+		<description>Consulta de novedades vigentes para un cotizante específico</description>
+		<query>
+			SELECT new com.asopagos.pila.dto.ResumenNovedadVigenteDTO(pn.novedad, nd.fechaInicio, nd.fechaFin) 
+			FROM Persona p, SolicitudNovedadPersona snp, SolicitudNovedad sn, ParametrizacionNovedad pn, NovedadDetalle nd
+			WHERE p.id = snp.idPersona 
+				AND snp.idSolicitudNovedad = sn.idSolicitudNovedad
+				AND sn.idNovedad = pn.idNovedad 
+				AND sn.idSolicitudNovedad = nd.idSolicitudNovedad 
+				AND p.tipoIdentificacion = :tipoIdentificacion
+				AND p.numeroIdentificacion = :numeroIdentificacion
+				AND nd.vigente = 1
+		</query>
+	</named-query>
+	
+	<named-query name="PilaService.ListasBlancasAportantes.porNumeroIdentificacion">
+		<description>Consulta la entidad de lista blanca de pila por un número de identificación dado </description>
+		<query>
+			SELECT listasBlanca
+			FROM ListasBlancasAportantes listasBlanca
+			WHERE listasBlanca.numeroIdentificacionPlanilla IN (:numeroIdentificacionPlanilla)
+		</query>
+	</named-query>
+
+	<!-- FIN CONSULTAS HU 410 -->
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="PilaService.AporteDetallado.consultarAporteAnulado">
+	   <description>Consulta de idicador de aporte anulado por grupo de IDs de RegistroDetallado</description>
+	   <query>
+	        SELECT apdRegistroDetallado, CASE WHEN ISNULL(apdEstadoAporteAjuste, '') = 'ANULADO' THEN 1 ELSE 0 END anulado
+			FROM AporteDetallado
+			WHERE apdRegistroDetallado IN (:idsRegistroDetallado)
+	   </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.NovedadesDetallePila.ConsultarNovedades"
+		result-set-mapping="PilaService.NovedadesDetallePila.ConsultarNovedades.mapping">
+		<description>consultar los detalles del detalle de un aporte</description>
+		<query>
+            SELECT DISTINCT sol.solFechaRadicacion, sol.solTipoTransaccion, sol.solUsuarioRadicacion, spi.spiRegistroDetallado
+			FROM SolicitudNovedadPila spi
+			INNER JOIN SolicitudNovedad son ON son.snoId = spi.spiSolicitudNovedad
+			INNER JOIN ParametrizacionNovedad pan ON son.snoNovedad = pan.novId
+			INNER JOIN Solicitud sol ON son.snoSolicitudGlobal = sol.solId
+			WHERE spi.spiRegistroDetallado IN (:idRegistroDetallado)
+           </query>
+	</named-native-query>
+
+	<named-native-query name="PilaService.consultar.personas.existentes">
+		<query> 
+			SELECT per.perTipoIdentificacion, per.perNumeroIdentificacion FROM Persona per INNER JOIN (
+			 	SELECT 
+					tipoIdentificacion = JSON_VALUE(j.[value],'$.tipoIdentificacion'), 
+					numeroIdentificacion = JSON_VALUE(j.[value],'$.numeroIdentificacion')
+				FROM OPENJSON (:filtros) J 
+			) AS p ON p.tipoIdentificacion = per.perTipoIdentificacion AND p.numeroIdentificacion = per.perNumeroIdentificacion	
+		</query>
+	</named-native-query>
+	<named-native-query name="consultar.url.solicitud.primer.vez">
+		<query> 
+		SELECT TRAN_URL from SAT.WS_TRANSACCION where TRAN_NUME_TRAN =:numeroTransaccion
+		</query>
+	</named-native-query>
+	<!-- ESPACIO PARA NAMED STORED PROCEDURES -->
+	<named-stored-procedure-query 
+		name="PilaService.StoredProcedures.USP_SM_GET_CotizanteConSubsidioPeriodo" 
+		procedure-name="USP_SM_GET_CotizanteConSubsidioPeriodo">
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="sTipoDocumentoCotizante" 
+		/>
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="sNumeroIdentificacionCotizante" 
+		/>
+		<parameter 
+			class="java.lang.String"
+			mode="IN"
+			name="sPeriodoAporte" 
+		/>
+		<parameter 
+			class="java.lang.Boolean"
+			mode="OUT"
+			name="bTieneSubsidio" 
+		/>
+	</named-stored-procedure-query>
+	
+	<!-- ESPACIO PARA MAPEO DE NAMED QUERIES NATIVOS -->
+	<sql-result-set-mapping name="PilaService.NovedadesDetallePila.ConsultarNovedades.mapping">
+		<constructor-result target-class="com.asopagos.pila.dto.DetallePestanaNovedadesDTO">
+			<column name="solFechaRadicacion" class="java.util.Date"/>
+			<column name="solTipoTransaccion" class="java.lang.String"/>
+			<column name="solUsuarioRadicacion" class="java.lang.String"/>
+			<column name="spiRegistroDetallado" class="java.lang.Long"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+</entity-mappings>

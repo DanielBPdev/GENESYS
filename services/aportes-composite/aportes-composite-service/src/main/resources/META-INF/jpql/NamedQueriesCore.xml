@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	 <named-query name="Aportes.Composite.RolAfiliado.buscar.rolAfiliado.por.tipo.numero.afi.y.empleador">
+		<description>Buscar afiliado por tipo y numero de documento del mismo y del empleador</description>
+		<query>
+			SELECT roa FROM RolAfiliado roa
+			WHERE roa.afiliado.persona.tipoIdentificacion = :tipoIdAfiliado
+			AND roa.afiliado.persona.numeroIdentificacion = :numeroIdAfiliado
+			AND roa.empleador.empresa.persona.tipoIdentificacion = :tipoIdEmpleador
+			AND roa.empleador.empresa.persona.numeroIdentificacion = :numeroIdEmpleador
+		</query>
+	</named-query>
+    <named-query
+		name="Aportes.Composite.Afiliado.buscar.rolAfiliado.tipoIdentificacion.numIdentificacion.tipoAfiliado">
+		<description> Buscar un rolAfiliado por tipoIdentificacion, numeroIdentificacion y tipoAfiliado</description>
+		<query> 
+			SELECT rol FROM RolAfiliado rol	
+			LEFT JOIN FETCH rol.afiliado afi
+		    LEFT JOIN FETCH afi.persona per 
+		    LEFT JOIN FETCH rol.sucursalEmpleador se 
+		    LEFT JOIN FETCH rol.empleador emp
+		    WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+			AND rol.tipoAfiliado = :tipoAfiliado	 
+		</query>
+	</named-query>
+		<named-query name="Aportes.Composite.Empleador.consultar.empleador.id.empresa">
+		<query>
+			SELECT empl from Empleador empl where empl.empresa.idEmpresa = :idEmpresa
+		</query>
+	</named-query>
+
+	<named-query name="Consultar.aportes.pendiente.procesar.cartera">
+		<description>Buscar los aportes que están pendientes por procesar cartera</description>
+		<query>
+			select c from com.asopagos.entidades.ccf.aportes.ControladorCarteraAportes c
+			where c.indicePlanilla = :indicePlanilla
+			and (c.pasoCartera is null or c.pasoCartera = false)
+		</query>
+	</named-query>
+
+	<named-query name="Consultar.planilla.pendiente.procesar.cartera">
+		<description>Buscar los aportes que están pendientes por procesar cartera</description>
+		<query>
+			select c from com.asopagos.entidades.ccf.aportes.ControladorCarteraPlanilla c
+			where c.indicePlanilla = :indicePlanilla
+			and (c.pasoCartera is null or c.pasoCartera = false)
+		</query>
+	</named-query>
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<named-native-query name="Aportes.consultar.salario.e.ibc">
+		<query>
+			select apdSalarioBasico,apdValorIBC from aporteDetallado where apdId = :idAporteDetallado
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.consultar.aporte.obligatorio">
+		<query>
+			select apdAporteObligatorio from AporteDetallado where apdId = :idAporteDetallado
+		</query>
+	</named-native-query>
+	<named-native-query name="Aportes.consultar.aporte.obligatorio.ant">
+        <query>
+            select redAporteObligatorio from pila.RegistroDetallado as red where red.redId = :idRegistoDetallado
+        </query>
+    </named-native-query>
+
+	<named-native-query name="Aportes.Composite.Consultar.Reintegro.Diferente.Empleador">
+		<query>
+			select roa.roaId
+			from RolAfiliado roa
+			inner join Afiliado afi on afi.afiId = roa.roaAfiliado
+			inner join Empleador em on em.empId = roa.roaEmpleador
+			inner join Empresa e on e.empId = em.empEmpresa
+			inner join Persona pafi on pafi.perId = e.empPersona
+			inner join Persona pemp on pemp.perId = e.empPersona
+			where pafi.perNumeroIdentificacion = :numCotizante
+			and pafi.perTipoIdentificacion = :tipoCotizante
+			and pemp.perNumeroIdentificacion = :numAportante
+			and pemp.perTipoIdentificacion = :tipoAportante
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.Borrar.ControladorCarteraAportes">
+		<description>Borra registros de la tabla ContraladorCarteraAportes que ya fueron procesados</description>
+		<query>
+			DELETE FROM ControladorCarteraAportes
+			WHERE ccaIndicePlanilla = :indicePlanilla AND ccaPasoCartera = 1
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.Borrar.ControladorCarteraPlanilla">
+		<description>Borra registros de la tabla ContraladorCarteraAportes que ya fueron procesados</description>
+		<query>
+			DELETE FROM ControladorCarteraPlanilla
+			WHERE ccpIndicePlanilla = :indicePlanilla AND ccpPasoCartera = 1
+		</query>
+	</named-native-query>
+
+</entity-mappings>

@@ -1,0 +1,53 @@
+metadata:
+  name: ${project.artifactId}
+spec:
+  template: 
+    metadata:
+      name: ${project.artifactId}
+      labels:
+        name: ${project.artifactId}
+      annotations:
+        date: ${timestamp}
+    spec:
+      containers:
+        - name: ${project.artifactId}
+          image: "${docker.registry.name}/${project.artifactId}:latest"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 80
+            - name: http-alt
+              protocol: TCP
+              containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /opt/conf
+            - name: tz-config
+              mountPath: /etc/localtime
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          command: ["/cloud_sql_proxy",
+                    "-instances=${instance.connection.name}=tcp:3306",
+                    "-credential_file=/secrets/cloudsql/credentials.json"]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: ${project.artifactId}
+            items:
+            - key: wildfly-swarm-mysql.yaml
+              path: wildfly-swarm-mysql.yaml
+        - name: tz-config
+          hostPath:
+            path: /usr/share/zoneinfo/America/Bogota
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+  replicas: 1 
+  selector:
+    name: ${project.artifactId}
+      

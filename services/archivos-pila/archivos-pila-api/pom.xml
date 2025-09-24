@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>archivos-pila</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>archivos-pila-api</artifactId>
+	<packaging>jar</packaging>
+	<name>Archivos PILA API</name>
+	<description>Proyecto que contiene las interfaces del proyecto de implementación de servicios de archivos PILA</description>
+	
+	<properties>
+		<client.directory>com/asopagos/pila/clients</client.directory>
+	</properties>
+	
+	<dependencies>
+		 <dependency>
+			<groupId>com.googlecode.juniversalchardet</groupId>
+			<artifactId>juniversalchardet</artifactId>
+		</dependency>
+   		<dependency>
+			<groupId>com.asopagos.coreaas.commons</groupId>
+			<artifactId>commons-pila-dto</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	       <!-- Define the version of the EJB jar so that we don't need to repeat 
+			ourselves in every module -->
+         <dependency>
+             <groupId>net.sourceforge.jexcelapi</groupId>
+             <artifactId>jxl</artifactId>
+             <version>${jxl.version}</version>
+         </dependency>
+         <dependency>
+		     <groupId>com.thoughtworks.xstream</groupId>
+		     <artifactId>xstream</artifactId>
+		 </dependency>
+         <dependency>
+             <groupId>com.heinsohn.lion.components.fileProcessing</groupId>
+             <artifactId>lion-fileProcessingMain</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>com.heinsohn.lion.components.fileProcessing</groupId>
+             <artifactId>lion-fileProcessingHot</artifactId>
+             <type>ejb</type>
+         </dependency>
+         <dependency>
+             <groupId>com.heinsohn.lion.components.fileCommon</groupId>
+             <artifactId>lion-fileCommon</artifactId>
+         </dependency>
+         <dependency>
+		     <groupId>commons-configuration</groupId>
+		     <artifactId>commons-configuration</artifactId>
+		 </dependency>
+         <dependency>
+             <groupId>com.heinsohn.lion.components.common</groupId>
+             <artifactId>lion-common-jpa2</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>com.heinsohn.lion.components.common</groupId>
+             <artifactId>lion-commonHot</artifactId>
+             <type>ejb</type>
+         </dependency>
+         <dependency>
+             <groupId>com.heinsohn.lion.components.cache</groupId>
+             <artifactId>lion-cacheMain</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>com.heinsohn.lion.components.cache</groupId>
+             <artifactId>lion-cacheHot</artifactId>
+         </dependency>  
+         <dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-multipart-provider</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>archivos-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.asopagos.coreaas.services</groupId>
+			<artifactId>usuarios-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.enterprise.concurrent</groupId>
+			<artifactId>javax.enterprise.concurrent-api</artifactId>
+			<version>1.0</version>				
+		</dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>	
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<annotationProcessorPath>
+							<groupId>com.asopagos.coreaas.utilities.services</groupId>
+							<artifactId>services-processor</artifactId>
+							<version>${project.version}</version>
+						</annotationProcessorPath>
+						<annotationProcessorPath>
+							<groupId>javax</groupId>
+							<artifactId>javaee-web-api</artifactId>
+							<version>${javax.version}</version>
+						</annotationProcessorPath>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

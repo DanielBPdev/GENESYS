@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<named-native-query name="consultar.temporales.solicitud">
+		<query>
+			select p.perId,a.afiId,r.roaAfiliado,
+				(select munId 
+					from Municipio 
+					where munNombre = :municipio
+				) muni, 
+				(select depId 
+					from Municipio 
+						join departamento on munDepartamento = depId 
+					where munNombre = :municipio
+				) depto 
+				from Solicitud s 
+					join SolicitudAfiliacionPersona sp on s.solId = sp.sapSolicitudGlobal 
+					join RolAfiliado r on r.roaid = sp.sapRolAfiliado 
+					join afiliado a on a.afiid = r.roaAfiliado 
+					join Persona p on p.perid = a.afiPersona 
+					join PersonaDetalle pd on pd.pedPersona = p.perId 
+				where s.solid = :solId
+		</query>
+	</named-native-query>
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+</entity-mappings>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="Aud_PU" transaction-type="JTA">
+
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jboss/datasources/asopagosAudDS</jta-data-source>
+		<mapping-file>META-INF/jpql/NamedQueries.xml</mapping-file>
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="${persistencia}" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+		</properties>
+
+	</persistence-unit>
+	<persistence-unit name="Base_PU" transaction-type="JTA">
+
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jboss/datasources/asopagosDS</jta-data-source>
+		<mapping-file>META-INF/jpql/NamedQueriesBase.xml</mapping-file>
+		<mapping-file>META-INF/jpql/NamedQueries.xml</mapping-file>
+		<class>com.asopagos.entidades.ccf.personas.RolAfiliado</class>
+		<class>com.asopagos.entidades.ccf.personas.Afiliado</class>
+		<class>com.asopagos.entidades.ccf.personas.Empleador</class>
+		<class>com.asopagos.entidades.ccf.personas.Empresa</class>
+		<class>com.asopagos.entidades.ccf.personas.Persona</class>
+		<class>com.asopagos.entidades.ccf.personas.EntidadPagadora</class>
+		<class>com.asopagos.entidades.ccf.core.SucursalEmpresa</class>
+		<class>com.asopagos.entidades.transversal.personas.AFP</class>
+		<class>com.asopagos.entidades.transversal.core.CodigoCIIU</class>
+		<class>com.asopagos.entidades.transversal.personas.ARL</class>
+		<class>com.asopagos.entidades.ccf.core.Ubicacion</class>
+		<class>com.asopagos.entidades.transversal.core.Municipio</class>
+		
+		
+		<class>com.asopagos.entidades.ccf.personas.GrupoFamiliar</class>
+		<class>com.asopagos.entidades.ccf.personas.AdminSubsidioGrupo</class>
+		<class>com.asopagos.entidades.ccf.personas.AdministradorSubsidio</class>
+		<class>com.asopagos.entidades.ccf.personas.MedioDePago</class>
+
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="${persistencia}" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+			<!-- envers -->
+			<property name="hibernate.integration.envers.enabled" value="false"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="false"/>
+		</properties>
+
+	</persistence-unit>
+
+
+</persistence>

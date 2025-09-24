@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.asopagos.coreaas.services</groupId>
+		<artifactId>services</artifactId>  
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>validaciones</artifactId>
+	<packaging>pom</packaging>
+	<name>Validaciones</name>
+	<description>Proyecto padre para los servicios de validación</description>
+	
+	<modules>
+		<module>validaciones-api</module>
+		<module>validaciones-service</module>
+	</modules>
+
+    <dependencies>
+        <dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>			
+			<scope>provided</scope>
+		</dependency>
+        <dependency>
+        	<groupId>com.asopagos.coreaas.model</groupId>
+        	<artifactId>model-core-entities</artifactId>
+        	<version>0.0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.asopagos.coreaas.model</groupId>
+            <artifactId>model-fovis-entities</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>
+    </dependencies>	
+
+</project>

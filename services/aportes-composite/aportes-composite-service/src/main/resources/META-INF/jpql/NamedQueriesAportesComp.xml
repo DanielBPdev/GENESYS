@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<!-- <named-query name="novedades.consultar.departamentos3">
+		<query>
+            SELECT d FROM Persona d            
+        </query>
+	</named-query> -->
+		
+	<named-native-query
+			name="Aportes.process.parametrizacion.programada.liberacion.bloque9">
+			<query>
+		SELECT pipId 
+			FROM dbo.PilaIndicePlanilla pila 
+			inner join dbo.PilaEstadoBloque as pb on pila.pipId = pb.pebIndicePlanilla
+			inner join staging.RegistroGeneral as reg on pila.pipId = reg.regRegistroControl
+			WHERE pila.pipEstadoArchivo in ('PROCESADO_SIN_NOVEDADES', 'PROCESADO_NOVEDADES') AND pila.pipTipoArchivo like 'ARCHIVO_OI_I%'
+			and (pb.pebEstadoBloque8 is not null and pb.pebEstadoBloque9 is not null)
+			and pb.pebEstadoBloque10 is null
+			and reg.regDateTimeInsert &lt;= dateadd(hh, -2, dbo.GetLocalDate())
+			</query>
+	</named-native-query>
+   
+     <named-stored-procedure-query
+            name="stored.procedure.aportes.process.parametrizacion.programada.liberacion.bloque9"
+            procedure-name="USP_GET_ConsultarPlanillasLiberacionBloque9_v2">
+       <!-- <parameter
+                class="java.lang.String"
+                mode="IN"
+                name="estadoPlanilla"
+        />-->
+	</named-stored-procedure-query>
+</entity-mappings>

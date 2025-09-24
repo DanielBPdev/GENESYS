@@ -1,0 +1,3625 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="Validaciones.empleadores.validar">
+		<query>
+            SELECT val FROM ValidacionProceso val 
+            WHERE val.proceso = :proceso
+            AND val.bloque like :bloque                        
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="SolicitudAfiliacionEmpleador.buscarPorPersona">
+		<query>
+            SELECT sol FROM SolicitudAfiliacionEmpleador sol,Empleador emp 
+            WHERE sol.idEmpleador = :idEmpleador
+            AND sol.estadoSolicitud NOT IN :estadosSolicitud
+            AND (1 = (CASE WHEN :idSolicitud IS NULL THEN 1 ELSE 0 END) OR (sol.solicitudGlobal.idSolicitud NOT IN (:idSolicitud)))
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="SolicitudAfiliacionEmpleador.buscarPersona">
+		<query>
+            SELECT emp FROM Empleador emp 
+            WHERE emp.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+            AND emp.empresa.persona.numeroIdentificacion like :numeroIdentificacion                          
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="SolicitudAfiliacionEmpleador.cuentaWeb">
+		<query>
+            SELECT ic FROM RolContactoEmpleador ic, Empleador em           
+            WHERE ic.idEmpleador = em.idEmpleador
+            AND em.empresa.persona.numeroIdentificacion like :numeroIdentificacion                          
+            AND em.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Empleador.razonSocial.buscarTodos">
+		<query>
+            SELECT empl FROM Empleador empl
+            JOIN FETCH empl.empresa e
+            JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+            WHERE p.razonSocial LIKE :razonSocial 
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Empleador.tipoIdentificacion.numIdentificacion.DV.buscarTodos">
+		<query>
+            SELECT empl FROM Empleador empl
+            JOIN FETCH empl.empresa e
+            JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+            WHERE p.tipoIdentificacion =:tipoIdentificacion 
+            AND p.numeroIdentificacion =:numeroIdentificacion 
+            AND p.digitoVerificacion =:digitoVerificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="PersonaDetalle.tipoIdentificacion.numIdentificacion.fallecida">
+		<query>
+			SELECT perDe.fallecido FROM PersonaDetalle perDe, Persona per
+			WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+			AND per.idPersona = perDe.idPersona
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Empleador.tipoIdentificacion.numIdentificacion.buscarTodos">
+		<query>
+            SELECT empl FROM Empleador empl 
+            JOIN FETCH empl.empresa e
+            JOIN FETCH e.persona p
+            LEFT JOIN FETCH p.ubicacionPrincipal u
+            LEFT JOIN FETCH e.codigoCIIU c
+            LEFT JOIN FETCH e.arl a
+            WHERE p.tipoIdentificacion =:tipoIdentificacion 
+            AND p.numeroIdentificacion =:numeroIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Empleador.buscarEmpleadorPorTipoNumeroEstado">
+		<query>
+            SELECT e FROM Empleador e 
+            WHERE e.empresa.persona.tipoIdentificacion = :tipoIdentificacion 
+            and e.empresa.persona.numeroIdentificacion = :numeroIdentificacion  
+            and e.estadoEmpleador = :estadoEmpleador                          
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Empleador.buscarEmpleadorPorNumeroEstado">
+		<query>
+            SELECT e FROM Empleador e 
+            WHERE e.empresa.persona.numeroIdentificacion = :numeroIdentificacion  
+            and e.estadoEmpleador = :estadoEmpleador                          
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroTipoBeneficiarioEstado">
+		<query>
+            SELECT b FROM Beneficiario b 
+            LEFT JOIN FETCH b.afiliado afi
+            LEFT JOIN FETCH b.persona per
+            LEFT JOIN FETCH afi.persona
+            LEFT JOIN FETCH b.grupoFamiliar gru
+            WHERE b.persona.tipoIdentificacion = :tipoIdentificacion and b.persona.numeroIdentificacion = :numeroIdentificacion  
+            and b.tipoBeneficiario in (:tipoBeneficiario) and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)                         
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoBeneficiarioEstado">
+		<query>
+            SELECT b FROM Beneficiario b
+            LEFT JOIN FETCH b.afiliado afi 
+            LEFT JOIN FETCH afi.persona
+            WHERE b.persona.numeroIdentificacion = :numeroIdentificacion
+			AND b.persona.tipoIdentificacion =:tipoIdentificacion
+            and b.tipoBeneficiario in (:tipoBeneficiario) and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)                         
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoBeneficiarioEstadoTipoNumeroAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b LEFT JOIN FETCH b.persona LEFT JOIN FETCH b.grupoFamiliar
+            WHERE b.afiliado.persona.tipoIdentificacion = :tipoIdentificacion and b.afiliado.persona.numeroIdentificacion = :numeroIdentificacion  
+            and b.tipoBeneficiario = :tipoBeneficiario and b.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+        <named-query name="Beneficiario.buscarBeneficiarioPorTipoNumeroHermanoHuerfano">
+		<query>
+            SELECT b FROM Beneficiario b
+			JOIN FETCH b.persona p
+        	LEFT JOIN FETCH b.grupoFamiliar gru
+            WHERE p.tipoIdentificacion = :tipoIdentificacion 
+                    and p.numeroIdentificacion = :numeroIdentificacion 
+                    and b.tipoBeneficiario = 'HERMANO_HUERFANO_DE_PADRES'                           
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoBeneficiarioEstadoTipoAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.afiliado.persona.numeroIdentificacion = :numeroIdentificacion  
+            and b.tipoBeneficiario = :tipoBeneficiario and b.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorTipoNumeroTipoAfiliacionEstado">
+		<query>
+            SELECT ra FROM RolAfiliado ra 
+            WHERE ra.afiliado.persona.tipoIdentificacion = :tipoIdentificacion and ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            and ra.tipoAfiliado = :tipoAfiliado and ra.estadoAfiliado = :estadoAfiliado                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorNumeroTipoAfiliacionEstado">
+		<query>
+             SELECT ra FROM RolAfiliado ra 
+            WHERE
+			ra.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+			AND ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            and ra.tipoAfiliado = :tipoAfiliado and ra.estadoAfiliado = :estadoAfiliado                        
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroTipoAfiliacionEstado">
+		<query>
+			SELECT ben
+			FROM Beneficiario ben
+			JOIN FETCH ben.persona perBen
+			JOIN FETCH ben.afiliado afi
+			JOIN FETCH ben.grupoFamiliar
+			JOIN FETCH afi.persona perAfi
+			WHERE ben.estadoBeneficiarioAfiliado IN (:estadoBeneficiarioAfiliado)
+			AND perBen.numeroIdentificacion = :numeroIdentificacion
+			AND perBen.tipoIdentificacion = :tipoIdentificacion 
+			AND perAfi.numeroIdentificacion = :numeroIdentificacionAfiliado
+			AND perAfi.tipoIdentificacion = :tipoIdentificacionAfiliado
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoAfiliacionEstado">
+		<query>
+			SELECT ben
+			FROM Beneficiario ben
+			JOIN FETCH ben.persona perBen
+			JOIN FETCH ben.afiliado afi
+			JOIN FETCH ben.grupoFamiliar
+			JOIN FETCH afi.persona perAfi
+			WHERE ben.estadoBeneficiarioAfiliado IN (:estadoBeneficiarioAfiliado)
+			AND perBen.numeroIdentificacion = :numeroIdentificacion
+			AND perAfi.numeroIdentificacion = :numeroIdentificacionAfiliado
+			AND perAfi.tipoIdentificacion = :tipoIdentificacionAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroTipoBeneficiarioEstadoTipoAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.persona.tipoIdentificacion = :tipoIdentificacion  and b.persona.numeroIdentificacion = :numeroIdentificacion
+            and b.tipoBeneficiario = :tipoBeneficiario and b.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoBeneficiarioEstadoTipoAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.persona.numeroIdentificacion = :numeroIdentificacion
+            and b.tipoBeneficiario = :tipoBeneficiario and b.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroEstados">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.persona.tipoIdentificacion = :tipoIdentificacion  and b.persona.numeroIdentificacion = :numeroIdentificacion
+            and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroEstados">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.persona.numeroIdentificacion = :numeroIdentificacion
+            and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroTipoEstados">
+		<query>
+            SELECT b FROM Beneficiario b LEFT JOIN FETCH b.persona per
+            WHERE b.afiliado.persona.tipoIdentificacion = :tipoIdentificacion  and b.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            and b.tipoBeneficiario in (:tipoBeneficiario)
+            and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoEstados">
+		<query>
+            SELECT b FROM Beneficiario b LEFT JOIN FETCH b.persona per
+            WHERE b.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            and b.tipoBeneficiario in (:tipoBeneficiario)
+            and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Persona.buscarRolAfiliadoPorPersonaEmpleador">
+		<query>
+            SELECT ra FROM RolAfiliado ra 
+            WHERE ra.afiliado.persona.tipoIdentificacion = :tipoIdentificacion 
+            AND ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion  
+            AND ra.empleador.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador 
+            AND ra.empleador.empresa.persona.numeroIdentificacion =:numeroIdentificacionEmpleador                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorNumeroTipoAfiliacionEstadoEmpleador">
+		<query>
+            SELECT ra FROM RolAfiliado ra 
+            WHERE ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion  
+            and ra.tipoAfiliado = :tipoAfiliado and ra.estadoAfiliado = :estadoAfiliado 
+            and ra.empleador.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador and ra.empleador.empresa.persona.numeroIdentificacion =:numeroIdentificacionEmpleador                             
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Afiliado.buscarAfiliadoPorId">
+		<query>
+            SELECT afi FROM Afiliado afi join fetch afi.persona  WHERE afi.idAfiliado= :idAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorTipoNumeroIdentificacion">
+		<query>
+            SELECT rolAfi FROM RolAfiliado rolAfi WHERE rolAfi.afiliado.persona.numeroIdentificacion= :numeroIdentificacion and rolAfi.afiliado.persona.tipoIdentificacion= :tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorNumeroIdentificacion">
+		<query>
+            SELECT rolAfi FROM RolAfiliado rolAfi WHERE rolAfi.afiliado.persona.numeroIdentificacion= :numeroIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarAfiliadoPorTipoNumeroIdentificacion">
+		<query>
+            SELECT afi FROM Afiliado afi LEFT JOIN FETCH afi.persona WHERE afi.persona.numeroIdentificacion= :numeroIdentificacion and afi.persona.tipoIdentificacion=:tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarAfiliadoPorNumeroIdentificacion">
+		<query>
+            SELECT afi FROM Afiliado afi WHERE afi.persona.numeroIdentificacion= :numeroIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.GrupoFamiliar.buscarGrupoFamiliarAfiliado">
+		<query>SELECT gru FROM GrupoFamiliar gru WHERE gru.afiliado.idAfiliado= :idAfiliado</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+        <named-query
+		name="Validaciones.Afiliado.buscarConyugePorGrupoAfiliado">
+		<query>SELECT b FROM Beneficiario b join fetch b.persona WHERE b.grupoFamiliar.idGrupoFamiliar= :idGrupoFamiliar 
+                    AND b.tipoBeneficiario = 'CONYUGE'
+                </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorGrupoFamiliarEstadoAfiliadoTipoBeneficiario">
+		<query>SELECT b FROM Beneficiario b join fetch b.persona WHERE b.grupoFamiliar.idGrupoFamiliar= :idGrupoFamiliar and b.estadoBeneficiarioAfiliado in(:estadoBeneficiarioAfiliado) and b.tipoBeneficiario in (:tipoBeneficiario)</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Persona.buscarPersonaPorTipoNumero">
+		<query>
+			SELECT p FROM Persona p
+			WHERE p.numeroIdentificacion= :numeroIdentificacion 
+			AND p.tipoIdentificacion= :tipoIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Persona.buscarPersonaPorNumero">
+		<query>
+			SELECT p FROM Persona p
+			WHERE p.numeroIdentificacion= :numeroIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Persona.buscarPersonaPorTipoNumeroFallecido">
+		<query>SELECT p FROM Persona p WHERE p.numeroIdentificacion= :numeroIdentificacion and p.tipoIdentificacion= :tipoIdentificacion
+		 and p.id IN (SELECT pd.idPersona FROM PersonaDetalle pd WHERE pd.fallecido = :fallecido)</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Persona.buscarPersonaPorNumeroFallecido">
+		<query>SELECT p FROM Persona p WHERE p.numeroIdentificacion= :numeroIdentificacion and p.id IN (SELECT pd.idPersona FROM PersonaDetalle pd WHERE pd.fallecido = :fallecido)</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Persona.buscarPersonaPorNombreApellidoFechaNacimiento">
+		<query>SELECT p FROM Persona p WHERE p.primerNombre= :primerNombre and p.primerApellido= :primerApellido 
+		and p.id IN (SELECT pd.idPersona FROM PersonaDetalle pd WHERE pd.fechaNacimiento=:fechaNacimiento)</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroDocumento">
+		<query>
+			SELECT b 
+			FROM Beneficiario b 
+			LEFT JOIN FETCH b.afiliado afi
+			LEFT JOIN FETCH b.persona per			
+			WHERE b.persona.numeroIdentificacion= :numeroIdentificacion 
+			and b.persona.tipoIdentificacion= :tipoIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroDocumento">
+		<query>
+			SELECT b 
+			FROM Beneficiario b 
+			LEFT JOIN FETCH b.persona per 
+			LEFT JOIN FETCH b.afiliado afi 
+			LEFT JOIN FETCH afi.persona
+			WHERE b.persona.numeroIdentificacion= :numeroIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.SocioEmpleador.buscarSocioEmpleadorPorSocioNumeroEmpleadorTipoSolicitante">
+		<query>
+            SELECT se FROM SocioEmpleador se  WHERE
+            se.persona.numeroIdentificacion=:numeroIdentificacion and
+            EXISTS (select sae from SolicitudAfiliacionEmpleador sae WHERE sae.idEmpleador = se.idEmpleador AND  sae.solicitudGlobal.clasificacion in (:clasificacion) 
+            and se.idEmpleador = (select idEmpleador FROM Empleador e WHERE e.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador 
+            and e.empresa.persona.numeroIdentificacion=:numeroIdentificacionEmpleador))
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.SocioEmpleador.buscarConyugeSocioEmpleadorPorSocioEmpleadorTipoSolicitante">
+		<query>
+            SELECT se FROM SocioEmpleador se  WHERE
+            (:tipoIdentificacion IS NULL OR se.conyugue.tipoIdentificacion= :tipoIdentificacion) and (:numeroIdentificacion IS NULL OR se.conyugue.numeroIdentificacion=:numeroIdentificacion) and
+            EXISTS (select sae from SolicitudAfiliacionEmpleador sae WHERE sae.idEmpleador = se.idEmpleador AND  sae.solicitudGlobal.clasificacion in (:clasificacion) 
+            and se.idEmpleador = (select idEmpleador FROM Empleador e WHERE e.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador 
+            and e.empresa.persona.numeroIdentificacion=:numeroIdentificacionEmpleador))
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.SocioEmpleador.buscarConyugeSocioEmpleadorPorSocioNumeroEmpleadorTipoSolicitante">
+		<query>
+            SELECT se FROM SocioEmpleador se  WHERE
+            se.conyugue.numeroIdentificacion=:numeroIdentificacion and
+            EXISTS (select sae from SolicitudAfiliacionEmpleador sae WHERE sae.idEmpleador = se.idEmpleador AND  sae.solicitudGlobal.clasificacion in (:clasificacion) 
+            and se.idEmpleador = (select idEmpleador FROM Empleador e WHERE e.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador 
+            and e.empresa.persona.numeroIdentificacion=:numeroIdentificacionEmpleador))
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.ListasEspecial.buscarPorPersona">
+		<query>
+            SELECT ler FROM ListaEspecialRevision ler  
+            WHERE ler.numeroIdentificacion=:numeroIdentificacion 
+            and ler.tipoIdentificacion=:tipoIdentificacion            
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.ListasEspecial.buscarPorEmpresa">
+		<query>
+            SELECT ler FROM ListaEspecialRevision ler  
+            WHERE ler.numeroIdentificacion=:numeroIdentificacion 
+            and ler.tipoIdentificacion=:tipoIdentificacion
+            and ler.digitoVerificacion=:digitoVerificacion            
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarPorTipoNumeroAfiliadoClasificacionSolicitudEmpleador">
+		<query>
+			SELECT roa 
+			FROM RolAfiliado roa 
+			WHERE roa.afiliado.persona.tipoIdentificacion =:tipoIdentificacion
+			AND roa.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+			AND roa.tipoAfiliado = :tipoAfiliado 
+			AND EXISTS ( 
+				SELECT sae 
+				FROM SolicitudAfiliacionEmpleador sae				 
+				WHERE sae.idEmpleador = roa.empleador.idEmpleador
+				AND sae.solicitudGlobal.clasificacion = :clasificacion
+				AND CONCAT(roa.empleador.empresa.persona.tipoIdentificacion, 
+				roa.empleador.empresa.persona.numeroIdentificacion) != :numDocEmpleador
+			)        
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.empleador.consultar.ultimaClasificacion">
+		<query>
+            SELECT sol.clasificacion
+            FROM Solicitud sol,
+            SolicitudAfiliacionEmpleador sae,
+            Empleador e
+            WHERE sae.solicitudGlobal = sol.idSolicitud
+            AND sae.idEmpleador = e.idEmpleador
+            AND sae.idEmpleador IN (
+            SELECT emp.idEmpleador FROM Empleador emp 
+            WHERE emp.empresa.persona.tipoIdentificacion = :tipoIdentificacion 
+            AND emp.empresa.persona.numeroIdentificacion = :numeroIdentificacion)
+            AND sol.resultadoProceso = com.asopagos.enumeraciones.afiliaciones.ResultadoProcesoEnum.APROBADA
+            ORDER BY sol.fechaRadicacion DESC
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarPorNumeroAfiliadoClasificacionSolicitudEmpleador">
+		<query>
+			SELECT roa 
+			FROM RolAfiliado roa 
+			WHERE roa.afiliado.persona.numeroIdentificacion = :numeroIdentificacion 
+			AND roa.tipoAfiliado = :tipoAfiliado 
+			AND EXISTS (
+				SELECT sae 
+				FROM SolicitudAfiliacionEmpleador sae 
+				WHERE sae.idEmpleador = roa.empleador.idEmpleador
+				AND sae.solicitudGlobal.clasificacion = :clasificacion
+				AND CONCAT(roa.empleador.empresa.persona.tipoIdentificacion, 
+				roa.empleador.empresa.persona.numeroIdentificacion) != :numDocEmpleador
+			)           
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroInvalidez">
+		<query>
+            SELECT b FROM Beneficiario b , CondicionInvalidez con
+            WHERE b.persona.tipoIdentificacion = :tipoIdentificacion and b.persona.numeroIdentificacion = :numeroIdentificacion  
+            AND con.idPersona = b.persona.idPersona   
+            AND con.condicionInvalidez= :invalidez               
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroInvalidez">
+		<query>
+            SELECT b FROM Beneficiario b , CondicionInvalidez con
+            WHERE b.persona.numeroIdentificacion = :numeroIdentificacion  
+            AND con.idPersona = b.persona.idPersona   
+            AND con.condicionInvalidez= :invalidez                        
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorTipoNumeroAfiliadoParentescoEmpleador">
+		<query>
+            SELECT ra FROM RolAfiliado ra 
+            WHERE ra.afiliado.persona.tipoIdentificacion = :tipoIdentificacion and ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion and 
+            exists(SELECT b FROM Beneficiario b WHERE b.persona.idPersona = ra.empleador.empresa.persona.id and b.tipoBeneficiario = :tipoBeneficiario and 
+            b.afiliado.idAfiliado = ra.afiliado.idAfiliado and b.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado)    
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorNumeroAfiliadoParentescoEmpleador">
+		<query>
+            SELECT ra FROM RolAfiliado ra 
+            WHERE ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion and 
+            exists(SELECT b FROM Beneficiario b WHERE b.persona.idPersona = ra.empleador.empresa.persona.id and b.tipoBeneficiario = :tipoBeneficiario and 
+            b.afiliado.idAfiliado = ra.afiliado.idAfiliado and b.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado)    
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.RolAfiliado.buscarPorTipoNumeroAfiliadoClasificacionSolicitudEmpleadorMismoRep">
+		<query>
+		SELECT per FROM Persona per, Empleador emp WHERE 
+			per.tipoIdentificacion =:tipoIdentificacion
+		    AND per.numeroIdentificacion = :numeroIdentificacion
+			AND emp.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador 
+			AND emp.empresa.persona.numeroIdentificacion = :numeroIdentificacionEmpleador
+			AND emp.empresa.idPersonaRepresentanteLegal = per.idPersona
+			AND EXISTS (SELECT sae FROM SolicitudAfiliacionEmpleador sae WHERE sae.idEmpleador = emp.idEmpleador
+            AND sae.solicitudGlobal.clasificacion in (:clasificacion)) 
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarPorNumeroAfiliadoClasificacionSolicitudEmpleadorMismoRep">
+		<query>
+            SELECT ra FROM RolAfiliado ra WHERE ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            AND ra.empleador.empresa.idPersonaRepresentanteLegal = ra.afiliado.persona.idPersona
+            AND EXISTS (SELECT sae FROM SolicitudAfiliacionEmpleador sae WHERE sae.idEmpleador = ra.empleador.idEmpleador
+            AND sae.solicitudGlobal.clasificacion in (:clasificacion)) 
+            
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarPorTipoNumeroAfiliadoClasificacionSolicitudMismoEmpleador">
+		<query>
+            SELECT ra FROM RolAfiliado ra WHERE ra.afiliado.persona.tipoIdentificacion =:tipoIdentificacion
+            AND ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion 
+            AND ra.afiliado.persona.idPersona= ra.empleador.empresa.persona.idPersona
+            AND EXISTS(SELECT sae FROM SolicitudAfiliacionEmpleador sae WHERE sae.idEmpleador = ra.empleador.idEmpleador
+            AND sae.solicitudGlobal.clasificacion in (:clasificacion) )
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarPorNumeroAfiliadoClasificacionSolicitudMismoEmpleador">
+		<query>
+            SELECT ra FROM RolAfiliado ra WHERE ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion 
+            AND ra.afiliado.persona.idPersona= ra.empleador.empresa.persona.idPersona
+            AND EXISTS(SELECT sae FROM SolicitudAfiliacionEmpleador sae WHERE sae.idEmpleador = ra.empleador.idEmpleador
+            AND sae.solicitudGlobal.clasificacion in (:clasificacion) )          
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Empleador.buscarFechaRetiroEmpleadorPorTipoNumero">
+		<query>
+            SELECT e.fechaRetiro FROM Empleador e WHERE e.empresa.persona.tipoIdentificacion = :tipoIdentificacion and
+            e.empresa.persona.numeroIdentificacion=:numeroIdentificacion          
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarFechaRetiroAfiliadoPorTipoYNumero">
+		<query>
+			SELECT MAX(roa.fechaRetiro) FROM RolAfiliado roa 
+			WHERE roa.fechaRetiro IS NOT NULL
+			AND roa.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+			AND roa.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Empleador.buscarEmpleadorPorTipoNumero">
+		<query>
+            SELECT emp FROM Empleador emp
+           	JOIN emp.empresa e
+			JOIN e.persona per
+            WHERE per.tipoIdentificacion = :tipoIdentificacion and
+            per.numeroIdentificacion=:numeroIdentificacion          
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Personas.buscarFechaRetiroAfiliadoPorTipoNumero">
+		<query>
+            SELECT e.fechaRetiro FROM RolAfiliado e WHERE 
+            e.afiliado.persona.tipoIdentificacion = :tipoIdentificacion AND
+            e.afiliado.persona.numeroIdentificacion=:numeroIdentificacion AND
+            e.tipoAfiliado = :tipoAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Personas.buscarFechaRetiroAfiliadoPorTipoNumeroIdEmpleador">
+		<query>
+            SELECT e.fechaRetiro FROM RolAfiliado e WHERE 
+            e.afiliado.persona.tipoIdentificacion = :tipoIdentificacion AND
+            e.afiliado.persona.numeroIdentificacion=:numeroIdentificacion AND
+            e.tipoAfiliado = :tipoAfiliado AND
+            e.empleador.idEmpleador = :idEmpleador
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="SolicitudAfiliacion.buscarPorPersona">
+		<query>
+			SELECT sol FROM SolicitudAfiliacionPersona sol
+			JOIN FETCH sol.rolAfiliado rol
+			JOIN FETCH rol.afiliado afi
+			JOIN FETCH afi.persona per
+	        WHERE per.tipoIdentificacion = :tipoIdentificacion
+	        AND per.numeroIdentificacion = :numeroIdentificacion
+	        AND rol.tipoAfiliado= :tipoAfiliado
+	        AND sol.estadoSolicitud NOT IN :estadosSolicitud
+	        AND (1 = (CASE WHEN :idSolicitud IS NULL THEN 1 ELSE 0 END) OR (sol.solicitudGlobal.idSolicitud NOT IN (:idSolicitud)))
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="SolicitudAfiliacion.buscarRolAfiliado">
+		<query>
+			SELECT rol FROM RolAfiliado rol
+			JOIN FETCH rol.afiliado afi
+			JOIN FETCH afi.persona per
+			WHERE rol.tipoAfiliado = :tipoAfiliado
+			AND per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Novedad.buscarNovedadInTipoTransaccion">
+		<query>
+			SELECT n FROM ParametrizacionNovedad n WHERE n.novedad in (:tipoTransaccion) and n.tipoNovedad not in('AUTOMATICA') and n.proceso = :proceso order by n.novedad
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Novedad.buscarNovedadInTipoTransaccionTipoNovedad">
+		<query>
+			SELECT n FROM ParametrizacionNovedad n WHERE n.novedad in (:tipoTransaccion) AND n.tipoNovedad=:tipoNovedad and n.proceso = :proceso order by n.novedad
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Novedad.buscarNovedadPorProceso">
+		<query>
+			SELECT n FROM ParametrizacionNovedad n WHERE n.proceso = :proceso and n.tipoNovedad not in ('AUTOMATICA') order by n.novedad
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Novedad.buscarNovedadPorTipoNovedadProceso">
+		<query>
+			SELECT n FROM ParametrizacionNovedad n WHERE n.tipoNovedad=:tipoNovedad and n.proceso = :proceso order by n.novedad
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="Novedad.buscarValidacionesNovedad">
+		<query>
+			SELECT vp FROM ValidacionProceso vp where vp.proceso=:proceso and vp.objetoValidacion IN (:objetoValidacion) and SUBSTRING(vp.bloque,1,7)=:filtro AND VP.estadoProceso != 'INACTIVO'
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.Empleador.contarTrabajadoresActivosAsociadosSucursal">
+		<description>
+			Consulta que cuenta el número de trabajadores activos asociados a la sucursal
+		</description>
+		<query>
+			SELECT COUNT(ra)
+			FROM RolAfiliado ra WHERE ra.estadoAfiliado = :estadoAfiliado
+			and ra.empleador.idEmpleador =:idEmpleador
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Empleador.contarSucursalesEmpleador">
+		<description>
+			Consulta que cuenta el número de sucursales del empleador
+		</description>
+		<query>
+			SELECT COUNT(se) FROM SucursalEmpresa se where se.idEmpresa=:idEmpresa 
+			and se.estadoSucursal=:estadoSucursal
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Empleador.contarSucursalesActivasEmpleador">
+		<description>
+			Consulta la cantidad de sucursales ACTIVAS del empleador
+		</description>
+		<query>
+			SELECT COUNT(se) FROM SucursalEmpresa se 
+			WHERE se.idEmpresa=:idEmpresa
+			AND se.estadoSucursal = :estadoSucursal
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="Validaciones.Empleador.contarSucursalAsociadaEmpleador">
+		<description>
+			Consulta una sucursal asociada al empleador
+		</description>
+		<query>
+			SELECT se FROM SucursalEmpresa se
+			WHERE se.idEmpresa IN (SELECT emp.idEmpresa 
+			FROM Empresa emp 
+			WHERE emp.persona.tipoIdentificacion = :tipoIdentificacion
+			AND emp.persona.numeroIdentificacion = :numeroIdentificacion)
+			AND (se.codigo = :codigo OR se.nombre = :nombre)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="Validaciones.Empleador.buscarEmpleadorRazonSocial">
+		<description>
+			Consulta la un empleador por su razón social
+		</description>
+		<query>
+			SELECT e FROM Empleador e where e.empresa.persona.razonSocial= :razonSocial
+	    </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Empleador.buscarPersona">
+		<description>
+			Consulta la persona con tipo y nro documento
+		</description>
+		<query>
+			SELECT p FROM Persona p 
+			WHERE p.tipoIdentificacion = :tipoIdentificacion
+			AND p.numeroIdentificacion = :numeroIdentificacion
+			AND p.id IN (SELECT pd FROM PersonaDetalle pd WHERE pd.fallecido = :fallecido)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-native-query name="Validaciones.Empleador.buscarPersona.fallecida.nativa">
+		<description>
+			Consulta la persona con tipo y nro documento
+		</description>
+		<query>
+			SELECT * FROM Persona p
+			INNER JOIN PersonaDetalle ped on ped.pedPersona = p.perId
+			WHERE p.perNumeroIdentificacion = :numeroIdentificacion
+			and p.perTipoIdentificacion = :tipoIdentificacion
+			and ped.pedFallecido = 1
+
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	<named-query name="Validaciones.Empleador.buscarTrabajadoresActivos">
+		<description>
+			Consulta los trabajadores activos con el empleador 
+		</description>
+		<query>
+			SELECT DISTINCT ra FROM RolAfiliado ra 
+			WHERE ra.afiliado.persona.idPersona in(:idsPersonas) 
+			AND ra.empleador.empresa.persona.tipoIdentificacion=:tipoIdentificacion 
+			AND ra.empleador.empresa.persona.numeroIdentificacion =:numeroIdentificacion 
+			AND ra.estadoAfiliado =:estadoAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Empleador.consultarEmpleadorNotieneActoAdministrativo">
+		<description>
+			Consulta que consulta que el empleador no tenga asociado un acto administrativo 
+			de confirmación de su afiliación desde su más reciente activación. 
+		</description>
+		<query>
+			SELECT emp 
+			FROM Empleador emp
+			WHERE emp.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+			AND emp.empresa.persona.numeroIdentificacion = :numeroIdentificacion
+			AND emp.estadoEmpleador = :estadoEmpleador
+			AND EXISTS (
+	          SELECT MAX (solEmp.solicitudGlobal.fechaRadicacion) 
+	          FROM SolicitudAfiliacionEmpleador solEmp
+	          WHERE solEmp.numeroActoAdministrativo IS NOT NULL
+	          AND solEmp.solicitudGlobal.resultadoProceso = :resultadoProceso
+	          AND emp.idEmpleador = solEmp.idEmpleador
+	          ) 
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.personadetalle.tipo.numero.identificacion">
+		<query>
+			SELECT pdt FROM PersonaDetalle pdt 
+			WHERE pdt.idPersona IN (SELECT per.id FROM Persona per 
+				WHERE per.tipoIdentificacion = :tipoIdentificacion 
+				AND per.numeroIdentificacion = :numeroIdentificacion)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.personadetalle.id.numero.identificacion">
+		<query>
+			SELECT pdt FROM PersonaDetalle pdt 
+			WHERE pdt.idPersona IN (SELECT per.id FROM Persona per 
+				WHERE per.numeroIdentificacion = :numeroIdentificacion)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoAfiliadoEstado">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.tipoBeneficiario in (:tipoBeneficiario)
+            AND b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) 
+            AND b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+            AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+            AND b.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            AND b.afiliado.persona.tipoIdentificacion = :tipoIdentificacion     
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoEstadoYAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.tipoBeneficiario in (:tipoBeneficiario)
+            AND b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) 
+            AND b.afiliado.persona.numeroIdentificacion = :numeroIdentificacionAfiliado
+            AND b.afiliado.persona.tipoIdentificacion = :tipoIdentificacionAfiliado     
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.tipoBeneficiario in (:tipoBeneficiario) 
+            AND b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+            AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+            AND b.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            AND b.afiliado.persona.tipoIdentificacion = :tipoIdentificacion     
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Persona.buscarAfiliadoPensionadoActivo">
+		<query>
+            SELECT sap FROM SolicitudAfiliacionPersona sap 
+            WHERE sap.rolAfiliado.afiliado.persona.tipoIdentificacion = :tipoIdentificacionAfiliado 
+            AND sap.rolAfiliado.afiliado.persona.numeroIdentificacion = :numeroIdentificacionAfiliado
+            and sap.solicitudGlobal.clasificacion = :clasificacion 
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Persona.buscarAfiliadoPensionadoActivoPorTipo">
+		<query>
+            SELECT sap FROM SolicitudAfiliacionPersona sap 
+            WHERE sap.rolAfiliado.afiliado.persona.tipoIdentificacion = :tipoIdentificacionAfiliado 
+            AND sap.rolAfiliado.afiliado.persona.numeroIdentificacion = :numeroIdentificacionAfiliado
+            AND sap.rolAfiliado.estadoAfiliado = :estadoAfiliado
+            AND sap.solicitudGlobal.clasificacion in (:clasificacion)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorTipoNumeroIdentificacionEstado">
+		<query>
+            SELECT rolAfi FROM RolAfiliado rolAfi 
+            WHERE rolAfi.afiliado.persona.numeroIdentificacion= :numeroIdentificacion 
+            AND rolAfi.afiliado.persona.tipoIdentificacion= :tipoIdentificacion 
+            AND rolAfi.estadoAfiliado in (:estadosValidosAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.contarRolAfiliadoPorTipoNumeroIdentificacionEstado">
+		<query>
+            SELECT COUNT(rolAfi) FROM RolAfiliado rolAfi 
+            WHERE rolAfi.afiliado.persona.numeroIdentificacion= :numeroIdentificacion 
+            AND rolAfi.afiliado.persona.tipoIdentificacion= :tipoIdentificacion 
+            AND rolAfi.estadoAfiliado in (:estadosValidosAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarAfiliadoPorTipoNumeroIdentificacionEstado">
+		<query>
+            SELECT DISTINCT afiliado FROM RolAfiliado roa
+			JOIN roa.afiliado afiliado
+			JOIN afiliado.persona persona
+			WHERE persona.numeroIdentificacion =:numeroIdentificacion
+			AND persona.tipoIdentificacion =:tipoIdentificacion
+			AND roa.estadoAfiliado in (:estadosValidosAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarAfiliadoPorTipoNumeroIdentificacionSinEstado">
+		<query>
+            SELECT afi FROM Afiliado afi 
+            JOIN FETCH afi.persona per
+            WHERE per.numeroIdentificacion= :numeroIdentificacion 
+            AND per.tipoIdentificacion= :tipoIdentificacion 
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorTipoNumeroIdentificacionEstadoCivil">
+		<query>
+            SELECT rolAfi FROM RolAfiliado rolAfi, PersonaDetalle det 
+            WHERE rolAfi.afiliado.persona.numeroIdentificacion= :numeroIdentificacion 
+            AND rolAfi.afiliado.persona.tipoIdentificacion= :tipoIdentificacion 
+            AND rolAfi.afiliado.persona.idPersona = det.idPersona
+            AND det.estadoCivil in (:estadosValidosAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarAfiliadoPorTipoNumeroIdentificacionEstadoCivil">
+		<query>
+            SELECT det.estadoCivil FROM Afiliado afi, PersonaDetalle det 
+            WHERE afi.persona.numeroIdentificacion= :numeroIdentificacion 
+            AND afi.persona.tipoIdentificacion= :tipoIdentificacion 
+            AND afi.persona.idPersona = det.idPersona
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.RolAfiliado.buscarPersonaPorTipoAfiliacion">
+		<query>
+            SELECT rolAfi FROM RolAfiliado rolAfi 
+            WHERE rolAfi.afiliado.persona.numeroIdentificacion= :numeroIdentificacion 
+            AND rolAfi.afiliado.persona.tipoIdentificacion= :tipoIdentificacion 
+            AND rolAfi.tipoAfiliado in (:tipoAfiliado)
+            AND rolafi.estadoAfiliado = :estadoAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.validarEstadoRespectoAfiliadoPrincipal">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) 
+            AND b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+            AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+            AND b.afiliado.persona.numeroIdentificacion = :numeroIdentificacionAfiliado
+            AND b.afiliado.persona.tipoIdentificacion = :tipoIdentificacionAfiliado 
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoYNumeroIdDeBeneficiarioYAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b  
+            WHERE b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+            AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+            AND b.afiliado.persona.numeroIdentificacion = :numeroIdentificacionAfiliado
+            AND b.afiliado.persona.tipoIdentificacion = :tipoIdentificacionAfiliado 
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarEstadoAfiliadoRespectoEmpleador">
+		<query>
+            SELECT rolAfi FROM RolAfiliado rolAfi 
+            WHERE rolAfi.afiliado.persona.numeroIdentificacion= :numeroIdentificacionAfiliado 
+            AND rolAfi.afiliado.persona.tipoIdentificacion= :tipoIdentificacionAfiliado 
+            AND rolafi.estadoAfiliado in (:estadoAfiliado) 
+            AND rolafi.empleador.empresa.persona.numeroIdentificacion= :numeroIdentificacionEmpleador
+            AND rolafi.empleador.empresa.persona.tipoIdentificacion= :tipoIdentificacionEmpleador
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarEstadoAfiliadoRespectoEmpleador">
+		<query>
+            SELECT rolafi.estadoAfiliado FROM RolAfiliado rolAfi 
+            WHERE rolAfi.afiliado.persona.numeroIdentificacion= :numeroIdentificacionAfiliado 
+            AND rolAfi.afiliado.persona.tipoIdentificacion= :tipoIdentificacionAfiliado  
+            AND rolafi.empleador.empresa.persona.numeroIdentificacion= :numeroIdentificacionEmpleador
+            AND rolafi.empleador.empresa.persona.tipoIdentificacion= :tipoIdentificacionEmpleador
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarFechaNacimientoBeneficiario">
+		<query>
+            SELECT det.fechaNacimiento 
+            FROM Beneficiario b, PersonaDetalle det
+            WHERE b.tipoBeneficiario in (:tipoBeneficiario)
+            AND b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+            AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+            AND b.persona.idPersona = det.idPersona       
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioActivoPorTipo">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.tipoBeneficiario in (:tipoBeneficiario) 
+            AND b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) 
+            AND b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+            AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarCantidadBeneficiariosPorTipo">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.tipoBeneficiario in (:tipoBeneficiario)
+            AND b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) 
+            AND b.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            AND b.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarAfiliadoPorTipoAfiliadoNumeroTipoDocumento">
+		<query>
+            SELECT sap FROM SolicitudAfiliacionPersona sap 
+            WHERE sap.rolAfiliado.afiliado.persona.tipoIdentificacion = :tipoIdentificacionAfiliado 
+            AND sap.rolAfiliado.afiliado.persona.numeroIdentificacion = :numeroIdentificacionAfiliado
+            AND sap.solicitudGlobal.clasificacion in (:clasificacion)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiariosTipoAfiliadoYNumeroTipoAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b 
+            JOIN b.afiliado afi
+            JOIN afi.persona per
+            WHERE b.tipoBeneficiario in (:tipoBeneficiario) 
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND per.tipoIdentificacion = :tipoIdentificacion     
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarFechaVencimientoCertificadoEscolar">
+		<query>
+		SELECT cep.fechaVencimientoCertificadoEscolar 
+		FROM BeneficiarioDetalle benDet, Persona per, PersonaDetalle perDet, CertificadoEscolarBeneficiario cep
+		WHERE per.numeroIdentificacion = :numeroIdentificacionBeneficiario
+		AND per.tipoIdentificacion = :tipoIdentificacionBeneficiario
+		AND per.idPersona = perDet.idPersona
+		AND perDet.idPersonaDetalle = benDet.idPersonaDetalle 
+		AND cep.idBeneficiarioDetalle = benDet.idBeneficiarioDetalle
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarTipoAfiliadoPorNumeroYTipoDocumento">
+		<query>
+            SELECT rolAfi.tipoAfiliado FROM RolAfiliado rolAfi 
+            WHERE rolAfi.afiliado 
+            IN (SELECT ben.afiliado FROM Beneficiario ben 
+            	WHERE ben.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario 
+            	AND ben.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario)
+            GROUP BY rolAfi.tipoAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarTiposAsociadosAfiliadoPorNumeroYTipoDocumento">
+		<query>
+			SELECT rolAfi.tipoAfiliado FROM RolAfiliado rolAfi  
+            WHERE rolAfi.afiliado.persona.tipoIdentificacion = :tipoIdentificacion 
+            AND rolAfi.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            GROUP BY rolAfi.tipoAfiliado
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Persona.buscarPersonaPorTipoYNumeroDocumento">
+		<query>
+            SELECT new com.asopagos.dto.PersonaDTO(per, det) 
+            FROM Persona per, PersonaDetalle det
+            WHERE per.tipoIdentificacion = :tipoIdentificacion 
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            and per.idPersona= det.idPersona
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiariosActivosGrupoFamiliarAfiliado">
+		<query>
+            SELECT ben FROM Beneficiario ben 
+            JOIN FETCH ben.grupoFamiliar grupfam 
+            WHERE ben.afiliado = grupfam.afiliado
+            AND ben.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado
+            AND ben.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+            AND ben.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarGrupoFamiliarBeneficiariosActivosPorAfiliado">
+		<query>
+            SELECT ben FROM Beneficiario ben
+            WHERE ben.grupoFamiliar.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            AND ben.grupoFamiliar.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+            AND ben.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.BuscarEstadoAfiliacionesAfiliadoPorTipo">
+		<query>
+		SELECT COUNT(roa) AS cant1 FROM RolAfiliado roa
+		WHERE roa.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+		AND roa.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+		AND roa.tipoAfiliado = :tipoAfiliado
+		AND cant1 =		
+		(
+			SELECT COUNT(rolA) AS cant2 FROM RolAfiliado rolA
+			WHERE rolA.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+			AND rolA.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+			AND rolA.estadoAfiliado = :activo
+			AND rolA.tipoAfiliado = :tipoAfiliado		
+		)	
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.BuscarAfiliadoPorTipoYNumeroDocumento">
+		<query>
+		SELECT rolAfi FROM RolAfiliado rolAfi 
+		JOIN rolAfi.afiliado afi
+		WHERE rolAfi.afiliado.persona = afi.persona
+		AND afi.persona.numeroIdentificacion = :numeroIdentificacion
+		AND afi.persona.tipoIdentificacion = :tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoYAfiliadoPrincipal">
+		<query>
+            SELECT ben FROM Beneficiario ben
+            WHERE ben.grupoFamiliar.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            AND ben.grupoFamiliar.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+            AND ben.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.SocioEmpleador.buscarAfiliadoConyugeSocioEmpleador">
+		<query>
+			SELECT soe FROM SocioEmpleador soe
+			WHERE soe.conyugue.numeroIdentificacion = :numeroIdentificacion 
+			AND soe.conyugue.tipoIdentificacion = :tipoIdentificacion
+			AND soe.existenCapitulaciones = :existenCapitulaciones
+			AND soe.idEmpleador =
+				(
+				SELECT emp.id FROM Empleador emp
+	           	WHERE emp.empresa.persona.numeroIdentificacion = :numeroIdentificacionEmpleador
+	           	AND emp.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador
+	           	)    	
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.GrupoFamiliar.buscarGrupoFamiliarBeneficiarioActivo">
+		<query>
+			SELECT b.grupoFamiliar.afiliado.persona 
+			FROM Beneficiario b
+			WHERE b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+			AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+			AND b.estadoBeneficiarioAfiliado IN (:estadoBeneficiarioAfiliado)
+			AND b.tipoBeneficiario IN (:tipoBeneficiario)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.GrupoFamiliar.buscarGrupoFamiliarPersona">
+		<query>
+			SELECT b.grupoFamiliar.afiliado
+			FROM Beneficiario b
+			WHERE b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+			AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+			AND b.estadoBeneficiarioAfiliado IN (:estadoBeneficiarioAfiliado)
+			AND b.tipoBeneficiario IN (:tipoBeneficiario)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarAfiliadoPensionadoPagadorAportesActivo">
+		<query>
+			SELECT roa FROM RolAfiliado roa
+			WHERE roa.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+			AND roa.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+			AND roa.tipoAfiliado = :tipoAfiliado
+			AND roa.estadoEnEntidadPagadora = :estadoEnEntidadPagadora
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="Validaciones.Afiliado.buscarAdministradorDelSubsidio">
+		<query>
+			SELECT asg FROM AdminSubsidioGrupo asg 
+			WHERE asg.idGrupoFamiliar =:idGrupoFamiliar
+			AND asg.medioPagoActivo =:estadoMedioPago
+			AND asg.afiliadoEsAdministradorSubsidio =:afiliadoAdmonSubsidio
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="Validaciones.Afiliado.buscarAportesUltimoPeriodo">
+		<query>
+			SELECT ag.periodoAporte FROM AporteDetallado ad, 
+				Persona per, AporteGeneral ag
+			WHERE ad.idPersona = per.idPersona
+			AND ad.idAporteGeneral = ag.id
+			AND per.tipoIdentificacion =:tipoIdentificacion
+			AND per.numeroIdentificacion =:numeroIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="Validaciones.Afiliado.buscarAfiliadoAsociadoAlEmpleador">
+		<query>
+			SELECT roa FROM RolAfiliado roa
+			WHERE roa.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+			AND roa.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+			AND roa.empleador.empresa.persona.numeroIdentificacion = :numeroIdentificacionEmpleador
+			AND roa.empleador.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.SolicitudNovedad.BuscarSolicitudDesafiliacionEmpleadoEmpleador">
+		<query>
+			SELECT sne FROM SolicitudNovedadEmpleador sne
+			WHERE sne.idEmpleador =
+				(
+					SELECT emp.id FROM Empleador emp
+					WHERE emp.empresa.persona.numeroIdentificacion = :numeroIdentificacionEmpleador
+					AND emp.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador
+				)
+			AND sne.idSolicitudNovedad = 
+				(
+					SELECT sn.id FROM SolicitudNovedad sn
+					WHERE sn.idNovedad =
+						(
+							SELECT n.id FROM ParametrizacionNovedad n
+							WHERE n.novedad = :tipoNovedad
+						)
+					AND sn.estadoSolicitud NOT IN (:estadoSolicitudNovedad)
+				)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.SolicitudNovedad.BuscarSolicitudDesafiliacionEmpleadoEmpleadorConId">
+		<query>
+			SELECT sne FROM SolicitudNovedadEmpleador sne
+			WHERE sne.idEmpleador = :idEmpleadorDestino
+			AND sne.idSolicitudNovedad = 
+				(
+					SELECT sn.id FROM SolicitudNovedad sn
+					WHERE sn.idNovedad =
+						(
+							SELECT n.id FROM ParametrizacionNovedad n
+							WHERE n.novedad = :tipoNovedad
+						)
+					AND sn.estadoSolicitud NOT IN (:estadoSolicitudNovedad)
+				)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.SolicitudNovedadPersona.BuscarSolicitudExpedicionReexpedicionTarjetaPersona">
+		<query>
+			SELECT snp FROM SolicitudNovedadPersona snp
+			WHERE snp.idPersona =
+				(
+					SELECT p.id FROM Persona p
+					WHERE p.numeroIdentificacion = :numeroIdentificacion
+					AND p.tipoIdentificacion = :tipoIdentificacion
+				)
+			AND snp.idSolicitudNovedad = 
+				(
+					SELECT sn.id FROM SolicitudNovedad sn
+					WHERE sn.idNovedad =
+						(
+							SELECT n.id FROM ParametrizacionNovedad n
+							WHERE n.novedad IN (:tipoNovedad)
+						)
+				)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Afiliado.buscarFechaFinIncapacidad">
+		<query>
+            SELECT det.fechaNacimiento 
+            FROM Beneficiario b, PersonaDetalle det
+            WHERE b.tipoBeneficiario in (:tipoBeneficiario)
+            AND b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+            AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+            AND b.persona.idPersona = det.idPersona    
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioHijoAfiliadoMismoGenero">
+		<query>
+			SELECT new com.asopagos.dto.PersonaDTO(b.persona, det)
+			FROM Beneficiario b, PersonaDetalle det
+			WHERE b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)
+			AND b.tipoBeneficiario in (:tipoBeneficiario)
+			AND b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+			AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+			AND b.persona.idPersona = det.idPersona
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.Afiliado.buscarAfiliadosPrincipalesDeUnBeneficiario">
+		<query>
+			SELECT new com.asopagos.dto.PersonaDTO(b.grupoFamiliar.afiliado.persona, det)
+			FROM Beneficiario b, PersonaDetalle det
+			WHERE b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)
+			AND b.tipoBeneficiario in (:tipoBeneficiario)
+			AND b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+			AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+			AND b.grupoFamiliar.afiliado.persona.idPersona = det.idPersona
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.Afiliado.buscarAfiliadosPrincipalesDeUnBeneficiarioDadoAfiliado">
+		<query>
+			SELECT new com.asopagos.dto.PersonaDTO(b.grupoFamiliar.afiliado.persona, det)
+			FROM Beneficiario b, PersonaDetalle det
+			WHERE b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)
+			AND b.tipoBeneficiario in (:tipoBeneficiario)
+			AND b.persona.numeroIdentificacion = :numeroIdentificacionBeneficiario
+			AND b.persona.tipoIdentificacion = :tipoIdentificacionBeneficiario
+			AND b.grupoFamiliar.afiliado.persona.numeroIdentificacion != :numeroIdentificacion
+			AND b.grupoFamiliar.afiliado.persona.tipoIdentificacion != :tipoIdentificacion 
+			AND b.grupoFamiliar.afiliado.persona.idPersona = det.idPersona
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.RolAfiliado.Empleador.TrabajadoresAfiliados">
+		<query>
+			SELECT r FROM RolAfiliado r 
+			WHERE r.empleador.empresa.persona.numeroIdentificacion = :numeroIdentificacion
+			AND r.empleador.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+			AND r.estadoAfiliado = :estadoAfiliadoCaja
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Empleador.buscarEmpleadorId">
+		<query>
+            SELECT e FROM Empleador e 
+            WHERE e.id = :idEmpleadorDestino                        
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.GrupoFamiliar.buscarEstadoGrupoFamiliarInembargablePorId">
+		<query>
+			SELECT gf.inembargable FROM GrupoFamiliar gf
+			WHERE gf.id = :idGrupoFamiliar
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Afiliado.buscarEstadoTarjetaAfiliado">
+		<query>
+			SELECT tar FROM Tarjeta tar
+			WHERE tar.tarjetaHabiente.persona.numeroIdentificacion = :numeroIdentificacion
+			AND tar.tarjetaHabiente.persona.tipoIdentificacion = :tipoIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.GrupoFamiliar.buscarCesionRetencionSubsidioGrupoFamiliar">
+		<query>
+			SELECT 
+			CASE WHEN gf.afiliado.cesionSubsidio = '1' or gf.afiliado.retencionSubsidio = '1' 
+			     THEN true 
+			     ELSE false 
+			  END as cesionRetencionActivaGf 
+			FROM GrupoFamiliar gf
+			WHERE gf.id = :idGrupoFamiliar
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Afiliado.buscarCesionRentencionSubsidioAfilido">
+		<query>
+			SELECT 
+			CASE WHEN afi.cesionSubsidio = '1' or afi.retencionSubsidio = '1' 
+			     THEN true 
+			     ELSE false 
+			  END as cesionRetencionActivaAfi 
+			FROM Afiliado afi
+			WHERE afi.persona.numeroIdentificacion = :numeroIdentificacion
+			AND afi.persona.tipoIdentificacion = :tipoIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.GrupoFamiliar.buscarGrupoFamiliarPorId">
+		<query>
+			SELECT gf FROM GrupoFamiliar gf WHERE gf.idGrupoFamiliar = :idGrupoFamiliar
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoPorTipoNumeroTipoAfiliacionEstadoEmpleador">
+		<query>
+            SELECT ra FROM RolAfiliado ra 
+            WHERE ra.afiliado.persona.tipoIdentificacion = :tipoIdentificacion and ra.afiliado.persona.numeroIdentificacion = :numeroIdentificacion  
+            and ra.tipoAfiliado = :tipoAfiliado and ra.estadoAfiliado = :estadoAfiliado
+            and ra.empleador.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador and ra.empleador.empresa.persona.numeroIdentificacion =:numeroIdentificacionEmpleador                              
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Empleador.buscarSucursalesPorEmpleador">
+		<query>
+			SELECT sue FROM SucursalEmpresa sue
+			WHERE sue.idEmpresa = 
+				(
+					SELECT e.empresa FROM Empleador e
+					WHERE e.empresa.persona.numeroIdentificacion = :numeroIdentificacionEmpleador
+					AND e.empresa.persona.tipoIdentificacion = :tipoIdentificacionEmpleador
+				)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.Persona.buscarFechaNacimientoPersona">
+		<query>
+			SELECT det.fechaNacimiento 
+            FROM Persona p, PersonaDetalle det
+            WHERE p.numeroIdentificacion = :numeroIdentificacion
+            AND p.tipoIdentificacion = :tipoIdentificacion
+            AND p.idPersona = det.idPersona     
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Persona.consultarIdPorTipoYNumeroId">
+		<description>Consulta el id de una Persona por tipo y número de Identificación.</description>
+		<query>
+			SELECT per.idPersona FROM Persona per
+            WHERE per.tipoIdentificacion = :tipoIdentificacion 
+            AND per.numeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-query>
+	<named-native-query name="Persona.consultarEstadoConyuge">
+		<description>Consulta el estado del beneficiario con respecto al afiliado principal</description>
+		<query>
+			SELECT benEstadoBeneficiarioAfiliado FROM Beneficiario ben
+			INNER JOIN Persona per ON ben.benPersona = per.perId
+			WHERE per.perId = :idPersona
+		</query>
+	</named-native-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroTipoBeneficiarioEstadoGenero">
+		<query>
+            SELECT b FROM Beneficiario b, PersonaDetalle det
+            LEFT JOIN FETCH b.persona per
+            LEFT JOIN FETCH b.afiliado afi
+            LEFT JOIN FETCH afi.persona perAfi
+            WHERE b.persona.tipoIdentificacion = :tipoIdentificacion and b.persona.numeroIdentificacion = :numeroIdentificacion  
+            and b.tipoBeneficiario in (:tipoBeneficiario) and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) and b.afiliado.persona.idPersona=det.idPersona and (:genero IS NULL OR det.genero=:genero)         
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoBeneficiarioEstadoGenero">
+		<query>
+            SELECT b FROM Beneficiario b, PersonaDetalle det 
+            WHERE b.persona.numeroIdentificacion = :numeroIdentificacion
+			AND b.persona.tipoIdentificacion = :tipoIdentificacion
+            and b.tipoBeneficiario in (:tipoBeneficiario) and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)
+            and b.afiliado.persona.idPersona=det.idPersona and det.genero=:genero                         
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="SolicitudAfiliacionEmpleadorTemporal.buscarPorPersona">
+		<query>
+            SELECT dtem FROM DatoTemporalSolicitud dtem,SolicitudAfiliacionEmpleador sol
+            WHERE dtem.Solicitud = sol.solicitudGlobal.idSolicitud
+            AND dtem.tipoIdentificacion = :tipoIdentificacion
+            AND dtem.numeroIdentificacion = :numeroIdentificacion
+            AND sol.estadoSolicitud NOT IN (:estadosSolicitud)
+            AND (1 = (CASE WHEN :idSolicitud IS NULL THEN 1 ELSE 0 END) OR (sol.solicitudGlobal.idSolicitud NOT IN (:idSolicitud)))
+         </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="SolicitudAfiliacionEmpleadorTemporalEstado.buscarPorPersona">
+		<query>
+            SELECT dtem FROM DatoTemporalSolicitud dtem,SolicitudAfiliacionEmpleador sol
+            WHERE dtem.Solicitud = sol.solicitudGlobal.idSolicitud
+            AND dtem.tipoIdentificacion = :tipoIdentificacion
+            AND dtem.numeroIdentificacion = :numeroIdentificacion
+            AND sol.estadoSolicitud IN (:estadosSolicitud)
+         </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiariosDiferenteTipo">
+		<query>
+            SELECT b FROM Beneficiario b 
+            WHERE b.tipoBeneficiario not in (:tipoBeneficiario)
+            AND b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) 
+            AND b.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            AND b.afiliado.persona.tipoIdentificacion = :tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+    <named-query name="SolicitudAfiliacion.buscarPorPersona.dependiente">
+        <query>
+            SELECT sol FROM SolicitudAfiliacionPersona sol
+            JOIN FETCH sol.rolAfiliado rol
+            JOIN FETCH rol.afiliado afi
+            JOIN FETCH afi.persona per
+            WHERE per.tipoIdentificacion = :tipoIdentificacion
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND rol.tipoAfiliado = :tipoAfiliado
+            AND rol.empleador.empresa.persona.tipoIdentificacion = :tipoIdenficiacionEmpleador
+            AND rol.empleador.empresa.persona.numeroIdentificacion = :numeroIdentificacionEmpleador
+            AND sol.estadoSolicitud NOT IN :estadosSolicitud
+            AND (1 = (CASE WHEN :idSolicitud IS NULL THEN 1 ELSE 0 END) OR (sol.solicitudGlobal.idSolicitud NOT IN (:idSolicitud)))
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="SolicitudAfiliacion.buscarPorPersona.web">
+		<query>
+			SELECT sol FROM SolicitudAfiliacionPersona sol
+			JOIN FETCH sol.rolAfiliado rol
+			JOIN FETCH rol.afiliado afi
+			JOIN FETCH afi.persona per
+	        WHERE per.tipoIdentificacion = :tipoIdentificacion
+	        AND per.numeroIdentificacion = :numeroIdentificacion
+	        AND rol.tipoAfiliado= :tipoAfiliado
+	        AND sol.solicitudGlobal.canalRecepcion=com.asopagos.enumeraciones.core.CanalRecepcionEnum.WEB
+	        AND sol.estadoSolicitud IN :estadosSolicitud
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="Validaciones.GrupoFamiliar.buscarBeneficiariosActivo">
+		<query>
+            SELECT ben FROM Beneficiario ben
+            WHERE ben.grupoFamiliar.idGrupoFamiliar =:idGrupoFamiliar
+            AND ben.estadoBeneficiarioAfiliado =:estadoBeneficiarioAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	
+	<named-query name="Validaciones.GrupoFamiliar.buscarBeneficiarios">
+		<query>
+            SELECT ben FROM Beneficiario ben
+            WHERE ben.grupoFamiliar.idGrupoFamiliar =:idGrupoFamiliar
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.RolAfiliado.buscarRolAfiliadoEstadoFechaRetiroMotivo">
+		<query>
+            SELECT ra FROM RolAfiliado ra
+			JOIN ra.afiliado afiliado
+			JOIN afiliado.persona persona
+			WHERE persona.tipoIdentificacion = :tipoIdentificacion
+			AND persona.numeroIdentificacion = :numeroIdentificacion
+			AND ra.estadoAfiliado = :estadoAfiliado
+			AND ra.fechaRetiro IS NOT NULL
+			AND ra.tipoAfiliado = :tipoAfiliado
+			AND ra.motivoDesafiliacion IN (:motivoDesafiliacion)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Persona.buscarNovedadDetalleVigentePorPersonaPorTipoTransaccion">
+		<query>
+	        SELECT nop 
+            FROM Solicitud sol, 
+                SolicitudNovedad sno,
+                SolicitudNovedadPersona snp,
+                Persona per,
+                NovedadDetalle nop
+            WHERE  sol.idSolicitud = sno.solicitudGlobal.idSolicitud
+            AND sno.idSolicitudNovedad = snp.idSolicitudNovedad 
+            AND per.idPersona = snp.idPersona
+            AND sno.idSolicitudNovedad = nop.idSolicitudNovedad 
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND sno.solicitudGlobal.tipoTransaccion IN (:tipoNovedad)
+            AND nop.fechaFin >= :fechaActual
+	   </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Persona.buscarNovedadDetalleVigentePorPersona">
+		<query>
+            SELECT nop 
+            FROM Solicitud sol, 
+                SolicitudNovedad sno,
+                SolicitudNovedadPersona snp,
+                Persona per,
+                NovedadDetalle nop
+            WHERE  sol.idSolicitud = sno.solicitudGlobal.idSolicitud
+            AND sno.idSolicitudNovedad = snp.idSolicitudNovedad 
+            AND per.idPersona = snp.idPersona
+            AND sno.idSolicitudNovedad = nop.idSolicitudNovedad 
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND nop.fechaFin >= :fechaActual
+       </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.empleador.buscarExpulsionSubsanada">
+		<query>
+            SELECT exs 
+            FROM ExpulsionSubsanada exs, 
+                Empleador emp
+            WHERE exs.idEmpleador = emp.idEmpleador
+            AND emp.empresa.persona.tipoIdentificacion = :tipoIdentificacion
+            AND emp.empresa.persona.numeroIdentificacion = :numeroIdentificacion 
+       </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.persona.buscarRolAfiliadoPorId">
+		<query>
+            SELECT roa 
+            FROM RolAfiliado roa
+            WHERE roa.idRolAfiliado = :idRolAfiliado  
+       </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query name="Validaciones.persona.buscarExpulsionSubsanada">
+		<query>
+            SELECT exs 
+            FROM ExpulsionSubsanada exs, 
+                RolAfiliado roa
+            WHERE roa.idRolAfiliado = exs.idRolAfiliado
+            AND roa.afiliado.persona.tipoIdentificacion = :tipoIdentificacion 
+            AND roa.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+       </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Persona.validarExistenciaPersonaPorTipoNumero">
+		<query>
+			SELECT p FROM Persona p
+			WHERE p.numeroIdentificacion= :numeroIdentificacion 
+			AND p.tipoIdentificacion= :tipoIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.JefeHogar.validarJefeHogarAportesTipoAfiliacion">
+		<query>
+			SELECT ra
+			FROM RolAfiliado ra
+			JOIN FETCH ra.afiliado afi
+			JOIN FETCH afi.persona per
+			WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+			AND ra.estadoAfiliado = :estadoAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.JefeHogar.validarJefeHogarAportesPorTipoNumero">
+		<query>
+			SELECT ag.periodoAporte,ad.tipoCotizante 
+			FROM AporteDetallado ad, Persona per, AporteGeneral ag
+			WHERE ad.idPersona = per.idPersona
+			AND ad.idAporteGeneral = ag.id
+			AND per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+			AND ad.tipoCotizante in (:tiposAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.JefeHogar.validarJefeHogarAportesPorNombreApellidoFechaNacimiento">
+		<query>
+			SELECT ag.periodoAporte 
+			FROM AporteDetallado ad, Persona per, AporteGeneral ag, PersonaDetalle perd
+			WHERE ad.idPersona = per.idPersona
+			AND ad.idAporteGeneral = ag.id
+			AND per.idPersona = perd.idPersona
+			AND per.primerApellido = :primerApellido
+			AND per.primerNombre = :primerNombre
+			AND perd.fechaNacimiento = :fechaNacimiento
+			AND ad.tipoCotizante in (:tiposAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.JefeHogar.validarJefeHogarAportesIndependientePensionadoPorTipoNumero">
+		<query>
+			SELECT ag.periodoAporte 
+			FROM AporteDetallado ad, Persona per, AporteGeneral ag
+			WHERE ad.idPersona = per.idPersona
+			AND ad.idAporteGeneral = ag.id
+			AND per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+			AND ad.tipoCotizante in (:tiposAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.JefeHogar.validarJefeHogarDependienteBeneficio1429">
+		<description>
+			Consulta el beneficio de un empleador, cuando el jefe hogar es dependiente
+		</description>
+		<query>
+			SELECT benEmp 
+			FROM BeneficioEmpleador benEmp, 
+			    Beneficio  ben,
+			    RolAfiliado roa
+			    JOIN roa.empleador empl
+			WHERE benEmp.idBeneficio = ben.idBeneficio
+			AND benEmp.idEmpleador = empl.idEmpleador
+			AND roa.idRolAfiliado IN (:idRolAfiliado)
+			AND ben.tipoBeneficio = :tipoBeneficio
+			AND benEmp.beneficioActivo = :estadoBeneficio
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.SolicitudAfiliacionEmpleador.validarEmpleadorRelacionadoEnLaSolicitud">
+		<query>
+		<!--SELECT bene FROM Beneficiario bene 
+		WHERE bene.persona.tipoIdentificacion = :tipoIdAfiliado
+		AND bene.persona.numeroIdentificacion = :numeroIdAfiliado
+		AND bene.tipoBeneficiario in (:tipoBeneficiario)
+		AND bene.afiliado.persona.tipoIdentificacion = :tipoIdEmpleador,
+		AND bene.afiliado.persona.numeroIdentificacion = :numeroIdEmpleador--> 
+		
+		SELECT sae FROM SolicitudAfiliacionEmpleador sae 
+		LEFT JOIN FETCH sae.solicitudGlobal sol 
+		WHERE sol.clasificacion IN (:clasificacion) AND sae.idEmpleador = (
+		SELECT DISTINCT (empl.idEmpleador) FROM Empleador empl 
+		LEFT JOIN empl.empresa emp
+		WHERE emp.persona.numeroIdentificacion=:numeroIdentificacionEmpleador 
+		AND emp.persona.tipoIdentificacion=:tipoIdentificacionEmpleador)
+		
+		<!-- RolAfiliado roa LEFT 
+		JOIN roa.empleador empl LEFT JOIN empl.empresa emp LEFT JOIN emp.persona per
+		WHERE per.numeroIdentificacion=:numeroIdentificacionEmpleador AND per.tipoIdentificacion=:tipoIdentificacionEmpleador)-->
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	
+	<named-query name="Validaciones.beneficiario.relacionadoConAfiliado">
+		<query>
+		SELECT bene FROM Beneficiario bene 
+		WHERE bene.tipoBeneficiario = :tipoBeneficiario
+		AND bene.estadoBeneficiarioAfiliado = :estadoBeneficiario
+		AND bene.persona.tipoIdentificacion= :tipoIdAfiliado
+		AND bene.persona.numeroIdentificacion= :numeroIdAfiliado
+		AND bene.afiliado.persona.tipoIdentificacion= :tipoIdEmpleador
+		AND bene.afiliado.persona.numeroIdentificacion= :numeroIdEmpleador
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	
+	<named-query name="Validaciones.validarBeneficiarioTipoAfiliacionEmpleador">
+		<query>
+		SELECT ben FROM Beneficiario ben LEFT JOIN ben.persona per,RolAfiliado roa
+		WHERE roa.afiliado.idAfiliado =ben.afiliado.idAfiliado
+		AND per.numeroIdentificacion=:numeroIdentificacion AND per.tipoIdentificacion=:tipoIdentificacion 
+		AND roa.empleador.idEmpleador =:idEmpleador AND ben.tipoBeneficiario= :tipoBeneficiario
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroTipoBeneficiarioEstadoAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b 
+            LEFT JOIN FETCH b.afiliado afi
+            LEFT JOIN FETCH b.persona per
+            LEFT JOIN FETCH afi.persona,RolAfiliado roa
+            WHERE roa.afiliado.idAfiliado=afi.idAfiliado AND b.persona.tipoIdentificacion = :tipoIdentificacion and b.persona.numeroIdentificacion = :numeroIdentificacion  
+            and b.tipoBeneficiario in (:tipoBeneficiario) and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) and roa.tipoAfiliado IN (:tiposAfiliado)
+             and roa.afiliado.idAfiliado=afi.idAfiliado                         
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoBeneficiarioEstadoAfiliado">
+		<query>
+            SELECT b FROM Beneficiario b
+            LEFT JOIN FETCH b.afiliado afi 
+            LEFT JOIN FETCH afi.persona, RolAfiliado roa
+            WHERE roa.afiliado.idAfiliado=afi.idAfiliado AND b.persona.numeroIdentificacion = :numeroIdentificacion  
+            and b.tipoBeneficiario in (:tipoBeneficiario) and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) 
+            and roa.tipoAfiliado IN (:tiposAfiliado) and roa.afiliado.idAfiliado=afi.idAfiliado               
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.condicionInvalidez.id.numero.tipo.identificacion">
+		<query>
+			SELECT con FROM CondicionInvalidez con, Persona per 
+			WHERE con.idPersona = per.idPersona
+			AND per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query
+		name="Validaciones.beneficiarioDetalle.id.numero.tipo.identificacion">
+		<query>
+			SELECT benDet FROM BeneficiarioDetalle benDet, Persona per, PersonaDetalle perDet 
+			WHERE per.idPersona = perDet.idPersona 
+			AND benDet.idPersonaDetalle = perDet.idPersonaDetalle
+			AND per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+	<named-query name="Validaciones.cartera.consultarEstadoCartera">
+		<query>
+			SELECT car.estadoCartera FROM Cartera car,Persona per WHERE per.idPersona=car.idPersona
+			AND car.estadoOperacion = :estadoOperacion
+			AND per.tipoIdentificacion =:tipoIdentificacion
+			AND per.numeroIdentificacion =:numeroIdentificacion
+			AND car.tipoSolicitante = :tipoSolicitante
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	
+	
+	<named-query name="Validaciones.Beneficiario.ConsultarMotivosDesafiliacion">
+		<query>
+           SELECT ben.motivoDesafiliacion 
+           FROM Beneficiario ben, Persona per
+           WHERE (per.idPersona = ben.persona)
+           AND (per.tipoIdentificacion =:tipoIdentificacion)
+           AND (per.numeroIdentificacion =:numeroIdentificacion)
+           AND (ben.motivoDesafiliacion =:motivoDesafiliacion)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	
+	<named-query name="Validaciones.JefeHogar.ConsultarMotivosDesafiliacion">
+		<query>
+           SELECT roa.motivoDesafiliacion 
+           FROM RolAfiliado roa, Afiliado afi, Persona per
+           WHERE (per.idPersona = afi.persona)
+           AND (afi.idAfiliado = roa.afiliado)
+           AND (per.tipoIdentificacion =:tipoIdentificacion)
+           AND (per.numeroIdentificacion =:numeroIdentificacion)
+           AND (roa.motivoDesafiliacion =:motivoDesafiliacion)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+
+    <named-query name="constantes.parametros.buscar.beneficio">
+        <query>
+            SELECT ben FROM Beneficio ben WHERE ben.tipoBeneficio = :tipoBeneficio
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-query>
+    
+    <named-query name="Validaciones.buscar.sucursalEmpresa.id">
+        <description>
+            Consulta una sucursal asociada al empleador
+        </description>
+        <query>
+            SELECT sue FROM SucursalEmpresa sue
+            WHERE sue.idSucursalEmpresa = :idSucursal
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-query>
+    
+    <named-query
+		name="Validaciones.Persona.buscarNovedadPersonaEnCursoPorPersona">
+		<query>
+            SELECT snp 
+            FROM Solicitud sol, 
+                SolicitudNovedad sno,
+                SolicitudNovedadPersona snp,
+                Persona per
+            WHERE  sol.idSolicitud = sno.solicitudGlobal.idSolicitud
+            AND sno.idSolicitudNovedad = snp.idSolicitudNovedad 
+            AND per.idPersona = snp.idPersona
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND sol.tipoTransaccion = :tipoTransaccion
+            AND sno.estadoSolicitud != 'CERRADA'
+            AND sol.canalRecepcion NOT IN ('PILA','PRESENCIAL_INT', 'ARCHIVO_CERTI_ESCOLAR')
+            <!-- ELIMINAR ULTIMA LINEA CUNADO SE CORRIJA CON SCRIPTS SOLICITUDES DE PILA SIN APLICARSE -->
+       </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	
+	<named-query
+		name="Validaciones.Persona.buscarNovedadPersonaEnCursoPorPersonaBeneficiario">
+		<query>
+            SELECT snp 
+            FROM Solicitud sol, 
+                SolicitudNovedad sno,
+                SolicitudNovedadPersona snp,
+                Persona per, 
+                DatoTemporalSolicitud dts
+            WHERE sol.idSolicitud = sno.solicitudGlobal.idSolicitud
+            AND sno.idSolicitudNovedad = snp.idSolicitudNovedad 
+            AND per.idPersona = snp.idPersona
+            AND dts.Solicitud = sol.idSolicitud
+            AND per.numeroIdentificacion = :numeroIdentificacion
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND dts.numeroIdentificacion = :numeroIdentificacionBeneficiario
+            AND dts.tipoIdentificacion = :tipoIdentificacionBeneficiario
+            AND sol.tipoTransaccion IN (:tipoTransaccion)
+            AND sno.estadoSolicitud != 'CERRADA'
+            AND (sol.canalRecepcion = 'PRESENCIAL' OR (sol.canalRecepcion != 'PRESENCIAL' AND sno.estadoSolicitud != 'APROBADA'))
+       </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+    <named-query
+        name="Validaciones.JefeHogar.buscarBeneficiarioByTipoBenNroYTipoDocJefe">
+        <query>
+            SELECT ben FROM Beneficiario ben
+            LEFT JOIN FETCH ben.persona perBen
+            LEFT JOIN FETCH ben.afiliado afi
+            LEFT JOIN FETCH afi.persona perAfi
+            WHERE ben.tipoBeneficiario =:tipoBeneficiario
+            AND perAfi.tipoIdentificacion = :tipoIdentificacionAfiliado
+            AND perAfi.numeroIdentificacion = :numeroIdentificacionAfiliado
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-query>
+
+    <named-query name="validaciones.certificados.beneficiario.by.numero.tipo.identificacion">
+        <query>
+            SELECT ceb
+            FROM CertificadoEscolarBeneficiario ceb,
+            BeneficiarioDetalle benDet,
+            Persona per,
+            PersonaDetalle perDet
+            WHERE  per.idPersona = perDet.idPersona
+            AND benDet.idPersonaDetalle = perDet.idPersonaDetalle
+            AND ceb.idBeneficiarioDetalle = benDet.idBeneficiarioDetalle
+            AND per.tipoIdentificacion = :tipoIdentificacion
+            AND per.numeroIdentificacion = :numeroIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-query>
+
+    <named-query
+        name="Validaciones.Empleador.sucursal.contarTrabajadoresActivos">
+        <description>
+            Consulta que cuenta el número de trabajadores activos asociados a la sucursal del empleador
+        </description>
+        <query>
+            SELECT COUNT(roa)
+            FROM RolAfiliado roa 
+            WHERE roa.estadoAfiliado = :estadoAfiliado
+            AND roa.empleador.idEmpleador = :idEmpleador
+            AND roa.sucursalEmpleador.idSucursalEmpresa = :idSucursal
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-query>
+    
+    <named-query name="Validaciones.Aportes.buscarPorCotizante">
+		<query>
+           SELECT DISTINCT vp.bloque FROM ValidacionProceso vp WHERE
+           vp.objetoValidacion = :tipoAfiliado AND
+           vp.bloque in (:transacciones) 
+            
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	
+	<named-query
+	name="Validaciones.Beneficiario.TipoAfiliadoYNumeroTipoAfiliado.estadoTipoBeneficiario">
+	<query>
+			SELECT b FROM Beneficiario b 
+            WHERE b.tipoBeneficiario IN (:tipoBeneficiario)
+            AND b.estadoBeneficiarioAfiliado IN (:estadoBeneficiarioAfiliado) 
+            AND b.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            AND b.afiliado.persona.tipoIdentificacion = :tipoIdentificacion 
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroTipoBeneficiarioEstadoGrupFam">
+		<query>
+            SELECT b FROM Beneficiario b 
+            LEFT JOIN FETCH b.afiliado afi
+            LEFT JOIN FETCH b.persona per
+            LEFT JOIN FETCH afi.persona
+            LEFT JOIN FETCH b.grupoFamiliar gru
+            WHERE b.persona.tipoIdentificacion = :tipoIdentificacion and b.persona.numeroIdentificacion = :numeroIdentificacion  
+            and b.tipoBeneficiario in (:tipoBeneficiario) and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)
+            and gru.idGrupoFamiliar not in (:idGrupoFamiliar)                         
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-query
+		name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoBeneficiarioEstadoGrupFam">
+		<query>
+            SELECT b FROM Beneficiario b
+            LEFT JOIN FETCH b.afiliado afi 
+            LEFT JOIN FETCH afi.persona
+            LEFT JOIN FETCH b.grupoFamiliar gru
+            WHERE b.persona.numeroIdentificacion = :numeroIdentificacion  
+            and b.tipoBeneficiario in (:tipoBeneficiario) and b.estadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado)  
+            and gru.idGrupoFamiliar not in (:idGrupoFamiliar)                       
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<named-native-query
+		name="Validaciones.Solicitud.contarClasificacionPorTipoNumeroIdentificacionEstado">
+		<query>
+            SELECT COUNT(*)
+			FROM RolAfiliado
+			INNER JOIN AFILIADO ON AFIID = roaAfiliado
+			INNER JOIN PERSONA ON PERID = afiPersona
+			LEFT JOIN SolicitudAfiliacionPersona ON sapRolAfiliado = roaId
+			LEFT JOIN SOLICITUD ON SOLID = sapSolicitudGlobal
+			WHERE roaEstadoAfiliado = 'ACTIVO'
+			AND pertipoIdentificacion = :tipoIdentificacion
+			AND pernumeroIdentificacion = :numeroIdentificacion
+			AND (
+					roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+				OR (roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE' AND roaPorcentajePagoAportes = '0.02000')
+				OR (roaTipoAfiliado = 'PENSIONADO' AND solclasificacion IN ('MAS_1_5_SM_2_POR_CIENTO', 'MENOS_1_5_SM_2_POR_CIENTO'))
+			)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-query name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroTipoEstadoMotivoDesafiliacion">
+		<description> Consulta los beneficiarios tipo madre o padre que se encuentren activos o inactivos por motivo diferente a fallecimiento por número de identificacion y tipo de identificacion del afiliado</description>
+		<query>
+			SELECT 
+				ben 
+			FROM Beneficiario ben 
+			LEFT JOIN FETCH ben.persona per
+            WHERE ben.afiliado.persona.tipoIdentificacion = :tipoIdentificacion and ben.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            	and ((ben.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliadoActivo AND ben.tipoBeneficiario IN (:tipoBeneficiario))
+            	  	OR (ben.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliadoInactivo AND ben.tipoBeneficiario IN (:tipoBeneficiario) AND ben.motivoDesafiliacion != :motivoDesafiliacion))
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	
+	<named-query name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoEstadoMotivoDesafiliacion">
+		<description> Consulta los beneficiarios tipo madre o padre que se encuentren activos o inactivos por motivo diferente a fallecimiento por número de identificacion del afiliado </description>
+		<query>
+			SELECT 
+				ben 
+			FROM Beneficiario ben 
+			LEFT JOIN FETCH ben.persona per
+            WHERE ben.afiliado.persona.numeroIdentificacion = :numeroIdentificacion
+            	and ((ben.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliadoActivo AND ben.tipoBeneficiario IN (:tipoBeneficiario))
+            	  	OR (ben.estadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliadoInactivo AND ben.tipoBeneficiario IN (:tipoBeneficiario) AND ben.motivoDesafiliacion != :motivoDesafiliacion))
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-query>
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+	<named-native-query name="Validaciones.Solicitud.buscarSolicitudesDeNovedadPorTipoAsociadasAlAfiliado">
+		<query>
+			SELECT s.*
+			FROM Solicitud s WITH (NOLOCK)
+			INNER JOIN SolicitudNovedad sn WITH (NOLOCK) on sn.snoSolicitudGlobal = s.solId
+			INNER JOIN SolicitudNovedadPersona sp WITH (NOLOCK) on sp.snpSolicitudNovedad = sn.snoId
+			INNER JOIN Persona p on p.perId = snpPersona
+			WHERE p.perNumeroIdentificacion = :numeroIdentificacion
+			AND p.perTipoIdentificacion = :tipoIdentificacion
+			AND (s.solTipoTransaccion IN (:tipoNovedad)  
+			OR (s.solTipoTransaccion='NOVEDAD_REINTEGRO' and s.solCanalRecepcion='PILA'))
+
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.Beneficiario.buscarBeneficiarioActivoPorTipoyAfiliado">
+		<query>
+			SELECT b.* FROM Beneficiario b 
+			INNER JOIN persona p on p.perId=b.benPersona
+			INNER join Afiliado a on a.afiId=b.benAfiliado
+			INNER join Persona peronaAfiliado on peronaAfiliado.perId=a.afiPersona
+            WHERE b.benTipoBeneficiario in (:tipoBeneficiario) 
+            AND b.benEstadoBeneficiarioAfiliado in (:estadoBeneficiarioAfiliado) 
+            AND p.perNumeroIdentificacion = :numeroIdentificacionBeneficiario
+            AND p.perTipoIdentificacion = :tipoIdentificacionBeneficiario
+			AND peronaAfiliado.perNumeroIdentificacion != :numeroIdentificacionAfiliado
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	<named-native-query name="Validaciones.Afiliado.contarBeneficiariosAfiliadoConSubsidio">
+		<query>
+			select 
+				count(*) 
+			from Persona perAfi
+			join Afiliado afi on perAfi.perId = afi.afiId
+			join RolAfiliado roa on afi.afiId = roa.roaAfiliado
+			join Beneficiario ben on ben.benAfiliado = afi.afiId
+			join detalleSubsidioAsignado dsa on (dsa.dsaAfiliadoPrincipal = afi.afiId and dsa.dsaBeneficiarioDetalle = ben.benBeneficiarioDetalle)
+			where perAfi.perNumeroIdentificacion = :numeroIdAfiliado
+			and perAfi.perTipoIdentificacion = :tipoIdAfiliado
+			and roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' 
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.SolicitudNovedad.estadoTipo">
+		<query>
+			SELECT snp.snpId
+			FROM SolicitudNovedadPersona snp
+			JOIN Persona per ON per.perId = snp.snpPersona
+			JOIN SolicitudNovedad sn ON sn.snoId = snp.snpSolicitudNovedad
+			JOIN Solicitud s ON s.solId = sn.snoSolicitudGlobal
+			JOIN ParametrizacionNovedad pn ON pn.novId = sn.snoNovedad
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+			AND pn.novTipoTransaccion IN (:tipoTransaccion)
+			AND s.solResultadoProceso =:resultadoProceso
+		  </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.GrupoFamiliar.buscarMedioDePago">
+		<query>
+           SELECT mdp.mdpId FROM AdminSubsidioGrupo asg
+           JOIN MedioDePago mdp ON mdp.mdpId = asg.asgMedioDePago
+           WHERE asg.asgGrupoFamiliar = :idGrupoFamiliar
+           AND asg.asgMedioPagoActivo = :estadoMedioPago
+           AND mdp.mdpTipo = :tipoMedioPago
+            
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.Trabajador.buscarMedioDePago">
+        <query>
+           SELECT mdp.mdpId 
+           FROM MedioPagoPersona mpp
+           JOIN MedioDePago mdp ON (mpp.mppMedioPago = mdp.mdpId)
+           JOIN Persona per ON (mpp.mppPersona = per.perId)
+           WHERE mpp.mppMedioActivo = :estadoMedioPago
+           AND mdp.mdpTipo = :tipoMedioPago
+           AND per.perTipoIdentificacion = :tipoIdentificacion
+           AND per.perNumeroIdentificacion = :numeroIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.ValidarNoConyugeActivo">
+		<query>
+			SELECT gf.grfId FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona 
+			where b.benTipoBeneficiario =:tipoBeneficiario
+			and b.benEstadoBeneficiarioAfiliado =:estadoBeneficiarioAfiliado
+			and perAf.perTipoIdentificacion =:tipoIdentificacion
+			and perAf.perNumeroIdentificacion =:numeroIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.ValidarBeneficiario">
+		<query>
+            SELECT gf.grfId,pBen.perPrimerNombre,b.benTipoBeneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where pBen.perNumeroIdentificacion = :numeroIdentificacion
+			and pBen.perTipoIdentificacion = :tipoIdentificacion
+			and perAf.perId  IN (Select perId from Persona where perTipoIdentificacion =:tipoIdentificacionAfiliado
+			and perNumeroIdentificacion =:numeroIdentificacionAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.ValidarConyugeActivo">
+		<query>
+            SELECT b.benId FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario = :tipoBeneficiario 
+			and b.benEstadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado
+			and pBen.perNumeroIdentificacion = :numeroIdentificacion
+			and pBen.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.validarConyugeActivoOtroGrupoFamiliar">
+		<query>
+            SELECT perAf.perid as afiliado, pBen.perId as beneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario = :tipoBeneficiario 
+			and b.benEstadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado
+			and pBen.perNumeroIdentificacion = :numeroIdentificacion
+			and pBen.perTipoIdentificacion = :tipoIdentificacion
+			and perAf.perId NOT IN (Select perId from Persona where perTipoIdentificacion =:tipoIdentificacionAfiliado
+			and perNumeroIdentificacion = :numeroIdentificacionAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.validarConyugeActivoGrupoFamiliar">
+		<query>
+            SELECT perAf.perid as afiliado, pBen.perId as beneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario =:tipoBeneficiario
+			and b.benEstadoBeneficiarioAfiliado =:estadoBeneficiarioAfiliado
+			and pBen.perNumeroIdentificacion = :numeroIdentificacion
+			and pBen.perTipoIdentificacion = :tipoIdentificacion
+			and perAf.perId IN (Select perId from Persona where perTipoIdentificacion =:tipoIdentificacionAfiliado
+			and perNumeroIdentificacion =:numeroIdentificacionAfiliado)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.validarCondcionInvelidezNoRegistradaEnBd">
+		<query>
+			SELECT p.perId FROM PERSONA p 
+			JOIN CONDICIONINVALIDEZ ci ON p.perId = ci.coiPersona
+			AND (p.perNumeroIdentificacion = :numeroIdentificacion and p.perTipoIdentificacion = :tipoIdentificacion)
+			AND ci.coiInvalidez =:estadoCondicionInvalidez
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.validarHijoBiologicoNoRegistradoBd">
+		<query>
+			SELECT perAf.perid as afiliado, pBen.perId as beneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario = :tipoBeneficiario
+			and pBen.perNumeroIdentificacion = :numeroIdentificacion
+			and pBen.perTipoIdentificacion = :tipoIdentificacion
+			and perAf.perTipoIdentificacion =:tipoIdentificacionAfiliado
+			and perAf.perNumeroIdentificacion =:numeroIdentificacionAfiliado
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.validarHijastroNoRegistradoBd">
+		<query>
+			SELECT perAf.perid as afiliado, pBen.perId as beneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario = :tipoBeneficiario
+			and pBen.perNumeroIdentificacion = :numeroIdentificacion
+			and pBen.perTipoIdentificacion = :tipoIdentificacion
+			and perAf.perId IN (Select perId from Persona where perTipoIdentificacion =:tipoIdentificacionAfiliado
+			and perNumeroIdentificacion =:numeroIdentificacionAfiliado)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.validarHijoAdoptivoNoRegistradoBd">
+		<query>
+			SELECT perAf.perid as afiliado, pBen.perId as beneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario = :tipoBeneficiario
+			and pBen.perNumeroIdentificacion = :numeroIdentificacion
+			and pBen.perTipoIdentificacion = :tipoIdentificacion
+			and perAf.perTipoIdentificacion =:tipoIdentificacionAfiliado
+			and perAf.perNumeroIdentificacion =:numeroIdentificacionAfiliado
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>	
+	
+	<named-native-query name="Validaciones.Persona.ApellidosCoincidenConJefeHogar">
+		<query>
+			SELECT pAf.perId FROM PERSONA pAf
+			JOIN AFILIADO afi ON pAf.perId = afi.afiPersona
+			WHERE pAf.perTipoIdentificacion = :tipoIdentificacion
+			AND pAf.perNumeroIdentificacion = :numeroIdentificacion
+			AND ( (1 = case :primerApellido when null  then 0 when '' then 0 else 1 end AND (pAf.perPrimerApellido = :primerApellido or pAf.perSegundoApellido = :primerApellido))
+				or (1 = case :segundoApellido when null  then 0 when '' then 0 else 1 end AND (pAf.perPrimerApellido = :segundoApellido or pAf.perSegundoApellido = :segundoApellido)))
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.ApellidosCoincidenConConyuge">
+		<query>
+			SELECT pBen.perId as beneficiario,perAf.perid as afiliado FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario =:tipoBeneficiario
+			and b.benEstadoBeneficiarioAfiliado =:estadoBeneficiarioAfiliado
+			and perAf.perTipoIdentificacion = :tipoIdentificacion
+			and perAf.perNumeroIdentificacion = :numeroIdentificacion
+			AND ( (1 = case :primerApellido when null  then 0 when '' then 0 else 1 end AND (pben.perPrimerApellido = :primerApellido or pben.perSegundoApellido = :primerApellido))
+				or (1 = case :segundoApellido when null  then 0 when '' then 0 else 1 end AND (pben.perPrimerApellido = :segundoApellido or pben.perSegundoApellido = :segundoApellido)))
+			
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.ExistenciaConyuge">
+		<query>
+			SELECT pBen.perId as beneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario =:tipoBeneficiario
+			and b.benEstadoBeneficiarioAfiliado =:estadoBeneficiarioAfiliado
+			and perAf.perTipoIdentificacion = :tipoIdentificacion
+			and perAf.perNumeroIdentificacion = :numeroIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.ParentescoCoincideConJefeHogar">
+		<query>
+			SELECT perAf.perid as afiliado, pBen.perId as beneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario = :tipoBeneficiario
+			and pBen.perNumeroIdentificacion = :numeroIdentificacion
+			and pBen.perTipoIdentificacion = :tipoIdentificacion
+			and perAf.perTipoIdentificacion =:tipoIdentificacionAfiliado
+			and perAf.perNumeroIdentificacion =:numeroIdentificacionAfiliado
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.ValidarConyugeFovisDistintoBd">
+		<query>
+			SELECT perAf.perid as afiliado, pBen.perId as beneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benTipoBeneficiario =:tipoBeneficiario
+			and b.benEstadoBeneficiarioAfiliado =:estadoBeneficiarioAfiliado
+			and (pBen.perNumeroIdentificacion != :numeroIdentificacion or pBen.perTipoIdentificacion != :tipoIdentificacion)
+			and perAf.perId IN (Select perId from Persona where perTipoIdentificacion =:tipoIdentificacionAfiliado
+			and perNumeroIdentificacion =:numeroIdentificacionAfiliado)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.miembroOtraPostulacion">
+		<query>
+			SELECT pof.pofId FROM JefeHogar jeh
+			JOIN AFILIADO afi ON afi.afiId = jeh.jehAfiliado
+			JOIN PERSONA per ON per.perId = afi.afiPersona
+			JOIN PostulacionFOVIS pof ON pof.pofJefeHogar = jeh.jehId
+			JOIN SolicitudPostulacion spo ON spo.spoPostulacionFOVIS = pof.pofId
+			WHERE per.perTipoIdentificacion =:tipoIdentificacion
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND jeh.jehEstadoHogar =:estadoHogar
+			AND pof.pofEstadoHogar !=:estadoHogarPostulacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.IntegranteHogar.miembroOtraPostulacion">
+		<query>
+			SELECT pof.pofId FROM IntegranteHogar inh
+			JOIN PERSONA per ON per.perId = inh.inhPersona
+			JOIN JefeHogar jeh ON jeh.jehId = inh.inhJefeHogar
+			JOIN PostulacionFOVIS pof ON pof.pofJefeHogar = jeh.jehId
+			JOIN SolicitudPostulacion spo ON spo.spoPostulacionFOVIS = pof.pofId
+			WHERE per.perTipoIdentificacion =:tipoIdentificacion
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND inh.inhEstadoHogar =:estadoHogar
+			AND pof.pofEstadoHogar !=:estadoHogarPostulacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	<named-native-query name="Persona.consultar.SumatoriaDeSalarios">
+		<description>Consulta la persona para conocer su estado frente a la exclusion en la sumatoria de salarios.</description>
+		<query>
+			SELECT pessEstadoExclusion 
+			FROM PersonaExclusionSumatoriaSalario
+			WHERE pessPersona = :idPersona
+		</query>
+	</named-native-query>
+	<named-native-query name="Validaciones.JefeHogar.ValidarAhorroMinimo">
+		<query>
+			SELECT pf.pofId,SUM(ap.ahpvalor) FROM PostulacionFovis pf 
+			JOIN AhorroPrevio ap ON pf.pofId = ap.ahpPostulacionFovis
+			JOIN JefeHogar jh ON jh.jehId = pf.pofJefeHogar
+			JOIN Afiliado afi ON afi.afiId = jh.jehAfiliado
+			JOIN Persona per ON per.perId = afi.afiPersona
+			WHERE per.perTipoIdentificacion =:tipoIdentificacion
+			AND per.perNumeroIdentificacion =:numeroIdentificacion 
+			GROUP BY pf.pofId
+			HAVING SUM(ap.ahpvalor) > (SELECT  pafValorNumerico FROM parametrizacionFOVIS where pafNombre =:nombreParametroFovis)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.JefeHogar.validarSolicitudPostulacionEnProceso">
+		<query>
+			SELECT sp.spoId FROM SolicitudPostulacion sp
+			JOIN PostulacionFOVIS pf ON sp.spoPostulacionFOVIS = pf.pofId
+			JOIN JefeHogar jh ON jh.jehId = pf.pofJefeHogar
+			JOIN Afiliado afi ON jh.jehAfiliado = afi.afiId
+			JOIN Persona per ON per.perId = afi.afiPersona
+			WHERE per.perTipoIdentificacion =:tipoIdentificacion
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND (pf.pofEstadoHogar NOT IN :estadoHogarPostulacion OR (pf.pofEstadoHogar IS NULL AND sp.spoEstadoSolicitud IS NOT NULL))
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.IntegranteHogar.validarSolicitudPostulacionEnProceso">
+		<query>
+			SELECT sp.spoId FROM IntegranteHogar inh
+			JOIN Persona per ON per.perId = inh.inhPersona
+			JOIN JefeHogar jeh ON jeh.jehId = inh.inhJefeHogar
+			JOIN PostulacionFOVIS pof ON pof.pofJefeHogar = jeh.jehId
+			JOIN SolicitudPostulacion sp ON sp.spoPostulacionFOVIS = pof.pofId
+			WHERE per.perTipoIdentificacion =:tipoIdentificacion
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND (sp.spoEstadoSolicitud !=:estadoSolicitudPostulacion
+			<!-- OR pf.pofEstadoHogar NOT IN ('VENCIMIENTO_POR_ASIGNACION_CON_SEGUNDA_PRORROGA_CADUCADA',
+			'VENCIMIENTO_POR_ASIGNACION_SIN_SEGUNDA_PRORROGA',
+			'VENCIMIENTO_POR_ASIGNACION_SIN_PRORROGA','SUBSIDIO_DESEMBOLSADO')-->)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.IntegranteHogar.JefeHogarOtraPostulacion">
+		<query>
+			SELECT spo.spoSolicitudGlobal FROM JefeHogar jeh
+			JOIN AFILIADO afi ON afi.afiId = jeh.jehAfiliado
+			JOIN PERSONA per ON per.perId = afi.afiPersona
+			JOIN PostulacionFOVIS pof ON pof.pofJefeHogar = jeh.jehId
+			JOIN SolicitudPostulacion spo ON spo.spoPostulacionFOVIS = pof.pofId
+			WHERE per.perTipoIdentificacion =:tipoIdentificacionAfiliado
+			AND per.perNumeroIdentificacion =:numeroIdentificacionAfiliado
+			AND jeh.jehEstadoHogar =:estadoHogar
+			AND pof.pofEstadoHogar !=:estadoHogarPostulacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.IntegranteHogar.miembroActivoOtraPostulacion">
+		<query>
+			SELECT DISTINCT pof.pofId FROM IntegranteHogar inh
+			JOIN PERSONA per ON per.perId = inh.inhPersona
+			JOIN JefeHogar jeh ON jeh.jehId = inh.inhJefeHogar
+			JOIN PostulacionFOVIS pof ON pof.pofJefeHogar = jeh.jehId
+			JOIN SolicitudPostulacion spo ON spo.spoPostulacionFOVIS = pof.pofId
+			WHERE per.perTipoIdentificacion =:tipoIdentificacion
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND inh.inhEstadoHogar =:estadoHogar
+			AND pof.pofEstadoHogar !=:estadoHogarPostulacion
+			AND jeh.jehid NOT IN (SELECT DISTINCT jeh.jehId FROM JefeHogar jeh
+			JOIN AFILIADO afi ON afi.afiId = jeh.jehAfiliado
+			JOIN PERSONA per ON per.perId = afi.afiPersona
+			JOIN PostulacionFOVIS pof ON pof.pofJefeHogar = jeh.jehId
+			WHERE per.perTipoIdentificacion =:tipoIdentificacionAfiliado
+			AND per.perNumeroIdentificacion =:numeroIdentificacionAfiliado
+			AND jeh.jehEstadoHogar =:estadoJefeHogar
+			AND pof.pofEstadoHogar !=:estadoHogarPostulacion)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.Afiliado.ConsultarGrupoFamiliarMasDeUnBeneficiarioActivoPorAfiliado">
+		<query>
+			SELECT afiId, COUNT(benId) AS CantidadBeneficiarios
+			FROM Beneficiario
+			JOIN GrupoFamiliar ON benGrupoFamiliar = grfId
+			JOIN Afiliado ON grfAfiliado = afiId
+			JOIN Persona ON afiPersona = perId
+			WHERE perTipoIdentificacion = :tipoIdentificacion
+			AND perNumeroIdentificacion = :numeroIdentificacion
+			AND benEstadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado
+			GROUP BY afiId
+			HAVING COUNT(benId) > 1
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.jefeHogar.RetiroEnNovedadEnCurso">
+		<query>
+			SELECT sol.solId AS idPostulacion FROM Persona per
+			JOIN SolicitudNovedadPersona snp ON per.perId = snp.snpPersona
+			JOIN SolicitudNovedad sno ON sno.snoId = snp.snpSolicitudNovedad
+			JOIN Solicitud sol ON sol.solId = sno.snoSolicitudGlobal
+			WHERE per.perTipoIdentificacion =:tipoIdentificacion
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND sol.solTipoTransaccion IN (:retirosValidos) 
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.beneficiarioAvtivoDeAfiliadoDistinto">
+		<query>
+			SELECT perAf.perid as afiliado, pBen.perId as beneficiario FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			WHERE b.benEstadoBeneficiarioAfiliado =:estadoBeneficiarioAfiliado
+			AND pBen.perNumeroIdentificacion =:numeroIdentificacion
+			AND pBen.perTipoIdentificacion =:tipoIdentificacion
+			AND perAf.perId NOT IN (Select perId from Persona where perTipoIdentificacion =:tipoIdentificacionAfiliado
+			AND perNumeroIdentificacion =:numeroIdentificacionAfiliado)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Postulacion.EstadoHogar">
+		<query>
+			SELECT pof.pofEstadoHogar FROM PostulacionFovis pof
+			WHERE pof.pofId =:idPostulacion
+			AND pof.pofEstadoHogar IN (:estadosHogar)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.SolicitudPostulacion.EstadoSolicitud">
+		<query>
+			SELECT spo.spoEstadoSolicitud FROM SolicitudPostulacion spo
+			WHERE spo.spoPostulacionFovis =:idPostulacion
+			AND spo.spoEstadoSolicitud =:estadoSolicitudPostulacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	<named-native-query name="Validaciones.Postulacion.EstadoHogar.cierre">
+		<query>
+			SELECT sp.spoEstadoSolicitud, pf.pofEstadoHogar, pf.pofResultadoAsignacion,pf.pofid FROM SolicitudPostulacion sp
+			JOIN PostulacionFOVIS pf ON sp.spoPostulacionFOVIS = pf.pofId
+			JOIN JefeHogar jh ON jh.jehId = pf.pofJefeHogar
+			JOIN Afiliado afi ON jh.jehAfiliado = afi.afiId
+			JOIN Persona per ON per.perId = afi.afiPersona
+			inner join solicitud on solid = sp.sposolicitudglobal
+			WHERE per.perNumeroIdentificacion  =:numeroIdentificacionAfiliado
+			AND per.perTipoIdentificacion =:tipoIdentificacionAfiliado
+			order by solFechaRadicacion desc
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.CicloAsignacionVigente">
+		<query>
+			SELECT ciaId AS idCiclo FROM CicloAsignacion
+			WHERE ciaEstadoCicloAsignacion =:estadoCicloAsignacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.persona.beneficiario.BeneficioSubsidioFovis">
+		<query>
+			SELECT pof.pofId as idPostulacion FROM Persona per
+			JOIN integrantehogar inh ON per.perId = inh.inhPersona
+			JOIN JefeHogar jeh ON jeh.jehId = inh.inhJefeHogar
+			JOIN PostulacionFOVIS pof ON jeh.jehID = pof.pofJefeHogar
+			WHERE pof.pofEstadoHogar =:estadoHogar
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.persona.jefeHogar.BeneficioSubsidioFovis">
+		<query>
+			SELECT pof.pofId FROM Persona per
+			JOIN Afiliado afi ON per.perId = afi.afiPersona
+			JOIN JefeHogar jeh ON afi.afiId = jeh.jehAfiliado
+			JOIN PostulacionFOVIS pof ON jeh.jehID = pof.pofJefeHogar
+			WHERE pof.pofEstadoHogar =:estadoHogar
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.postulacion.Modalidad">
+		<query>
+			SELECT pof.pofId FROM PostulacionFovis pof
+			WHERE pofModalidad =:modalidadPostulacion
+			AND pofId =:idPostulacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.integranteHogar.Activo">
+		<query>
+			SELECT inh.inhId	 FROM Persona per
+			JOIN IntegranteHogar inh ON per.perId = inh.inhPersona
+			WHERE per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+			AND inh.inhEstadoHogar =:estadoIntegranteHogar
+			AND inh.inhJefeHogar IN (SELECT jeh.jehId FROM JefeHogar jeh
+			JOIN Afiliado afi ON afi.afiId = jeh.jehAfiliado
+			JOIN Persona per ON per.perId = afi.afiPersona
+			WHERE per.perNumeroIdentificacion =:numeroIdentificacionAfiliado
+			AND per.perTipoIdentificacion =:tipoIdentificacionAfiliado)
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.JefeHogar.Activo">
+		<query>
+			SELECT jeh.jehId FROM JefeHogar jeh
+			JOIN Afiliado afi ON afi.afiId = jeh.jehAfiliado
+			JOIN Persona per ON per.perId = afi.afiPersona
+			WHERE per.perNumeroIdentificacion =:numeroIdentificacionAfiliado
+			AND per.perTipoIdentificacion =:tipoIdentificacionAfiliado
+			AND jeh.jehEstadoHogar =:estadoJefeHogar
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.hogar.ConyugeActivo">
+		<query>
+			SELECT inh.inhId FROM PostulacionFovis pof
+			JOIN JefeHogar jeh ON jeh.jehId = pof.pofJefeHogar
+			JOIN IntegranteHogar inh ON jeh.jehId = inh.inhJefeHogar
+			WHERE inh.inhTipoIntegrante =:tipoIntegranteHogar
+			AND pof.pofId =:idPostulacion
+			AND inh.inhEstadoHogar =:estadoIntegranteHogar
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.hogar.RegistraTipoIntegrante">
+		<query>
+			SELECT inh.inhId FROM PostulacionFovis pof
+			JOIN JefeHogar jeh ON jeh.jehId = pof.pofJefeHogar
+			JOIN IntegranteHogar inh ON jeh.jehId = inh.inhJefeHogar
+			WHERE inh.inhTipoIntegrante IN (:tipoIntegranteHogar)
+			AND pof.pofId =:idPostulacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.beneficiario.ActivoAfiliado">
+		<query>
+			SELECT perAf.perid AS idPersona FROM BENEFICIARIO b 
+			JOIN Persona pBen ON pBen.perId = b.benPersona
+			JOIN GrupoFamiliar gf ON gf.grfId = b.benGrupoFamiliar
+			JOIN Afiliado afi ON gf.grfAfiliado = afi.afiId
+			JOIN Persona perAf ON perAf.perid = afi.afiPersona
+			where b.benEstadoBeneficiarioAfiliado =:estadoBeneficiarioAfiliado
+			and pBen.perNumeroIdentificacion = :numeroIdentificacion
+			and pBen.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.beneficiario.ActivoIndistintoAfiliado">
+		<query>
+			SELECT ben.benId AS idBeneficiario FROM Persona per
+			JOIN Beneficiario ben ON per.perId = ben.benPersona
+			WHERE ben.benEstadoBeneficiarioAfiliado =:estadoBeneficiarioAfiliado
+			AND per.perNumeroidentificacion =:numeroIdentificacion 
+			AND per.perTipoIdentificacion =:tipoIdentificacion 
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.persona.FallecidaNovedadEntidadesExternas">
+		<query>
+			SELECT sol.solId AS idSolicitud FROM Persona per
+			JOIN SolicitudNovedadPersona snp ON per.perId = snp.snpPersona
+			JOIN SolicitudNovedad sno ON sno.snoId = snp.snpSolicitudNovedad
+			JOIN Solicitud sol ON sol.solId = sno.snoSolicitudGlobal
+			JOIN PersonaDetalle ped ON per.perId = ped.pedPersona
+			WHERE per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+			AND sol.solTipoTransaccion IN (:tipoTransaccion)
+			AND ped.pedFallecido =:fallecido
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.jefeHogar.InhabilitadoSubsidioFovis">
+		<query>
+			SELECT per.perId FROM Persona per
+			JOIN Afiliado afi ON per.perId = afi.afiPersona
+			JOIN JefeHogar jeh ON afi.afiId = jeh.jehAfiliado
+			JOIN InhabilidadSubsidioFovis isf ON jeh.jehId = isf.isfJefeHogar
+			WHERE per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+			AND isf.isfInhabilitadoParaSubsidio =:inhabilitadoSubsidio
+			AND isf.isfIntegranteHogar IS NULL;
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.benficiario.InhabilitadoSubsidioFovis">
+		<query>
+			SELECT per.perId FROM Persona per
+			JOIN IntegranteHogar inh ON per.perId = inh.inhPersona
+			JOIN InhabilidadSubsidioFovis isf ON inh.inhId = isf.isfIntegranteHogar
+			WHERE per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+			AND isf.isfInhabilitadoParaSubsidio =:inhabilitadoSubsidio
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.postulacion.AhorrosMovilizados">
+		<query>
+			SELECT ahp.ahpId AS idAhorro FROM PostulacionFOVIS pof
+			JOIN AhorroPrevio ahp ON pof.pofId = ahp.ahpPostulacionFovis
+			WHERE ahp.ahpNombreAhorro IN (:tipoAhorro)
+			AND ahp.ahpAhorroMovilizado =:ahorrosMovilizados
+			AND pof.pofId =:idPostulacion 
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.postulacion.AhorroConValor">
+		<query>
+			SELECT ahp.ahpId FROM PostulacionFOVIS pof
+			JOIN AhorroPrevio ahp ON pof.pofId = ahp.ahpPostulacionFovis
+			WHERE pof.pofId =:idPostulacion 
+			AND ahp.ahpNombreAhorro IN (:tipoAhorro)
+			AND ahp.ahpValor > 0
+			AND ahp.ahpvalor IS NOT NULL
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.afiliado.ActivoCCF">
+		<query>
+			SELECT ahp.ahpId FROM PostulacionFOVIS pof
+			JOIN AhorroPrevio ahp ON pof.pofId = ahp.ahpPostulacionFovis
+			WHERE pof.pofId =:idPostulacion 
+			AND ahp.ahpNombreAhorro IN (:tipoAhorro)
+			AND ahp.ahpValor > 0
+			AND ahp.ahpvalor IS NOT NULL
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.solicitudPostulacion.FechaAsignacion">
+		<query>
+			SELECT saf.safFechaAceptacion FROM SolicitudAsignacion saf
+			JOIN PostulacionFOVIS pof ON saf.safId = pof.pofSolicitudAsignacion
+			WHERE pof.pofId =:idPostulacion
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.postulacion.sancionado.by.idPostulacion">
+        <query>
+            SELECT pof.pofId FROM PostulacionFOVIS pof 
+            WHERE pof.pofId =:idPostulacion
+            AND pof.pofRestituidoConSancion =:restituido
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-native-query>
+	
+	<named-native-query name="Validaciones.hogar.CantidadTipoIntegrantesHogar">
+		<query>
+			SELECT COUNT(inh.inhId) FROM PostulacionFOVIS pof
+			JOIN JefeHogar jeh ON jeh.jehId = pof.pofJefeHogar
+			JOIN IntegranteHogar inh ON jeh.jehId = inh.inhJefehogar
+			WHERE pof.pofid =:idPostulacion
+			AND inh.inhTipoIntegrante =:tipoIntegranteHogar
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.hogar.Inhabilitado">
+		<query>
+			SELECT isf.isfId AS idInhabilidad FROM PostulacionFOVIS pof
+			JOIN ( SELECT jeh.jehId, isf.*
+			     FROM InhabilidadSubsidioFovis isf
+			     JOIN JefeHogar jeh ON (isf.isfJefeHogar = jeh.jehId)
+			     UNION
+			     SELECT inh.inhJefeHogar, isf.*
+			     FROM InhabilidadSubsidioFovis isf
+			     JOIN IntegranteHogar inh ON (isf.isfIntegranteHogar = inh.inhId)
+			) isf ON (isf.jehId = pof.pofJefeHogar)
+			WHERE pof.pofId =:idPostulacion
+			AND isf.isfInhabilitadoParaSubsidio =:inhabilitadoSubsidio
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.persona.ConformacionNuevoHogar">
+		<query>
+			SELECT spf.spfId FROM Persona per
+			JOIN SolicitudNovedadPersonaFovis spf ON per.perId = spf.spfPersona
+			JOIN SolicitudNovedadFovis snf ON snf.snfId = spf.spfSolicitudNovedadFovis
+			JOIN Solicitud sol ON sol.solId = snf.snfSolicitudGlobal
+			WHERE sol.solTipoTransaccion IN (:tipoNovedad)
+			AND per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+    <named-native-query name="Validaciones.consultar.novedad.fovis.aprobada.tipoTransaccion.postulacion">
+        <query>
+            SELECT sol.solFechaRadicacion 
+            FROM SolicitudNovedadPersonaFovis spf 
+            JOIN SolicitudNovedadFovis snf ON (snf.snfId = spf.spfSolicitudNovedadFovis)
+            JOIN Solicitud sol ON (sol.solId = snf.snfSolicitudGlobal)
+            WHERE sol.solResultadoProceso = 'APROBADA'
+            AND sol.solTipoTransaccion IN (:tipoNovedad)
+            AND spf.spfPostulacionFovis = :idPostulacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-native-query>
+
+	<named-native-query name="Validaciones.persona.ModalidadPostulacion">
+		<query>
+			SELECT TOP 1 ld.lgdFechaTransferencia AS fechaLegalizacion FROM Persona per
+			JOIN IntegranteHogar inh ON per.perId = inh.inhPersona
+			JOIN JefeHogar jeh ON jeh.jehId = inh.inhJefeHogar
+			JOIN PostulacionFOVIS pof ON jeh.jehId = pof.pofJefeHogar
+			JOIN SolicitudLegalizacionDesembolso sld ON  sld.sldPostulacionFOVIS = pof.pofId
+			JOIN LegalizacionDesembolso ld ON ld.lgdId =  sld.sldLegalizacionDesembolso
+			WHERE pof.pofModalidad IN (:modalidadPostulacion)
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+			ORDER BY ld.lgdFechaTransferencia DESC		
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.jefeHogar.ModalidadPostulacion">
+		<query>
+			SELECT TOP 1 ld.lgdFechaTransferencia AS fechaLegalizacion FROM Persona per
+			JOIN Afiliado afi ON per.perId = afi.afiPersona
+			JOIN JefeHogar jeh ON afi.afiId = jeh.jehAfiliado
+			JOIN PostulacionFOVIS pof ON jeh.jehId = pof.pofJefeHogar
+			LEFT JOIN SolicitudLegalizacionDesembolso sld ON  sld.sldPostulacionFOVIS = pof.pofId
+			LEFT JOIN LegalizacionDesembolso ld ON ld.lgdId =  sld.sldLegalizacionDesembolso
+			WHERE pof.pofModalidad IN (:modalidadPostulacion)			
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion	
+			ORDER BY ld.lgdFechaTransferencia DESC					
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.persona.EstadoHogar">
+		<query>			
+			SELECT pof.pofEstadoHogar AS Estados FROM Persona per
+			JOIN IntegranteHogar inh ON per.perId = inh.inhPersona
+			JOIN JefeHogar jeh ON jeh.jehId = inh.inhJefeHogar
+			JOIN PostulacionFOVIS pof ON jeh.jehId = pof.pofJefeHogar
+			WHERE pof.pofEstadoHogar IN (:estadoHogar)
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.jefeHogar.EstadoHogar">
+		<query>			
+			SELECT pof.pofEstadoHogar AS Estados FROM Persona per
+			JOIN Afiliado afi ON per.perId = afi.afiPersona
+			JOIN JefeHogar jeh ON afi.afiId = jeh.jehAfiliado
+			JOIN PostulacionFOVIS pof ON jeh.jehId = pof.pofJefeHogar
+			WHERE pof.pofEstadoHogar IN (:estadoHogarPostulacion)
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.integrante.EstadoHogar">
+		<query>			
+			SELECT pof.pofEstadoHogar AS Estados FROM Persona per
+			JOIN IntegranteHogar inh ON per.perId = inh.inhPersona
+			JOIN JefeHogar jeh ON jeh.jehId = inh.inhJefeHogar
+			JOIN PostulacionFOVIS pof ON jeh.jehId = pof.pofJefeHogar
+			WHERE pof.pofEstadoHogar IN (:estadoHogarPostulacion)
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+<named-native-query name="Empleadores.total.trabajadores.cero">
+        <description>Busca a un empleador a partir de los datos de identificación de la persona</description>
+        <query>
+            SELECT COUNT(*) AS NumeroDeRegistros
+            FROM (
+            Select afi.*,per.*,roa.* from Empleador emp 
+            join Empresa em on em.empId = emp.empEmpresa
+            join SucursalEmpresa se on se.sueEmpresa = em.empId
+            join RolAfiliado  roa on roa.roaSucursalEmpleador = se.sueId
+            join Afiliado afi on afi.afiId = roa.roaAfiliado
+            join Persona p on p.perId = em.empPersona
+            JOIN Persona per on per.perId = afi.afiPersona
+            where p.perNumeroIdentificacion =:numeroIdentificacion) AS resultado
+        </query>
+    </named-native-query>
+    <named-native-query name="Empleadores.total.trabajadores.inactivos.cero">
+        <description>Busca a un empleador a partir de los datos de identificación de la persona</description>
+        <query>
+            SELECT COUNT(*) AS NumeroDeRegistros
+            FROM (
+            Select afi.*,per.*,roa.* from Empleador emp 
+            join Empresa em on em.empId = emp.empEmpresa
+            join SucursalEmpresa se on se.sueEmpresa = em.empId
+            join RolAfiliado  roa on roa.roaSucursalEmpleador = se.sueId
+            join Afiliado afi on afi.afiId = roa.roaAfiliado
+            join Persona p on p.perId = em.empPersona
+            JOIN Persona per on per.perId = afi.afiPersona
+            where p.perNumeroIdentificacion =:numeroIdentificacion and roa.roaEstadoAfiliado ='INACTIVO') AS resultado
+        </query>
+    </named-native-query>
+	<named-native-query name="Validaciones.persona.BuscarTipoNombres">
+		<query>
+			SELECT inh.inhTipoIntegrante,perInt.perRazonSocial FROM PERSONA perInt
+			JOIN IntegranteHogar inh ON perInt.perId = inh.inhPersona
+			JOIN JefeHogar jeh ON inh.inhJefeHogar = jeh.jehId
+			JOIN Afiliado afi ON afi.afiId = jeh.jehAfiliado
+			JOIN Persona perAfi ON perAfi.perId = afi.afiPersona
+			WHERE perInt.perNumeroIdentificacion =:numeroIdentificacion
+			AND perInt.perTipoIdentificacion =:tipoIdentificacion
+			AND perAfi.perId IN (Select perId from Persona where perTipoIdentificacion =:tipoIdentificacionAfiliado
+			AND perNumeroIdentificacion =:numeroIdentificacionAfiliado)
+       	</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.jefehogar.DependienteConEmpleadorAlDiaAportes">
+		<query>			
+			SELECT car.carEstadoCartera FROM Persona perTra
+			JOIN Afiliado afi ON perTra.perId = afi.afiPersona
+			JOIN RolAfiliado roa ON afi.afiId = roa.roaAfiliado
+			JOIN Empleador emp ON emp.empId = roa.roaEmpleador
+			JOIN Empresa eps ON eps.empId = emp.empEmpresa
+			JOIN Persona perEmp ON perEmp.perId = eps.empPersona
+			JOIN Cartera car ON perEmp.perId = car.carPersona
+			JOIN CarteraDependiente cad ON cad.cadCartera = car.carId
+				and cad.cadPersona = perTra.perId
+			WHERE roa.roaEstadoAfiliado =:estadoAfiliado
+			AND emp.empEstadoEmpleador =:estadoEmpleador
+			AND car.carTipoSolicitante =:tipoSolicitante
+			AND	car.carEstadoOperacion =:estadoOperacionCartera
+			AND	cad.cadEstadoOperacion =:estadoOperacionCartera
+			AND perTra.perNumeroIdentificacion =:numeroIdentificacion
+			AND perTra.perTipoIdentificacion =:tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.jefeHogar.IndependientePensiondoAlDiaAportes">
+		<query>			
+			SELECT car.carEstadoCartera FROM Persona per
+			JOIN Afiliado afi ON per.perId = afi.afiPersona
+			JOIN RolAfiliado roa ON afi.afiId = roa.roaAfiliado
+			JOIN Cartera car ON per.perId = car.carPersona
+			WHERE roa.roaEstadoAfiliado =:estadoAfiliado
+			AND	car.carEstadoOperacion =:estadoOperacionCartera
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.InhabilitadaSubsidioFovis">
+		<query>
+			SELECT per.perId FROM Persona per
+			LEFT JOIN Afiliado afi ON per.perId = afi.afiPersona
+			LEFT JOIN JefeHogar jeh ON afi.afiId = jeh.jehAfiliado
+			LEFT JOIN IntegranteHogar inh ON per.perId = inh.inhPersona
+			JOIN InhabilidadSubsidioFovis isf ON (jeh.jehId = isf.isfJefeHogar OR inh.inhId = isf.isfIntegranteHogar)
+			WHERE per.perNumeroIdentificacion =:numeroIdentificacion
+			AND per.perTipoIdentificacion =:tipoIdentificacion
+			AND isf.isfInhabilitadoParaSubsidio =:inhabilitadoSubsidio
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.consultarPromedioIngresosPorAportes">
+		<query>
+			SELECT CASE WHEN AVG(SALARIO) IS NULL THEN 0 ELSE AVG(SALARIO) END
+			FROM (SELECT *
+			FROM (SELECT apg.apgEmpresa,apg.apgPeriodoAporte,apd.apdPersona,apg.apgRegistroGeneralUltimo, SALARIO
+			FROM (SELECT DISTINCT apgEmpresa,apdAporteGeneral, apdPersona,iif(apdTipoCotizante = :tipoAfiliado,apdValorIBC,apdSalarioBasico)  AS SALARIO
+			FROM AporteDetallado
+			JOIN AporteGeneral ON apdAporteGeneral = apgId) apd
+			JOIN AporteGeneral apg ON apd.apdAporteGeneral = apg.apgId
+			WHERE apd.apdPersona = (select perId from Persona
+			where perTipoIdentificacion = :tipoIdentificacion and perNumeroIdentificacion = :numeroIdentificacion) AND apgPeriodoAporte
+			IN (SELECT DISTINCT TOP (select CONVERT(int, (select pafValorNumerico from ParametrizacionFOVIS where pafNombre = :nombreParametroFovis)))  apgPeriodoAporte
+			FROM AporteDetallado
+			JOIN AporteGeneral ON apdAporteGeneral = apgId
+			WHERE apdPersona = (select perId from Persona
+			where perTipoIdentificacion = :tipoIdentificacion and perNumeroIdentificacion = :numeroIdentificacion)
+			ORDER BY apgPeriodoAporte DESC)
+			) Aportes
+			WHERE apdPersona = (select perId from Persona
+			where perTipoIdentificacion = :tipoIdentificacion and perNumeroIdentificacion = :numeroIdentificacion)
+			) promedioSalario
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+    
+	<named-native-query name="Validaciones.Persona.consultarSalario">
+		<query>
+			SELECT CASE WHEN SUM(salario) IS NULL THEN 0 ELSE SUM(salario) END
+			FROM (
+			SELECT TOP 1 (CASE WHEN bed.bedSalarioMensual IS NOT NULL THEN bed.bedSalarioMensual
+			WHEN inh.inhSalarioMensual IS NOT NULL THEN inh.inhSalarioMensual
+			ELSE 0 END) AS salario
+			FROM Persona per
+			LEFT JOIN IntegranteHogar inh ON inh.inhPersona = per.perId
+			LEFT JOIN Afiliado afi ON afi.afiPersona = per.perId
+			LEFT JOIN RolAfiliado roa ON roa.roaAfiliado = afi.afiId
+			AND roa.roaEstadoAfiliado = :estadoAfiliado
+			LEFT JOIN JefeHogar jeh ON jeh.jehAfiliado = afi.afiId
+			LEFT JOIN Beneficiario ben ON ben.benPersona = per.perId
+			AND benEstadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado
+			LEFT JOIN BeneficiarioDetalle bed ON bed.bedId = ben.benBeneficiarioDetalle
+			WHERE perTipoIdentificacion = :tipoIdentificacion
+			AND perNumeroIdentificacion = :numeroIdentificacion
+			) valorsalario
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.consultarTopeIngresosHogar">
+		<query>
+			SELECT pafValorNumerico * (SELECT CAST(prmValor AS numeric) 
+										FROM Parametro WHERE prmNombre = 'SMMLV') 
+			FROM ParametrizacionFOVIS
+			WHERE pafNombre = :nombreParametroFovis
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+    
+	<named-native-query name="Validaciones.Hogar.consultarIngresosHogar">
+		<query>
+			SELECT (SUM(salarioIntegrante) + salarioJefe) ingresosHogar FROM (
+				SELECT jeh.jehId, (CASE WHEN roaJefe.roaValorSalarioMesadaIngresos IS NOT NULL 
+					THEN roaJefe.roaValorSalarioMesadaIngresos ELSE 0 END) AS salarioJefe, 
+					(CASE WHEN roa.roaValorSalarioMesadaIngresos IS NOT NULL THEN roa.roaValorSalarioMesadaIngresos
+					WHEN bed.bedSalarioMensual IS NOT NULL THEN bed.bedSalarioMensual
+					WHEN inh.inhSalarioMensual IS NOT NULL THEN inh.inhSalarioMensual
+					ELSE 0 END) AS salarioIntegrante
+				FROM JefeHogar jeh
+				JOIN Afiliado afiJefe ON afiJefe.afiId= jeh.jehAfiliado
+				JOIN RolAfiliado roaJefe ON roaJefe.roaAfiliado = afiJefe.afiId
+					AND roaJefe.roaEstadoAfiliado = :estadoAfiliado
+				JOIN Persona perJefe ON perJefe.perId = afiJefe.afiPersona
+				
+				LEFT JOIN IntegranteHogar inh ON inh.inhJefeHogar = jeh.jehId
+					AND inh.inhEstadoHogar = :estadoIntegranteHogar AND inh.inhIntegranteValido = 1
+				LEFT JOIN Persona per ON per.perId = inh.inhPersona
+				LEFT JOIN Afiliado afi ON afi.afiPersona = per.perId
+				LEFT JOIN RolAfiliado roa ON roa.roaAfiliado = afi.afiId
+					AND roa.roaEstadoAfiliado = :estadoAfiliado
+				LEFT JOIN Beneficiario ben ON ben.benPersona = per.perId 
+					AND benEstadoBeneficiarioAfiliado = :estadoBeneficiarioAfiliado
+				LEFT JOIN BeneficiarioDetalle bed ON bed.bedId = ben.benBeneficiarioDetalle
+				
+				WHERE jeh.jehEstadoHogar = :estadoJefeHogar
+					AND perJefe.perTipoIdentificacion = :tipoIdentificacion 
+					AND perJefe.perNumeroIdentificacion = :numeroIdentificacion
+			) salarios
+			GROUP BY jehId, salarioJefe
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.AhorroPrevio.validarContraValorProyectoVivienda">
+		<query>
+			SELECT pof.pofId, SUM(ap.ahpvalor) ahorrosPrevios, pof.pofValorProyectoVivienda 
+			FROM JefeHogar jeh
+			JOIN Afiliado afi ON afi.afiId = jeh.jehAfiliado
+			JOIN Persona per on per.perId = afi.afiPersona
+			JOIN PostulacionFOVIS pof on pof.pofJefeHogar = jeh.jehId
+			JOIN AhorroPrevio ap ON pof.pofId = ap.ahpPostulacionFovis
+			WHERE perTipoIdentificacion = :tipoIdentificacion 
+				AND perNumeroIdentificacion = :numeroIdentificacion
+			GROUP BY pof.pofId, pof.pofValorProyectoVivienda
+			HAVING SUM(ap.ahpvalor) &gt;= (0.1 * pofValorProyectoVivienda) 
+		</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="validaciones.fovis.consultar.persona.postulacion" result-set-mapping="validaciones.fovis.consultar.persona.postulacion.mapping">
+		<query>
+			SELECT pof.*
+			FROM PostulacionFOVIS pof
+			JOIN (SELECT per.*, jeh.jehId AS IdJefeHogar, jeh.jehEstadoHogar AS EstadoHogar
+			FROM JefeHogar jeh
+			JOIN Afiliado afi ON (jeh.jehAfiliado = afi.afiId)
+			JOIN Persona per ON (afi.afiPersona = per.perId)
+			UNION ALL
+			SELECT per.*, inh.inhJefeHogar, inh.inhEstadoHogar
+			FROM IntegranteHogar inh
+			JOIN Persona per ON (inh.inhPersona = per.perId)) perHogar ON (pof.pofJefeHogar = perHogar.IdJefeHogar)
+			WHERE perHogar.EstadoHogar = :estadoHogar
+			AND (pof.pofEstadoHogar IN (:estadoHogarPostulacion) OR pof.pofEstadoHogar IS NULL)
+			AND perHogar.perNumeroIdentificacion = :numeroIdentificacion
+			AND perHogar.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="validaciones.fovis.consultar.postulacion" result-set-mapping="validaciones.fovis.consultar.persona.postulacion.mapping">
+		<query>
+			SELECT pof.*
+			FROM PostulacionFOVIS pof
+			JOIN (SELECT per.*, jeh.jehId AS IdJefeHogar, jeh.jehEstadoHogar AS EstadoHogar
+			FROM JefeHogar jeh
+			JOIN Afiliado afi ON (jeh.jehAfiliado = afi.afiId)
+			JOIN Persona per ON (afi.afiPersona = per.perId)
+			UNION ALL
+			SELECT per.*, inh.inhJefeHogar, inh.inhEstadoHogar
+			FROM IntegranteHogar inh
+			JOIN Persona per ON (inh.inhPersona = per.perId)) perHogar ON (pof.pofJefeHogar = perHogar.IdJefeHogar)
+			WHERE perHogar.EstadoHogar = :estadoHogar
+			AND perHogar.perNumeroIdentificacion = :numeroIdentificacion
+			AND perHogar.perTipoIdentificacion = :tipoIdentificacion
+			and pof.pofEstadoHogar = :estadoHogar
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+    <named-native-query name="validaciones.fovis.consultar.cantidad.miembros.hogar">
+        <query>
+            SELECT COUNT(*)
+            FROM PostulacionFOVIS pof 
+            JOIN (SELECT per.*, jeh.jehId AS IdJefeHogar, jeh.jehEstadoHogar AS EstadoHogar
+                FROM JefeHogar jeh 
+                JOIN Afiliado afi ON (jeh.jehAfiliado = afi.afiId)
+                JOIN Persona per ON (afi.afiPersona = per.perId)
+                UNION ALL
+                SELECT per.*, inh.inhJefeHogar, inh.inhEstadoHogar
+                FROM IntegranteHogar inh 
+                JOIN Persona per ON (inh.inhPersona = per.perId)) perHogar ON (pof.pofJefeHogar = perHogar.IdJefeHogar)
+            WHERE pof.pofid = :idPostulacion
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-native-query>
+
+    <!-- Result set mapping -->
+    <sql-result-set-mapping name="validaciones.fovis.consultar.persona.postulacion.mapping">
+        <entity-result entity-class="com.asopagos.entidades.ccf.fovis.PostulacionFOVIS"></entity-result>
+    </sql-result-set-mapping>
+    
+    <named-native-query name="Validaciones.Empleador.consultarBeneficioEmpleador">
+		<description>
+			Consulta el beneficio de un empleador 
+		</description>
+		<query>
+			SELECT ISNULL(SUM(CASE WHEN bemBeneficioActivo = 1 THEN 1 ELSE 0 END),0) AS Activos,
+				ISNULL(SUM(CASE WHEN bemBeneficioActivo = 0 THEN 1 ELSE 0 END),0) AS Inactivos
+			FROM BeneficioEmpleador bem
+			JOIN Beneficio bef ON bef.befId = bem.bemBeneficio
+			JOIN Empleador emp ON emp.empId = bem.bemEmpleador
+			JOIN Empresa empr ON empr.empId = emp.empEmpresa
+			JOIN Persona per ON per.perId = empr.empPersona
+			WHERE per.perTipoIdentificacion =:tipoIdentificacion
+			AND per.perNumeroIdentificacion =:numeroIdentificacion
+			AND bef.befTipoBeneficio =:tipoBeneficio
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.buscarPersonaPorTipoYNombre">
+		<query>
+			SELECT TOP 1 per.perId FROM Persona per
+			WHERE per.perPrimerNombre  = :primerNombre
+			COLLATE Latin1_General_CI_AS
+			AND per.perSegundoNombre = :segundoNombre
+			COLLATE Latin1_General_CI_AS
+			AND per.perPrimerApellido = :primerApellido
+			COLLATE Latin1_General_CI_AS
+			AND per.perSegundoApellido = :segundoApellido
+			COLLATE Latin1_General_CI_AS
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.buscarPersonaPorTipoNumeroFallecido.canal">
+		<query>
+		SELECT * FROM (
+			SELECT sol.solCanalRecepcion FROM Solicitud sol 
+			JOIN SolicitudNovedad sno ON sol.solId = sno.snoSolicitudGlobal
+			JOIN SolicitudNovedadPersona snp ON sno.snoId = snp.snpSolicitudNovedad
+			JOIN Persona per ON per.perId = snp.snpPersona
+			JOIN PersonaDetalle ped ON per.perId = ped.pedPersona
+			WHERE ped.pedfallecido = :fallecido
+			AND sol.solTipoTransaccion IN (:tipoTransaccion)
+			AND per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+			AND sol.solResultadoProceso = :resultadoProceso
+			UNION
+			SELECT sol.solCanalRecepcion FROM Solicitud sol 
+			JOIN SolicitudNovedad sno ON sol.solId = sno.snoSolicitudGlobal
+			JOIN SolicitudNovedadPersona snp ON sno.snoId = snp.snpSolicitudNovedad
+			JOIN Beneficiario b on b.benId = snp.snpBeneficiario 
+			JOIN Persona per ON per.perId = b.benPersona 
+			JOIN PersonaDetalle ped ON per.perId = ped.pedPersona
+			WHERE ped.pedfallecido = :fallecido
+			AND sol.solTipoTransaccion IN (:tipoTransaccion)
+			AND per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+			AND sol.solResultadoProceso = :resultadoProceso ) x
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Afiliado.ConsultarEstadoRespectoCCF">
+		<query>
+			SELECT roaEstadoAfiliado FROM VW_EstadoAfiliacionPersonaCaja
+			WHERE perNumeroIdentificacion = :numeroIdentificacion
+			AND perTipoIdentificacion = :tipoIdentificacion
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+			
+	<named-native-query name="Validaciones.Persona.trabajadorDependienteActivo">
+		<query>
+			SELECT TOP 1 roa.roaId FROM Persona per
+			JOIN Afiliado afi ON per.perId = afi.afiPersona
+			JOIN RolAfiliado roa ON afi.afiId = roa.roaAfiliado
+			WHERE roa.roatipoAfiliado = :tipoAfiliado
+			AND roa.roaEstadoAfiliado = :estadoAfiliado
+			AND per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Pesona.trabajadorDependienteInactivo">
+		<query>
+			SELECT TOP 1 roa.roaEstadoAfiliado FROM Persona per
+			JOIN Afiliado afi ON per.perId = afi.afiPersona
+			JOIN RolAfiliado roa ON afi.afiId = roa.roaAfiliado
+			WHERE roa.roatipoAfiliado = :tipoAfiliado
+			AND perNumeroIdentificacion = :numeroIdentificacion
+			AND perTipoIdentificacion = :tipoIdentificacion
+			ORDER BY roa.roaFechaAfiliacion DESC
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.aportesAfiliado">
+		<query>
+			SELECT apg.apgId
+			FROM AporteGeneral apg
+			JOIN AporteDetallado apd ON apg.apgId = apd.apdAporteGeneral
+			JOIN Persona per on apd.apdPersona = per.perId
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.consultar.SolicitudNovedadEnCurso">
+		<query>
+			SELECT sno.snoId FROM Persona per
+			JOIN SolicitudNovedadPersona snp ON per.perId = snp.snpPersona
+			JOIN SolicitudNovedad sno ON sno.snoId = snp.snpSolicitudNovedad
+			JOIN Solicitud sol ON sol.solId = sno.snoSolicitudGlobal
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.pertipoIdentificacion = :tipoIdentificacion
+			AND sno.snoEstadoSolicitud NOT IN (:estados)
+			AND sol.solCanalRecepcion NOT IN (:canales)
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+    <!-- GLPI 89391 -->
+    <named-native-query name="Validaciones.consultar.SolicitudTipoNovedadEnCurso">
+        <query>
+            SELECT sol.solTipoTransaccion FROM Persona per
+            JOIN SolicitudNovedadPersona snp ON per.perId = snp.snpPersona
+            JOIN SolicitudNovedad sno ON sno.snoId = snp.snpSolicitudNovedad
+            JOIN Solicitud sol ON sol.solId = sno.snoSolicitudGlobal
+            WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+            AND per.pertipoIdentificacion = :tipoIdentificacion
+            AND sno.snoEstadoSolicitud NOT IN (:estados)
+            AND sol.solCanalRecepcion NOT IN (:canales)
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+    </named-native-query>
+		<named-native-query name="Validaciones.consulta.informacionRegistraduriaNaciona.id">
+		<query>
+		select dtr.drnFechaNacimientoCED, dtr.drnPrimerApellidoREG, dtr.drnSegundoApellidoREG,
+		dtr.drnPrimerNombreREG, dtr.drnSegundoNombreREG, dtr.drnfechaexpedicion, dtr.DRNFECHAINSCRIPCION,
+		dtr.drnGeneroCED, dtr.drnGeneroREG, dtr.drnestadoCED, dtr.drnestadoREG
+		 from datosregistradurianacional dtr
+		where dtr.drntipoIdentificacion = :tipoIdentificacion
+		and dtr.drnnumeroIdentificacion = :numeroIdentificacion
+		and ((NOT EXISTS(SELECT * FROM persona
+			WHERE perNumeroidentificacion = dtr.drnnumeroIdentificacion
+			AND pertipoIdentificacion = dtr.drntipoIdentificacion))or (exists (SELECT * FROM persona
+			WHERE perNumeroidentificacion = dtr.drnnumeroIdentificacion
+			AND pertipoIdentificacion = dtr.drntipoIdentificacion)))
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.consulta.existeRegistraduriaNacional">
+		<query>
+		select *
+		 from datosregistradurianacional dtr
+		where dtr.drntipoIdentificacion = :tipoIdentificacion
+		and dtr.drnnumeroIdentificacion = :numeroIdentificacion
+		and (dtr.drnEstadoREG NOT IN :estadosNovedad OR  dtr.drnEstadoCED NOT IN :estadosNovedad)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.consultar.SolicitudAfiliacionEnCurso">
+		<query>
+			SELECT sap.sapEstadoSolicitud AS estadoSolicitud FROM Persona per
+			JOIN Afiliado afi ON per.perId = afi.afiPersona
+			JOIN RolAfiliado roa ON afi.afiId = roa.roaAfiliado
+			JOIN SolicitudAfiliacionPersona sap ON roa.roaId = sap.sapRolAfiliado
+			JOIN Solicitud sol ON sol.solId = sap.sapSolicitudGlobal
+            LEFT JOIN IntentoAfiliacion ia ON ia.iafSolicitud = sol.solId 
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.pertipoIdentificacion = :tipoIdentificacion
+			AND (:idSolicitud IS NULL OR :idSolicitud &lt;&gt; sol.solId)
+            AND ia.iafSolicitud IS NULL
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.persona.BuscarNombresPorIdentificacion">
+		<query>
+			SELECT per.perRazonSocial
+			FROM Persona per
+			JOIN Afiliado afi ON per.perId = afi.afiPersona
+			JOIN JefeHogar jeh ON jeh.jehAfiliado = afi.afiId
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+       	</query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	<named-native-query name="Validaciones.consultar.subsanacion.empleador" >
+		<query>
+			SELECT TOP 1 exsExpulsionSubsanada
+			FROM ExpulsionSubsanada
+			WHERE exsEmpleador = :idEmpleador ORDER BY exsId DESC
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	<named-native-query
+		name="Validaciones.RolAfiliado.buscarAfiliadoRepresentanteLegalEmpleador">
+		<query>
+			SELECT perA.perId FROM Empleador emp
+			JOIN Empresa empr ON empr.empId = emp.empEmpresa
+			JOIN Persona perE ON perE.perId = empr.empPersona
+			JOIN Persona perA ON perA.perId = empr.empRepresentanteLegal
+			WHERE perE.perTipoIdentificacion = :tipoIdentificacionEmpleador
+			AND perE.perNumeroIdentificacion = :numeroIdentificacionEmpleador
+			AND perA.perTipoIdentificacion = :tipoIdentificacion
+			AND perA.perNumeroIdentificacion = :numeroIdentificacion
+			AND (SELECT  TOP 1 sol.solClasificacion
+			FROM Empleador empl
+			JOIN Empresa emp ON empl.empEmpresa = emp.empId
+			JOIN Persona per ON emp.empPersona = per.perId
+			JOIN SolicitudAfiliaciEmpleador sae ON empl.empId = sae.saeEmpleador
+			JOIN Solicitud sol ON sol.solId = sae.saeSolicitudGlobal 
+			WHERE per.perTipoIdentificacion = :tipoIdentificacionEmpleador
+			AND per.perNumeroIdentificacion = :numeroIdentificacionEmpleador
+			AND sae.saeEstadoSolicitud = 'CERRADA'
+			AND sol.solResultadoProceso = 'APROBADA') IN ('PERSONA_NATURAL', 'EMPLEADOR_DE_SERVICIO_DOMESTICO')
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	<named-native-query
+		name="Validaciones.SocioEmpleador.buscarSocioEmpleadorPorSocioEmpleadorTipoSolicitante">
+		<query>
+			SELECT perA.perId FROM Empleador emp
+			JOIN Empresa empr ON empr.empId = emp.empEmpresa
+			JOIN Persona perE ON perE.perId = empr.empPersona
+			JOIN SocioEmpleador sem ON emp.empId = sem.semEmpleador
+			JOIN Persona perA ON perA.perId = sem.semPersona
+			WHERE perE.perTipoIdentificacion = :tipoIdentificacionEmpleador
+			AND perE.perNumeroIdentificacion = :numeroIdentificacionEmpleador
+			AND perA.perTipoIdentificacion = :tipoIdentificacion
+			AND perA.perNumeroIdentificacion = :numeroIdentificacion
+			AND (SELECT  TOP 1 sol.solClasificacion
+			FROM Empleador empl
+			JOIN Empresa emp ON empl.empEmpresa = emp.empId
+			JOIN Persona per ON emp.empPersona = per.perId
+			JOIN SolicitudAfiliaciEmpleador sae ON empl.empId = sae.saeEmpleador
+			JOIN Solicitud sol ON sol.solId = sae.saeSolicitudGlobal 
+			WHERE per.perTipoIdentificacion = :tipoIdentificacionEmpleador
+			AND per.perNumeroIdentificacion = :numeroIdentificacionEmpleador
+			AND sae.saeEstadoSolicitud = 'CERRADA'
+			AND sol.solResultadoProceso = 'APROBADA') IN ('PERSONA_NATURAL', 'EMPLEADOR_DE_SERVICIO_DOMESTICO')
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.GrupoFamiliar.BeneficiarioActivoFecha">
+		<query>
+             SELECT ben.benId FROM Beneficiario ben
+     		 JOIN Persona p ON p.perId = ben.benPersona 
+       		 WHERE p.perNumeroIdentificacion = :numeroIdentificacion
+       		 AND p.perTipoIdentificacion = :tipoIdentificacion
+       		 AND ben.benFechaAfiliacion &lt;= :fechaRetiro
+       		 AND ben.benEstadoBeneficiarioAfiliado  = 'ACTIVO'
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Trabajador.ActivoFechaRetiro">
+		<query>
+            SELECT afi.afiId FROM Afiliado afi
+			JOIN RolAfiliado ra ON ra.roaAfiliado = afi.afiId 
+     		JOIN Persona p ON p.perId = afi.afiPersona 
+       		WHERE  p.perNumeroIdentificacion = :numeroIdentificacion
+       		AND p.perTipoIdentificacion = :tipoIdentificacion
+       		AND ra.roaId = :idRolAfiliado
+       		AND ra.roaFechaAfiliacion &lt;= :fechaRetiro
+       		AND ra.roaEstadoAfiliado = 'ACTIVO'
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.GrupoFamiliar.buscarBeneficiariosAfiliado">
+		<query>
+            SELECT afiId, COUNT(benId) AS CantidadBeneficiarios
+			FROM Beneficiario
+			JOIN GrupoFamiliar ON benGrupoFamiliar = grfId
+			JOIN Afiliado ON grfAfiliado = afiId
+			JOIN Persona ON afiPersona = perId
+			WHERE perTipoIdentificacion = :tipoIdentificacion
+			AND perNumeroIdentificacion = :numeroIdentificacion
+			GROUP BY afiId
+			HAVING COUNT(benId) > 1
+        </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.Beneficiario.buscarBeneficiarioPorTipoNumeroTipoEstados_v2">
+		<query>
+			SELECT b.* FROM Beneficiario b
+			LEFT JOIN Persona per ON b.benPersona = per.perid
+			LEFT JOIN Afiliado a ON per.perId = a.afiPersona
+			WHERE per.perTipoIdentificacion = :tipoIdentificacion
+			AND per.perNumeroIdentificacion = :numeroIdentificacion
+			AND b.benTipoBeneficiario IN (:tipoBeneficiario)
+			AND b.benEstadoBeneficiarioAfiliado IN (:estadoBeneficiarioAfiliado)
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+
+	<named-native-query name="Validaciones.Beneficiario.buscarBeneficiarioPorNumeroTipoEstados_v2">
+		<query>
+			SELECT b.* FROM Beneficiario b
+			LEFT JOIN Persona per ON b.benPersona = per.perid
+			LEFT JOIN Afiliado a ON per.perId = a.afiPersona
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND b.benTipoBeneficiario IN (:tipoBeneficiario)
+			AND b.benEstadoBeneficiarioAfiliado IN (:estadoBeneficiarioAfiliado)
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	
+	<named-native-query name="Validaciones.Persona.ValidarAfiliadoVeterano">
+			<query>
+				select case 
+					when exists (
+						SELECT * FROM Persona p
+						JOIN Afiliado a ON a.afiPersona = p.perId 
+						JOIN RolAfiliado r ON a.afiId = r.roaAfiliado
+						WHERE p.perNumeroIdentificacion = :numeroIdentificacion
+							AND p.perTipoIdentificacion = :tipoIdentificacion
+							AND r.roaEstadoAfiliado = 'ACTIVO'
+							AND r.roaClaseTrabajador = 'VETERANO_FUERZA_PUBLICA'
+							AND CURRENT_TIMESTAMP BETWEEN r.roaFechaInicioCondicionVeterano and r.roaFechaFinCondicionVeterano
+					) THEN 0
+					ELSE 1
+				END AS PostulableFovis
+			</query>
+			<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	<named-native-query name="Validaciones.conyugeCuidador">
+		<query>
+			SELECT CASE WHEN (roaEstadoAfiliado = 'INACTIVO' or roaid is null) THEN 'true' ELSE 'false' END as estadoAfiliacion,
+			CASE WHEN benEstadoBeneficiarioAfiliado = 'ACTIVO' THEN 'true' ELSE 'false' END as estadoBeneficiario,
+			CASE WHEN (bedLabora = '0' or bedLabora is null) THEN 'true' ELSE 'false' END as laboraConyugue,
+			CASE WHEN (bedSalarioMensual = '0' or bedSalarioMensual is null) THEN 'true' ELSE 'false' END as salarioMensual,
+			perTipoIdentificacion, perNumeroIdentificacion, 
+			perRazonSocial,perid,
+			CASE WHEN EXISTS (SELECT * FROM CONDICIONINVALIDEZ
+			INNER JOIN BENEFICIARIO ON BENPERSONA = COIPERSONA
+			INNER JOIN PERSONA ON PERID = BENPERSONA
+			WHERE benAfiliado = :idAfiliado
+			and pertipoidentificacion &lt;&gt; :tipoIdentificacionBen
+			and  pernumeroidentificacion &lt;&gt; :numeroIdentificacionBen
+			AND COICONYUGECUIDADOR = 1) THEN 'false' ELSE 'true' END AS tieneConyugeCuidador
+ 			FROM Beneficiario
+			INNER join BeneficiarioDetalle on bedId = benBeneficiarioDetalle
+			INNER JOIN PERSONA ON PERID = benPersona
+			LEFT JOIN Afiliado ON afiPersona = benPersona
+			LEFT JOIN RolAfiliado ON roaAfiliado = afiId
+			WHERE benAfiliado = :idAfiliado
+			and benTipoBeneficiario = 'CONYUGE'		
+	</query>
+	</named-native-query>
+	<named-native-query name="Validaciones.jefeHogar.DependientetrabajadorEmpleadorAlDiaCartera">
+		<query>
+			SELECT
+			CASE WHEN carTipoLineaCobro IN ('LC3', 'LC2') THEN 'NO_VIGENTE'
+			ELSE cadEstadoOperacion
+			END AS cadEstadoOperacioncarTipoLineaCobro
+			FROM Persona per
+			INNER JOIN Cartera car ON car.carpersona = per.perid
+			INNER JOIN [CarteraDependiente] CD ON cd.cadCartera = car.carId
+			INNER JOIN Persona percartdep ON cd.cadpersona = percartdep.perid
+			WHERE
+			per.perNumeroIdentificacion =:numeroIdentificacionEmpleador
+			AND per.perTipoIdentificacion =:tipoIdentificacionEmpleador
+			AND cadDeudaPresunta &gt; 0
+			AND percartdep.perNumeroIdentificacion =:numeroIdentificacion
+			AND percartdep.perTipoIdentificacion =:tipoIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query name="Validaciones.jefeHogar.consultarEmpresasAfiliadas">
+		<query>
+			select  perEmp.perNumeroIdentificacion, perEmp.perTipoIdentificacion
+			from RolAfiliado
+			JOIN Afiliado ON afiId = roaAfiliado
+			JOIN Persona p ON perId = afiPersona
+			JOIN Empleador emp ON emp.empId = roaEmpleador
+			JOIN Empresa eps ON eps.empId = emp.empEmpresa
+			JOIN Persona perEmp ON perEmp.perId = eps.empPersona
+			WHERE p.perNumeroIdentificacion = :numeroIdentificacion
+			AND p.perTipoIdentificacion = :tipoIdentificacion
+			AND roaEstadoAfiliado = :estadoAfiliado
+			order by perEmp.perNumeroIdentificacion desc
+		</query>
+	</named-native-query>
+	<named-native-query name="Validaciones.Postulacion.Asignada.Mismo.Anio">
+		<query>
+			SELECT pofFechaCalificacion
+			FROM PostulacionFovis pof
+			WHERE pof.pofId = :idPostulacion
+			AND YEAR(pof.pofFechaCalificacion) = YEAR(GETDATE())
+		</query>
+		<hint name="org.hibernate.readOnly" value="true"/>
+	</named-native-query>
+	<!-- <named-native-query name="Validaciones.ListasEspecial.buscarPorEmpresa">
+		<query>
+			SELECT TOP 1 ler FROM ListaEspecialRevision ler  
+            WHERE ler.lerNumeroIdentificacion=:numeroIdentificacion 
+            and ler.lerTipoIdentificacion=:tipoIdentificacion
+            and ler.lerDigitoVerificacion=:digitoVerificacion  
+			order by 1 desc
+		</query>
+	</named-native-query> -->
+		<named-stored-procedure-query
+			name="sp.procedure.ASP_JsonPersona.validaciones.cargue.multiple"
+			procedure-name="ASP_JsonValidacionesCargueMultipleWeb">
+		<parameter
+				class="java.lang.String"
+				mode="IN"
+				name="personas"
+		/>
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query
+			name="stored.procedure.validaciones.consultar.ingresosHogar"
+			procedure-name="dbo.USP_REP_CalcularIngresosFovis">
+		<parameter class="java.math.BigInteger" mode="IN" name="idPostulacion"/>
+		<parameter class="java.lang.String" mode="IN" name="tipoIdentificacion"/>
+		<parameter class="java.lang.String" mode="IN" name="numeroIdentificacion"/>
+	</named-stored-procedure-query>
+
+</entity-mappings>

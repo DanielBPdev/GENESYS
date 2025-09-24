@@ -1,0 +1,1175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+
+	<!-- CONSULTAS HU 399 -->
+	<named-query
+		name="PilaBandejaService.RegistroDetallado.consultarRegistroAporte">
+		<description>consultar el registro de aporte de planilla por identificador de registro de aporte detallado</description>
+		<query>
+			SELECT regDetallado
+            FROM RegistroDetallado regDetallado
+            WHERE regDetallado.id= :idRegistroAporteDetallado           
+        </query>
+	</named-query>
+	<named-query
+		name="PilaBandejaService.RegistroDetallado.listarRegistrosAportesPorPlanilla">
+		<description>Lista los registros de aporte de planilla relacionados a un registro general de planilla por identificador de registro de aporte general</description>
+		<query>
+			SELECT regDetallado
+            FROM RegistroGeneral regGeneral, RegistroDetallado regDetallado 
+           	WHERE regGeneral.id = regDetallado.registroGeneral
+            AND regGeneral.id= :idRegistroAporteGeneral            
+        </query>
+	</named-query>
+	<named-query
+		name="PilaBandejaService.RegistroGeneral.consultarRegistroAporteGeneral">
+		<description>Consulta el registro de aporte general de planilla</description>
+		<query>
+			SELECT regGeneral
+            FROM RegistroGeneral regGeneral 
+            WHERE regGeneral.id= :idRegistroAporteGeneral
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.RegistroDetallado.consultarRegistrosAportePlanillasConInconsistenciasSinFiltro">
+		<description>Consultar todos los Registros de Aporte de Planillas Con Inconsistencias</description>
+		<query>
+			SELECT new com.asopagos.dto.InconsistenciaRegistroAporteDTO(
+				regGeneral.registroControl,
+		        regDetallado.registroGeneral,
+		        regDetallado.id,
+		        regDetallado.outEstadoRegistroAporte,
+		        regGeneral.numPlanilla,
+		        regGeneral.tipoIdentificacionAportante,
+		        regGeneral.numeroIdentificacionAportante,
+		        regGeneral.nombreAportante,
+		        regDetallado.tipoIdentificacionCotizante,
+		        regDetallado.numeroIdentificacionCotizante,		        
+		        CASE WHEN regGeneral.outEstadoEmpleador IS NOT NULL
+		        THEN regGeneral.outEstadoEmpleador
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' 
+		        END,
+		        CASE WHEN regDetallado.outEstadoSolicitante IS NOT NULL 
+		        THEN regDetallado.outEstadoSolicitante  
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' END,
+		        regGeneral.esSimulado
+		        )
+	            FROM RegistroGeneral regGeneral, RegistroDetallado regDetallado 
+            	WHERE regGeneral.id = regDetallado.registroGeneral
+            	AND regGeneral.outEnProceso = 0
+	            AND (
+                	regDetallado.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_OK
+	            OR 
+             		regDetallado.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_VALIDADO_BD 
+             	)
+             	AND COALESCE(regDetallado.correcciones, '') != 'A'
+				AND (regGeneral.esSimulado = false
+					OR regDetallado.outRegistrado = true
+					OR regDetallado.outRegistradoAporte = true
+					OR regDetallado.outRegistradoNovedad = true)
+             	AND regGeneral.registroControl IS NOT NULL 
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.RegistroDetallado.consultarRegistrosAportePlanillasConInconsistencias">
+		<description>Consultar los Registros de Aporte de Planillas Con Inconsistencias</description>
+		<query>
+			SELECT new com.asopagos.dto.InconsistenciaRegistroAporteDTO(				
+				regGeneral.registroControl,
+		        regDetallado.registroGeneral,
+		        regDetallado.id,
+		        regDetallado.outEstadoRegistroAporte,
+		        regGeneral.numPlanilla,
+		        regGeneral.tipoIdentificacionAportante,
+		        regGeneral.numeroIdentificacionAportante,
+		        regGeneral.nombreAportante,
+		        regDetallado.tipoIdentificacionCotizante,
+		        regDetallado.numeroIdentificacionCotizante,
+		        CASE WHEN regGeneral.outEstadoEmpleador IS NOT NULL
+		        THEN regGeneral.outEstadoEmpleador
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' 
+		        END,
+		        CASE WHEN regDetallado.outEstadoSolicitante IS NOT NULL 
+		        THEN regDetallado.outEstadoSolicitante  
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' END,
+		        regGeneral.esSimulado
+		        )	            
+	            FROM RegistroGeneral regGeneral, RegistroDetallado regDetallado 
+            	WHERE regGeneral.id = regDetallado.registroGeneral
+            	AND regGeneral.outEnProceso = 0
+	            AND regGeneral.tipoIdentificacionAportante= :tipoIdentificacionAportante
+                AND regGeneral.numeroIdentificacionAportante= :numeroIdentificacionAportante
+                AND regGeneral.digVerAportante= :digitoVerificacionAportante
+                AND regDetallado.outFechaProcesamientoValidRegAporte 
+                BETWEEN :fechaInicioAporte 
+	            AND :fechaFinalAporte
+                AND (
+                	regDetallado.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_OK
+	            OR 
+             		regDetallado.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_VALIDADO_BD 
+             	)
+             	AND COALESCE(regDetallado.correcciones, '') != 'A'
+				AND (regGeneral.esSimulado = false
+					OR regDetallado.outRegistrado = true
+					OR regDetallado.outRegistradoAporte = true
+					OR regDetallado.outRegistradoNovedad = true)
+             	AND regGeneral.registroControl IS NOT NULL
+        </query>
+	</named-query>
+	<named-query
+		name="PilaBandejaService.RegistroDetallado.consultarRegistrosAportePlanillasConInconsistenciasSinDv">
+		<description>Consultar los Registros de Aporte de Planillas Con Inconsistencias sin codigo de verificacion</description>
+		<query>
+			SELECT new com.asopagos.dto.InconsistenciaRegistroAporteDTO(				
+				regGeneral.registroControl,
+		        regDetallado.registroGeneral,
+		        regDetallado.id,
+		        regDetallado.outEstadoRegistroAporte,
+		        regGeneral.numPlanilla,
+		        regGeneral.tipoIdentificacionAportante,
+		        regGeneral.numeroIdentificacionAportante,
+		        regGeneral.nombreAportante,
+		        regDetallado.tipoIdentificacionCotizante,
+		        regDetallado.numeroIdentificacionCotizante,
+		        CASE WHEN regGeneral.outEstadoEmpleador IS NOT NULL
+		        THEN regGeneral.outEstadoEmpleador
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' 
+		        END,
+		        CASE WHEN regDetallado.outEstadoSolicitante IS NOT NULL 
+		        THEN regDetallado.outEstadoSolicitante  
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' END,
+		        regGeneral.esSimulado
+		        )            
+	            FROM RegistroGeneral regGeneral, RegistroDetallado regDetallado 
+            	WHERE regGeneral.id = regDetallado.registroGeneral
+            	AND regGeneral.outEnProceso = 0
+            	AND (:tipoIdentificacionAportante IS NULL OR regGeneral.tipoIdentificacionAportante= :tipoIdentificacionAportante)
+         	    AND (:numeroIdentificacionAportante IS NULL OR regGeneral.numeroIdentificacionAportante= :numeroIdentificacionAportante)
+                AND regDetallado.outFechaProcesamientoValidRegAporte 
+                BETWEEN :fechaInicioAporte 
+	            AND :fechaFinalAporte
+                AND (
+                	regDetallado.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_OK
+	            OR 
+             		regDetallado.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.NO_VALIDADO_BD 
+             	)
+             	AND COALESCE(regDetallado.correcciones, '') != 'A'
+				AND (regGeneral.esSimulado = false
+					OR regDetallado.outRegistrado = true
+					OR regDetallado.outRegistradoAporte = true
+					OR regDetallado.outRegistradoNovedad = true)
+             	AND regGeneral.registroControl IS NOT NULL
+        </query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.RegistroDetallado.consultarRegistrosAportePlanillasConInconsistenciasPorGestionarSinFiltro">
+		<description>Consultar todos los Registros de Aporte de Planillas Con Inconsistencias</description>
+		<query>
+			SELECT new com.asopagos.dto.InconsistenciaRegistroAporteDTO(
+				regGeneral.registroControl,
+		        regDetallado.registroGeneral,
+		        regDetallado.id,
+		        regDetallado.outEstadoRegistroAporte,
+		        regGeneral.numPlanilla,
+		        regGeneral.tipoIdentificacionAportante,
+		        regGeneral.numeroIdentificacionAportante,
+		        regGeneral.nombreAportante,
+		        CASE WHEN regGeneral.outMarcaSucursalPILA = java.lang.Boolean.TRUE 
+		        THEN regGeneral.codSucursal
+		        ELSE regDetallado.outCodSucursal END,
+		        CASE WHEN regGeneral.outMarcaSucursalPILA = java.lang.Boolean.TRUE 
+		        THEN regGeneral.nomSucursal
+		        ELSE regDetallado.outNomSucursal END,
+		        regDetallado.tipoIdentificacionCotizante,
+		        regDetallado.numeroIdentificacionCotizante,
+		        CASE WHEN regGeneral.outEstadoEmpleador IS NOT NULL
+		        THEN regGeneral.outEstadoEmpleador
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' 
+		        END,
+		        CASE WHEN regDetallado.outEstadoSolicitante IS NOT NULL 
+		        THEN regDetallado.outEstadoSolicitante  
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' END,
+		        regGeneral.esSimulado
+		        )	            
+	            FROM RegistroGeneral regGeneral, RegistroDetallado regDetallado 
+            	WHERE regGeneral.id = regDetallado.registroGeneral
+            	AND regGeneral.outEnProceso = 0
+	            AND regDetallado.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.PENDIENTE_POR_REGISTO_RELACION_APORTE
+             	AND COALESCE(regDetallado.correcciones, '') != 'A'
+				AND (regGeneral.esSimulado = false
+					OR regDetallado.outRegistrado = true
+					OR regDetallado.outRegistradoAporte = true
+					OR regDetallado.outRegistradoNovedad = true)
+	            AND regGeneral.registroControl IS NOT NULL 
+        </query>
+	</named-query>
+	<named-query
+		name="PilaBandejaService.RegistroDetallado.consultarRegistrosAportePlanillasConInconsistenciasPorGestionar">
+		<description>Consultar los Registros de Aporte de Planillas Con Inconsistencias</description>
+		<query>
+			SELECT new com.asopagos.dto.InconsistenciaRegistroAporteDTO(				
+				regGeneral.registroControl,
+		        regDetallado.registroGeneral,
+		        regDetallado.id,
+		        regDetallado.outEstadoRegistroAporte,
+		        regGeneral.numPlanilla,
+		        regGeneral.tipoIdentificacionAportante,
+		        regGeneral.numeroIdentificacionAportante,
+		        regGeneral.nombreAportante,
+		        CASE WHEN regGeneral.outMarcaSucursalPILA = java.lang.Boolean.TRUE 
+		        THEN regGeneral.codSucursal
+		        ELSE regDetallado.outCodSucursal END,
+		        CASE WHEN regGeneral.outMarcaSucursalPILA = java.lang.Boolean.TRUE 
+		        THEN regGeneral.nomSucursal
+		        ELSE regDetallado.outNomSucursal END,
+		        regDetallado.tipoIdentificacionCotizante,
+		        regDetallado.numeroIdentificacionCotizante,
+		        CASE WHEN regGeneral.outEstadoEmpleador IS NOT NULL
+		        THEN regGeneral.outEstadoEmpleador
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' 
+		        END,
+		        CASE WHEN regDetallado.outEstadoSolicitante IS NOT NULL 
+		        THEN regDetallado.outEstadoSolicitante  
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' END,
+		        regGeneral.esSimulado
+		        )	            
+	            FROM RegistroGeneral regGeneral, RegistroDetallado regDetallado 
+            	WHERE regGeneral.id = regDetallado.registroGeneral
+            	AND regGeneral.outEnProceso = 0
+	            AND regGeneral.tipoIdentificacionAportante= :tipoIdentificacionAportante
+                AND regGeneral.numeroIdentificacionAportante= :numeroIdentificacionAportante
+                AND regGeneral.digVerAportante= :digitoVerificacionAportante
+                AND regDetallado.outFechaProcesamientoValidRegAporte 
+                BETWEEN :fechaInicioAporte 
+	            AND :fechaFinalAporte
+                AND regDetallado.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.PENDIENTE_POR_REGISTO_RELACION_APORTE
+             	AND COALESCE(regDetallado.correcciones, '') != 'A'
+				AND (regGeneral.esSimulado = false
+					OR regDetallado.outRegistrado = true
+					OR regDetallado.outRegistradoAporte = true
+					OR regDetallado.outRegistradoNovedad = true)
+                AND regGeneral.registroControl IS NOT NULL 
+        </query>
+	</named-query>
+	<named-query
+		name="PilaBandejaService.RegistroDetallado.consultarRegistrosAportePlanillasConInconsistenciasPorGestionarSinDv">
+		<description>Consultar los Registros de Aporte de Planillas Con Inconsistencias</description>
+		<query>
+			SELECT new com.asopagos.dto.InconsistenciaRegistroAporteDTO(				
+				regGeneral.registroControl,
+		        regDetallado.registroGeneral,
+		        regDetallado.id,
+		        regDetallado.outEstadoRegistroAporte,
+		        regGeneral.numPlanilla,
+		        regGeneral.tipoIdentificacionAportante,
+		        regGeneral.numeroIdentificacionAportante,
+		        regGeneral.nombreAportante,
+		        CASE WHEN regGeneral.outMarcaSucursalPILA = java.lang.Boolean.TRUE 
+		        THEN regGeneral.codSucursal
+		        ELSE regDetallado.outCodSucursal END,
+		        CASE WHEN regGeneral.outMarcaSucursalPILA = java.lang.Boolean.TRUE 
+		        THEN regGeneral.nomSucursal
+		        ELSE regDetallado.outNomSucursal END,
+		        regDetallado.tipoIdentificacionCotizante,
+		        regDetallado.numeroIdentificacionCotizante,
+		        CASE WHEN regGeneral.outEstadoEmpleador IS NOT NULL
+		        THEN regGeneral.outEstadoEmpleador
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' 
+		        END,
+		        CASE WHEN regDetallado.outEstadoSolicitante IS NOT NULL 
+		        THEN regDetallado.outEstadoSolicitante  
+		        ELSE 'NO_FORMALIZADO_CON_INFORMACION' END,
+		        regGeneral.esSimulado
+		        )	            
+	            FROM RegistroGeneral regGeneral, RegistroDetallado regDetallado 
+            	WHERE regGeneral.id = regDetallado.registroGeneral
+            	AND regGeneral.outEnProceso = 0
+	            AND (:tipoIdentificacionAportante IS NULL OR regGeneral.tipoIdentificacionAportante= :tipoIdentificacionAportante)
+         	    AND (:numeroIdentificacionAportante IS NULL OR regGeneral.numeroIdentificacionAportante= :numeroIdentificacionAportante)
+                AND regDetallado.outFechaProcesamientoValidRegAporte 
+                BETWEEN :fechaInicioAporte 
+	            AND :fechaFinalAporte
+                AND regDetallado.outEstadoRegistroAporte = com.asopagos.enumeraciones.pila.EstadoRegistroAportesArchivoEnum.PENDIENTE_POR_REGISTO_RELACION_APORTE
+             	AND COALESCE(regDetallado.correcciones, '') != 'A'
+				AND (regGeneral.esSimulado = false
+					OR regDetallado.outRegistrado = true
+					OR regDetallado.outRegistradoAporte = true
+					OR regDetallado.outRegistradoNovedad = true)
+                AND regGeneral.registroControl IS NOT NULL 
+        </query>
+	</named-query>
+	<!-- FIN CONSULTAS HU 399 -->
+
+	<!-- CONSULTAS HU 389 -->
+
+	<named-query name="PilaBandejaService.PilaStaging.BuscarPorPersonaCriterios">
+		<description>Permite consultar por persona de acuerdo a los criterios suministrados
+			se busca por cotizante
+		</description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.BusquedaPorPersonaDTO(
+				det.id,
+				det.numeroIdentificacionCotizante,
+				det.registroControl,
+				gen.numPlanilla,
+				gen.tipoPlanilla,
+				det.outFechaProcesamientoValidRegAporte,
+				det.aporteObligatorio,
+				det.tipoCotizante, 
+				det.outEstadoValidacionV0,
+				det.outEstadoValidacionV1,
+				det.outEstadoValidacionV2,
+				det.outEstadoValidacionV3,
+				gen.tipoIdentificacionAportante,
+				gen.numeroIdentificacionAportante,
+				gen.periodoAporte,
+				det.tipoIdentificacionCotizante,
+				gen.registroControl,
+				det.outEstadoRegistroAporte,
+				det.outEstadoSolicitante,
+				gen.valTotalApoObligatorio,
+				gen.digVerAportante,
+				gen.nombreAportante,
+				gen.valorIntMora
+			)
+			FROM RegistroGeneral gen, RegistroDetallado det
+			WHERE gen.id = det.registroGeneral
+			AND (:tipoIdentificacion IS NULL OR det.tipoIdentificacionCotizante = :tipoIdentificacion)
+			AND (:numeroIdentificacion IS NULL OR det.numeroIdentificacionCotizante = :numeroIdentificacion)
+			AND (:numeroPlanilla IS NULL OR gen.numPlanilla = :numeroPlanilla)				
+			AND (:periodoAporte IS NULL OR gen.periodoAporte = :periodoAporte)
+			AND gen.esAportePensionados = 0
+			AND gen.registroControl IS NOT NULL
+			AND gen.outEstadoArchivo IN (
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PROCESADO_VS_BD,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.REGISTRADO_O_RELACIONADO_LOS_APORTES,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PROCESADO_NOVEDADES,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PROCESADO_SIN_NOVEDADES,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO_MANUAL,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.NOTIFICACION_RECAUDO_FALLIDO
+			)
+		</query>
+		<hint name="numeroPlanilla" value="gen.numPlanilla" />
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaStaging.BuscarPorPersonaPensionadoCriterios">
+		<description>Permite consultar por persona de acuerdo a los criterios suministrados
+			se busca por cotizante, en este caso se buscan los pensionados</description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.BusquedaPorPersonaDTO(
+				gen.nombreAportante,
+				det.numeroIdentificacionCotizante,
+				det.registroControl,
+				gen.numPlanilla,
+				gen.tipoPlanilla,
+				det.outFechaProcesamientoValidRegAporte,
+				det.aporteObligatorio,
+				det.tipoCotizante, 
+				det.outEstadoValidacionV1,
+				gen.tipoIdentificacionAportante,
+				gen.numeroIdentificacionAportante,
+				gen.periodoAporte,
+				det.tipoIdentificacionCotizante,
+				gen.registroControl,
+				det.outEstadoRegistroAporte,
+				gen.digVerAportante,
+				gen.valTotalApoObligatorio,
+				det.outEstadoSolicitante
+			) 
+			FROM RegistroGeneral gen, RegistroDetallado det
+			WHERE gen.id = det.registroGeneral
+			AND (:tipoIdentificacion IS NULL OR det.tipoIdentificacionCotizante = :tipoIdentificacion)
+			AND (:numeroIdentificacion IS NULL OR det.numeroIdentificacionCotizante = :numeroIdentificacion)
+			AND (:numeroPlanilla IS NULL OR gen.numPlanilla = :numeroPlanilla)				
+			AND (:periodoAporte IS NULL OR gen.periodoAporte = :periodoAporte)
+			AND gen.esAportePensionados = 1
+			AND gen.registroControl IS NOT NULL
+			AND gen.outEstadoArchivo IN (
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PROCESADO_VS_BD,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.REGISTRADO_O_RELACIONADO_LOS_APORTES,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PROCESADO_NOVEDADES,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PROCESADO_SIN_NOVEDADES,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_NOTIFICADO_MANUAL,
+				com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.NOTIFICACION_RECAUDO_FALLIDO
+			)
+		</query>
+		<hint name="numeroPlanilla" value="gen.numPlanilla" />
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaStaging.BuscarPorAportanteCriterios">
+		<description>Permite consultar por aportante de acuerdo a los criterios suministrados
+			se busca por aportante
+		</description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.BusquedaPorPersonaDTO(
+				det.id,
+				det.numeroIdentificacionCotizante,
+				det.registroControl,
+				gen.numPlanilla,
+				gen.tipoPlanilla,
+				det.outFechaProcesamientoValidRegAporte,
+				det.aporteObligatorio,
+				det.tipoCotizante, 
+				det.outEstadoValidacionV0,
+				det.outEstadoValidacionV1,
+				det.outEstadoValidacionV2,
+				det.outEstadoValidacionV3,
+				gen.tipoIdentificacionAportante,
+				gen.numeroIdentificacionAportante,
+				gen.periodoAporte,
+				det.tipoIdentificacionCotizante,
+				gen.registroControl,
+				det.outEstadoRegistroAporte,
+				det.outEstadoSolicitante,
+				gen.valTotalApoObligatorio,
+				gen.digVerAportante,
+				gen.nombreAportante,
+				gen.valorIntMora
+			)
+			FROM RegistroGeneral gen, RegistroDetallado det
+			WHERE gen.id = det.registroGeneral
+			AND (:tipoIdentificacion IS NULL OR gen.tipoIdentificacionAportante = :tipoIdentificacion)
+			AND (:numeroIdentificacion IS NULL OR gen.numeroIdentificacionAportante = :numeroIdentificacion)
+			AND (:numeroPlanilla IS NULL OR gen.numPlanilla = :numeroPlanilla)				
+			AND (:periodoAporte IS NULL OR gen.periodoAporte = :periodoAporte)			
+			AND gen.registroControl IS NOT NULL
+			AND (:registroControl IS NULL OR gen.registroControl = :registroControl)
+			AND gen.outEstadoArchivo IN (:estadosProceso)
+			<!-- AND gen.esAportePensionados = 0 -->
+		</query>
+		<hint name="numeroPlanilla" value="gen.numPlanilla" />
+	</named-query>
+
+	<named-query name="PilaBandejaService.PilaStaging.BuscarPorAportanteCriteriosTotal">
+		<description> Hace el conteo de todos los registros asociados a la busqueda </description>
+		<query>
+			SELECT COUNT(det) 
+			FROM RegistroGeneral gen, RegistroDetallado det
+			WHERE gen.id = det.registroGeneral
+			AND (:tipoIdentificacion IS NULL OR gen.tipoIdentificacionAportante = :tipoIdentificacion)
+			AND (:numeroIdentificacion IS NULL OR gen.numeroIdentificacionAportante = :numeroIdentificacion)
+			AND (:numeroPlanilla IS NULL OR gen.numPlanilla = :numeroPlanilla)				
+			AND (:periodoAporte IS NULL OR gen.periodoAporte = :periodoAporte)			
+			AND gen.registroControl IS NOT NULL
+			AND (:registroControl IS NULL OR gen.registroControl = :registroControl)
+			AND gen.outEstadoArchivo IN (:estadosProceso)
+		</query>
+	</named-query>
+
+	<named-query
+		name="PilaBandejaService.PilaStaging.BuscarPorAportantePensionadoCriterios">
+		<description>Permite consultar por aportante de acuerdo a los criterios suministrados,
+			en este caso se buscan los pensionados</description>
+		<query>
+			SELECT new com.asopagos.bandejainconsistencias.dto.BusquedaPorPersonaDTO(
+				gen.nombreAportante,
+				det.numeroIdentificacionCotizante,
+				det.registroControl,
+				gen.numPlanilla,
+				gen.tipoPlanilla,
+				det.outFechaProcesamientoValidRegAporte,
+				det.aporteObligatorio,
+				det.tipoCotizante, 
+				det.outEstadoValidacionV0,
+				gen.tipoIdentificacionAportante,
+				gen.numeroIdentificacionAportante,
+				gen.periodoAporte,
+				det.tipoIdentificacionCotizante,
+				gen.registroControl,
+				det.outEstadoRegistroAporte,
+				gen.digVerAportante,
+				gen.valTotalApoObligatorio,
+				det.outEstadoSolicitante
+			) 
+			FROM RegistroGeneral gen, RegistroDetallado det
+			WHERE gen.id = det.registroGeneral
+			AND (:tipoIdentificacion IS NULL OR gen.tipoIdentificacionAportante = :tipoIdentificacion)
+			AND (:numeroIdentificacion IS NULL OR gen.numeroIdentificacionAportante = :numeroIdentificacion)
+			AND (:numeroPlanilla IS NULL OR gen.numPlanilla = :numeroPlanilla)				
+			AND (:periodoAporte IS NULL OR gen.periodoAporte = :periodoAporte)			
+			AND gen.registroControl IS NOT NULL
+			AND (:registroControl IS NULL OR gen.registroControl = :registroControl)
+			AND gen.outEstadoArchivo IN (:estadosProceso)
+			<!-- AND gen.esAportePensionados = 1 -->
+		</query>
+		<hint name="numeroPlanilla" value="gen.numPlanilla" />
+	</named-query>
+	
+	<!-- FIN CONSULTAS HU 389 -->
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	<!--Consultas nativas 389 -->
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIEmpleadorPeriodoPlanilla">
+		<description>Realiza la busqueda por medio del empleador ,periodo y planilla</description>
+		<query>
+		SELECT  registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		CASE WHEN registroD.redTipoCotizante = '3' OR registroD.redTipoCotizante = '16'
+			OR registroD.redTipoCotizante = '57' OR registroD.redTipoCotizante = '59'
+			THEN 'Independiente' ELSE 'Dependiente' END,
+		registroD.redOUTEstadoValidacionV0,
+		registroD.redOUTEstadoValidacionV1,
+		registroD.redOUTEstadoValidacionV2,
+		registroD.redOUTEstadoValidacionV3,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+        WHERE registroG.regTipoIdentificacionAportante = :tipoDocumento
+            AND registroG.regNumeroIdentificacionAportante = :idAportante
+            AND registroG.regPeriodoAporte = :periodoAporte
+            AND registroG.regNumPlanilla = :numeroPlanilla
+       		AND registroG.regEsAportePensionados='0'
+
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPEmpleadorPeriodoPlanilla">
+		<description>Realiza la busqueda por medio del empleador ,periodo y planilla para las ip</description>
+		<query>
+			SELECT 	registroG.regNombreAportante,
+			registroD.redNumeroIdentificacionCotizante,
+			registroD.redRegistroControl,
+			registroG.regNumPlanilla,
+			registroG.regTipoPlanilla,
+			registroD.redOUTFechaProcesamientoValidRegAporte,
+			registroD.redAporteObligatorio,
+			'Pensionado',
+			registroD.redOUTEstadoValidacionV1,
+			registroG.regTipoIdentificacionAportante,
+			registroG.regNumeroIdentificacionAportante,
+			registroG.regPeriodoAporte,
+			registroD.redTipoIdentificacionCotizante,
+			registroG.regRegistroControl,
+			registroD.redOUTEstadoRegistroAporte
+            FROM staging.RegistroGeneral registroG
+       		JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral 
+       		WHERE registroG.regTipoIdentificacionAportante = :tipoDocumento
+            AND registroG.regNumeroIdentificacionAportante = :idAportante
+            AND registroG.regPeriodoAporte = :periodoAporte
+            AND registroG.regNumPlanilla = :numeroPlanilla
+       		AND registroG.regEsAportePensionados='1'
+
+			
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIEmpleadorPlanilla">
+		<description>Realiza la busqueda por medio del empleador y planilla</description>
+		<query>
+		SELECT  registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		CASE WHEN registroD.redTipoCotizante = '3' OR registroD.redTipoCotizante = '16'
+			OR registroD.redTipoCotizante = '57' OR registroD.redTipoCotizante = '59'
+			THEN 'Independiente' ELSE 'Dependiente' END,
+		registroD.redOUTEstadoValidacionV0,
+		registroD.redOUTEstadoValidacionV1,
+		registroD.redOUTEstadoValidacionV2,
+		registroD.redOUTEstadoValidacionV3,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral 
+        WHERE registroG.regTipoIdentificacionAportante = :tipoDocumento
+            AND registroG.regNumeroIdentificacionAportante = :idAportante
+            AND registroG.regNumPlanilla = :numeroPlanilla
+       		AND registroG.regEsAportePensionados='0'
+
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPEmpleadorPlanilla">
+		<description>Realiza la busqueda por medio del empleador y planilla para ip</description>
+		<query>
+		SELECT 	registroG.regNombreAportante,
+			registroD.redNumeroIdentificacionCotizante,
+			registroD.redRegistroControl,
+			registroG.regNumPlanilla,
+			registroG.regTipoPlanilla,
+			registroD.redOUTFechaProcesamientoValidRegAporte,
+			registroD.redAporteObligatorio,
+			'Pensionado',
+			registroD.redOUTEstadoValidacionV1,
+			registroG.regTipoIdentificacionAportante,
+			registroG.regNumeroIdentificacionAportante,
+			registroG.regPeriodoAporte,
+			registroD.redTipoIdentificacionCotizante,
+			registroG.regRegistroControl,
+			registroD.redOUTEstadoRegistroAporte
+            FROM staging.RegistroGeneral registroG
+       		JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral 
+       		WHERE registroG.regTipoIdentificacionAportante = :tipoDocumento
+            AND registroG.regNumeroIdentificacionAportante = :idAportante
+            AND registroG.regNumPlanilla = :numeroPlanilla
+       		AND registroG.regEsAportePensionados='1'
+			
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIEmpleadorPeriodo">
+		<description>Realiza la busqueda por medio del empleador ,periodo </description>
+		<query>
+		SELECT  registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		CASE WHEN registroD.redTipoCotizante = '3' OR registroD.redTipoCotizante = '16'
+			OR registroD.redTipoCotizante = '57' OR registroD.redTipoCotizante = '59'
+			THEN 'Independiente' ELSE 'Dependiente' END,
+		registroD.redOUTEstadoValidacionV0,
+		registroD.redOUTEstadoValidacionV1,
+		registroD.redOUTEstadoValidacionV2,
+		registroD.redOUTEstadoValidacionV3,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral 
+        WHERE registroG.regTipoIdentificacionAportante = :tipoDocumento
+            AND registroG.regNumeroIdentificacionAportante = :idAportante
+            AND registroG.regPeriodoAporte = :periodoAporte
+       		AND registroG.regEsAportePensionados='0'
+
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPEmpleadorPeriodo">
+		<description>Realiza la busqueda por medio del empleador ,periodo para ip</description>
+		<query>
+		SELECT 	registroG.regNombreAportante,
+			registroD.redNumeroIdentificacionCotizante,
+			registroD.redRegistroControl,
+			registroG.regNumPlanilla,
+			registroG.regTipoPlanilla,
+			registroD.redOUTFechaProcesamientoValidRegAporte,
+			registroD.redAporteObligatorio,
+			'Pensionado',
+			registroD.redOUTEstadoValidacionV1,
+			registroG.regTipoIdentificacionAportante,
+			registroG.regNumeroIdentificacionAportante,
+			registroG.regPeriodoAporte,
+			registroD.redTipoIdentificacionCotizante,
+			registroG.regRegistroControl,
+			registroD.redOUTEstadoRegistroAporte
+            FROM staging.RegistroGeneral registroG
+       		JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+       		WHERE registroG.regTipoIdentificacionAportante = :tipoDocumento
+            AND registroG.regNumeroIdentificacionAportante = :idAportante
+            AND registroG.regPeriodoAporte = :periodoAporte
+       		AND registroG.regEsAportePensionados='1'
+			
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPeriodoPlanilla">
+		<description>Realiza la busqueda por medio del periodo y planilla</description>
+		<query>
+		SELECT  registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		CASE WHEN registroD.redTipoCotizante = '3' OR registroD.redTipoCotizante = '16'
+			OR registroD.redTipoCotizante = '57' OR registroD.redTipoCotizante = '59'
+			THEN 'Independiente' ELSE 'Dependiente' END,
+		registroD.redOUTEstadoValidacionV0,
+		registroD.redOUTEstadoValidacionV1,
+		registroD.redOUTEstadoValidacionV2,
+		registroD.redOUTEstadoValidacionV3,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+        WHERE registroG.regPeriodoAporte = :periodoAporte
+            AND registroG.regNumPlanilla = :numeroPlanilla
+       		AND registroG.regEsAportePensionados='0'
+
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPPeriodoPlanilla">
+		<description>Realiza la busqueda por medio del periodo y planilla para ip</description>
+		<query>
+		SELECT 	registroG.regNombreAportante,
+			registroD.redNumeroIdentificacionCotizante,
+			registroD.redRegistroControl,
+			registroG.regNumPlanilla,
+			registroG.regTipoPlanilla,
+			registroD.redOUTFechaProcesamientoValidRegAporte,
+			registroD.redAporteObligatorio,
+			'Pensionado',
+			registroD.redOUTEstadoValidacionV1,
+			registroG.regTipoIdentificacionAportante,
+			registroG.regNumeroIdentificacionAportante,
+			registroG.regPeriodoAporte,
+			registroD.redTipoIdentificacionCotizante,
+			registroG.regRegistroControl,
+			registroD.redOUTEstadoRegistroAporte
+            FROM staging.RegistroGeneral registroG
+       		JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral 
+       		WHERE registroG.regPeriodoAporte = :periodoAporte
+            AND registroG.regNumPlanilla = :numeroPlanilla
+       		AND registroG.regEsAportePensionados='1'
+            
+			
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPlanilla">
+		<description>Realiza la busqueda por medio de planilla</description>
+		<query>
+			SELECT  
+				registroG.regNombreAportante,
+				registroD.redNumeroIdentificacionCotizante,
+				registroD.redRegistroControl,
+				registroG.regNumPlanilla,
+				registroG.regTipoPlanilla,
+				registroD.redOUTFechaProcesamientoValidRegAporte,
+				registroD.redAporteObligatorio,
+				CASE WHEN registroD.redTipoCotizante = '3' OR registroD.redTipoCotizante = '16'
+					OR registroD.redTipoCotizante = '57' OR registroD.redTipoCotizante = '59'
+					THEN 'Independiente' ELSE 'Dependiente' END,
+				registroD.redOUTEstadoValidacionV0,
+				registroD.redOUTEstadoValidacionV1,
+				registroD.redOUTEstadoValidacionV2,
+				registroD.redOUTEstadoValidacionV3,
+				registroG.regTipoIdentificacionAportante,
+				registroG.regNumeroIdentificacionAportante,
+				registroG.regPeriodoAporte,
+				registroD.redTipoIdentificacionCotizante,
+				registroG.regRegistroControl,
+				registroD.redOUTEstadoRegistroAporte,
+				registroD.redOUTEstadoSolicitante,
+				registroG.regValTotalApoObligatorio,				
+				registroG.regDigVerAportante
+	        FROM staging.RegistroGeneral registroG
+	        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+	        WHERE registroG.regNumPlanilla = :numeroPlanilla
+	       	AND registroG.regEsAportePensionados='0'
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPPlanilla">
+		<description>Realiza la busqueda por medio de planilla para ip</description>
+		<query>
+		SELECT 	registroG.regNombreAportante,
+			registroD.redNumeroIdentificacionCotizante,
+			registroD.redRegistroControl,
+			registroG.regNumPlanilla,
+			registroG.regTipoPlanilla,
+			registroD.redOUTFechaProcesamientoValidRegAporte,
+			registroD.redAporteObligatorio,
+			'Pensionado',
+			registroD.redOUTEstadoValidacionV1,
+			registroG.regTipoIdentificacionAportante,
+			registroG.regNumeroIdentificacionAportante,
+			registroG.regPeriodoAporte,
+			registroD.redTipoIdentificacionCotizante,
+			registroG.regRegistroControl,
+			registroD.redOUTEstadoRegistroAporte
+            FROM staging.RegistroGeneral registroG
+       		JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+       		WHERE registroG.regNumPlanilla = :numeroPlanilla
+       		AND registroG.regEsAportePensionados='1'
+			
+            
+        </query>
+	</named-native-query>
+
+
+	<!-- Busquedas para persona HU 389 -->
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPersonaPeriodoPlanilla">
+		<description>busqueda de una persona en los registros i por medio de la planilla,periodo y la identificacion</description>
+		<query>
+		SELECT  registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		CASE WHEN registroD.redTipoCotizante = '3' OR registroD.redTipoCotizante = '16'
+			OR registroD.redTipoCotizante = '57' OR registroD.redTipoCotizante = '59'
+			THEN 'Independiente' ELSE 'Dependiente' END,
+		registroD.redOUTEstadoValidacionV0,
+		registroD.redOUTEstadoValidacionV1,
+		registroD.redOUTEstadoValidacionV2,
+		registroD.redOUTEstadoValidacionV3,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+        WHERE registroD.redTipoIdentificacionCotizante = :tipoDocumento
+            AND registroD.redNumeroIdentificacionCotizante = :idAportante
+            AND registroG.regPeriodoAporte = :periodoAporte
+            AND registroG.regNumPlanilla = :numeroPlanilla
+            AND registroG.regEsAportePensionados='0'
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPPersonaPeriodoPlanilla">
+		<description>busqueda de una persona en los registros i por medio de la planilla,periodo y la identificacion para ip</description>
+		<query>
+		SELECT 	registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		'Pensionado',
+		registroD.redOUTEstadoValidacionV1,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+        WHERE registroD.redTipoIdentificacionCotizante = :tipoDocumento
+            AND registroD.redNumeroIdentificacionCotizante = :idAportante
+            AND registroG.regPeriodoAporte = :periodoAporte
+            AND registroG.regNumPlanilla = :numeroPlanilla
+            AND registroG.regEsAportePensionados='1'
+			
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPersonaPlanilla">
+		<description>busqueda de una persona en los registros i por medio de la planilla y la identificacion</description>
+		<query>
+		SELECT  registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		CASE WHEN registroD.redTipoCotizante = '3' OR registroD.redTipoCotizante = '16'
+			OR registroD.redTipoCotizante = '57' OR registroD.redTipoCotizante = '59'
+			THEN 'Independiente' ELSE 'Dependiente' END,
+		registroD.redOUTEstadoValidacionV0,
+		registroD.redOUTEstadoValidacionV1,
+		registroD.redOUTEstadoValidacionV2,
+		registroD.redOUTEstadoValidacionV3,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+        WHERE registroD.redTipoIdentificacionCotizante = :tipoDocumento
+            AND registroD.redNumeroIdentificacionCotizante = :idAportante
+            AND registroG.regNumPlanilla = :numeroPlanilla
+            AND registroG.regEsAportePensionados='0'
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPPersonaPlanilla">
+		<description>busqueda de una persona en los registros i por medio de la planilla y la identificacion</description>
+		<query>
+		SELECT 	registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		'Pensionado',
+		registroD.redOUTEstadoValidacionV1,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+        WHERE registroD.redTipoIdentificacionCotizante = :tipoDocumento
+            AND registroD.redNumeroIdentificacionCotizante = :idAportante
+            AND registroG.regNumPlanilla = :numeroPlanilla
+            AND registroG.regEsAportePensionados='1'
+			
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPersonaPeriodo">
+		<description>busqueda de una persona en los registros i por medio del periodo y la identificacion</description>
+		<query>
+		SELECT  registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		CASE WHEN registroD.redTipoCotizante = '3' OR registroD.redTipoCotizante = '16'
+			OR registroD.redTipoCotizante = '57' OR registroD.redTipoCotizante = '59'
+			THEN 'Independiente' ELSE 'Dependiente' END,
+		registroD.redOUTEstadoValidacionV0,
+		registroD.redOUTEstadoValidacionV1,
+		registroD.redOUTEstadoValidacionV2,
+		registroD.redOUTEstadoValidacionV3,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+        WHERE registroD.redTipoIdentificacionCotizante = :tipoDocumento
+            AND registroD.redNumeroIdentificacionCotizante = :idAportante
+            AND registroG.regPeriodoAporte = :periodoAporte
+            AND registroG.regEsAportePensionados='0'
+            
+        </query>
+	</named-native-query>
+
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.BusquedaConArgumentosIPPersonaPeriodo">
+		<description>busqueda de una persona en los registros i por medio del periodo y la identificacion</description>
+		<query>
+		SELECT 	registroG.regNombreAportante,
+		registroD.redNumeroIdentificacionCotizante,
+		registroD.redRegistroControl,
+		registroG.regNumPlanilla,
+		registroG.regTipoPlanilla,
+		registroD.redOUTFechaProcesamientoValidRegAporte,
+		registroD.redAporteObligatorio,
+		'Pensionado',
+		registroD.redOUTEstadoValidacionV1,
+		registroG.regTipoIdentificacionAportante,
+		registroG.regNumeroIdentificacionAportante,
+		registroG.regPeriodoAporte,
+		registroD.redTipoIdentificacionCotizante,
+		registroG.regRegistroControl,
+		registroD.redOUTEstadoRegistroAporte
+        FROM staging.RegistroGeneral registroG
+        JOIN staging.RegistroDetallado registroD ON registroG.regId = registroD.redRegistroGeneral
+        WHERE registroD.redTipoIdentificacionCotizante = :tipoDocumento
+            AND registroD.redNumeroIdentificacionCotizante = :idAportante
+            AND registroG.regPeriodoAporte = :periodoAporte
+            AND registroG.regEsAportePensionados='1'
+        </query>
+	</named-native-query>
+	<!-- CONSULTAS HU 399 -->
+	<named-native-query
+		name="PilaBandejaService.PilaIndicePlanilla.contarPlanillasConInconsistencias">
+		<description>	
+			Cuenta las planillas con inconsistencias por gestionar		
+		</description>
+		<query>
+			select COUNT(*) as totalPlanillas
+				from (
+					select registroDetalladoAporte.redId
+					from staging.RegistroGeneral registroGeneralAporte,  
+						 staging.RegistroDetallado registroDetalladoAporte
+					WHERE registroGeneralAporte.regId = registroDetalladoAporte.redRegistroGeneral AND
+							( 
+							<!-- registroDetalladoAporte.redOUTEstadoRegistroAporte = 'NO_OK' OR 
+							registroDetalladoAporte.redOUTEstadoRegistroAporte = 'NO_VALIDADO_BD' OR  -->
+							registroDetalladoAporte.redOUTEstadoRegistroAporte = 'PENDIENTE_POR_REGISTO_RELACION_APORTE'
+							)
+					AND registroGeneralAporte.regRegistroControlManual is null
+					AND registroGeneralAporte.regOUTEnProceso = 0
+             		AND ISNULL(registroDetalladoAporte.redCorrecciones, '') != 'A'
+					AND (registroGeneralAporte.regEsSimulado = '0'
+						OR registroDetalladoAporte.redOUTRegistrado = '1'
+						OR registroDetalladoAporte.redOUTRegistradoAporte = '1'
+						OR registroDetalladoAporte.redOUTRegistradoNovedad = '1')
+					group by registroDetalladoAporte.redId
+				) consultaPlanillas
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaBandejaService.RegistroDetallado.AprobarPorListado">
+		<description>Actualización de los registros detallados que pasan a estar en estado "_APROBADO"</description>
+		<query>
+			UPDATE staging.RegistroDetallado
+			SET redOUTEstadoRegistroAporte = 
+				CASE 
+					WHEN redOUTEstadoRegistroAporte = 'NO_OK' THEN 'NO_OK_APROBADO'
+					WHEN redOUTEstadoRegistroAporte = 'NO_VALIDADO_BD' THEN 'NO_VALIDADO_BD_APROBADO'
+				END, 
+				redUsuarioAprobadorAporte = :usuarioAprobador
+			WHERE redId IN (:idsRegistrosDetallados)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaBandejaService.RegistroGeneral.AsignarIdTransaccion">
+		<description>Asignación de ID de transacción para registros generales y reinicio</description>
+		<query>
+			UPDATE reg
+			SET 
+				reg.regDateTimeUpdate = dbo.getLocalDate(),
+				reg.regTransaccion = :idTransaccion,
+				reg.regOUTEstadoArchivo = 
+					CASE 
+						WHEN 'BLOQUE_6_OI' = :bloque THEN ISNULL(peb.pebEstadoBloque6, 'RECAUDO_CONCILIADO') 
+						WHEN 'BLOQUE_7_OI' = :bloque THEN ISNULL(peb.pebEstadoBloque7, 'PROCESADO_VS_BD') 
+						WHEN 'BLOQUE_8_OI' = :bloque THEN ISNULL(peb.pebEstadoBloque8, 'REGISTRADO_O_RELACIONADO_LOS_APORTES') 
+					END
+			FROM staging.RegistroGeneral reg
+			LEFT JOIN dbo.PilaEstadoBloque peb ON peb.pebIndicePlanilla = reg.regRegistroControl
+			WHERE reg.regId IN (:idsRegistrosGenerales)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaBandejaService.RegistroGeneral.AsignarIdTransaccion.Simulacion">
+		<description>Asignación de ID de transacción para registros generales y reinicio (Simulación)</description>
+		<query>
+			UPDATE reg
+			SET 
+				reg.regDateTimeUpdate = dbo.getLocalDate(),
+				reg.regOUTEstadoArchivo = 
+				CASE 
+					WHEN EXISTS(
+						SELECT redOUTEstadoRegistroAporte
+						FROM staging.RegistroDetallado red 
+						WHERE red.redRegistroGeneral = reg.regId
+						AND (redOUTRegistrado IS NULL OR redOUTRegistrado = 1)
+						AND ISNULL(redCorrecciones, '') != 'A'
+						AND ISNULL(red.redOUTEstadoRegistroAporte, 'NO_VALIDADO_BD') IN ('NO_VALIDADO_BD', 'NO_OK')
+					) 
+				THEN 'PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD' ELSE 'PROCESADO_VS_BD' END
+			FROM staging.RegistroGeneral reg 
+			WHERE reg.regId IN (:idsRegistrosGenerales)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaBandejaService.RegistroGeneral.ConsultaPorLista"
+		result-set-mapping="PilaBandejaService.RegistroGeneral.ConsultaPorLista.mapping">
+		<description>Consulta de registros generales por listado de IDs</description>
+		<query>
+			SELECT reg.*
+			FROM staging.RegistroGeneral reg 
+			INNER JOIN dbo.PilaIndicePlanilla pip ON reg.regRegistroControl = pip.pipId
+			WHERE reg.regId IN (:idsRegistroGeneral)
+			AND (:esSimulado = 1 OR :esReproceso = 1 OR reg.regOUTEstadoArchivo != pip.pipEstadoArchivo)
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="PilaBandejaService.RegistroGeneral.recalcularEstadoArchivo">
+	   <description>Recalculo del estado de archivo de Registro General por reproceso bandeja 399 para planillas manuales</description>
+	   <query>
+            UPDATE reg
+			SET 
+				reg.regDateTimeUpdate = dbo.getLocalDate(),
+				reg.regOUTEstadoArchivo = estNuevo.estadoNuevo
+			FROM staging.RegistroGeneral reg
+			INNER JOIN (
+			    SELECT regId, 
+			        CASE 
+			            WHEN EXISTS (
+			                SELECT 1 
+			                FROM staging.RegistroDetallado 
+			                WHERE redRegistroGeneral = reg2.regId
+			                AND redOUTEstadoRegistroAporte IN ('NO_OK_APROBADO', 'NO_VALIDADO_BD_APROBADO')
+			            ) THEN 'PROCESADO_VS_BD' ELSE 'PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD' 
+			        END estadoNuevo
+			    FROM staging.RegistroGeneral reg2
+			) AS estNuevo ON estNuevo.regId = reg.regId
+			WHERE reg.regTransaccion = :idTransaccion
+	   </query>
+	</named-native-query>
+	
+	<!-- FIN CONSULTAS HU 399 -->
+	
+	<!-- MAPEOS CONSULTAS NATIVAS -->
+	<sql-result-set-mapping name="PilaBandejaService.RegistroGeneral.ConsultaPorLista.mapping">
+        <entity-result entity-class="com.asopagos.entidades.pila.staging.RegistroGeneral"></entity-result>
+    </sql-result-set-mapping>
+    
+	<named-query
+		name="PilaBandejaService.RegistroGeneral.consultarByRegistroControl">
+		<description>Consulta el registro de aporte general x id de planilla (registroControl)</description>
+		<query>
+			SELECT regGeneral
+            FROM RegistroGeneral regGeneral 
+            WHERE regGeneral.registroControl= :idRegistroControl
+        </query>
+	</named-query>    
+    
+    
+</entity-mappings>

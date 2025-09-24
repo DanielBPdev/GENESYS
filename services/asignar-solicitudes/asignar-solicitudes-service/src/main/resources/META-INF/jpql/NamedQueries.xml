@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+        version="2.1"> 
+	<named-query name="AsignacionSolicitudes.buscar.sedesCajaCompensacion">
+		<description>Busca las sedes de la caja de compensacion familiar</description>
+		<query>
+			SELECT sede FROM SedeCajaCompensacion sede
+			ORDER BY sede.nombre, sede.virtual
+		</query>
+	</named-query>
+	<named-query name="AsignacionSolicitudes.buscar.sedesCajaCompensacion.virtual">
+		<description>Busca las sedes de la caja de compensacion familiar</description>
+		<query>
+			SELECT sede FROM SedeCajaCompensacion sede
+			WHERE sede.virtual = :virtual
+		</query>
+	</named-query>
+	<named-query name="AsignacionSolicitudes.buscar.parametrizacionesMetodosAsignacion">
+		<description>Busca la definicion de los metodos de asignacion a los procesos de cada sede</description>
+		<query>
+			SELECT pma FROM ParametrizacionMetodoAsignacion pma 
+			ORDER BY pma.proceso, pma.sedeCajaCompensacion
+		</query>
+	</named-query>
+	<named-query name="AsignacionSolicitudes.buscar.metodoAsignacionParametrizado">
+		<description>Busca la definicion del metodo de asignacion para proceso y sede</description>
+		<query>
+			SELECT pma FROM ParametrizacionMetodoAsignacion pma 
+			WHERE pma.proceso = :proceso
+			AND pma.sedeCajaCompensacion = :sedeCajaCompensacion
+			ORDER BY pma.proceso, pma.sedeCajaCompensacion
+		</query>
+	</named-query>
+	<named-query name="AsignacionSolicitudes.buscar.metodoAsignacionParametrizadoVirtual">
+		<description>Busca la definicion del metodo de asignacion para proceso y sede</description>
+		<query>
+			SELECT pma FROM ParametrizacionMetodoAsignacion pma 
+			WHERE pma.proceso = :proceso
+			ORDER BY pma.proceso
+		</query>
+	</named-query>
+	<named-query name="AsignacionSolicitudes.buscar.tareasIniciadasEnSesion">
+		<description>Busca las tareas en las que los usuarios están trabajando actualmente, es decir,
+			iniciaron la tarea y tienen sesión abierta en el navegador</description>
+		<query>
+			SELECT ita FROM InicioTarea ita 
+		</query>
+	</named-query>
+	<named-query name="AsignacionSolicitudes.limpiar.tareasIniciadasEnSesion">
+		<description>Busca las tareas en las que los usuarios están trabajando actualmente, es decir,
+			iniciaron la tarea y tienen sesión abierta en el navegador</description>
+		<query>
+			DELETE FROM InicioTarea ita 
+			WHERE ita.usuario = :usuario  
+		</query>
+	</named-query>
+</entity-mappings>

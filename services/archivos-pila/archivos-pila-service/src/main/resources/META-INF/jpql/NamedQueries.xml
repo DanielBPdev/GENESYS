@@ -1,0 +1,1196 @@
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query
+		name="ArchivosPilaService.PilaIndicePlanilla.porPlanilla.cargadosEjecutados">
+		<query>
+            SELECT new com.asopagos.pila.dto.ElementoCombinatoriaArchivosDTO (p, 
+            	CASE WHEN (e.estadoBloque6 = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_CONCILIADO
+            			OR e.estadoBloque6 = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.RECAUDO_VALOR_CERO_CONCILIADO)
+            		THEN false ELSE true END 
+            ) 
+            FROM IndicePlanilla p, EstadoArchivoPorBloque e
+            WHERE p.id = e.indicePlanilla.id 
+                AND p.id != :idIndice
+            	AND EXISTS
+	            	(SELECT ps.tipoArchivo 
+	           		FROM IndicePlanilla ps
+	           		WHERE ps.idPlanilla = :idPlanilla
+	           		AND ps.codigoOperadorInformacion = :codOperador
+					AND ps.nombreArchivo = :nombreArchivo
+	           		AND ps.id = p.id
+	           		AND ps.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.DESCARGADO
+					GROUP BY ps.tipoArchivo)
+			ORDER BY p.tipoArchivo ASC, p.fechaFtp DESC
+        </query>
+	</named-query>
+
+	<named-query
+		name="ArchivosPilaService.PilaIndicePlanilla.porPlanilla.cargadosEjecutados.migradas">
+		<query>
+            SELECT new com.asopagos.pila.dto.ElementoCombinatoriaArchivosDTO (p,true) 
+            FROM IndicePlanilla p
+            WHERE p.idPlanilla = :idPlanilla
+			and p.id != :idIndice
+			and p.usuario = 'MIGRACION@ASOPAGOS.COM'
+			and p.codigoOperadorInformacion = :codigoOperadorInformacion
+			and p.nombreArchivo = :nombreArchivo
+            	
+        </query>
+	</named-query>
+
+	<!-- CONSULTAS PROCESO PILA -->
+	<named-query name="ArchivosPilaService.PilaProceso.actualizarProceso">
+		<description>Sentencia para actualizar un proceso PILA</description>
+		<query>
+			UPDATE ProcesoPila pro
+			SET pro.numeroRadicado = :numeroRadicado, 
+				pro.tipoProceso = :tipoProceso, 
+				pro.fechaInicioProceso = :fechaInicioProceso, 
+				pro.fechaFinProceso = :fechaFinProceso, 
+				pro.usuarioProceso = :usuarioProceso, 
+				pro.estadoProceso = :estadoProceso
+ 			WHERE pro.id = :id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaProceso.ConsultarProcesos">
+		<description>Consulta para consultar los procesos registrados de acuerdo a un estado</description>
+		<query>
+			SELECT pro
+			FROM ProcesoPila pro 
+			WHERE pro.estadoProceso = :estado
+			AND pro.tipoProceso IN (:tipos)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaProceso.consultarPorId">
+		<description>Consulta de un proceso de PILA de acuerdo a su ID</description>
+		<query>
+			SELECT pro
+			FROM ProcesoPila pro
+			WHERE pro.id = :id
+		</query>
+	</named-query>
+	
+	
+	
+	<!-- CONSULTAS INDICE Y ESTADO DE ARCHIVOS OI Y OF -->
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarIndiceEstadoOI">
+		<description>Consulta de índice de planilla OI por estado</description>
+		<query>
+			SELECT p
+			FROM IndicePlanilla p
+			WHERE p.estadoArchivo = :estado
+				AND p.registroActivo = 1
+			ORDER BY p.id
+		</query>
+	</named-query>
+		<!--	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarIndiceEstadoMultipleOI">
+		<description>Consulta de índice de planilla OI en un grupo de estados</description>
+		<query>
+			SELECT p
+			FROM IndicePlanilla p
+			WHERE p.estadoArchivo in (:estados)
+				AND p.tipoCargaArchivo in (:tiposCarga)
+				AND p.registroActivo = 1
+				AND p.enLista = 0
+			ORDER BY p.idPlanilla, p.tipoArchivo
+		</query>
+	</named-query>-->
+     <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarIndiceEstadoMultipleOI">
+		<description>Consulta de índice de planilla OI en un grupo de estados</description>
+		<query>
+			SELECT p
+			FROM IndicePlanilla p
+			WHERE p.estadoArchivo in (:estados)
+				AND p.tipoCargaArchivo in (:tiposCarga)
+				AND p.registroActivo = 1
+			ORDER BY p.idPlanilla, p.tipoArchivo
+
+		</query>
+	</named-query>
+
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarIndiceEstadoMultipleOIEspecifico">
+		<description>Consulta de índice de planilla por un OI específico y en un grupo de estados</description>
+		<query>
+			SELECT p
+			FROM IndicePlanilla p
+			WHERE p.codigoOperadorInformacion = :codigoOI
+				AND p.estadoArchivo in (:estados) 
+				AND p.tipoCargaArchivo in (:tiposCarga)
+				AND p.registroActivo = true
+				<!--AND p.enLista = false-->
+			ORDER BY p.id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarPorNumerosPlanillaYEstados">
+		<description>Consulta de índices de planilla por conjunto de números de planilla y estados</description>
+		<query>
+			SELECT p
+			FROM IndicePlanilla p
+			WHERE p.estadoArchivo in (:estados) 
+				AND CONCAT(CAST(p.idPlanilla AS java.lang.String), '-', p.codigoOperadorInformacion) in (:numerosPlanilla)
+				AND p.registroActivo = 1
+				AND p.enLista = 0
+			ORDER BY p.id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.EliminarIndiceEstadoOI">
+		<description>Inactivación de índice de planilla OI</description>
+		<query>
+			UPDATE IndicePlanilla p
+			SET p.registroActivo = 0, 
+				p.fechaEliminacion = :fechaEliminacion,
+				p.usuarioEliminacion = :usuarioEliminacion, 
+				p.estadoArchivo = :estado
+			WHERE p.id = :idIndicePlanilla
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoEnIndicePorId">
+		<description>Consulta de una planilla en el índice de archivos a partir de su ID</description>
+		<query>
+			SELECT p
+			FROM IndicePlanilla p
+			WHERE p.id = :idIndicePlanilla 
+<!-- 			AND p.registroActivo = 1 -->
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoEnIndicePorFecha">
+		<description>Consulta de una planilla en el índice de archivos a partir de su nombre y fecha de modificación</description>
+		<query>
+			SELECT p
+			FROM IndicePlanilla p
+			WHERE p.nombreArchivo = :nombreArchivo
+			AND p.fechaFtp = :fechaFtp
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoEnIndicePorTipo">
+		<description>Consulta de una planilla en el índice de archivos a partir de su número y tipo</description>
+		<query>
+			SELECT p
+			FROM IndicePlanilla p
+			WHERE p.idPlanilla = :numeroPlanilla 
+            AND p.codigoOperadorInformacion = :codOperador
+			AND p.tipoArchivo = :tipoArchivo
+			AND p.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaEstadoBloque.ConsultarIndicesConEstado">
+		<description>Consulta de índices de planilla con estados por bloque</description>
+		<query>
+			SELECT eb
+			FROM EstadoArchivoPorBloque eb LEFT JOIN FETCH eb.indicePlanilla
+			WHERE eb.indicePlanilla.idPlanilla = :idPlanilla
+            AND eb.indicePlanilla.codigoOperadorInformacion = :codOperador
+			AND eb.indicePlanilla.registroActivo = 1
+			AND eb.indicePlanilla.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarPendientesPorConciliar">
+		<description>Consulta de las planillas que están pendientes por conciliar</description>
+		<query>
+			SELECT pip
+			FROM IndicePlanilla pip
+			WHERE pip.estadoArchivo = com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.PENDIENTE_CONCILIACION
+			AND (:tieneIds = 0 OR pip.id IN (:ids))
+		</query>
+	</named-query>
+    
+    <named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarPorListaIds">
+        <description>Consulta de las planillas activas por listado de IDs</description>
+        <query>
+            SELECT pip
+            FROM IndicePlanilla pip
+            WHERE pip.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+            AND (:tieneIds = 0 OR pip.id IN (:ids))
+            ORDER BY pip.tipoArchivo, pip.fechaFtp 
+        </query>
+    </named-query>
+
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarPorListaIdsPlanilla">
+        <description>Consulta de las planillas activas por listado de IDs DE PLANILLA</description>
+        <query>
+            SELECT pip
+            FROM IndicePlanilla pip
+            WHERE pip.estadoArchivo != 'ANULADO'
+            AND pip.idPlanilla IN (:idsPlanilla)
+            ORDER BY pip.tipoArchivo, pip.fechaFtp 
+        </query>
+    </named-query>
+    
+    <named-query name="ArchivosPilaService.PilaIndicePlanillaOF.ConsultarPorListaIds">
+        <description>Consulta de las planillas activas por listado de IDs</description>
+        <query>
+            SELECT pio
+            FROM IndicePlanillaOF pio
+            WHERE pio.estado != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+            AND (:tieneIds = 0 OR pio.id IN (:ids))
+            ORDER BY pio.tipoArchivo, pio.fechaFtp 
+        </query>
+    </named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ActualizarRegistroIndiceCorreccion">
+		<description>Actualización de un registro de índice de planillas de corrección</description>
+		<query>
+			UPDATE IndicePlanilla p
+			SET p.habilitadoProcesoManual = 1
+			WHERE p.id IN (
+				SELECT p1.indicePlanilla 
+				FROM PilaArchivoIRegistro1 p1
+				WHERE p1.numPlanillaAsociada = :numeroPlanillaAsociada 
+                AND p1.codOperador = :codOperador
+				AND p1.indicePlanilla.estadoArchivo != com.asopagos.enumeraciones.pila.EstadoProcesoArchivoEnum.ANULADO
+			)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarEstadoPlanillaTipo">
+		<description>Consulta del estado de una planilla para un tipo de archivo específico</description>
+		<query>
+			SELECT est
+			FROM EstadoArchivoPorBloque est 
+			WHERE est.indicePlanilla = :indicePlanilla
+            AND est.indicePlanilla.codigoOperadorInformacion = :codOperador
+			AND est.tipoArchivo = :tipoArchivo
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarEstadoPlanilla">
+		<description>Consulta general del estado de los archivos de una planilla</description>
+		<query>
+			SELECT est
+			FROM EstadoArchivoPorBloque est LEFT JOIN FETCH est.indicePlanilla
+			WHERE est.indicePlanilla.idPlanilla = :idPlanilla
+            AND est.indicePlanilla.codigoOperadorInformacion = :codOperador
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ActualizarRegistroEstado">
+		<description>Actualización de un registro de estado de bloque</description>
+		<query>
+			UPDATE EstadoArchivoPorBloque est
+			SET est.estadoBloque0 = :pebEstadoBloque0, 
+				est.accionBloque0 = :pebAccionBloque0, 
+				est.estadoBloque1 = :pebEstadoBloque1, 
+				est.accionBloque1 = :pebAccionBloque1, 
+				est.estadoBloque2 = :pebEstadoBloque2, 
+				est.accionBloque2 = :pebAccionBloque2, 
+				est.estadoBloque3 = :pebEstadoBloque3, 
+				est.accionBloque3 = :pebAccionBloque3, 
+				est.estadoBloque4 = :pebEstadoBloque4, 
+				est.accionBloque4 = :pebAccionBloque4, 
+				est.estadoBloque5 = :pebEstadoBloque5, 
+				est.accionBloque5 = :pebAccionBloque5, 
+				est.estadoBloque6 = :pebEstadoBloque6, 
+				est.accionBloque6 = :pebAccionBloque6
+			WHERE est.indicePlanilla = :pebIdPlanilla
+			AND est.tipoArchivo = :pebTipoArchivo
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarIndiceEstadoOF">
+		<description>Consulta de índice de planilla OF por estado</description>
+		<query>
+			SELECT p
+			FROM IndicePlanillaOF p
+			WHERE p.estado = :estado
+			AND p.registroActivo = 1
+			ORDER BY p.id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarIndiceEstadoMultipleOF">
+		<description>Consulta de índice de planilla OF en un grupo de estados</description>
+		<query>
+			SELECT p
+			FROM IndicePlanillaOF p
+			WHERE p.estado in (:estados)
+			AND p.registroActivo = 1
+			ORDER BY p.id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.EliminarIndiceEstadoOF">
+		<description>Inactivación de índice de planilla OF</description>
+		<query>
+			UPDATE IndicePlanillaOF p
+			SET p.registroActivo = 0, 
+				p.fechaEliminacion = :fechaEliminacion,
+				p.usuarioEliminacion = :usuarioEliminacion,
+				p.estado = :estado
+			WHERE p.id = :idIndicePlanilla
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarIndiceCompletoOF">
+		<description>Consulta el contenido completo del indice de archivos OF</description>
+		<query>
+			SELECT p 
+			FROM IndicePlanillaOF p
+			WHERE p.registroActivo = 1
+			ORDER BY p.id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultaIndiceArchivoOF">
+		<description>Consulta de un archivo en el índice de OF</description>
+		<query>
+			SELECT pof 
+			FROM IndicePlanillaOF pof
+			WHERE pof.fechaPago = :pipofFechaPago
+			AND pof.codigoBancoRecaudador = :pipofCodigoBancoRecaudador
+			AND pof.registroActivo = 1
+			ORDER BY pof.id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoEnIndicePorIdOF">
+		<description>Consulta de una planilla en el índice de archivos OF a partir de su ID</description>
+		<query>
+			SELECT p
+			FROM IndicePlanillaOF p
+			WHERE p.id = :idIndicePlanilla 
+			AND p.registroActivo = 1
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarEstadoArchivoOF">
+		<description>Consulta del estado de un archivo de OF</description>
+		<query>
+			SELECT est
+			FROM EstadoArchivoPorBloqueOF est
+			where est.indicePlanillaOF = :indicePlanilla
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ActualizarRegistroIndiceOF">
+		<description>Actualización de un registro de índice de planillas</description>
+		<query>
+			UPDATE IndicePlanillaOF p
+			SET p.estado = :estado, 
+				p.fechaProceso = :fechaProceso,
+				p.usuarioProceso = :usuarioProceso 
+			WHERE p.id = :id 
+			AND p.registroActivo = 1
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaArchivoFRegistro5.ConsultarIDPorLote">
+		<description>Consulta del ID de registro 5 con base en índice de planilla OF y número de lote</description>
+		<query>
+			SELECT r5.id 
+			FROM PilaArchivoFRegistro5 r5
+			WHERE r5.indicePlanilla = :indicePlanilla
+			AND r5.numeroLote = :numeroLote
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ActualizarRegistroEstadoOF">
+		<description>Actualización de un registro de estado de bloque en archivo OF</description>
+		<query>
+			UPDATE EstadoArchivoPorBloqueOF est
+			SET est.estadoBloque0 = :pebofEstadoBloque0, 
+				est.accionBloque0 = :pebofAccionBloque0, 
+				est.estadoBloque1 = :pebofEstadoBloque1, 
+				est.accionBloque1 = :pebofAccionBloque1, 
+				est.estadoBloque6 = :pebofEstadoBloque6, 
+				est.accionBloque6 = :pebofAccionBloque6 							
+			WHERE est.id = :id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaArchivoFRegistro6.ConsultarEstadosR6">
+		<description>Consulta de los estados presentes en los registros tipo 6 de un archivo OF</description>
+		<query>
+			SELECT 
+				CASE WHEN f6.estadoConciliacion IS NULL THEN 'SIN_VALIDAR' ELSE f6.estadoConciliacion END
+			FROM PilaArchivoFRegistro6 f6
+			WHERE f6.indicePlanilla = :indicePlanillaOF
+			GROUP BY f6.estadoConciliacion
+		</query>
+	</named-query>
+	
+	
+	
+	<!-- CONSULTAS TABLAS DE PARAMETROS PARA VALIDACIÓN -->
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarVariablesDePaso">
+		<description>Consulta para obtener los valores de variable que pasan de un contexto a otro</description>
+		<query>
+			SELECT var
+			FROM PasoValores var
+			WHERE var.idPlanilla = :idPlanilla  
+			AND var.codOperadorInf = :codOperador
+			AND var.bloque = :bloque
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.EliminarVariablesDePaso">
+		<description>Sentencia para solicitar el borrado de las variables almacenadas para paso entre bloques</description>
+		<query>
+			DELETE FROM PasoValores var 
+			WHERE var.idPlanilla = :idPlanilla
+			AND var.codOperadorInf = :codOperador
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.EliminarVariableEspecifica">
+		<description>Sentencia para solicitar el borrado de una variable de paso específica</description>
+		<query>
+			DELETE FROM PasoValores var 
+			WHERE var.id = :id
+		</query>
+	</named-query>
+	
+	
+	
+	<!-- CONSULTAS SOBRE LA PERSISTENCIA DE ARCHIVOS OI Y OF -->
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoARegistro1">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo A Registro 1</description>
+		<query>
+			DELETE FROM PilaArchivoARegistro1 a1
+			WHERE a1.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoAPRegistro1">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo AP Registro 1</description>
+		<query>
+			DELETE FROM PilaArchivoAPRegistro1 a1
+			WHERE a1.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoIRegistro1">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo I Registro 1</description>
+		<query>
+			DELETE FROM PilaArchivoIRegistro1 i1
+			WHERE i1.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoIRegistro2">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo I Registro 2</description>
+		<query>
+			DELETE FROM PilaArchivoIRegistro2 i2
+			WHERE i2.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoIRegistro3">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo I Registro 3</description>
+		<query>
+			DELETE FROM PilaArchivoIRegistro3 i3
+			WHERE i3.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoIRegistro4">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo I Registro 4</description>
+		<query>
+			DELETE FROM PilaArchivoIRegistro4 i4
+			WHERE i4.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoIPRegistro1">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo IP Registro 1</description>
+		<query>
+			DELETE FROM PilaArchivoIPRegistro1 i1
+			WHERE i1.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoIPRegistro2">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo IP Registro 2</description>
+		<query>
+			DELETE FROM PilaArchivoIPRegistro2 i2
+			WHERE i2.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoIPRegistro3">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo IP Registro 3</description>
+		<query>
+			DELETE FROM PilaArchivoIPRegistro3 i3
+			WHERE i3.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoFRegistro1">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo F Registro 1</description>
+		<query>
+			DELETE FROM PilaArchivoFRegistro6 f6
+			WHERE f6.id IN (:listaId)
+
+			DELETE FROM PilaArchivoFRegistro5 f5
+			WHERE f5.id IN (:listaId)
+
+			DELETE FROM PilaArchivoFRegistro1 f1
+			WHERE f1.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoFRegistro5">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo F Registro 5</description>
+		<query>
+			DELETE FROM PilaArchivoFRegistro6 f6
+			WHERE f6.id IN (:listaId)
+
+			DELETE FROM PilaArchivoFRegistro5 f5
+			WHERE f5.id IN (:listaId)
+
+			DELETE FROM PilaArchivoFRegistro1 f1
+			WHERE f1.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoFRegistro6">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo F Registro 6</description>
+		<query>
+		
+			DELETE FROM PilaArchivoFRegistro6 f6
+			WHERE f6.id IN (:listaId)
+
+			DELETE FROM PilaArchivoFRegistro5 f5
+			WHERE f5.id IN (:listaId)
+
+			DELETE FROM PilaArchivoFRegistro1 f1
+			WHERE f1.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoFRegistro8">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo F Registro 8</description>
+		<query>
+			DELETE FROM PilaArchivoFRegistro8 f8
+			WHERE f8.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.RollBackArchivoFRegistro9">
+		<description>Sentencia para realizar rollback en la persistencia de Archivo F Registro 9</description>
+		<query>
+			DELETE FROM PilaArchivoFRegistro9 f9
+			WHERE f9.id IN (:listaId)
+		</query>
+	</named-query>
+	
+	
+	
+	
+	<!-- CONSULTAS DEL CONTENIDO DE LA PERSISTENCIA DE ARCHIVOS DE OI Y OF -->
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoIRegistro1">
+		<description>Consulta de registros tipo 1 de archivo I a partir de índice de planilla</description>
+		<query>
+			SELECT i1
+			FROM PilaArchivoIRegistro1 i1
+			WHERE i1.indicePlanilla = :indicePlanilla
+		</query>
+	</named-query>
+	<named-query name="ArchivosPilaService.PilaArchivoIRegistro2.ConsultarArchivoIRegistro2">
+		<description>Consulta de registros tipo 2 de archivo I a partir de índice de planilla</description>
+		<query>
+			SELECT i2
+			FROM PilaArchivoIRegistro2 i2
+			WHERE i2.indicePlanilla = :indicePlanilla
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoIRegistro3">
+		<description>Consulta de registros tipo 3 de archivo I a partir de índice de planilla</description>
+		<query>
+			SELECT i3
+			FROM PilaArchivoIRegistro3 i3
+			WHERE i3.indicePlanilla = :indicePlanilla
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ActualizarArchivoIRegistro3">
+		<description>Sentencia que actualiza el contenido del registro tipo 3 de un archivo I</description>
+		<query>
+			UPDATE PilaArchivoIRegistro3 i3
+			SET i3.valorTotalIBC = :valorTotalIBC,
+				i3.valorTotalAporteObligatorio = :valorTotalAporteObligatorio,
+				i3.diasMora = :diasMora,
+				i3.valorMora = :valorMora,
+				i3.valorTotalAportes = :valorTotalAportes
+			WHERE i3.id = :id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoIPRegistro1">
+		<description>Consulta de registros tipo 1 de archivo IP a partir de ID de índice de planilla</description>
+		<query>
+			SELECT i1
+			FROM PilaArchivoIPRegistro1 i1
+			WHERE i1.indicePlanilla = :indicePlanilla
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoIPRegistro3">
+		<description>Consulta de registros tipo 3 de archivo IP a partir de ID de índice de planilla</description>
+		<query>
+			SELECT i3
+			FROM PilaArchivoIPRegistro3 i3
+			WHERE i3.indicePlanilla = :indicePlanilla
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoFRegistro6">
+		<description>Consulta de un registro tipo 6 de OF</description>
+		<query>
+			SELECT f6 
+			FROM PilaArchivoFRegistro6 f6
+			WHERE f6.numeroPlanilla = :numeroPlanilla
+			AND f6.periodoPago = :periodoPago
+			AND CAST(f6.codOperadorInformacion AS java.lang.Short) = :operadorInformacion
+			AND (f6.estadoConciliacion IS NULL
+				OR f6.estadoConciliacion = com.asopagos.enumeraciones.pila.EstadoConciliacionArchivoFEnum.REGISTRO_6_GESTIONAR_DIFERENCIAS)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarArchivoFRegistro6.alCargarF">
+		<description>Consulta de un registro tipo 6 de OF</description>
+		<query>
+			SELECT f6 
+			FROM PilaArchivoFRegistro6 f6
+			WHERE f6.periodoPago = :periodoPago
+			AND CAST(f6.codOperadorInformacion AS java.lang.Short) = :operadorInformacion
+			AND f6.estadoConciliacion IS NULL
+			AND f6.numeroPlanilla IN (
+				SELECT pl.idPlanilla 
+				FROM EstadoArchivoPorBloque pb 
+				INNER JOIN pb.indicePlanilla pl  
+				WHERE pl.idPlanilla = :numeroPlanilla 
+				AND pb.estadoBloque6 = 'PENDIENTE_CONCILIACION' 
+				AND pb.accionBloque6 = 'EN_ESPERA'
+			)
+			
+		</query>
+	</named-query>	
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ActualizarEstadoArchivoFRegistro6">
+		<description>Consulta para actualizar el estado de conciliación de un registro 6 en archivo OF</description>
+		<query>
+			UPDATE PilaArchivoFRegistro6 f6 
+			SET f6.estadoConciliacion = :estadoConciliacion
+			WHERE f6.id = :id
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaErrorValidacionLog.ActualizarEstadosGestionPorIdOI">
+		<description>Actualización del estado de gestión de las inconsistencias asociadas a un ID de índice de planilla</description>
+		<query>
+			UPDATE ErrorValidacionLog evl 
+			SET evl.estadoInconsistencia = :estadoGestion 
+			WHERE evl.idIndicePlanilla = :idIndicePlanilla
+		</query>
+	</named-query>
+	<named-query name="ArchivosPilaService.PilaErrorValidacionLog.ConsultarEstadosGestionPorIdOI">
+		<description>Actualización del estado de gestión de las inconsistencias asociadas a un ID de índice de planilla</description>
+		<query>
+			SELECT evl 
+			FROM ErrorValidacionLog evl 
+			WHERE evl.idIndicePlanilla = :idIndicePlanilla
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaErrorValidacionLog.ActualizarEstadosGestionPorIdOIyBloque">
+		<description>Actualización del estado de gestión de las inconsistencias asociadas a un ID de índice de planilla y un bloque específico</description>
+		<query>
+			UPDATE ErrorValidacionLog evl 
+			SET evl.estadoInconsistencia = :estadoGestion 
+			WHERE evl.idIndicePlanilla = :idIndicePlanilla
+			AND evl.bloqueValidacion = :bloque
+		</query>
+	</named-query>
+	<named-query name="ArchivosPilaService.PilaErrorValidacionLog.BuscarEstadosGestionPorIdOIyBloque">
+		<description>Actualización del estado de gestión de las inconsistencias asociadas a un ID de índice de planilla y un bloque específico</description>
+		<query>
+			SELECT evl FROM ErrorValidacionLog evl  
+			WHERE evl.idIndicePlanilla = :idIndicePlanilla
+			AND evl.bloqueValidacion = :bloque
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultaNormatividadFechaVencimiento">
+		<description>Consulta de normatividad para el cálculo de fecha de vencimiento</description>
+		<query>
+			SELECT nor
+			FROM NormatividadFechaVencimiento nor
+		</query>
+	</named-query>
+
+	<named-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultaOportunidadPresentacionPILA">
+		<description>Consulta de la oportunidad en la presentación de planillas</description>
+		<query>
+			SELECT o 
+			FROM OportunidadPresentacion o 
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaArchivoFRegistro6.ConsultarRegistro6PorNombre">
+		<description>Consulta de registros tipo 6 de OF por nombre de archivo</description>
+		<query>
+			SELECT pr6
+			FROM PilaArchivoFRegistro6 pr6
+			WHERE UPPER(pr6.indicePlanilla.nombreArchivo) = :nombreArchivo
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.ProcesoAutomatico.PlanillasPendientesValorCero.Detenidas">
+		<description>Consulta de registros tipo 6 de OF por nombre de archivo</description>
+		<query>
+			SELECT pl
+			FROM EstadoArchivoPorBloque pb 
+			INNER JOIN pb.indicePlanilla pl  
+			WHERE pb.estadoBloque6 = 'PENDIENTE_CONCILIACION' 
+			AND pb.accionBloque6 = 'EN_ESPERA'
+			AND pl.id IN (
+				SELECT  pl3.id
+				FROM PilaArchivoIRegistro3 ir3
+				INNER JOIN ir3.indicePlanilla pl3
+				WHERE  ir3.valorTotalAportes = 0
+			)
+		</query>
+	</named-query>
+	
+	<named-query name="ArchivosPilaService.PilaSolicitudCambioNumIdentAportante.consultarPorId">
+		<description>Consulta de solicitud de cambio de ID asociado a una planilla</description>
+		<query>
+			SELECT sid
+			FROM SolicitudCambioNumIdentAportante sid LEFT JOIN FETCH sid.indicePlanilla
+			WHERE sid.indicePlanilla.id = :idPlanilla
+			AND sid.accionCorreccion != com.asopagos.enumeraciones.pila.AccionCorreccionPilaEnum.ANULAR_SOLICITUD_CAMBIO_IDENTIFICACION
+			AND sid.usuarioAprobador IS NULL
+		</query>
+	</named-query>
+
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+
+	<named-native-query name="ArchivosPilaService.PilaIndicePlanilla.ConsultarPlanillasOI">
+        <query>
+            select pipId from PilaIndicePlanilla
+			where pipIdPlanilla in (:indicesPlanillas)
+			and pipTipoArchivo like 'ARCHIVO_OI_I%'
+        </query>
+    </named-native-query>
+
+	<named-native-query name="ArchivosPilaService.PilaIndicePlanilla.ConstultarFsPendientesActualizacion">
+        <query>
+            select top 5 f6.pf6Id
+			FROM PilaArchivoFRegistro6 f6
+			INNER JOIN PilaIndicePlanilla pip on pip.pipIdPlanilla = f6.pf6NumeroPlanilla
+			INNER JOIN PilaEstadoBloque peb on peb.pebIndicePlanilla = pip.pipId
+			WHERE  pip.pipEstadoArchivo = 'PENDIENTE_CONCILIACION'
+			and ISNULL(peb.pebEstadoBloque7, 1) = '1'
+			and pip.pipTipoArchivo like 'ARCHIVO_OI_I%'
+        </query>
+    </named-native-query>
+
+	<named-native-query name="ArchivosPilaService.PilaIndicePlanilla.ConstultarFsPendientesActualizacion.Estado.Conciliado">
+        <query>
+            select top 5 pipIdPlanilla from PilaIndicePlanilla
+			join PilaEstadoBloque on pebIndicePlanilla = pipId
+			where pipEstadoArchivo = 'RECAUDO_CONCILIADO'
+			and pebAccionBloque6 in ('PASAR_A_CRUCE_CON_BD', 'PASAR_A_CRUCE_CON_BD_MANUAL')
+			and pebEstadoBloque7 is null
+			and pipTipoArchivo like 'ARCHIVO_OI_I%'
+        </query>
+    </named-native-query>
+	
+	<named-native-query name="ArchivosPilaService.PilaIndicePlanilla.consultarExistenciaFtpOI"
+	   result-set-mapping="ArchivosPilaService.PilaIndicePlanilla.consultarExistenciaFtpOI.mapping">
+	   <description>Consulta de la existencia de una archivo FTP en el índice de planillas de OI</description>
+	   <query>
+            SELECT DISTINCT nombreArchivo, fechaModificacion, llaveTemporal
+			FROM (
+			    SELECT 
+			        nombreArchivo = JSON_VALUE(ach.[VALUE], '$.nombreArchivo'),
+                    fechaModificacion = DATEADD(
+                        SECOND, CAST(JSON_VALUE(ach.[VALUE], '$.fechaModificacion') AS BIGINT) / 1000 + -5 * 60 * 60, '19700101'),
+			        llaveTemporal = JSON_VALUE(ach.[VALUE], '$.llaveTemporal')
+			    FROM OPENJSON (:archivos) ach
+			) archivos 
+			LEFT JOIN PilaIndicePlanilla ON archivos.nombreArchivo = pipNombreArchivo AND archivos.fechaModificacion = pipFechaFtp
+			WHERE pipId IS NULL
+	   </query>
+	</named-native-query>
+
+	<named-native-query name="ArchivosPilaService.PilaIndicePlanilla.consultarExistenciaArchivo">
+	   <description>Consulta de la existencia de una archivo FTP en el índice de planillas de OI</description>
+	   <query>
+            select pipNombreArchivo
+			from dbo.PilaIndicePlanilla with (nolock)
+			group by pipNombreArchivo
+	   </query>
+	</named-native-query>
+	
+	<named-native-query name="ArchivosPilaService.ProcesoAutomatico.PlanillasPendientesM2Automatica"
+	   result-set-mapping="ArchivosPilaService.ProcesoAutomatico.PlanillasPendientesM2Automatica.mapping">
+	   <description>Consulta de la existencia de una archivo FTP en el índice de planillas de OI</description>
+	   <query>
+			SELECT PilaIndicePlanilla.*
+			FROM PilaIndicePlanilla
+			INNER JOIN PilaArchivoIRegistro1 ON pi1IndicePlanilla = pipId
+			WHERE pipId = :idPlanilla
+			AND pi1TipoPlanilla NOT IN ('M','X','J','U','N','O','Q') 
+			
+			UNION 
+			
+			SELECT PilaIndicePlanilla.*
+			FROM PilaIndicePlanilla
+			INNER JOIN PilaArchivoIPRegistro1 ON ip1IndicePlanilla = pipId
+			WHERE pipId = :idPlanilla 
+	  </query>
+	</named-native-query>
+	
+	<named-native-query name="ArchivosPilaService.ProcesoAutomatico.PlanillasPendientesConciliacion.Detenidas"
+	   result-set-mapping="ArchivosPilaService.ProcesoAutomatico.PlanillasPendientesConciliacion.Detenidas.mapping">
+	   <description>Consulta de la existencia de una archivo FTP en el índice de planillas de OI</description>
+	   <query>
+			SELECT PilaIndicePlanilla.*
+			FROM PilaIndicePlanilla
+			INNER JOIN PilaEstadoBloque ON pipId = pebIndicePlanilla
+			INNER JOIN PilaArchivoIRegistro1 ON pi1IndicePlanilla = pipId
+			WHERE pebEstadoBloque6 = 'PENDIENTE_CONCILIACION' 
+			AND pebAccionBloque6 = 'EN_ESPERA'
+			AND pi1IndicePlanilla = pipId
+			AND EXISTS (
+				SELECT 1
+				FROM PilaArchivoFRegistro6
+				WHERE pf6PeriodoPago = REPLACE(pi1PeriodoAporte,'-','')
+				AND CAST(pf6CodOperadorInformacion AS smallint) = pi1CodOperador
+				AND pf6EstadoConciliacion IS NULL
+				AND pf6NumeroPlanilla = pipIdPlanilla
+			)
+			AND EXISTS (
+				SELECT 1
+				FROM PilaIndicePlanilla
+				INNER JOIN PilaEstadoBloque ON pipId = pebIndicePlanilla
+				INNER JOIN PilaArchivoARegistro1 ON pa1IndicePlanilla = pipId
+				WHERE pebEstadoBloque4 = 'VALIDACIONES_FINALIZADAS' 
+				AND pebAccionBloque4 = 'VALIDACIONES_FINALIZADAS'
+				AND pa1CodOperador = pi1CodOperador
+				AND pa1PeriodoAporte = pi1PeriodoAporte
+			)
+		
+			UNION 
+			
+			SELECT PilaIndicePlanilla.*
+			FROM PilaIndicePlanilla
+			INNER JOIN PilaEstadoBloque ON pipId = pebIndicePlanilla
+			INNER JOIN PilaArchivoIPRegistro1 ON ip1IndicePlanilla = pipId
+			WHERE pebEstadoBloque6 = 'PENDIENTE_CONCILIACION' 
+			AND pebAccionBloque6 = 'EN_ESPERA'
+			AND ip1IndicePlanilla = pipId
+			AND EXISTS (
+				SELECT 1
+				FROM PilaArchivoFRegistro6
+				WHERE pf6PeriodoPago = REPLACE(ip1PeriodoAporte,'-','')
+				AND CAST(pf6CodOperadorInformacion AS smallint) = ip1CodOperador
+				AND pf6EstadoConciliacion IS NULL
+				AND pf6NumeroPlanilla = pipIdPlanilla
+			)
+			AND EXISTS (
+				SELECT 1
+				FROM PilaIndicePlanilla
+				INNER JOIN PilaEstadoBloque ON pipId = pebIndicePlanilla
+				INNER JOIN PilaArchivoAPRegistro1 ON ap1IndicePlanilla = pipId
+				WHERE pebEstadoBloque4 = 'VALIDACIONES_FINALIZADAS' 
+				AND pebAccionBloque4 = 'VALIDACIONES_FINALIZADAS'
+				AND ap1CodOperador = ip1CodOperador
+				AND ap1PeriodoAporte = ip1PeriodoAporte
+			)
+	  </query>
+	</named-native-query>
+	<named-native-query name="ArchivosPilaService.ProcesoAutomatico.Listar.Planillas.Segun.Reiniciar.Planillas"
+						result-set-mapping="ArchivosPilaService.ProcesoAutomatico.PlanillasPendientesConciliacion.Detenidas.mapping">
+		<description>Consulta de la existencia de una archivo FTP en el índice de planillas de OI</description>
+		<query>
+			SELECT PilaIndicePlanilla.*
+			FROM PilaIndicePlanilla
+			INNER JOIN PilaEstadoBloque ON pipId = pebIndicePlanilla
+			INNER JOIN PilaArchivoIRegistro1 ON pi1IndicePlanilla = pipId
+			WHERE <!--pebEstadoBloque6 = 'PENDIENTE_CONCILIACION'
+			AND pebAccionBloque6 = 'EN_ESPERA'
+			AND --> pi1IndicePlanilla IN (:indicesPlanilla)
+		</query>
+	</named-native-query>
+	<named-native-query name="ArchivosPilaService.PilaIndicePlanilla.porPlanilla.anular">
+		<description>Anular planillas despues de subir reproceso</description>
+	   <query>
+			update p set p.pipEstadoArchivo = 'ANULADO', p.pipDateTimeUpdate = dbo.GetLocalDate()
+			from dbo.PilaIndicePlanilla as p with (nolock)
+			inner join dbo.PilaEstadoBloque as pb with (nolock) on p.pipId = pb.pebIndicePlanilla
+			inner join (select p.pipId, p.pipIdPlanilla, case when right(pipTipoArchivo,1) = 'R' then left(pipTipoArchivo, LEN(pipTipoArchivo) - 1) else pipTipoArchivo end as pipTipoArchivo, pipCodigoOperadorInformacion, replace(pipNombreArchivo, N'R', N'') as pipNombreArchivo
+			,case when p.pipId = min(pipId) over (partition by p.pipIdPlanilla, case when right(pipTipoArchivo,1) = 'R' then left(pipTipoArchivo, LEN(pipTipoArchivo) - 1) else pipTipoArchivo end, pipCodigoOperadorInformacion, replace(pipNombreArchivo, N'R', N'') order by p.pipId)
+			and (count(*) over (partition by p.pipIdPlanilla, pipCodigoOperadorInformacion, case when right(pipTipoArchivo,1) = 'R' then left(pipTipoArchivo, LEN(pipTipoArchivo) - 1) else pipTipoArchivo end)) &gt; 1
+			then p.pipId else null end as idAnulado
+			from dbo.PilaIndicePlanilla as p with (nolock)
+			where pipIdPlanilla = :idPlanilla and p.pipTipoArchivo not like '%R') as an on p.pipId = an.idAnulado
+			where (pb.pebEstadoBloque7 is null and pb.pebEstadoBloque8 is null and pb.pebEstadoBloque9 is null and pb.pebEstadoBloque10 is null)
+			and not exists (select 1 from staging.RegistroGeneral as r with(nolock) where r.regRegistroControl = p.pipId)
+	  </query>
+	</named-native-query>
+	<named-native-query name="ArchivosPilaService.PilaIndicePlanilla.porPlanilla.anular.estadoBloque">
+		<description>Anular planillas despues de subir reproceso</description>
+	   <query>
+			update pb set pb.pebEstadoBloque0 = 'ANULADO', pb.pebAccionBloque0 = 'ARCHIVO_ANULADO', pb.pebFechaBloque0 = dbo.GetLocalDate()
+			,pb.pebEstadoBloque1 = null
+			,pb.pebAccionBloque1 = null
+			,pb.pebEstadoBloque2 = null
+			,pb.pebAccionBloque2 = null
+			,pb.pebEstadoBloque3 = null
+			,pb.pebAccionBloque3 = null
+			,pb.pebEstadoBloque4 = null
+			,pb.pebAccionBloque4 = null
+			,pb.pebEstadoBloque5 = null
+			,pb.pebAccionBloque5 = null
+			,pb.pebFechaBloque1 = null
+			,pb.pebFechaBloque2 = null
+			,pb.pebFechaBloque3 = null
+			,pb.pebFechaBloque4 = null
+			,pb.pebFechaBloque5 = null
+			,pb.pebEstadoBloque6 = null
+			,pb.pebAccionBloque6 = null
+			,pb.pebFechaBloque6 = null
+			from dbo.PilaEstadoBloque as pb with (nolock)
+			inner join (select p.pipId, p.pipIdPlanilla, case when right(pipTipoArchivo,1) = 'R' then left(pipTipoArchivo, LEN(pipTipoArchivo) - 1) else pipTipoArchivo end as pipTipoArchivo, pipCodigoOperadorInformacion, replace(pipNombreArchivo, N'R', N'') as pipNombreArchivo
+			,case when p.pipId = min(pipId) over (partition by p.pipIdPlanilla, case when right(pipTipoArchivo,1) = 'R' then left(pipTipoArchivo, LEN(pipTipoArchivo) - 1) else pipTipoArchivo end, pipCodigoOperadorInformacion, replace(pipNombreArchivo, N'R', N'') order by p.pipId)
+			and (count(*) over (partition by p.pipIdPlanilla, pipCodigoOperadorInformacion, case when right(pipTipoArchivo,1) = 'R' then left(pipTipoArchivo, LEN(pipTipoArchivo) - 1) else pipTipoArchivo end)) &gt; 1
+			then p.pipId else null end as idAnulado
+			from dbo.PilaIndicePlanilla as p with (nolock)
+			where pipIdPlanilla = :idPlanilla and p.pipTipoArchivo not like '%R') as an on pb.pebIndicePlanilla = an.idAnulado
+			where (pb.pebEstadoBloque7 is null and pb.pebEstadoBloque8 is null and pb.pebEstadoBloque9 is null and pb.pebEstadoBloque10 is null)
+			and not exists (select 1 from staging.RegistroGeneral as r with(nolock) where r.regRegistroControl = pb.pebIndicePlanilla)
+	  </query>
+	</named-native-query>
+	<named-native-query name="ArchivosPilaService.PilaIndicePlanilla.Planilla.anular">
+		<description>Anular planillas despues de subir reproceso</description>
+	   <query>
+			if (select count(*) from dbo.PilaIndicePlanilla with (nolock) where pipIdPlanilla = :idPlanilla and pipTipoArchivo like 'ARCHIVO_OI_I%') > 1
+and (select count(*) from dbo.PilaIndicePlanilla with (nolock) where pipIdPlanilla = :idPlanilla and pipTipoArchivo like 'ARCHIVO_OI_A%') > 1
+begin
+
+	declare @tblAnulados as table (pipId bigInt)
+
+	;with A as (select pa.pipId, pa.pipIdPlanilla, pa.pipNombreArchivo, pa.pipTipoArchivo, pa.pipFechaRecibo, pa.pipEstadoArchivo, pa.pipCodigoOperadorInformacion
+	, row_number() over (order by pa.pipFechaRecibo) as idA
+	from dbo.PilaIndicePlanilla as pa with (nolock)
+	where pa.pipIdPlanilla = :idPlanilla 
+	and pa.pipTipoArchivo like 'ARCHIVO_OI_A%'),
+	I as (select p.pipId, p.pipIdPlanilla, p.pipNombreArchivo, p.pipTipoArchivo, p.pipFechaRecibo, p.pipEstadoArchivo, p.pipCodigoOperadorInformacion
+	, row_number() over (order by p.pipFechaRecibo) as idI
+	from dbo.PilaIndicePlanilla as p with (nolock)
+	where p.pipIdPlanilla = :idPlanilla 
+	and p.pipTipoArchivo like 'ARCHIVO_OI_I%'), 
+	IAN as (select *
+	,case when idI = 1 and pipTipoArchivo not like '%R' and pipEstadoArchivo not in ('PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD','PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES','PROCESADO_NOVEDADES','PROCESADO_SIN_NOVEDADES','PROCESADO_VS_BD',
+		'RECAUDO_CONCILIADO','RECAUDO_NOTIFICADO','RECAUDO_VALOR_CERO_CONCILIADO','REGISTRADO_O_RELACIONADO_LOS_APORTES','VALIDACIONES_FINALIZADAS')
+		and lead(pipTipoArchivo) over (partition by pipIdPlanilla, pipCodigoOperadorInformacion order by idI) like '%R' 
+		then pipId
+		else 
+			case when idI = 2 and pipTipoArchivo not like '%R' and pipEstadoArchivo not in ('PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD','PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES','PROCESADO_NOVEDADES','PROCESADO_SIN_NOVEDADES','PROCESADO_VS_BD',
+			'RECAUDO_CONCILIADO','RECAUDO_NOTIFICADO','RECAUDO_VALOR_CERO_CONCILIADO','REGISTRADO_O_RELACIONADO_LOS_APORTES','VALIDACIONES_FINALIZADAS')
+			and lag(pipTipoArchivo) over (partition by pipIdPlanilla, pipCodigoOperadorInformacion order by idI) like '%R' 
+			then pipId
+			else
+				case when idI = 2 and pipTipoArchivo not like '%R' and pipEstadoArchivo not in ('PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD','PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES','PROCESADO_NOVEDADES','PROCESADO_SIN_NOVEDADES','PROCESADO_VS_BD',
+				'RECAUDO_CONCILIADO','RECAUDO_NOTIFICADO','RECAUDO_VALOR_CERO_CONCILIADO','REGISTRADO_O_RELACIONADO_LOS_APORTES','VALIDACIONES_FINALIZADAS')
+				and lag(pipTipoArchivo) over (partition by pipIdPlanilla, pipCodigoOperadorInformacion order by idI) = pipTipoArchivo
+				then pipId
+				else null
+				end
+			end
+		end as idAnulacion
+	from I),
+	AAN as (select *
+	,case when idA = 1 and pipTipoArchivo not like '%R' and pipEstadoArchivo not in ('PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD','PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES','PROCESADO_NOVEDADES','PROCESADO_SIN_NOVEDADES','PROCESADO_VS_BD',
+		'RECAUDO_CONCILIADO','RECAUDO_NOTIFICADO','RECAUDO_VALOR_CERO_CONCILIADO','REGISTRADO_O_RELACIONADO_LOS_APORTES','VALIDACIONES_FINALIZADAS')
+		and lead(pipTipoArchivo) over (partition by pipIdPlanilla, pipCodigoOperadorInformacion order by idA) like '%R' 
+		then pipId
+		else 
+			case when idA = 2 and pipTipoArchivo not like '%R' and pipEstadoArchivo not in ('PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD','PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES','PROCESADO_NOVEDADES','PROCESADO_SIN_NOVEDADES','PROCESADO_VS_BD',
+			'RECAUDO_CONCILIADO','RECAUDO_NOTIFICADO','RECAUDO_VALOR_CERO_CONCILIADO','REGISTRADO_O_RELACIONADO_LOS_APORTES','VALIDACIONES_FINALIZADAS')
+			and lag(pipTipoArchivo) over (partition by pipIdPlanilla, pipCodigoOperadorInformacion order by idA) like '%R' 
+			then pipId
+			else
+				case when idA = 2 and pipTipoArchivo not like '%R' and pipEstadoArchivo not in ('PENDIENTE_POR_GESTIONAR_ERROR_EN_VALIDACION_VS_BD','PENDIENTE_POR_REGISTRO_Y_RELACION_DE_APORTES','PROCESADO_NOVEDADES','PROCESADO_SIN_NOVEDADES','PROCESADO_VS_BD',
+				'RECAUDO_CONCILIADO','RECAUDO_NOTIFICADO','RECAUDO_VALOR_CERO_CONCILIADO','REGISTRADO_O_RELACIONADO_LOS_APORTES','VALIDACIONES_FINALIZADAS')
+				and lag(pipTipoArchivo) over (partition by pipIdPlanilla, pipCodigoOperadorInformacion order by idA) = pipTipoArchivo
+				then pipId
+				else null
+				end
+			end
+		end as idAnulacion
+	from A), 
+	Anula as (
+	select * from IAN where idAnulacion is not null
+	union all
+	select * from AAN where idAnulacion is not null)
+	insert @tblAnulados
+	select idAnulacion
+	from Anula
+
+	update p set p.pipEstadoArchivo = 'ANULADO', p.pipDateTimeUpdate = dbo.GetLocalDate()
+	from dbo.PilaIndicePlanilla as p with (nolock)
+	inner join dbo.PilaEstadoBloque as pb with (nolock) on p.pipId = pb.pebIndicePlanilla
+	inner join @tblAnulados as an on p.pipId = an.pipId
+	where (pb.pebEstadoBloque7 is null and pb.pebEstadoBloque8 is null and pb.pebEstadoBloque9 is null and pb.pebEstadoBloque10 is null)
+	and not exists (select 1 from staging.RegistroGeneral as r with(nolock) where r.regRegistroControl = p.pipId)
+
+	update pb set pb.pebEstadoBloque0 = 'ANULADO', pb.pebAccionBloque0 = 'ARCHIVO_ANULADO', pb.pebFechaBloque0 = dbo.GetLocalDate()
+	,pb.pebEstadoBloque1 = null
+	,pb.pebAccionBloque1 = null
+	,pb.pebEstadoBloque2 = null
+	,pb.pebAccionBloque2 = null
+	,pb.pebEstadoBloque3 = null
+	,pb.pebAccionBloque3 = null
+	,pb.pebEstadoBloque4 = null
+	,pb.pebAccionBloque4 = null
+	,pb.pebEstadoBloque5 = null
+	,pb.pebAccionBloque5 = null
+	,pb.pebFechaBloque1 = null
+	,pb.pebFechaBloque2 = null
+	,pb.pebFechaBloque3 = null
+	,pb.pebFechaBloque4 = null
+	,pb.pebFechaBloque5 = null
+	,pb.pebEstadoBloque6 = null
+	,pb.pebAccionBloque6 = null
+	,pb.pebFechaBloque6 = null
+	from dbo.PilaEstadoBloque as pb with (nolock)
+	inner join @tblAnulados as an on pb.pebIndicePlanilla = an.pipId
+	where (pb.pebEstadoBloque7 is null and pb.pebEstadoBloque8 is null and pb.pebEstadoBloque9 is null and pb.pebEstadoBloque10 is null)
+	and not exists (select 1 from staging.RegistroGeneral as r with(nolock) where r.regRegistroControl = pb.pebIndicePlanilla)
+
+end
+
+
+	  </query>
+	</named-native-query>
+		<named-native-query name="ArchivosPilaService.PilaIndicePlanilla.Planilla.anular.validar">
+		<description>Anular planillas despues de subir reproceso</description>
+	   <query>
+				if (select count(*) from dbo.PilaIndicePlanilla with (nolock) where pipIdPlanilla = :idPlanilla and pipTipoArchivo like 'ARCHIVO_OI_I%') > 1
+				and (select count(*) from dbo.PilaIndicePlanilla with (nolock) where pipIdPlanilla = :idPlanilla and pipTipoArchivo like 'ARCHIVO_OI_A%') > 1
+
+				select 1
+
+				else select 0
+	  </query>
+	</named-native-query>
+
+
+
+
+
+	
+	
+	<!-- ESPACIO PARA NAMED STORED PROCEDURES -->
+	<named-stored-procedure-query
+		name="USP_ReiniciarPlanillas"
+		procedure-name="USP_ReiniciarPlanillas">
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query
+		name="USP_ConsultarPlanillasConciliadasB6aB8"
+		procedure-name="USP_ConsultarPlanillasConciliadasB6aB8">
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query 
+		name ="ArchivosPilaService.StoredProcedures.USP_ExecutePILA2" 
+		procedure-name="USP_ExecutePILA2">
+		<parameter class="java.lang.Long" mode="IN" name="iIdIndicePlanilla" />
+		<parameter class="java.lang.String" mode="IN" name="sFase" />
+		<parameter class="java.lang.Boolean" mode="IN" name="bSimulado" />
+		<parameter class="java.lang.String" mode="IN" name="sUsuarioProceso" />
+		<parameter class="java.lang.Long" mode="IN" name="iIdentificadorPaquete" />
+		<parameter class="java.lang.Boolean" mode="IN" name="bReanudarTransaccion" />
+		<parameter class="java.lang.Long" mode="OUT" name="iIdTransaccion" />
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query 
+		name="ArchivosPilaService.StoredProcedures.USP_ValidateHU407Registro6Duplicado" 
+		procedure-name="USP_ValidateHU407Registro6Duplicado">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="iIdIndicePlanilla"
+		/>
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query 
+		name="ArchivosPilaService.StoredProcedures.USP_ValidateHU391EsAportePropio" 
+		procedure-name="USP_ValidateHU391EsAportePropio">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="iIdIndicePlanilla"
+		/>
+		<parameter
+			class="java.lang.Boolean"
+			mode="OUT"
+			name="bEsAportePropio"
+		/>
+	</named-stored-procedure-query>
+
+	<named-stored-procedure-query 
+		name="ArchivosPilaService.StoredProcedures.ASP_PILA_REPROCESO" 
+		procedure-name="ASP_PILA_REPROCESO">
+		<parameter 
+			class="java.lang.Long"
+			mode="IN"
+			name="planillasIds"
+		/>
+	</named-stored-procedure-query>
+	
+	<named-stored-procedure-query
+		name="ArchivosPilaService.StoredProcedures.USP_GET_ConjuntoSecuenciasPersistenciaPilaM1"
+		procedure-name="dbo.USP_GET_ConjuntoSecuenciasPersistenciaPilaM1">
+		<parameter 
+			class="java.lang.Integer" 
+			mode="IN" 
+			name="iCantidadValores"
+		/>
+		<parameter 
+			class="java.lang.String" 
+			mode="IN" 
+			name="sNombreSecuencia"
+		/>
+		<parameter 
+			class="java.lang.Long"
+			mode="OUT"
+			name="iPrimerValor"
+		></parameter>
+	</named-stored-procedure-query>
+	
+	<!-- ESPACIO PARA MAPEO DE NAMED QUERIES NATIVAS -->
+	<sql-result-set-mapping name="ArchivosPilaService.PilaIndicePlanilla.consultarExistenciaFtpOI.mapping">
+	   <constructor-result target-class="com.asopagos.pila.dto.ComprobacionArchivoFtpDTO">
+	       <column name="nombreArchivo" class="java.lang.String"/>
+	       <column name="fechaModificacion" class="java.util.Date"/>
+	       <column name="llaveTemporal" class="java.lang.Long"/>
+	   </constructor-result>
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="ArchivosPilaService.ProcesoAutomatico.PlanillasPendientesM2Automatica.mapping">
+	  <entity-result entity-class="com.asopagos.entidades.pila.procesamiento.IndicePlanilla"></entity-result>
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="ArchivosPilaService.ProcesoAutomatico.PlanillasPendientesConciliacion.Detenidas.mapping">
+	  <entity-result entity-class="com.asopagos.entidades.pila.procesamiento.IndicePlanilla"></entity-result>
+	</sql-result-set-mapping>
+</entity-mappings>

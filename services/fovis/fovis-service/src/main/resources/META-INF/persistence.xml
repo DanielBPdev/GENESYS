@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="fovis_PU" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jboss/datasources/asopagosDS</jta-data-source>
+		<mapping-file>META-INF/jpql/NamedQueries.xml</mapping-file>
+		<jar-file>lib/model-auditoria-entities-${project.version}.jar</jar-file>
+		
+		<class>com.asopagos.entidades.ccf.fovis.AhorroPrevio</class>		
+		<class>com.asopagos.entidades.ccf.fovis.JefeHogar</class>
+		<class>com.asopagos.entidades.ccf.fovis.IntegranteHogar</class>
+		<class>com.asopagos.entidades.ccf.fovis.Licencia</class>
+		<class>com.asopagos.entidades.ccf.fovis.LicenciaDetalle</class>
+		<class>com.asopagos.entidades.ccf.fovis.Oferente</class>
+		<class>com.asopagos.entidades.ccf.fovis.PostulacionFOVIS</class>
+		<class>com.asopagos.entidades.ccf.fovis.ProyectoSolucionVivienda</class>
+		<class>com.asopagos.entidades.ccf.fovis.RecursoComplementario</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudPostulacion</class>
+		<class>com.asopagos.entidades.ccf.fovis.IntentoPostulacion</class>
+		<class>com.asopagos.entidades.ccf.fovis.IntentoPostulacionRequisito</class>
+		<class>com.asopagos.entidades.ccf.fovis.Cruce</class>
+		<class>com.asopagos.entidades.ccf.fovis.CruceDetalle</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovis</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisAfiliado</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisBeneficiario</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisBeneficiarioArriendo</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisCatastros</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisCatAnt</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisCatBog</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisCatCali</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisCatMed</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisCedula</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisFechasCorte</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisIGAC</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisNuevoHogar</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisReunidos</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisSisben</class>
+		<class>com.asopagos.entidades.ccf.fovis.CargueArchivoCruceFovisUnidos</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudGestionCruce</class>
+		<class>com.asopagos.entidades.ccf.core.DocumentoSoporte</class>
+		<class>com.asopagos.entidades.ccf.fovis.DocumentoSoporteProyectoVivienda</class>
+		<class>com.asopagos.entidades.ccf.general.Solicitud</class>
+		<class>com.asopagos.entidades.ccf.personas.Persona</class>
+		<class>com.asopagos.entidades.ccf.personas.PersonaDetalle</class>
+		<class>com.asopagos.entidades.ccf.personas.Empresa</class>
+		<class>com.asopagos.entidades.ccf.personas.Empleador</class>
+		<class>com.asopagos.entidades.ccf.personas.EntidadPagadora</class>
+		<class>com.asopagos.entidades.ccf.personas.Beneficiario</class>
+		<class>com.asopagos.entidades.ccf.personas.BeneficiarioDetalle</class>
+		<class>com.asopagos.entidades.transversal.personas.AFP</class>
+		<class>com.asopagos.entidades.ccf.core.SucursalEmpresa</class>
+		<class>com.asopagos.entidades.ccf.personas.MedioTransferencia</class>
+		<class>com.asopagos.entidades.ccf.personas.MedioEfectivo</class>
+		<class>com.asopagos.entidades.ccf.personas.MedioConsignacion</class>
+		<class>com.asopagos.entidades.ccf.personas.MedioCheque</class>
+		<class>com.asopagos.entidades.ccf.personas.MedioTarjeta</class>
+		<class>com.asopagos.entidades.ccf.fovis.MedioPagoProyectoVivienda</class>
+		
+		<class>com.asopagos.entidades.ccf.personas.MediosPagoCCF</class>
+		<class>com.asopagos.entidades.ccf.core.Ubicacion</class>
+		<class>com.asopagos.entidades.fovis.parametricas.CicloAsignacion</class>
+		<class>com.asopagos.entidades.fovis.parametricas.CicloModalidad</class>
+		<class>com.asopagos.entidades.fovis.parametricas.CondicionEspecial</class>
+		<class>com.asopagos.entidades.ccf.personas.CondicionEspecialPersona</class>
+		<class>com.asopagos.entidades.fovis.parametricas.FormaPagoModalidad</class>
+		<class>com.asopagos.entidades.fovis.parametricas.ParametrizacionFOVIS</class>
+		<class>com.asopagos.entidades.fovis.parametricas.ParametrizacionModalidad</class>
+		<class>com.asopagos.entidades.fovis.parametricas.RangoTopeValorSFV</class>
+		<class>com.asopagos.entidades.fovis.parametricas.Dec14672019</class>
+		<class>com.asopagos.entidades.transversal.personas.ARL</class>
+		<class>com.asopagos.entidades.transversal.core.CodigoCIIU</class>
+		<class>com.asopagos.entidades.transversal.core.Municipio</class>
+		<class>com.asopagos.entidades.ccf.personas.Afiliado</class>
+		<class>com.asopagos.entidades.ccf.personas.RolAfiliado</class>
+		<class>com.asopagos.entidades.ccf.personas.RelacionGrupoFamiliar</class>
+		<class>com.asopagos.entidades.ccf.personas.GrupoFamiliar</class>
+		<class>com.asopagos.entidades.transversal.core.Departamento</class>		
+		<class>com.asopagos.entidades.ccf.afiliaciones.CargueMultiple</class>
+		<class>com.asopagos.entidades.ccf.general.EjecucionProcesoAsincrono</class>
+		<class>com.asopagos.entidades.ccf.fovis.CalificacionPostulacion</class>
+		<class>com.asopagos.entidades.ccf.fovis.PostulacionAsignacion</class>
+		<class>com.asopagos.entidades.ccf.fovis.InhabilidadSubsidioFovis</class>
+		<class>com.asopagos.entidades.transversal.core.Requisito</class>
+		<class>com.asopagos.entidades.transversal.core.RequisitoCajaClasificacion</class>
+		<class>com.asopagos.entidades.transversal.core.CajaCompensacion</class>
+		<class>com.asopagos.entidades.ccf.afiliaciones.ItemChequeo</class>
+		<class>com.asopagos.entidades.ccf.personas.Pais</class>
+		<class>com.asopagos.entidades.ccf.personas.MedioDePago</class>
+		<class>com.asopagos.entidades.ccf.fovis.ActaAsignacionFOVIS</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudAsignacion</class>
+		<class>com.asopagos.entidades.ccf.general.DocumentoAdministracionEstadoSolicitud</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudNovedadFovis</class>		
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudNovedadPersonaFovis</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudVerificacionFovis</class>
+		<class>com.asopagos.entidades.ccf.fovis.SolicitudLegalizacionDesembolso</class>
+		<class>com.asopagos.entidades.ccf.fovis.LegalizacionDesembolso</class>
+		<class>com.asopagos.entidades.ccf.fovis.Visita</class>
+		<class>com.asopagos.entidades.ccf.core.ParametrizacionNovedad</class>
+        <class>com.asopagos.entidades.ccf.fovis.Proveedor</class>
+		<class>com.asopagos.entidades.ccf.fovis.legalizacionDesembolosoProveedor</class>
+		<class>com.asopagos.entidades.ccf.fovis.legalizacionDesembolosoProveedor</class>
+		<class>com.asopagos.entidades.ccf.aportes.AporteGeneral</class>
+		<class>com.asopagos.entidades.ccf.aportes.AporteDetallado</class>
+		<class>com.asopagos.entidades.ccf.fovis.PostulacionFovisDev</class>
+		<class>com.asopagos.entidades.ccf.fovis.PostulacionProvOfe</class>
+
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorParamValue</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorParameter</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorDefinition</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.ValidatorCatalog</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.LineLoadCatalog</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.LineDefinitionLoad</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FileLoadedLog</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FileLoaded</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FileDefinitionLoadType</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FileDefinitionLoad</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FieldLoadCatalog</class>
+        <class>co.com.heinsohn.lion.fileprocessing.fileloader.FieldDefinitionLoad</class>
+        <class>co.com.heinsohn.lion.fileCommon.FileLocationCommon</class>
+        <class>co.com.heinsohn.lion.fileCommon.ProcessorParamValue</class>
+        <class>co.com.heinsohn.lion.fileCommon.ProcessorParameter</class>
+        <class>co.com.heinsohn.lion.fileCommon.ProcessorDefinition</class>
+        <class>co.com.heinsohn.lion.fileCommon.ProcessorCatalog</class>
+        <!-- FileGenerator -->
+        <class>co.com.heinsohn.lion.filegenerator.FieldCatalog</class>
+        <class>co.com.heinsohn.lion.filegenerator.FieldDefinition</class>
+        <class>co.com.heinsohn.lion.filegenerator.FileDefinition</class>
+        <class>co.com.heinsohn.lion.filegenerator.FileDefinitionType</class>
+        <class>co.com.heinsohn.lion.filegenerator.FileGenerated</class>
+        <class>co.com.heinsohn.lion.filegenerator.FileGeneratedLog</class>
+        <class>co.com.heinsohn.lion.filegenerator.LineCatalog</class>
+        <class>co.com.heinsohn.lion.filegenerator.LineDefinition</class>
+        <class>co.com.heinsohn.lion.filegenerator.FieldGenericCatalog</class>
+        <class>co.com.heinsohn.lion.filegenerator.GroupFieldCatalogs</class>
+        <class>co.com.heinsohn.lion.filegenerator.GraphicFeature</class>
+        <class>co.com.heinsohn.lion.filegenerator.GraphicFeatureDefinition</class>
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="${persistencia}" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.transaction.flush_before_completion"
+				value="true" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.query.substitutions" value="true 1, false 0" />
+			<property name="hibernate.order_inserts" value="true"/>
+			<property name="hibernate.order_updates" value="true"/>
+			<property name="hibernate.jdbc.batch_size" value="500"/>
+			<property name="hibernate.connection.driver_class"
+				value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+			<property name="hibernate.connection.autocommit" value="true"/>
+			<!-- envers -->
+			<property name="hibernate.integration.envers.enabled" value="${audit.enabled}"/>
+			<property name="hibernate.envers.autoRegisterListeners" value="${audit.enabled}"/>
+			<property name="org.hibernate.envers.default_schema" value="${default.schema}"/>
+			<property name="org.hibernate.envers.store_data_at_delete" value="true"/>
+			<property name="org.hibernate.envers.default_catalog" value="${nombre.usuario}"/>
+
+		</properties>
+	</persistence-unit>
+</persistence>

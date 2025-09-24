@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+    version="2.1">
+
+    <!-- ESPACIO PARA NAMED QUERIES JPA -->
+    <named-native-query name="novedades.consultar.NovedadesFuturasPersonaIntNG">
+        <query>
+            SELECT  rdn.rdnTipotransaccion,
+			'No Aplicada' AS resultadoProceso,
+			rdn.rdnFechaInicioNovedad , 
+			rdn.rdnFechaFinNovedad, 
+			CASE WHEN rg.regOUTFinalizadoProcesoManual = 1 THEN 'APORTE_MANUAL'
+			ELSE 'PILA' END canalRecepcion,
+			CASE WHEN rd.redOUTTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+			   THEN rg.regNombreAportante ELSE NULL END empleador,
+			CASE WHEN  rdn.rdnTipotransaccion LIKE '%_DEPENDIENTE%' 
+				OR rdn.rdnTipotransaccion LIKE '%_INDEPENDIENTE%' 
+				OR rdn.rdnTipotransaccion LIKE '%_PENSIONADO%' 
+			THEN 'Afiliación' ELSE 'Persona' END nivelNovedad,
+			rg.regTipoIdentificacionAportante,
+			rg.regNumeroIdentificacionAportante
+			FROM staging.RegistroGeneral rg 
+			JOIN staging.RegistroDetallado rd ON rd.redRegistroGeneral = rg.regId 
+			JOIN staging.RegistroDetalladoNovedad rdn ON rdn.rdnRegistroDetallado = rd.redId 
+			WHERE rg.regNovedadFutura = 1 AND rg.regOUTNovedadFuturaProcesada = 0
+			AND rd.redTipoIdentificacionCotizante = :tipoIdentificacion
+			AND rd.redNumeroIdentificacionCotizante = :numeroIdentificacion
+        </query>
+    </named-native-query>
+
+	<named-native-query name="consultar.novedad.retroactiva.by.RegistroDetallado">
+        <query>
+            select CASE WHEN (DATEADD(DAY,1,EOMONTH(DATEADD(MONTH, -1, (select dbo.GetLocalDate())),-1)) > CONVERT(DATE,rg.regPeriodoAporte+'-01',120)) THEN 1
+			ELSE 0
+			END
+			from staging.RegistroGeneral rg
+			JOIN staging.RegistroDetallado rd 
+			ON rg.regId = rd.redRegistroGeneral
+			where rd.redId = :idRegistroDetallado
+        </query>
+    </named-native-query>
+
+</entity-mappings>

@@ -1,0 +1,3815 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+
+	<!-- ESPACIO PARA NAMED QUERIES JPA -->
+	<named-query name="Afiliaciones.Etiqueta.ExisteEtiqueta">
+		<query>
+            SELECT e FROM EtiquetaCorrespondenciaRadicado e
+            WHERE e.codigo =:codigo
+        </query>
+	</named-query>
+
+	<!-- TRA-428 -->
+	<named-query name="Afiliaciones.etiquetaPreimpresa.disponible.porTipo">
+		<query>
+            SELECT e FROM EtiquetaCorrespondenciaRadicado e 
+            WHERE e.asignada = :asignada
+            AND e.tipoEtiqueta = :tipo
+            AND e.codigo LIKE :prefijo 
+            ORDER BY e.codigo ASC
+        </query>
+	</named-query>
+
+	<named-query name="Afiliaciones.etiquetaPreimpresa.ultimaGenerada.porTipo">
+		<query>
+            SELECT e FROM EtiquetaCorrespondenciaRadicado e 
+            WHERE e.tipoEtiqueta = :tipo 
+            AND e.codigo LIKE :prefijo 
+            ORDER BY e.codigo DESC
+        </query>
+	</named-query>
+
+<!-- 	<named-query name="Afiliaciones.etiquetaPreimpresa.actualizar.estado"> -->
+<!-- 		<query> -->
+<!--             UPDATE EtiquetaCorrespondenciaRadicado e SET e.asignada = :asignada -->
+<!--             WHERE e.codigo = :codigo  -->
+<!--         </query> -->
+<!-- 	</named-query> -->
+
+	<named-query name="Afiliaciones.etiquetaPreimpresa.consultar.actualizar.estado">
+		<description>Remplaza la actualizacion (Afiliaciones.etiquetaPreimpresa.actualizar.estado) con una consulta y un merge</description>
+		<query>
+            SELECT e FROM EtiquetaCorrespondenciaRadicado e
+            WHERE e.codigo = :codigo 
+        </query>
+	</named-query>
+
+<!-- 	<named-query name="Afiliaciones.radicar.solicitud"> -->
+<!-- 		<query> -->
+<!--             UPDATE Solicitud s  -->
+<!--             SET s.fechaRadicacion = :fechaRadicacion, -->
+<!--             s.numeroRadicacion = :numeroRadicacion -->
+<!--             WHERE s.idSolicitud = :idSolicitud -->
+<!-- 		</query> -->
+<!-- 	</named-query> -->
+
+	<named-query
+		name="Afiliaciones.afiliacionEmpleador.buscarSolicitud.porNumeroRadicado">
+		<query>
+            SELECT NEW com.asopagos.dto.SolicitudDTO(sol) FROM Solicitud sol
+            WHERE sol.numeroRadicacion LIKE :numeroRadicacion 
+		</query>
+	</named-query>
+	
+	<named-query name="Afiliaciones.noConforme.buscarEstado">
+		<query>
+            SELECT proNoConforme FROM ProductoNoConforme proNoConforme
+            WHERE proNoConforme.tipoProductoNoConforme like :resuelto
+            AND proNoConforme.idSolicitud = :idSolictud
+        </query>
+	</named-query>
+
+	<named-query name="Afiliaciones.noConforme.buscarAll">
+		<query>
+            SELECT proNoConforme FROM ProductoNoConforme proNoConforme
+            WHERE proNoConforme.idSolicitud = :idSolictud
+        </query>
+	</named-query>
+	<named-query name="Afiliaciones.afiliacion.buscarSolicitud">
+		<query>
+            SELECT sol FROM Solicitud sol
+            WHERE sol.idSolicitud =:idSolicitud
+        </query>
+	</named-query>
+<!-- 	<named-query -->
+<!-- 		name="Afiliaciones.empleadores.solicitud.actualizarDocumentacion"> -->
+<!-- 		<query> -->
+<!--             UPDATE Solicitud sol SET sol.estadoDocumentacion = :nuevoEstado -->
+<!--             WHERE sol.idSolicitud = :idSolicitud -->
+<!--         </query> -->
+<!-- 	</named-query> -->
+<!-- 	<named-query name="Afiliaciones.productoNoConforme.eliminar"> -->
+<!-- 		<query> -->
+<!-- 			DELETE FROM ProductoNoConforme pnc -->
+<!--             WHERE pnc.idProductoNoConformeNoResuelto = :idProductoNoConforme -->
+<!--         </query> -->
+<!-- 	</named-query> -->
+	<named-query
+		name="Afiliaciones.empleador.empresa.persona.tipoIdentificacion.numeroIdentificacion">
+		<query>
+			SELECT em FROM Empleador em LEFT JOIN FETCH em.empresa emp LEFT JOIN FETCH emp.persona per
+			WHERE per.tipoIdentificacion= :tipoIdentificacion AND per.numeroIdentificacion= :numeroIdentificacion
+        </query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.empleador.persona.idRolAfiliado.solicitudesAfiliacionPersona">
+		<description>
+			Se entiende por ultima solicitud de afiliación de persona, 
+			a la solicitud que en orden cronológico y que el estado del proceso
+			haya sido aprobado.  
+		</description>
+		<query>
+			SELECT solPersona FROM SolicitudAfiliacionPersona solPersona 
+			LEFT JOIN FETCH solPersona.rolAfiliado rolAfiliado 
+			LEFT JOIN FETCH solPersona.solicitudGlobal solicitudGlobal
+			WHERE rolAfiliado.idRolAfiliado = :idRolAfiliado
+			AND (solicitudGlobal.anulada != TRUE OR solicitudGlobal.anulada is NULL)
+			ORDER BY solicitudGlobal.fechaRadicacion DESC
+        </query>
+	</named-query>
+
+	<named-query
+		name="Afiliaciones.empleador.persona.idRolAfiliado.ultimaSolicitudAprobada">
+		<description>
+			Se entiende por ultima solicitud de afiliación de persona, 
+			a la solicitud que en orden cronológico y que el estado del proceso
+			haya sido aprobado.  
+		</description>
+		<query>
+			SELECT solPersona FROM SolicitudAfiliacionPersona solPersona 
+			LEFT JOIN FETCH solPersona.rolAfiliado rolAfiliado 
+			LEFT JOIN FETCH solPersona.solicitudGlobal solicitudGlobal
+			WHERE rolAfiliado.idRolAfiliado = :idRolAfiliado
+			AND (solicitudGlobal.anulada != TRUE OR solicitudGlobal.anulada is NULL)
+			AND solicitudGlobal.resultadoProceso IN (:resultadoProceso)
+			ORDER BY solicitudGlobal.fechaRadicacion DESC
+        </query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.solicitudPersona.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudAfiliacionPersona sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.solicitudPostulacion.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudPostulacion sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.solicitudEmpleador.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudAfiliacionEmpleador sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.solicitudNovedad.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudNovedad sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+
+	<named-query
+		name="Afiliaciones.solicitudAportes.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudAporte sol where
+            sol.solicitudGlobal.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.solicitudAportesCorrecion.buscarSolicitud.idSolicitudGlobal">
+		<query>
+           SELECT sol FROM SolicitudCorreccionAporte sol where
+            sol.solicitudGlobal.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.solicitudDevolucionAporte.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudDevolucionAporte sol 
+            WHERE sol.solicitudGlobal.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.solicitudEntidadPagadora.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudAsociacionPersonaEntidadPagadora sol
+            WHERE sol.solicitudGlobal.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.solicitudPreventiva.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudPreventiva sol
+            WHERE sol.solicitudGlobal.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+	
+	<named-query
+		name="Afiliaciones.solicitudFiscalizacion.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudFiscalizacion sol
+            WHERE sol.solicitudGlobal.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+	
+	<named-query
+		name="Afiliaciones.solicitud.buscarIntentoAfiliacion.idSolicitudGlobal">
+		<query>
+            SELECT iaf FROM IntentoAfiliacion iaf
+            WHERE iaf.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.Municipio.buscarMunicipioPorCodigo">
+		<query>
+			SELECT mun.idMunicipio FROM Municipio mun
+			WHERE mun.codigo = :codigoMunicipio
+		</query>
+	</named-query>
+	<named-query name="Afiliaciones.solicitud.buscarIdSolicitudGlobal">
+		<query>
+			SELECT sap.solicitudGlobal.idSolicitud FROM SolicitudAfiliacionPersona sap
+			WHERE sap.rolAfiliado.idRolAfiliado = :idRolAfiliado
+			AND sap.estadoSolicitud = com.asopagos.enumeraciones.afiliaciones.EstadoSolicitudAfiliacionPersonaEnum.CERRADA
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliaciones.persona.tipo.numero.identificacion.solicitudesAfiliacionPersona">
+		<query>
+			SELECT solicitudGlobal.clasificacion FROM SolicitudAfiliacionPersona solPersona 
+			LEFT JOIN solPersona.solicitudGlobal solicitudGlobal
+			LEFT JOIN solPersona.rolAfiliado rolAfiliado 
+			LEFT JOIN rolAfiliado.afiliado afi
+			LEFT JOIN afi.persona per
+			WHERE per.tipoIdentificacion = :tipoIdentificacion
+			AND per.numeroIdentificacion = :numeroIdentificacion
+			AND (solicitudGlobal.anulada != TRUE  OR solicitudGlobal.anulada is NULL)
+			ORDER BY solicitudGlobal.fechaRadicacion DESC
+        </query>
+	</named-query>
+	
+	<named-query name="afiliaciones.find.solicitudes.by.id">
+	    <query>
+	        SELECT sol
+	        FROM Solicitud sol
+	        WHERE sol.idSolicitud IN (:idsSolicitud)
+	    </query>
+	</named-query>
+    <named-query
+        name="Afiliaciones.solicitudNovedadFovis.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudNovedadFovis sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+     <named-query
+        name="Afiliaciones.solicitudDesafiliacion.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudDesafiliacion sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+     <named-query
+        name="Afiliaciones.solicitudGestionCobroElectronico.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudGestionCobroElectronico sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+    <named-query
+        name="Afiliaciones.solicitudGestionCobroFisico.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudGestionCobroFisico sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+     <named-query
+        name="Afiliaciones.solicitudGestionCobroManual.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudGestionCobroManual sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+    <named-query
+        name="Afiliaciones.solicitudAsignacionFOVIS.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudAsignacion sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+    <named-query
+        name="Afiliaciones.solicitudLegalizacionDesembolsoFOVIS.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudLegalizacionDesembolso sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+    <named-query
+        name="Afiliaciones.solicitudAnalisisNovedadFovis.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudAnalisisNovedadFovis sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+    <named-query
+        name="Afiliaciones.solicitudVerificacionFovis.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudVerificacionFovis sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+    <named-query
+        name="Afiliaciones.solicitudGestionCruceFovis.buscarSolicitud.idSolicitudGlobal">
+        <query>
+            SELECT sol FROM SolicitudGestionCruce sol
+            LEFT JOIN FETCH sol.solicitudGlobal soliGlo 
+            WHERE soliGlo.idSolicitud = :idSolicitudGlobal  
+        </query>
+    </named-query>
+    <named-query
+		name="Afiliaciones.solicitudCierre.buscarSolicitud.idSolicitudGlobal">
+		<query>
+            SELECT sol FROM SolicitudCierreRecaudo sol
+            WHERE sol.solicitudGlobal.idSolicitud = :idSolicitudGlobal 
+		</query>
+	</named-query>
+
+    <named-query
+        name="buscar.solicitud.by.nro.radicado.metodoEnvio.estadoDocumento">
+        <query>
+            SELECT NEW com.asopagos.dto.SolicitudDTO(sol) FROM Solicitud sol
+            WHERE sol.numeroRadicacion LIKE :numeroRadicacion
+            AND sol.estadoDocumentacion= :estadoDocumento
+            AND sol.metodoEnvio = :metodoEnvio
+          
+        </query>
+    </named-query>
+	<named-query name="consultar.Afiliacion.registroEnListaDeEspecialRevision">
+		<query>
+			SELECT ler FROM ListaEspecialRevision ler 
+			WHERE ler.tipoIdentificacion = :tipoIdentificacion
+			AND ler.numeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-query>
+	<named-query
+		name="Afiliados.transversal.consultarBeneficiariosGrupoFamiliar">
+		<description>consulta y obtiene la información de los beneficiarios de un grupo familiar determinado</description>
+		<query>
+			SELECT new com.asopagos.afiliaciones.dto.BeneficiarioSTDTO(
+				perBen.tipoIdentificacion,
+				perBen.numeroIdentificacion,
+				ben.estadoBeneficiarioAfiliado,
+				ben.tipoBeneficiario
+			)
+			FROM Beneficiario ben
+			JOIN ben.persona perBen
+			WHERE ben.grupoFamiliar.idGrupoFamiliar = :idGrupoFamiliar  
+		</query>
+	</named-query>
+	
+	<named-query name="Afiliaciones.IntentoAfiliacion.ConsultarById">
+		<query>
+			SELECT iaf FROM IntentoAfiliacion iaf
+			WHERE iaf.idIntentoAfiliacion =:idIntentoAfiliacion
+		</query>
+	</named-query>
+	
+	<!-- Temporales utilitario liquidacion -->
+	<named-query name="Historicos.Consultar.BeneficiariosSinFechaAfiliacion">
+		<query>
+			SELECT idBeneficiario FROM Beneficiario
+			WHERE fechaAfiliacion IS NULL
+		</query>
+	</named-query>
+	
+	<named-query name="Historicos.ConsultarBeneficiario">
+		<query>
+			SELECT ben FROM Beneficiario ben
+			WHERE ben.idBeneficiario = :idBeneficiario		
+		</query> 
+	</named-query>
+	<!-- FIN Temporales utilitario liquidacion -->
+	
+	<named-query name="Afiliados.ConsultarCertificadosEscolaresFechaCreacionNull">
+		<query>
+			SELECT idCertificadoEscolarBeneficiario FROM CertificadoEscolarBeneficiario
+		</query>
+	</named-query>
+	
+	<named-query name="Afiliados.consultarCertificadoEscolar">
+		<query>
+			SELECT cer FROM CertificadoEscolarBeneficiario cer
+			WHERE cer.idCertificadoEscolarBeneficiario = :idCertificado		
+		</query>
+	</named-query>
+
+	<named-query name="Afiliaciones.Consultar.Numeros.Documentos.Existentes">
+		<query>
+			SELECT COUNT(p) FROM Persona p
+			WHERE p.tipoIdentificacion != :tipoIdentificacion
+			AND p.numeroIdentificacion = :numeroIdentificacion		
+		</query>
+	</named-query>
+	
+	<!-- ESPACIO PARA NAMED QUERIES NATIVOS -->
+	
+	<named-native-query name="Afiliaciones.Consultar.afiliadosNoRetiradosPila">
+		<query>
+			SELECT 
+				a.id,
+				a.fechaInicioNovedad, 
+				a.numeroIdAfiliado, 
+				a.tipoIdAfiliado, 
+				a.numeroIdEmpleador, 
+				a.tipoIdEmpleador, 
+				a.idRolAfiliado
+			FROM AuxNovedadesRetirosNoAplicadasPila a WHERE a.procesado = 0
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliaciones.marcar.afiliadosNoRetiradosPila">
+		<query>
+			UPDATE AuxNovedadesRetirosNoAplicadasPila SET procesado = 1 WHERE id = :id 
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliados.transversal.aud.buscarSMMLVEnPeriodo">
+		<query>
+			select Max(plsSMLMV) from ParametrizacionLiquidacionSubsidio where plsPeriodoInicio = :fecha
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliados.Obtener.infoTotalRestantePersona">
+		<description>Constante para la consulta de la información detallada restante de la persona 
+		respecto a la afiliación por afiliado y beneficiarios que no puede ser obtenida con la 
+		consulta com.asopagos.afiliados.constants.NamedQueriesConstants.OBTENER_INFO_TOTAL_PERSONA</description>
+		<query>
+			SELECT
+				benTipoBeneficiario,
+				benId
+			FROM  
+				beneficiario JOIN afiliado ON benAfiliado = afiId 
+				JOIN persona ON afiPersona = perId 
+				WHERE perTipoIdentificacion = :tipoIdAfiliado
+				AND perNumeroIdentificacion = :numeroIdAfiliado
+		
+			<!-- SELECT 
+				ben
+			FROM 
+				Beneficiario ben, Afiliado afi, Persona per
+			WHERE
+				ben.afiliado.idAfiliado = afi.idAfiliado
+				AND afi.persona.idPersona = per.idPersona
+				AND per.tipoIdentificacion = :tipoIdAfiliado
+				AND per.numeroIdentificacion = :numeroIdAfiliado
+				AND ben.estadoBeneficiarioAfiliado = com.asopagos.enumeraciones.personas.EstadoAfiliadoEnum.ACTIVO -->
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.ConsultarCategoriaBefeciariosAfiliado">
+		<query>
+			select 
+				perBen.perTipoIdentificacion as tipoIDAfiliado,
+				perBen.perNumeroIdentificacion as numeroIdentificacionAfiliado,
+				perBen.perPrimerNombre as primerNombreAfiliado,
+				perBen.perSegundoNombre as segundoNombreAfiliado,
+				perBen.perPrimerApellido as primerApellidoAfiliado,
+				perBen.perSegundoApellido as segundoApellidoAfiliado,
+				ben.benEstadoBeneficiarioAfiliado as estadoBeneficiario,
+				dep.ctaCategoria as categoriaDependiente,
+				dep.ctaFechaCambioCategoria as fechaCategoriaDependiente,
+				indep.ctaCategoria as categoriaIndependiente,
+				indep.ctaFechaCambioCategoria as fechaCategoriaIndependiente,
+				pen.ctaCategoria as categoriaPensionado,
+				pen.ctaFechaCambioCategoria as fechaCategoriaPensionado
+			from Beneficiario ben
+			join persona perBen on ben.benPersona = perBen.perId
+			join BeneficiarioDetalle bed on ben.benBeneficiarioDetalle = bed.bedId
+			left outer join (
+				select ctbBeneficiarioDetalle, ctaCategoria, ctaFechaCambioCategoria from categoriaBeneficiario 
+				join categoriaAfiliado on ctbCategoriaAfiliado = ctaId 
+				where ctaId = (select top(1) ctaId from categoriaAfiliado where ctaAfiliado = :idAfiliado
+				and ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+				and ctaFechaCambioCategoria between dateadd(second, :fechaInicio / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time' and dateadd(second, :fechaFin / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time'
+				order by ctaFechaCambioCategoria desc)) as dep on dep.ctbBeneficiarioDetalle = bed.bedId
+			left outer join (
+				select ctbBeneficiarioDetalle, ctaCategoria, ctaFechaCambioCategoria from categoriaBeneficiario 
+				join categoriaAfiliado on ctbCategoriaAfiliado = ctaId 
+				where ctaId = (select top(1) ctaId from categoriaAfiliado where ctaAfiliado = :idAfiliado
+				and ctaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+				and ctaFechaCambioCategoria between dateadd(second, :fechaInicio / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time' and dateadd(second, :fechaFin / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time'
+				order by ctaFechaCambioCategoria desc)) as indep on indep.ctbBeneficiarioDetalle = bed.bedId
+			left outer join (
+				select ctbBeneficiarioDetalle, ctaCategoria, ctaFechaCambioCategoria from categoriaBeneficiario 
+				join categoriaAfiliado on ctbCategoriaAfiliado = ctaId 
+				where ctaId = (select top(1) ctaId from categoriaAfiliado where ctaAfiliado = :idAfiliado
+				and ctaTipoAfiliado = 'PENSIONADO'
+				and ctaFechaCambioCategoria between dateadd(second, :fechaInicio / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time' and dateadd(second, :fechaFin / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time'
+				order by ctaFechaCambioCategoria desc)) as pen on pen.ctbBeneficiarioDetalle = bed.bedId
+			where benAfiliado = :idAfiliado
+			and benTipoBeneficiario != 'CONYUGE'
+		</query>
+	</named-native-query>
+
+	<named-native-query name="consultar.Afiliacion.historicoAfiliacionDependiente">
+		<query> 
+			SELECT 
+				b.idInstanciaProceso,
+				b.hraRadicado,
+				b.hraSolicitud,
+				b.sFechaIngreso as hraFechaIngreso,
+				(CASE WHEN b.hraFechaRetiro IS NOT NULL OR (select COUNT(hra3.hraFechaIngreso) from HistoricoRolAfiliado hra3 where hra3.hraAfiliado = b.afiId and hra3.hraEmpleador = b.roaEmpleador and hra3.hraFechaIngreso = b.sFechaIngreso) = 0
+				THEN (select min(hra2.hraFechaRetiro) from HistoricoRolAfiliado hra2 where hra2.hraAfiliado = b.afiId and hra2.hraEmpleador = b.roaEmpleador
+				and hra2.hraFechaRetiro &gt;= b.sFechaIngreso
+				) ELSE NULL END) AS hraFechaRetiro,
+				b.hraCanalRecepcion,
+				b.hraMotivoDesafiliacion
+				FROM (
+				select 
+					top 100 PERCENT
+					a.hraId,
+					a.idInstanciaProceso,
+					a.afiId,
+					a.roaEmpleador,
+					a.hraRadicado,
+					a.hraSolicitud,
+					(CASE WHEN a.hraFechaIngreso IS NULL 
+					THEN (lag(a.hraFechaIngreso) over (order by a.campoNull)) ELSE a.hraFechaIngreso END) as sFechaIngreso,
+					a.campoNull,
+					a.hraFechaRetiro,
+					a.hraCanalRecepcion,
+					a.hraMotivoDesafiliacion
+				from (
+				SELECT 
+					hra.hraId,
+					hra.hraSolicitud AS idInstanciaProceso,
+					hra.hraRadicado,
+					afi.afiId,
+					roa.roaEmpleador,
+					hra.hraSolicitud,
+					hra.hraFechaIngreso,
+					hra.hraFechaRetiro,
+					isnull(hra.hraFechaIngreso, hra.hraFechaRetiro) as campoNull,
+					(CASE WHEN hra.hraCanalRecepcion IS NOT NULL THEN hra.hraCanalRecepcion ELSE 'NOVEDAD_SUS_PATR' END) AS hraCanalRecepcion,
+					hra.hraMotivoDesafiliacion
+				FROM HistoricoRolAfiliado hra WITH (NOLOCK)
+				JOIN Afiliado afi WITH (NOLOCK) ON hra.hraAfiliado = afi.afiId 
+				JOIN persona per WITH (NOLOCK) ON afi.afiPersona = per.perId
+				JOIN RolAfiliado roa WITH (NOLOCK) ON (roa.roaAfiliado = afi.afiId AND roa.roaEmpleador = :idEmpleador AND roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE')
+				WHERE hra.hraTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' 
+				AND hra.hraEmpleador = :idEmpleador
+				AND per.perNumeroIdentificacion = :numeroIdAfiliado
+				AND per.perTipoIdentificacion = :tipoIdAfiliado
+				) as a order by a.campoNull) AS b ORDER BY b.sFechaIngreso DESC, b.hraFechaRetiro DESC;
+		</query>
+	</named-native-query>
+
+	<named-native-query name="consultar.Afiliacion.historicoAfiliacionIndependiente">
+		<query>
+		
+			SELECT 
+				hra.hraSolicitud AS idInstanciaProceso,
+				hra.hraRadicado,
+				hra.hraSolicitud,
+				hra.hraFechaIngreso,
+				hra.hraFechaRetiro,
+				(CASE WHEN hra.hraCanalRecepcion IS NOT NULL THEN hra.hraCanalRecepcion ELSE 'NOVEDAD_SUS_PATR' END) AS hraCanalRecepcion,
+				hra.hraMotivoDesafiliacion
+			FROM historicoRolAfiliado hra WITH (NOLOCK)
+			JOIN Afiliado afi WITH (NOLOCK) ON hra.hraAfiliado = afi.afiId
+			JOIN persona per WITH (NOLOCK) ON afi.afiPersona = per.perId
+			JOIN rolAfiliado roa WITH (NOLOCK) ON (roa.roaAfiliado = afi.afiId AND roa.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE')
+			WHERE per.perNumeroIdentificacion = :numeroIdAfiliado
+			AND per.perTipoIdentificacion = :tipoIdAfiliado
+			AND hra.hraTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+			ORDER BY isnull(hra.hraFechaIngreso, hra.hraFechaRetiro);
+		</query>
+	</named-native-query>
+	<named-native-query name="consultar.Afiliacion.historicoAfiliacionPensionado">
+		<query>
+			select 
+				hra.hraSolicitud as idInstanciaProceso,
+				hra.hraRadicado,
+				hra.hraSolicitud,
+				hra.hraFechaIngreso,
+				hra.hraFechaRetiro,
+				hra.hraCanalRecepcion as hraCanalRecepcion,
+				hra.hraMotivoDesafiliacion
+			from historicoRolAfiliado hra
+			join Afiliado afi on hra.hraAfiliado = afi.afiId
+			join persona per on afi.afiPersona = per.perId
+			join rolAfiliado roa on (roa.roaAfiliado = afi.afiId AND roa.roaTipoAfiliado = 'PENSIONADO')
+			where per.perNumeroIdentificacion = :numeroIdAfiliado
+			and per.perTipoIdentificacion = :tipoIdAfiliado
+			and hra.hraTipoAfiliado = 'PENSIONADO'
+			ORDER BY isnull(hra.hraFechaIngreso, hra.hraFechaRetiro);
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.consultar.intentosAfiliacionEmpleador">
+    	<description>Constante para la busqueda del historico de intentos de afiliación de un empleador</description>
+    	<query>
+    		SELECT DISTINCT 
+    			iaf.iafFechaCreacion, 
+    			sol.solNumeroRadicacion, 
+    			CASE WHEN iaf.iafTipoTransaccion = 'AFILIACION_EMPLEADORES_PRESENCIAL_NUEVA_AFILIACION' THEN 'Presencial' ELSE 'Web' END AS canal, 
+    			iaf.iafCausaIntentoFallido, 
+    			CASE WHEN com.comIdentificaArchivoComunicado IS NOT NULL THEN com.comIdentificaArchivoComunicado
+				ELSE comInAf.comIdentificaArchivoComunicado END AS IdentificadorArchivoComunicado,
+				sae.saeId,
+				dts.dtsId,
+				sae.saeEstadoSolicitud
+    		FROM IntentoAfiliacion iaf
+    		LEFT JOIN Solicitud sol ON sol.solId = iaf.iafSolicitud
+			LEFT JOIN SolicitudAfiliaciEmpleador sae on iaf.iafSolicitud = sae.saeSolicitudglobal
+    		LEFT JOIN Comunicado com on com.comSolicitud = sol.solId 
+			LEFT JOIN datoTemporalsolicitud dts ON sol.solId = dts.dtsSolicitud
+			LEFT JOIN Comunicado comInAf ON comInAf.comId = iaf.iafComunicado
+    		WHERE iaf.iafTipoIdentificacion =:tipoIdentificacion
+			AND iaf.iafNumeroIdentificacion =:numeroIdentificacion
+			AND iaf.iafTipoTransaccion IN (:tipoTransaccion) 
+    		ORDER BY sol.solNumeroRadicacion
+    	</query>
+    </named-native-query>
+    
+    <!-- INICIO ESPACIO PARA NAMED QUERIES Y NATIVE QUERIES RELACIONADOS AL CATALOGO DE SERVIVICIOS PARA AFILIACIONES Y CAJAS SIN FRONTERAS -->
+    <named-native-query
+		name="Afiliados.transversal.obtenerInfoTotalBeneficiario">
+		<query>
+			select
+				benTipoBeneficiario as tipoBeneficiario,
+				perBen.perTipoIdentificacion as tipoID,
+				perBen.perNumeroIdentificacion as identificacion,
+				perBen.perPrimerNombre as primerNombre,
+				perBen.perSegundoNombre as segundoNombre,
+				perBen.perPrimerApellido as primerApellido,
+				perBen.perSegundoApellido as segundoApellido,
+				pedFechaNacimiento as fechaNacimiento,
+				pedFechaFallecido as fechaFallecido,
+				pedEstadoCivil as estadoCivil,
+				pedGenero as genero,
+				ubiDireccionFisica as direccionResidencia,
+				munCodigo as municipioCodigo,
+				munNombre as municipioNombre,
+				depCodigo as departamentoCodigo,
+				depNombre as departamentoNombre,
+				ubiCodigoPostal as codigoPostal,
+				CONCAT(ubiIndicativoTelFijo, ubiTelefonoFijo) as telefonoFijo,
+				ubiTelefonoCelular as celular,
+				ubiEmail as correoElectronico,
+				ubiAutorizacionEnvioEmail as autorizacionEnvioEmail,
+				pedAutorizaUsoDatosPersonales as autorizacionDatosPersonales,
+				benEstadoBeneficiarioAfiliado as estadoAfiliacion,
+				g.grfNumero as grupoFamiliar,
+				benFechaAfiliacion as fechaAfiliacionCCF,
+				benFechaRetiro as fechaRetiro,
+				benMotivoDesafiliacion as motivoDesafiliacion,
+				pedEstudianteTrabajoDesarrolloHumano as estudianteTrabajoDesarrolloHumano,
+				(SELECT TOP(1) roaTipoAfiliado FROM RolAfiliado WHERE roaAfiliado = afi.afiId) as tipoAfiliado,
+				perAfi.perTipoIdentificacion as tipoIDAfiliado,
+				perAfi.perNumeroIdentificacion as identificacionAfiliado,
+				perAfi.perPrimerNombre as primerNombreAfiliado,
+				perAfi.perSegundoNombre as segundoNombreAfiliado,
+				perAfi.perPrimerApellido as primerApellidoAfiliado,
+				perAfi.perSegundoApellido as segundoApellidoAfiliado,
+				'' as FechaCreacionRegistro,
+   				'' as UsuarioCreacionRegistro,
+				case when beneficiario.benEstadoBeneficiarioAfiliado = 'ACTIVO' then (select top (1) ctaCategoria from dbo.categoriaAfiliado where ctaAfiliado = afi.afiId order by ctaFechaCambioCategoria desc) else 'SIN_CATEGORIA' end as categoria,
+				(select top(1) dsaValorSubsidioMonetario from detalleSubsidioAsignado 
+					where dsaBeneficiarioDetalle = bedId 
+					and dsaAfiliadoPrincipal = afi.afiId
+					order by dsaBeneficiarioDetalle desc) as ultimoPagoCuotaMonetaria,
+				(select top(1) bbc.bbcBloqueado from BloqueoBeneficiarioCuotaMonetaria bbc join 
+					cargueBloqueoCuotaMonetaria on bbc.bbcCargueBloqueoCuotaMonetaria = cabId
+					where bbc.bbcTipoIdentificacionBeneciario = perBen.perTipoIdentificacion
+					and bbc.bbcNumeroidentificacionBeneficiario = perBen.perNumeroIdentificacion
+					and :fechaActual BETWEEN cabPeriodoInicio AND cabPeriodoFin
+					order by bbc.bbcBloqueado desc) as inhabilitadoSubsidio, 
+				(case when coiInvalidez IS NULL THEN 0 else coiInvalidez END) AS coiInvalidez,
+					CONVERT(text,(select cebFechaRecepcion as fechaRecepcion, cebFechaVencimiento as fechaVencimientoCertificadoEscolar 
+			from CertificadoEscolarBeneficiario join Beneficiario on benBeneficiarioDetalle = cebBeneficiarioDetalle join Persona on benPersona = perId 
+			where perNumeroIdentificacion = :numeroIdentificacion and perTipoIdentificacion = :tipoIdentificacion FOR JSON PATH),2) 
+			from beneficiario 
+			left join persona perBen on benPersona = perBen.perId
+			left join beneficiarioDetalle on benBeneficiarioDetalle = bedId
+			left join personaDetalle on bedPersonaDetalle = pedId
+			left join Ubicacion on perUbicacionPrincipal = ubiId
+			left join municipio on ubiMunicipio = munId
+			left join departamento on munDepartamento = depId
+			left join Afiliado afi on benAfiliado = afi.afiId
+			left join Persona perAfi on afi.afiPersona = perAfi.perId
+			left join CondicionInvalidez ci on perBen.perId = ci.coiPersona
+			LEFT JOIN GrupoFamiliar g on g.grfId=Beneficiario.benGrupoFamiliar
+			where perBen.perTipoIdentificacion = :tipoIdentificacion
+			and perBen.perNumeroIdentificacion = :numeroIdentificacion
+			ORDER BY benFechaAfiliacion DESC
+		</query>
+	</named-native-query>
+    
+    <named-native-query name="Afiliados.Obtener.infoBasicaPersona">
+		<description>consulta con información básica</description>
+		<query>
+			SELECT top(1)
+				roa.roaTipoAfiliado,
+				per.perTipoIdentificacion,
+				per.perNumeroIdentificacion,
+				per.perPrimerNombre,
+				per.perSegundoNombre,
+				per.perPrimerApellido,
+				per.perSegundoApellido,
+				ped.pedFechaNacimiento,
+				ped.pedGenero,
+				dep.depCodigo,
+				dep.depNombre,
+				mun.munCodigo,
+				mun.munNombre,
+				ubi.ubiDireccionFisica,
+				CONCAT(ubi.ubiIndicativoTelFijo,ubi.ubiTelefonoFijo) as numeroTelefono,
+				ubi.ubiTelefonoCelular,
+				ubi.ubiEmail,
+				(CASE WHEN roa.roaEstadoAfiliado IS NOT NULL 
+				THEN roa.roaEstadoAfiliado
+				ELSE (
+					select top(1) apd.apdEstadoCotizante 
+					from aporteDetallado apd 
+					where apd.apdPersona = per.perId
+					order by apd.apdFechaCreacion DESC) 
+				END) as estadoAfiliado,
+				sap.*,
+				sol.*
+			FROM Persona per
+			LEFT JOIN Afiliado afi ON afi.afiPersona = per.perId
+			LEFT JOIN RolAfiliado roa ON roa.roaAfiliado = afi.afiId
+			LEFT JOIN PersonaDetalle ped ON ped.pedPersona = per.perId 
+			LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId 
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			LEFT JOIN Departamento dep ON mun.munDepartamento = dep.depId
+			LEFT JOIN SolicitudAfiliacionPersona sap ON roa.roaId = sap.sapRolAfiliado
+			LEFT JOIN Solicitud sol ON sap.sapSolicitudGlobal = sol.solId
+
+		 	WHERE per.perTipoIdentificacion =  :tipoIdAfiliado
+			AND per.perNumeroIdentificacion = :numeroIdAfiliado
+			ORDER BY roa.roaEstadoAfiliado ASC,  ISNULL (sol.solFechaRadicacion, roaFechaAfiliacion) DESC
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.consultarAfiliadosPrincipalesBeneficiarioSrvTra">
+		<query>
+			SELECT 
+				perAfi.perTipoIdentificacion AS tipoIdentificacionAfiliado,
+				perAfi.perNumeroIdentificacion AS numeroIdentificacionAfiliado
+			FROM Beneficiario ben JOIN Persona perBen ON ben.benPersona = perBen.perId
+			JOIN Afiliado afi ON ben.benAfiliado = afi.afiId
+			JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			WHERE perBen.perTipoIdentificacion = :tipoIdentificacion
+			AND perBen.perNumeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.Principales.Obtener.Por.Beneficiario">
+		<query>
+			Select DISTINCT perAfi.perTipoIdentificacion, perAfi.perNumeroIdentificacion, perAfi.perRazonSocial, benId from Beneficiario ben
+			join Persona perBen on perBen.perId = ben.benPersona
+			Join Afiliado afi on afi.afiId = ben.benAfiliado
+			join Persona perAfi on perAfi.perId = afi.afiPersona
+			where perBen.perNumeroIdentificacion = :identificacion
+			AND perBen.perTipoIdentificacion = :tipoID
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.Obtener.infoTotalPersona">
+		<description>Constante para la consulta de la información detallada de la persona respecto a la afiliación por afiliado y beneficiarios</description>
+		<query>
+with PersonaDatosTem as (
+				SELECT
+				per.perNumeroIdentificacion AS identificacion,
+				per.perTipoIdentificacion AS tipoIdentificacion,
+				per.perPrimerNombre AS primerNombre,
+				per.perSegundoNombre AS segundoNombre,
+				per.perPrimerApellido AS primerApellido,
+				per.perSegundoApellido AS segundoApellido,
+				ped.pedFechaNacimiento AS fechaNacimiento,
+				ped.pedFechaDefuncion AS fechaDefuncion,
+				ped.pedEstadoCivil AS estadoCivil,
+				ped.pedGenero AS genero,
+				ped.pedAutorizaUsoDatosPersonales as autorizacionDatosPersonales,
+				ped.pedNivelEducativo as nivelEducativo,
+				ped.pedGradoAcademico as gradoAcademico,
+				ped.pedFechaExpedicionDocumento as fechaExpedicionDocumento,
+				ped.pedCabezaHogar AS cabezaHogar,
+				ped.pedHabitaCasaPropia as habitaCasaPropia,
+				ubi.ubiDireccionFisica AS direccionResidencia,
+				ubi.ubiTelefonoCelular AS celular,
+				ubi.ubiEmail AS correoElectronico,
+				ubi.ubiCodigoPostal AS codigoPostal,
+				ubi.ubiAutorizacionEnvioEmail as autorizacionEnvioEmail,
+				CASE WHEN ubi.ubiTelefonoFijo is not null then CONCAT(ubi.ubiIndicativoTelFijo,ubi.ubiTelefonoFijo) ELSE '' END AS telefonoFijo, 
+				mun.munCodigo AS municipioCodigo,
+				mun.munNombre AS municipioNombre,
+				dep.depCodigo AS departamentoCodigo,
+				dep.depNombre AS departamentoNombre,
+				per.perId,
+				a.afiId
+				FROM Persona per with (nolock)
+				inner join dbo.afiliado as a with (nolock) on per.perId = a.afiPersona
+				LEFT JOIN PersonaDetalle ped with (nolock) ON ped.pedPersona = per.perId
+				LEFT JOIN Ubicacion ubi with (nolock) ON ubi.ubiId = per.perUbicacionPrincipal
+				LEFT JOIN Municipio mun with (nolock) ON mun.munId = ubi.ubiMunicipio
+				LEFT JOIN Departamento dep with (nolock) ON dep.depId = mun.munDepartamento
+				WHERE  per.perTipoIdentificacion = :tipoIdentificacion
+				and per.perNumeroIdentificacion = :numeroIdentificacion
+			), result as (
+			select
+			r.roaTipoAfiliado AS tipoAfiliado,
+			r.roaClaseIndependiente AS claseIndependiente,
+			r.roaClaseTrabajador AS claseTrabajador,
+			p.tipoIdentificacion,
+			p.identificacion,
+			p.primerNombre,
+			p.segundoNombre,
+			p.primerApellido,
+			p.segundoApellido,
+			p.fechaNacimiento,
+			p.fechaDefuncion,
+			p.estadoCivil,
+			p.genero,
+			p.direccionResidencia,
+			p.habitaCasaPropia,
+			p.municipioCodigo,
+			p.municipioNombre,
+			p.departamentoCodigo,
+			p.departamentoNombre,
+			p.codigoPostal,
+			p.telefonoFijo,
+			p.celular,
+			p.correoElectronico,
+			p.autorizacionEnvioEmail,
+			p.autorizacionDatosPersonales,
+			isnull((select top 1 (CASE WHEN (convert(date,convert(varchar(17),g.apgPeriodoAporte+'-01'))&gt;= dateadd(day, 1, eomonth(r.roaFechaAfiliacion, -1))) then a.apdSalarioBasico else r.roaValorSalarioMesadaIngresos end) as valorsa 
+			from aporteDetallado a with (nolock)
+			inner join aporteGeneral g with (nolock) on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE'  
+			and g.apgEmpresa = e.empId
+			order by apgPeriodoAporte desc),0) as salario,
+			(select top 1 isnull(a.apdTarifa,r.roaPorcentajePagoAportes) 
+			from aporteDetallado a with (nolock)
+			inner join aporteGeneral g with (nolock) on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE'  
+			order by apgPeriodoAporte desc) as porcentajeAporte,
+			r.roaCargo as cargo,
+			r.roaFechaIngreso as fechaIngresoEmpresa,
+			r.roaFechaAfiliacion as fechaAfiliacionCCF,
+			r.roaFechaRetiro as fechaRetiro,
+			(select case when r.roaFechaRetiro is null then null else r.roaMotivoDesafiliacion end) as motivoDesafiliacion,
+			r.roaHorasLaboradasMes as horasLaboradasMes,
+			r.roaEstadoAfiliado as estadoAfiliacion,
+			pe.perTipoIdentificacion as tipoIdentificacionEmpleador,
+			pe.perNumeroIdentificacion as numeroIdentificacionEmpleador,
+			pe.perDigitoVerificacion as digitoVerificacion,
+			pe.perRazonSocial as nombreEmpleador,
+			sue.sueCodigo as sucursalEmpleador,
+			sue.sueNombre as nombreSucursalEmpleador,
+			(case when (select top(1) coiId from condicionInvalidez
+				where coiPersona = p.perId
+				and coiInvalidez = 1) is not null then 1 else 0 end) as condicionInvalidez,
+			s.solUsuarioRadicacion as usuarioGestionRegistro,
+			s.solFechaCreacion as fechaCreacionRegistro,
+			s.solClasificacion as clasificacion,
+
+			(select top(1) dsaValorSubsidioMonetario from detalleSubsidioAsignado
+				where dsaAfiliadoPrincipal = afiId
+				order by dsaPeriodoLiquidado desc) as ultimoPagoCuotaMonetaria,
+			isnull((select top(1) apgPeriodoAporte from aporteDetallado join aporteGeneral on apdAporteGeneral = apgId
+				where apdPersona = p.perId
+				order by apgPeriodoAporte desc), '') as ultimoPeriodoPagoAportes,
+			(select top(1) mtr.mtrNumeroTarjeta from MedioPagoPersona
+						join MedioTarjeta mtr on mppMedioPago = mtr.mdpId
+						and mppPersona = p.perId) as numeroTarjeta,
+			nivelEducativo as nivelEducativo,
+			gradoAcademico as gradoAcademico,
+			fechaExpedicionDocumento as fechaExpedicionDocumento,
+			cabezaHogar AS cabezaHogar,
+			s.solid
+			, row_number() over (partition by roaId order by s.solFechaRadicacion desc) as idtab
+			, (select top (1) sum(apd.apdSalarioBasico)
+				from aporteDetallado apd with (nolock)
+				inner join aporteGeneral apg with (nolock) on apd.apdAporteGeneral = apg.apgId
+				where apd.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE' and apd.apdPersona = p.perId
+				group by apg.apgEmpresa, apg.apgPeriodoAporte, apd.apdPersona, apd.apdTipoCotizante
+				order by apg.apgPeriodoAporte desc) as cat
+			from PersonaDatosTem as p with (nolock)
+			inner join dbo.RolAfiliado as r with (nolock) on p.afiId = r.roaAfiliado
+			inner join (select case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solId else null end as solId
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solUsuarioRadicacion else null end as solUsuarioRadicacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaCreacion else null end as solFechaCreacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solClasificacion else null end as solClasificacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then sap.sapRolAfiliado else null end as sapRolAfiliado
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaRadicacion else null end as solFechaRadicacion
+							from dbo.SolicitudAfiliacionPersona as sap with (nolock) 
+							inner join dbo.solicitud as s with (nolock) on sap.sapSolicitudGlobal = s.solId
+							where sap.sapEstadoSolicitud = 'CERRADA') as s on r.roaId = s.sapRolAfiliado
+			inner join dbo.empleador as em with (nolock) on r.roaEmpleador = em.empId
+			inner join dbo.empresa as e with (nolock) on e.empId = em.empEmpresa
+			inner join dbo.persona as pe with (nolock) on pe.perId = e.empPersona
+			left join dbo.SucursalEmpresa sue with (nolock) on sue.sueId = r.roaSucursalEmpleador
+			where r.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+
+			union all
+
+			select
+			r.roaTipoAfiliado AS tipoAfiliado,
+			r.roaClaseIndependiente AS claseIndependiente,
+			r.roaClaseTrabajador AS claseTrabajador,
+			p.tipoIdentificacion,
+			p.identificacion,
+			p.primerNombre,
+			p.segundoNombre,
+			p.primerApellido,
+			p.segundoApellido,
+			p.fechaNacimiento,
+			p.fechaDefuncion,
+			p.estadoCivil,
+			p.genero,
+			p.direccionResidencia,
+			p.habitaCasaPropia,
+			p.municipioCodigo,
+			p.municipioNombre,
+			p.departamentoCodigo,
+			p.departamentoNombre,
+			p.codigoPostal,
+			p.telefonoFijo,
+			p.celular,
+			p.correoElectronico,
+			p.autorizacionEnvioEmail,
+			p.autorizacionDatosPersonales,
+			ISNULL((select top 1 (CASE WHEN (convert(date,convert(varchar(17),g.apgPeriodoAporte+'-01'))&gt;= r.roaFechaAfiliacion) then a.apdSalarioBasico else r.roaValorSalarioMesadaIngresos end) as valorsa 
+			from aporteDetallado a
+			inner join aporteGeneral g on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante like 'TRABAJADOR_INDEPENDIENTE'  
+			order by apgPeriodoAporte desc),
+			r.roaValorSalarioMesadaIngresos) as salario,
+			(select top 1 isnull(a.apdTarifa,r.roaPorcentajePagoAportes) 
+			from aporteDetallado a with (nolock)
+			inner join aporteGeneral g with (nolock) on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'TRABAJADOR_INDEPENDIENTE'  
+			order by apgPeriodoAporte desc) as porcentajeAporte,
+			r.roaCargo as cargo,
+			r.roaFechaIngreso as fechaIngresoEmpresa,
+			r.roaFechaAfiliacion as fechaAfiliacionCCF,
+			r.roaFechaRetiro as fechaRetiro,
+			(select case when r.roaFechaRetiro is null then null else r.roaMotivoDesafiliacion end) as motivoDesafiliacion,
+			r.roaHorasLaboradasMes as horasLaboradasMes,
+			r.roaEstadoAfiliado as estadoAfiliacion,
+			null as tipoIdentificacionEmpleador,
+			null as numeroIdentificacionEmpleador,
+			null as digitoVerificacion,
+			null as nombreEmpleador,
+			null as sucursalEmpleador,
+			null as nombreSucursalEmpleador,
+			(case when (select top(1) coiId from condicionInvalidez
+				where coiPersona = p.perId
+				and coiInvalidez = 1) is not null then 1 else 0 end) as condicionInvalidez,
+			s.solUsuarioRadicacion as usuarioGestionRegistro,
+			s.solFechaCreacion as fechaCreacionRegistro,
+			s.solClasificacion as clasificacion,
+
+			(select top(1) dsaValorSubsidioMonetario from detalleSubsidioAsignado
+				where dsaAfiliadoPrincipal = afiId
+				order by dsaPeriodoLiquidado desc) as ultimoPagoCuotaMonetaria,
+			isnull((select top(1) apgPeriodoAporte from aporteDetallado join aporteGeneral on apdAporteGeneral = apgId
+				where apdPersona = p.perId
+				order by apgPeriodoAporte desc), '') as ultimoPeriodoPagoAportes,
+			(select top(1) mtr.mtrNumeroTarjeta from MedioPagoPersona
+						join MedioTarjeta mtr on mppMedioPago = mtr.mdpId
+						and mppPersona = p.perId) as numeroTarjeta,
+			nivelEducativo as nivelEducativo,
+			gradoAcademico as gradoAcademico,
+			fechaExpedicionDocumento as fechaExpedicionDocumento,
+			cabezaHogar AS cabezaHogar,
+			s.solid
+			, row_number() over (partition by roaId order by s.solFechaRadicacion desc) as idtab
+			, (select top (1) sum(apd.apdSalarioBasico)
+				from aporteDetallado apd with (nolock)
+				inner join aporteGeneral apg with (nolock) on apd.apdAporteGeneral = apg.apgId
+				where apd.apdTipoCotizante = 'TRABAJADOR_INDEPENDIENTE' and apd.apdPersona = p.perId
+				group by apg.apgEmpresa, apg.apgPeriodoAporte, apd.apdPersona, apd.apdTipoCotizante
+				order by apg.apgPeriodoAporte desc) as cat
+			from PersonaDatosTem as p with (nolock)
+			inner join dbo.RolAfiliado as r with (nolock) on p.afiId = r.roaAfiliado
+			inner join (select case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solId else null end as solId
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solUsuarioRadicacion else null end as solUsuarioRadicacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaCreacion else null end as solFechaCreacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solClasificacion else null end as solClasificacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then sap.sapRolAfiliado else null end as sapRolAfiliado
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaRadicacion else null end as solFechaRadicacion
+							from dbo.SolicitudAfiliacionPersona as sap with (nolock) 
+							inner join dbo.solicitud as s with (nolock) on sap.sapSolicitudGlobal = s.solId
+							where sap.sapEstadoSolicitud = 'CERRADA') as s on r.roaId = s.sapRolAfiliado
+			where r.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+
+			union all
+
+			select
+			r.roaTipoAfiliado AS tipoAfiliado,
+			r.roaClaseIndependiente AS claseIndependiente,
+			r.roaClaseTrabajador AS claseTrabajador,
+			p.tipoIdentificacion,
+			p.identificacion,
+			p.primerNombre,
+			p.segundoNombre,
+			p.primerApellido,
+			p.segundoApellido,
+			p.fechaNacimiento,
+			p.fechaDefuncion,
+			p.estadoCivil,
+			p.genero,
+			p.direccionResidencia,
+			p.habitaCasaPropia,
+			p.municipioCodigo,
+			p.municipioNombre,
+			p.departamentoCodigo,
+			p.departamentoNombre,
+			p.codigoPostal,
+			p.telefonoFijo,
+			p.celular,
+			p.correoElectronico,
+			p.autorizacionEnvioEmail,
+			p.autorizacionDatosPersonales,
+			isnull((select top 1 (CASE WHEN (convert(date,convert(varchar(17),g.apgPeriodoAporte+'-01'))&gt;= dateadd(day, 1, eomonth(r.roaFechaAfiliacion, -1))) then a.apdSalarioBasico else r.roaValorSalarioMesadaIngresos end) as valorsa 			from aporteDetallado a
+			inner join aporteGeneral g on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'PENSIONADO'  
+			order by apgPeriodoAporte desc),0) as salario,
+			(select top 1 isnull(a.apdTarifa,r.roaPorcentajePagoAportes) 
+			from aporteDetallado a with (nolock)
+			inner join aporteGeneral g with (nolock) on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'PENSIONADO'  
+			order by apgPeriodoAporte desc) as porcentajeAporte,
+			r.roaCargo as cargo,
+			r.roaFechaIngreso as fechaIngresoEmpresa,
+			r.roaFechaAfiliacion as fechaAfiliacionCCF,
+			r.roaFechaRetiro as fechaRetiro,
+			(select case when r.roaFechaRetiro is null then null else r.roaMotivoDesafiliacion end) as motivoDesafiliacion,
+			r.roaHorasLaboradasMes as horasLaboradasMes,
+			r.roaEstadoAfiliado as estadoAfiliacion,
+			null as tipoIdentificacionEmpleador,
+			null as numeroIdentificacionEmpleador,
+			null as digitoVerificacion,
+			null as nombreEmpleador,
+			null as sucursalEmpleador,
+			null as nombreSucursalEmpleador,
+			(case when (select top(1) coiId from condicionInvalidez
+				where coiPersona = p.perId
+				and coiInvalidez = 1) is not null then 1 else 0 end) as condicionInvalidez,
+			s.solUsuarioRadicacion as usuarioGestionRegistro,
+			s.solFechaCreacion as fechaCreacionRegistro,
+			s.solClasificacion as clasificacion,
+
+			(select top(1) dsaValorSubsidioMonetario from detalleSubsidioAsignado
+				where dsaAfiliadoPrincipal = afiId
+				order by dsaPeriodoLiquidado desc) as ultimoPagoCuotaMonetaria,
+			isnull((select top(1) apgPeriodoAporte from aporteDetallado join aporteGeneral on apdAporteGeneral = apgId
+				where apdPersona = p.perId
+				order by apgPeriodoAporte desc), '') as ultimoPeriodoPagoAportes,
+			(select top(1) mtr.mtrNumeroTarjeta from MedioPagoPersona
+						join MedioTarjeta mtr on mppMedioPago = mtr.mdpId
+						and mppPersona = p.perId) as numeroTarjeta,
+			nivelEducativo as nivelEducativo,
+			gradoAcademico as gradoAcademico,
+			fechaExpedicionDocumento as fechaExpedicionDocumento,
+			cabezaHogar AS cabezaHogar,
+			s.solid
+			, row_number() over (partition by roaId order by s.solFechaRadicacion desc) as idtab
+			, (select top (1) sum(apd.apdSalarioBasico)
+				from aporteDetallado apd with (nolock)
+				inner join aporteGeneral apg with (nolock) on apd.apdAporteGeneral = apg.apgId
+				where apd.apdTipoCotizante = 'PENSIONADO' and apd.apdPersona = p.perId
+				group by apg.apgEmpresa, apg.apgPeriodoAporte, apd.apdPersona, apd.apdTipoCotizante
+				order by apg.apgPeriodoAporte desc) as cat
+			from PersonaDatosTem as p with (nolock)
+			inner join dbo.RolAfiliado as r with (nolock) on p.afiId = r.roaAfiliado
+			inner join (select case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solId else null end as solId
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solUsuarioRadicacion else null end as solUsuarioRadicacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaCreacion else null end as solFechaCreacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solClasificacion else null end as solClasificacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then sap.sapRolAfiliado else null end as sapRolAfiliado
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaRadicacion else null end as solFechaRadicacion
+							from dbo.SolicitudAfiliacionPersona as sap with (nolock) 
+							inner join dbo.solicitud as s with (nolock) on sap.sapSolicitudGlobal = s.solId
+							where sap.sapEstadoSolicitud = 'CERRADA') as s on r.roaId = s.sapRolAfiliado
+			where r.roaTipoAfiliado = 'PENSIONADO')
+			select
+			tipoAfiliado
+			,claseIndependiente
+			,claseTrabajador
+			,tipoIdentificacion
+			,identificacion
+			,primerNombre
+			,segundoNombre
+			,primerApellido
+			,segundoApellido
+			,fechaNacimiento
+			,fechaDefuncion
+			,estadoCivil
+			,genero
+			,direccionResidencia
+			,habitaCasaPropia
+			,municipioCodigo
+			,municipioNombre
+			,departamentoCodigo
+			,departamentoNombre
+			,codigoPostal
+			,telefonoFijo
+			,celular
+			,correoElectronico
+			,autorizacionEnvioEmail
+			,autorizacionDatosPersonales
+			,salario
+			,case when estadoAfiliacion = 'INACTIVO' then 'SIN_CATEGORIA' else (CASE tipoAfiliado 
+					WHEN 'TRABAJADOR_DEPENDIENTE' then (case when salario &lt;= (select prmValor * 2 from Parametro where prmNombre = 'SMMLV') then 'A'
+					when salario &gt; (select prmValor * 2 from Parametro where prmNombre = 'SMMLV') and salario &lt;= (select prmValor * 4 from Parametro where prmNombre = 'SMMLV') then 'B'
+					when salario &gt; (select prmValor * 4 from Parametro where prmNombre = 'SMMLV')  then 'C'
+					else '' end) 
+				WHEN 'TRABAJADOR_INDEPENDIENTE' then 
+				(select case when estadoAfiliacion = 'INACTIVO' then 'SIN_CATEGORIA'
+				else 'B'
+				end)
+				WHEN 'PENSIONADO' then 
+				(select case when estadoAfiliacion = 'INACTIVO' then 'SIN_CATEGORIA' ELSE 
+				( case when clasificacion in ('MAS_1_5_SM_0_6_POR_CIENTO','MAS_1_5_SM_2_POR_CIENTO') and salario &gt; (select prmValor*2 from Parametro where prmNombre = 'SMMLV')   and salario &lt;= (select prmValor*4 from Parametro where prmNombre = 'SMMLV')
+				then 'B' 
+				when clasificacion in ('MAS_1_5_SM_0_6_POR_CIENTO','MAS_1_5_SM_2_POR_CIENTO') and salario &gt; (select prmValor*4 from Parametro where prmNombre = 'SMMLV')  
+				then 'C' ELSE 'A' END)
+				END) end) end as categoria
+			,porcentajeAporte
+			,cargo
+			,fechaIngresoEmpresa
+			,fechaAfiliacionCCF
+			,fechaRetiro
+			,motivoDesafiliacion
+			,horasLaboradasMes
+			,case when idtab &gt; 1 then 'INACTIVO' else estadoAfiliacion end as estadoAfiliacion
+			,tipoIdentificacionEmpleador
+			,numeroIdentificacionEmpleador
+			,digitoVerificacion
+			,nombreEmpleador
+			,sucursalEmpleador
+			,nombreSucursalEmpleador
+			,condicionInvalidez
+			,usuarioGestionRegistro
+			,fechaCreacionRegistro
+			,clasificacion
+			,ultimoPagoCuotaMonetaria
+			,ultimoPeriodoPagoAportes
+			,numeroTarjeta
+			,nivelEducativo
+			,gradoAcademico
+			,fechaExpedicionDocumento
+			,cabezaHogar
+			,solid
+			from result
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.definirPersonaConsultaEstadoCategoriaSrvTra">
+		<query>
+			select 
+				(select top(1) afiId from afiliado where afiPersona = perId) as isAfiliado,
+				(select top(1) benId from beneficiario where benPersona = perId) as isBeneficiario
+			from persona 
+			where perTipoIdentificacion = :tipoIdentificacion 
+			and perNumeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.consultarDatosPersonaComoAfiliadoSrvTra">
+		<query>
+			select
+				roaTipoAfiliado,
+				roaClaseTrabajador,
+				roaClaseIndependiente,
+				perTipoIdentificacion,
+				perNumeroIdentificacion,
+				perPrimerNombre,
+				perSegundoNombre,
+				perPrimerApellido,
+				perSegundoApellido,
+				roaEstadoAfiliado,
+				afiId
+			 from rolAfiliado 
+			 join afiliado on roaAfiliado = afiId
+			 join persona on afiPersona = perId
+			 where perTipoIdentificacion = :tipoIdentificacion
+			 and perNumeroIdentificacion = :numeroIdentificacion
+			 order by roaFechaAfiliacion desc
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.consultarBeneficiariosAfiliadoSrvTra">
+		<query>
+			select 
+				benTipoBeneficiario,
+				(select top(1) roa1.roaClaseTrabajador from rolAfiliado roa1 join afiliado afi1 on roa1.roaAfiliado = afi1.afiId where afi1.afiPersona = perBen.perId order by roa1.roaFechaAfiliacion desc) as claseTrabajador,
+				(select top(1) roa2.roaClaseIndependiente from rolAfiliado roa2 join afiliado afi2 on roa2.roaAfiliado = afi2.afiId where afi2.afiPersona = perBen.perId order by roa2.roaFechaAfiliacion desc) as claseIndependiente,
+				perBen.perTipoIdentificacion,
+				perBen.perNumeroIdentificacion,
+				perBen.perPrimerNombre,
+				perBen.perSegundoNombre,
+				perBen.perPrimerApellido,
+				perBen.perSegundoApellido,
+				benEstadoBeneficiarioAfiliado,
+				benId,
+				benBeneficiarioDetalle
+			from grupoFamiliar 
+			join beneficiario on grfId = benGrupoFamiliar
+			join persona perBen on benPersona = perben.perId
+			where grfAfiliado = :idAfiliado
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transvesal.consultarAfiliadoComoBeneficiarioSrvTra">
+		<query>
+			select 
+				benTipoBeneficiario,
+				(select top(1) roa1.roaClaseTrabajador from rolAfiliado roa1 join afiliado afi1 on roa1.roaAfiliado = afi1.afiId where afi1.afiPersona = perBen.perId order by roa1.roaFechaAfiliacion desc) as claseTrabajador,
+				(select top(1) roa2.roaClaseIndependiente from rolAfiliado roa2 join afiliado afi2 on roa2.roaAfiliado = afi2.afiId where afi2.afiPersona = perBen.perId order by roa2.roaFechaAfiliacion desc) as claseIndependiente,
+				perBen.perTipoIdentificacion,
+				perBen.perNumeroIdentificacion,
+				perBen.perPrimerNombre,
+				perBen.perSegundoNombre,
+				perBen.perPrimerApellido,
+				perBen.perSegundoApellido,
+				benEstadoBeneficiarioAfiliado,
+				benId
+			from grupoFamiliar 
+			join beneficiario on grfId = benGrupoFamiliar
+			join persona perBen on benPersona = perben.perId
+			where perBen.perTipoIdentificacion = :tipoIdentificacion
+			and perBen.perNumeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.consultarAfiliadosPrincipalesGrupoBeneficiarioSrvTra">
+		<query>
+			SELECT 
+				perAfi.perTipoIdentificacion AS tipoIdentificacionAfiliado,
+				perAfi.perNumeroIdentificacion AS numeroIdentificacionAfiliado,
+				ben.benGrupoFamiliar AS grupoFamiliar
+			FROM Beneficiario ben JOIN Persona perBen ON ben.benPersona = perBen.perId
+			JOIN Afiliado afi ON ben.benAfiliado = afi.afiId
+			JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			WHERE perBen.perTipoIdentificacion = :tipoIdentificacion
+			AND perBen.perNumeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.obtenerInfoAfiliadoPrincipal" result-set-mapping="GrupoFamiliarOutDTOMapping">
+		<description>consulta y obtiene los datos de una persona como afiliado pricipal</description>
+		<query>
+		SELECT top(1)
+				per.pertipoIdentificacion AS tipoID,
+				per.pernumeroIdentificacion AS identificacion,
+				per.perprimerNombre AS primerNombre,
+				per.persegundoNombre  AS segundoNombre,
+				per.perprimerApellido AS primerApellido,
+				per.persegundoApellido AS segundoApellido,
+				(select top(1) roaEstadoAfiliado 
+				from rolAfiliado 
+				where roaAfiliado = afi.afiId 
+				and roaEstadoAfiliado is not null 
+				order by roaEstadoAfiliado) AS estadoAfiliacion,
+				(SELECT a.roaFechaRetiro FROM (
+				select top(1) roaEstadoAfiliado, roaFechaRetiro
+				from rolAfiliado 
+				where roaAfiliado = afi.afiId 
+				and roaEstadoAfiliado is not null 
+				order by roaEstadoAfiliado) AS a WHERE a.roaEstadoAfiliado = 'INACTIVO') as fechaDesafiliacion
+			FROM RolAfiliado roa
+			JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+			JOIN Persona per ON afi.afiPersona = per.perId
+			WHERE per.perTipoIdentificacion = :tipoIdAfiliado
+			AND per.perNumeroIdentificacion = :numeroIdAfiliado
+		</query>
+	</named-native-query>
+	
+	<named-native-query
+		name="Afiliados.transversal.consultarInfoGeneralGruposFamiliares">
+		<description>consulta y obtiene la información general de los grupos familiares donde la persona parece como afiliado principal</description>
+		<query>
+			SELECT
+				grf.grfId,
+				dep.depCodigo,
+				mun.munCodigo,
+				ubiPer.ubiDireccionFisica,
+				perAsu.perTipoIdentificacion,
+				perAsu.perNumeroIdentificacion,
+				CONCAT(CONCAT(perAsu.perPrimerNombre,CONCAT(' ',perAsu.perSegundoNombre)),CONCAT(CONCAT(' ',perAsu.perPrimerApellido),CONCAT(' ',perAsu.perSegundoApellido))) as nombreCompleto,
+				sip.sipNombre
+			FROM 
+			GrupoFamiliar grf 
+			left join Afiliado afi on grf.grfAfiliado = afi.afiId
+			left join Persona per on afi.afiPersona = per.perId
+			left join Ubicacion ubiPer on per.perUbicacionPrincipal = ubiPer.ubiId
+			left join Municipio mun on ubiPer.ubiMunicipio = mun.munId
+			left join Departamento dep on mun.munDepartamento = dep.depId
+			left join AdminSubsidioGrupo asg on grf.grfId = asg.asgGrupoFamiliar
+			left join AdministradorSubsidio asu on asg.asgAdministradorSubsidio = asu.asuId
+			left join Persona perAsu on asu.asuPersona = perAsu.perId
+			left join CuentaAdministradorSubsidio cas on grf.grfId = cas.casGrupoFamiliar
+			left join SitioPago sip on cas.casSitioDePago = sip.sipId
+			 LEFT JOIN (SELECT has.hasGrupoFamiliar, hasMedioDePago, MAX(has.hasId) AS hasId
+                FROM HistoricoAdminSubsidioGrupo has
+                GROUP BY has.hasGrupoFamiliar, hasMedioDePago) AS hasMax 
+                ON (grf.grfId = hasMax.hasGrupoFamiliar AND asg.asgMedioDePago = hasMax.hasMedioDePago)
+            LEFT JOIN HistoricoAdminSubsidioGrupo has 
+                ON (hasMax.hasId = has.hasId AND per.perNumeroIdentificacion = has.hasNumeroIdentificacionAdmin AND per.perTipoIdentificacion = has.hasTipoIdentificacionAdmin)
+			where 
+			per.perTipoIdentificacion = :tipoIdentificacion
+			and per.perNumeroIdentificacion = :numeroIdentificacion
+			order by  hasFechaInicio desc
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.obtenerInfoBasicaEmpleador">
+		<description>consulta y obtiene la información basica de un empleador determinado</description>
+		<query>
+			(SELECT
+				per.perTipoIdentificacion AS tipoID,
+				per.perNumeroIdentificacion AS identificacion,
+				per.perDigitoVerificacion AS digitoVerificacion,
+				per.perRazonSocial AS razonSocial,
+				emp.empNombreComercial AS nombreComercial,
+				dep.depCodigo AS departamentoCodigo,
+				dep.depNombre AS departamento,
+				mun.munCodigo AS municipioCodigo,
+				mun.munNombre AS municipio,
+				CASE WHEN ubi.ubiDescripcionIndicacion IS NOT NULL THEN CONCAT(ubi.ubiDireccionFisica, CONCAT(' - ', ubi.ubiDescripcionIndicacion)) ELSE  ubi.ubiDireccionFisica END AS ubiDireccionPrincipal,
+				CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubitelefonoFijo) AS telefonoFijo,
+				ubi.ubiTelefonoCelular AS celular,
+				empl.empEstadoEmpleador AS estadoAfiliacion,
+				(select top(1) car.carEstadoCartera from Cartera car where car.carPersona = per.perId and car.carEstadoOperacion = 'VIGENTE' ORDER BY car.carEstadoCartera DESC) AS estadoCartera,
+				emp.empNaturalezaJuridica as naturalezaJuridica 			
+			FROM Empresa emp
+			join Empleador empl on empl.empEmpresa = emp.empId
+			left join Persona per on emp.empPersona = per.perId
+			left join SucursalEmpresa sue on sue.sueEmpresa = emp.empId AND sue.sueSucursalPrincipal = 1
+			left join Ubicacion ubi on sue.sueUbicacion = ubi.ubiId
+			left join Municipio mun on ubi.ubiMunicipio = mun.munId
+			left join Departamento dep on mun.munDepartamento = dep.depId
+			WHERE per.perTipoIdentificacion = :tipoIdEmpleador
+			AND per.perNumeroIdentificacion = :numeroIdEmpleador
+			)
+			UNION ALL
+			(
+			SELECT
+				per.perTipoIdentificacion AS tipoID,
+				per.perNumeroIdentificacion AS identificacion,
+				per.perDigitoVerificacion AS digitoVerificacion,
+				per.perRazonSocial AS razonSocial,
+				emp.empNombreComercial AS nombreComercial,
+				dep.depCodigo AS departamentoCodigo,
+				dep.depNombre AS departamento,
+				mun.munCodigo AS municipioCodigo,
+				mun.munNombre AS municipio,
+				CASE WHEN ubi.ubiDescripcionIndicacion IS NOT NULL THEN CONCAT(ubi.ubiDireccionFisica, CONCAT(' - ', ubi.ubiDescripcionIndicacion)) ELSE  ubi.ubiDireccionFisica END AS ubiDireccionPrincipal,
+				CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubitelefonoFijo) AS telefonoFijo,
+				ubi.ubiTelefonoCelular AS celular,
+				(select top(1) eecEstadoAfiliacion from estadoAfiliacionEmpleadorCaja where eecPersona = per.perId order by eecFechaCambioEstado desc) AS estadoAfiliacion,
+				(select top(1) car.carEstadoCartera from Cartera car where car.carPersona = per.perId and car.carEstadoOperacion = 'VIGENTE' ORDER BY car.carEstadoCartera DESC) AS estadoCartera,
+				emp.empNaturalezaJuridica as naturalezaJuridica 			
+			FROM Empresa emp 
+			join entidadPagadora epa on epa.epaEmpresa = emp.empId
+			left join Persona per on emp.empPersona = per.perId
+			left join SucursalEmpresa sue on sue.sueEmpresa = emp.empId AND sue.sueSucursalPrincipal = 1
+			left join Ubicacion ubi on sue.sueUbicacion = ubi.ubiId
+			left join Municipio mun on ubi.ubiMunicipio = mun.munId
+			left join Departamento dep on mun.munDepartamento = dep.depId
+			WHERE per.perTipoIdentificacion = :tipoIdEmpleador
+			AND per.perNumeroIdentificacion = :numeroIdEmpleador
+			)
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.consultarEmpleadoresAfiliadoSrvTra">
+		<query>
+			SELECT 
+				perEmpl.perTipoIdentificacion AS tipoIdEmpleador, 
+				perEmpl.perNumeroIdentificacion AS numeroIdEmpleador 
+			FROM rolAfiliado roa 
+			JOIN afiliado afi ON roa.roaAfiliado = afi.afiId
+			JOIN persona per ON afi.afiPersona = per.perId
+			JOIN empleador empl ON roa.roaEmpleador = empl.empId
+			JOIN empresa emp ON empl.empEmpresa = emp.empId
+			JOIN persona perEmpl ON emp.empPersona = perEmpl.perId
+			WHERE per.perTipoIdentificacion = :tipoIdentificacion
+			AND per.perNumeroIdentificacion = :numeroIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.obtenerInfoTotalEmpleador">
+		<description>consulta y obtiene la información total de un empleador determinado</description>
+		<query>
+			SELECT
+				empl.empId AS idEmpleador,
+				emp.empId AS idEmpresa,
+				per.perTipoIdentificacion AS tipoID,
+				per.perNumeroIdentificacion AS identificacion,
+				per.perRazonSocial AS razonSocial,
+				emp.empNombreComercial AS nombreComercial,
+				emp.empNaturalezaJuridica AS naturalezaJuridica,
+				emp.empFechaConstitucion AS fechaConstitucion,
+				dep.depCodigo AS departamentoCodigo,
+				dep.depNombre AS departamento,
+				mun.munCodigo AS municipioCodigo,
+				mun.munNombre AS municipio,
+				CASE WHEN ubi.ubiDescripcionIndicacion IS NOT NULL THEN CONCAT(ubi.ubiDireccionFisica, CONCAT(' - ', ubi.ubiDescripcionIndicacion)) ELSE  ubi.ubiDireccionFisica END AS direccionPrincipal,
+				CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubiTelefonoFijo) AS telefonoFijo,
+				ubi.ubiTelefonoCelular AS celular,
+				ubi.ubiCodigoPostal AS codigoPostal,
+				(CASE WHEN empl.empEstadoEmpleador IS NOT NULL THEN empl.empEstadoEmpleador
+				ELSE (select top(1) apgEstadoAportante from aporteGeneral where apgEmpresa = emp.empId order by apgFechaProcesamiento desc) END) AS estadoAfiliacion,
+				(select top(1) car.carEstadoCartera from Cartera car where car.carPersona = per.perId and car.carEstadoOperacion = 'VIGENTE' ORDER BY car.carEstadoCartera DESC) AS estadoCartera,
+				cii.ciiCodigo AS actividadEconomica,
+				cii.ciiDescripcion AS descripcionActividadEconomica,
+				ubi.ubiEmail AS correoElectronico,
+				empl.empFechaCambioEstadoAfiliacion AS fechaAfiliacion,
+				empl.empFechaRetiro AS fechaRetiro,
+				(select replace(convert(varchar, com.comFechaComunicado, 111),'/','-') from comunicado com
+				join PlantillaComunicado pco ON com.comPlantillaComunicado = pco.pcoId 
+				where pco.pcoEtiqueta = 'CAR_EMP_EXP' and com.comEmpleador = empl.empId) AS fechaEntregaExpulsion,
+				empl.empNumeroTotalTrabajadores AS numeroTotalTrabajadores,
+				empl.empPeriodoUltimaNomina AS ultimoPeriodoAportes,
+				empl.empDiaHabilVencimientoAporte AS diaHabilVencimientoPagoAportes,
+				per.perDigitoVerificacion as digitoVerificacion 
+			FROM 
+				Empresa emp 
+				JOIN Persona per ON emp.empPersona = per.perId
+				LEFT JOIN Empleador empl ON empl.empEmpresa = emp.empId
+				LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+				LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+				LEFT JOIN Departamento dep ON mun.munDepartamento = dep.depId
+				LEFT JOIN CodigoCIIU cii ON emp.empCodigoCIIU = cii.ciiId
+			WHERE 
+				per.perTipoIdentificacion = :tipoIdEmpleador
+				AND per.perNumeroIdentificacion = :numeroIdEmpleador
+			ORDER BY empl.empId DESC
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.obtenerInfoRepLegalEmpleador">
+		<description>consulta y obtiene los datos del representante legal de un empleador dado</description>
+		<query>
+			SELECT
+				per.perTipoIdentificacion AS tipoID,
+				per.perNumeroIdentificacion AS identificacion,
+				per.perDigitoVerificacion AS digitoVerificacion,
+				CONCAT(CONCAT(per.perPrimerNombre,' ',per.perSegundoNombre,' '),CONCAT(per.perPrimerApellido,' ',per.perSegundoApellido)) AS nombreCompleto,
+				dep.depCodigo AS departamentoCodigo,
+				dep.depNombre AS departamento,
+				mun.munCodigo AS municipioCodigo,
+				mun.munNombre AS municipio,
+				ubi.ubiDireccionFisica AS direccionPrincipal,
+				CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubiTelefonoFijo) AS telefonoFijo,
+				ubi.ubiTelefonoCelular AS celular,
+				ubi.ubiEmail AS correoElectronico
+			FROM Empresa emp
+			join Persona per on emp.empRepresentanteLegal = per.perId
+			left join Ubicacion ubi on emp.empUbicacionRepresentanteLegal = ubi.ubiId
+			left join Municipio mun on ubi.ubiMunicipio = mun.munId
+			left join Departamento dep on mun.munDepartamento = dep.depId
+			WHERE emp.empId= :idEmpresa
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.consultarSucursalesEmpresaSrvTra">
+		<query>
+			SELECT 
+				sue.sueCodigo AS codigoSucursal,
+				sue.sueEstadoSucursal AS estadoSucursal,
+				sue.sueNombre AS nombreSucursal,
+				CASE WHEN ubi.ubiDescripcionIndicacion IS NOT NULL THEN CONCAT(ubi.ubiDireccionFisica, CONCAT(' - ', ubi.ubiDescripcionIndicacion)) ELSE ubi.ubiDireccionFisica END AS direccionPrincipalSucursal,
+				dep.depCodigo AS codigoDepartamentoSucursal,
+				dep.depNombre AS nombreDepartamentoSucursal,
+				mun.munCodigo AS codigoMunicipioSucursal,
+				mun.munNombre AS nombreMunicipioSucursal,
+				ubi.ubiEmail AS emailSucursal,
+				ciiu.ciiCodigo AS actividadEconomica,
+				ciiu.ciiDescripcion AS descripcionActividadEconomica,
+				CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubiTelefonoFijo) AS telefonoPrincipalSucursal,
+				(select top(1) apgPeriodoAporte from aporteGeneral where apgEmpresa = :idEmpleador and apgSucursalEmpresa = sue.sueId order by apgPeriodoAporte desc) AS ultimoPeriodoAporte
+			FROM SucursalEmpresa sue
+			left join ubicacion ubi on sue.sueUbicacion = ubi.ubiId
+			left join Municipio mun on ubi.ubiMunicipio = mun.munId
+			left join Departamento dep on mun.munDepartamento = dep.depId
+			left join CodigoCIIU ciiu on sue.sueCodigoCIIU = ciiu.ciiId
+			WHERE sue.sueEmpresa = :idEmpleador
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.consultarSucursalesEmpleadorPorCodigoSrvTra">
+		<query>
+			SELECT 
+				sue.sueId AS idSucursal, 
+				empl.empId AS idEmpleador, 
+				emp.empId AS idEmpresa 
+			FROM empleador empl 
+				JOIN empresa emp ON empl.empEmpresa = emp.empId
+				JOIN sucursalEmpresa sue ON emp.empId = sue.sueEmpresa
+			WHERE empl.empId = :idEmpleador
+			AND sue.sueCodigo = :codigoSucursal
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.obtenerDatosContactoEmpleadorPpl">
+		<query>
+            SELECT 
+				rce.rceTipoRolContactoEmpleador AS tipoContacto,
+				per.perTipoIdentificacion AS tipoID,
+				per.perNumeroIdentificacion AS identificacion,
+				per.perRazonSocial AS nombreCompleto,
+				dep.depNombre AS departamento,
+				mun.munNombre AS municipio,
+				CASE WHEN ubi.ubiDescripcionIndicacion IS NOT NULL THEN CONCAT(ubi.ubiDireccionFisica, CONCAT(' - ', ubi.ubiDescripcionIndicacion)) ELSE  ubi.ubiDireccionFisica END AS direccionPrincipal,
+				CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubiTelefonoFijo) AS telefonoFijo,
+				ubi.ubiTelefonoCelular AS celular,
+				ubi.ubiEmail AS correoElectronico
+			FROM RolContactoEmpleador rce 
+			JOIN Persona per ON rce.rcePersona = per.perId
+			LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			LEFT JOIN Departamento dep ON mun.munDepartamento = dep.depId
+			WHERE rce.rceEmpleador = :idEmpleador  
+        </query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.obtenerDatosContactoEmpleador">
+		<description>consulta los datos de contacto de un empleador dado</description>
+		<query>
+			SELECT 
+				rce.rceTipoRolContactoEmpleador AS tipoContacto,
+				perRce.perTipoIdentificacion AS tipoID,
+				perRce.perNumeroIdentificacion AS identificacion,
+				perRce.perRazonSocial AS nombreCompleto,
+				(CASE WHEN depRce.depId IS NOT NULL THEN depRce.depNombre ELSE dep.depNombre END) AS departamento,
+				(CASE WHEN munRce.munId IS NOT NULL THEN munRce.munNombre ELSE mun.munNombre END) AS municipio,
+				CASE WHEN ubi.ubiDescripcionIndicacion IS NOT NULL THEN CONCAT(ubi.ubiDireccionFisica, CONCAT(' - ', ubi.ubiDescripcionIndicacion)) ELSE  ubi.ubiDireccionFisica END AS direccionPrincipal,
+				(CASE WHEN ubiRce.ubiId IS NOT NULL THEN CONCAT(ubiRce.ubiIndicativoTelFijo, ubiRce.ubiTelefonoFijo) ELSE CONCAT (ubi.ubiIndicativoTelFijo, ubi.ubiTelefonoFijo) END) AS telefonoFijo,
+				(CASE WHEN ubiRce.ubiId IS NOT NULL THEN ubiRce.ubiTelefonoCelular ELSE ubi.ubiTelefonoCelular END) AS celular,
+				(CASE WHEN ubiRce.ubiId IS NOT NULL THEN ubiRce.ubiEmail ELSE ubi.ubiEmail END) AS correoElectronico,
+				sue.sueCodigo AS codigoSucursal,
+				sue.sueNombre AS nombreSucursal
+			FROM SucursalEmpresa sue 
+			JOIN Ubicacion ubi ON sue.sueUbicacion = ubi.ubiId 
+			LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+			LEFT JOIN Departamento dep ON mun.munDepartamento = dep.depId
+			LEFT JOIN SucursaRolContactEmpleador src ON src.srcSucursalEmpleador = sue.sueId
+			LEFT JOIN RolContactoEmpleador rce ON src.srcRolContactoEmpleador = rce.rceId
+			LEFT JOIN Persona perRce ON rce.rcePersona = perRce.perId
+			LEFT JOIN Ubicacion ubiRce ON perRce.perUbicacionPrincipal = ubiRce.ubiId
+			LEFT JOIN Municipio munRce ON ubiRce.ubiMunicipio = munRce.munId
+			LEFT JOIN Departamento depRce ON munRce.munDepartamento = depRce.depId
+			WHERE sue.sueId = :idSucursal
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.obtenerBeneficiariosAfiliadoPrincipalSrvTra">
+		<query>
+	
+		declare @perid bigint
+		select @perid = perid 
+		from Persona 
+		where perTipoIdentificacion = :tipoIdentificacion and perNumeroIdentificacion = :numeroIdentificacion
+
+			select 
+				perben1.perTipoIdentificacion as tipoIdentificacionBeneficiario,
+				perben1.perNumeroIdentificacion as numeroIdentificacionBeneficiario,
+				convert(text,(
+						select
+						isnull((benTipoBeneficiario),'') as tipoBeneficiario,
+						perBen.perTipoIdentificacion as tipoID, 
+						perBen.perNumeroIdentificacion as identificacion, 
+						isnull((perBen.perRazonSocial), concat(perBen.perPrimerNombre, perBen.perSegundoNombre, perBen.perPrimerApellido, perBen.perSegundoApellido)) as nombreCompleto, 
+						isnull((perBen.perPrimerNombre),'') as primerNombre,
+						isnull((perBen.perSegundoNombre),'') as segundoNombre, 
+						isnull((perBen.perPrimerApellido),'') as primerApellido,
+						isnull((perBen.perSegundoApellido),'') as segundoApellido,
+						isnull(CONVERT(VARCHAR, pedFechaNacimiento, 126), '') as fechaNacimiento,
+						(select 
+							datediff(year,pedFechaNacimiento, getdate()) - 
+							case 
+								when month(pedFechaNacimiento) &gt; month(getdate()) or 
+									(month(pedFechaNacimiento) = month(getdate()) and day(pedFechaNacimiento) &gt; day(getdate()))
+								then 1
+								else 0 
+							end) as edad,
+						isnull(convert(varchar, pedFechaFallecido, 126), '') as fechaFallecido,
+						isnull((pedEstadoCivil),'') as estadoCivil,
+						pedGenero as genero, 
+						isnull((ubiDireccionFisica),'') as direccionResidencia, 
+						isnull((munCodigo),'') municipioCodigo, 
+						isnull((munNombre),'') municipioNombre, 
+						isnull((depCodigo),'') departamentoCodigo,
+						isnull((depNombre),'') departamentoNombre,
+						isnull((ubiCodigoPostal),'') as codigoPostal, 
+						CONCAT(ubiIndicativoTelFijo, ubiTelefonoFijo) as telefonoFijo,
+						isnull((ubiTelefonoCelular),'') as celular,
+						isnull((ubiEmail),'') as correoElectronico, 
+						ubiAutorizacionEnvioEmail as autorizacionEnvioEmail, 
+						pedAutorizaUsoDatosPersonales as autorizacionDatosPersonales, 
+						benEstadoBeneficiarioAfiliado as estadoAfiliacion, 
+						g.grfNumero as grupoFamiliar, 
+						isnull(convert(varchar, benFechaAfiliacion, 126), '') as fechaAfiliacionCCF,
+						isnull(convert(varchar, benFechaRetiro, 126), '') as fechaRetiro,
+						benMotivoDesafiliacion as motivoDesafiliacion, 
+						pedEstudianteTrabajoDesarrolloHumano as estudianteTrabajoDesarrolloHumano, 
+						(select top(1) roaTipoAfiliado
+						from dbo.RolAfiliado
+						where roaAfiliado = afi.afiId) as tipoAfiliado, 
+						perAfi.perTipoIdentificacion as tipoIDAfiliado, 
+						perAfi.perNumeroIdentificacion as identificacionAfiliado, 
+						perAfi.perPrimerNombre as primerNombreAfiliado, 
+						perAfi.perSegundoNombre as segundoNombreAfiliado, 
+						perAfi.perPrimerApellido as primerApellidoAfiliado, 
+						perAfi.perSegundoApellido as segundoApellidoAfiliado, 
+						benTipoBeneficiario as clasificacion,
+						case when beneficiario.benEstadoBeneficiarioAfiliado = 'INACTIVO' then 'SIN_CATEGORIA' else (select top (1) ctaCategoria
+						from dbo.categoriaAfiliado
+						where ctaAfiliado = afi.afiId
+						order by ctaFechaCambioCategoria desc) end as categoria, 
+						(select top(1) dsaValorSubsidioMonetario
+						from dbo.DetalleSubsidioAsignado
+						where dsaBeneficiarioDetalle = bedId and dsaAfiliadoPrincipal = afi.afiId
+						order by dsaBeneficiarioDetalle desc) as ultimoPagoCuotaMonetaria, 
+						isnull((select top 1 bbc.bbcBloqueado 
+						from dbo.BloqueoBeneficiarioCuotaMonetaria bbc
+						inner join dbo.cargueBloqueoCuotaMonetaria on bbc.bbcCargueBloqueoCuotaMonetaria = cabId 
+						where bbc.bbcTipoIdentificacionBeneciario = perBen.perTipoIdentificacion 
+							and bbc.bbcNumeroidentificacionBeneficiario = perBen.perNumeroIdentificacion and 
+							:fechaActual between cabPeriodoInicio and cabPeriodoFin
+							order by bbc.bbcBloqueado desc), 0) as inhabilitadoSubsidio,
+						isnull((coiInvalidez), 0) as condicionInvalidez,
+						(select cebFechaRecepcion as fechaRecepcion, cebFechaVencimiento as fechaVencimiento
+						from dbo.CertificadoEscolarBeneficiario
+						inner join dbo.Beneficiario on benBeneficiarioDetalle = cebBeneficiarioDetalle join Persona on benPersona = perId 
+						where perNumeroIdentificacion = perben1.perNumeroIdentificacion and perTipoIdentificacion = perben1.perTipoIdentificacion
+						for json path) as DTOArregloCertificadoEscolaridad 
+						from dbo.beneficiario 
+						inner join dbo.Persona perBen on benPersona = perBen.perId 
+						inner join dbo.BeneficiarioDetalle on benBeneficiarioDetalle = bedId 
+						inner join dbo.PersonaDetalle on bedPersonaDetalle = pedId 
+						left join dbo.Ubicacion on perUbicacionPrincipal = ubiId 
+						left join dbo.Municipio on ubiMunicipio = munId 
+						left join dbo.Departamento on munDepartamento = depId 
+						inner join dbo.Afiliado afi on benAfiliado = afi.afiId 
+						inner join dbo.Persona perAfi on afi.afiPersona = perAfi.perId 
+						left join dbo.CondicionInvalidez ci on perBen.perId = ci.coiPersona 
+						left join dbo.GrupoFamiliar g on g.grfId=Beneficiario.benGrupoFamiliar and afi.afiId = g.grfAfiliado 
+						where perBen.perid = perben1.perid and perAfi.perid = perAfi1.perid
+						order by benFechaAfiliacion desc
+						for json path, include_null_values
+				),2) as json 
+			from dbo.Beneficiario ben1 
+			inner join dbo.Persona perBen1 on ben1.benPersona = perBen1.perId
+			inner join dbo.Afiliado afi1 on ben1.benAfiliado = afi1.afiId
+			inner join dbo.Persona perAfi1 on afi1.afiPersona = perAfi1.perId
+			where perAfi1.perId = @perid
+
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.obtenerCategoriaActualPersonaTra">
+		<query>
+			select top(1)
+			ctaClasificacion,
+			ctaCategoria
+			from categoriaAfiliado 
+			join afiliado on ctaAfiliado = afiId
+			join persona on afiPersona = perId
+			where perTipoIdentificacion = :tipoIdentificacion
+			and perNumeroIdentificacion = :numeroIdentificacion
+			order by ctaFechaCambioCategoria desc
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.consultarCategoriasAfiliadoSrvTra">
+		<query>
+			SELECT 
+				ctaCategoria, 
+				ctaFechaCambioCategoria 
+			FROM 
+				categoriaAfiliado 
+			WHERE 
+			ctaAfiliado = :idAfiliado
+			AND ctaTipoAfiliado = :tipoAfiliado
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.consultarCategoriasBeneficiarioPorTipoAfiliadoSrvTra">
+		<query>
+			select 
+				ctaCategoria, 
+				ctaFechaCambioCategoria 
+			from categoriaBeneficiario
+			join categoriaAfiliado on ctbCategoriaAfiliado = ctaId 
+			where ctbBeneficiarioDetalle = :idBeneficiarioDetalle
+			and ctaTipoAfiliado = :tipoAfiliado
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.consultarCategoriasBeneficiarioSrvTra">
+		<query>
+			select 
+				ctaCategoria, 
+				ctaFechaCambioCategoria 
+			from categoriaBeneficiario
+			join categoriaAfiliado on ctbCategoriaAfiliado = ctaId 
+			where ctbBeneficiarioDetalle = :idBeneficiarioDetalle
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.obtenerInfoCertificadosEscolaridadBenefciarioSrvTra">
+		<query>
+			select 
+				cebFechaRecepcion as fechaRecepcion,
+				cebFechaVencimiento as fechaVencimiento
+			from CertificadoEscolarBeneficiario 
+			join Beneficiario on benBeneficiarioDetalle = cebBeneficiarioDetalle
+			join Persona on benPersona = perId
+			where perNumeroIdentificacion = :numeroIdentificacion
+			and perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.consultarInfoAfiliacionAfiliadoPrincipalST">
+		<query>
+			SELECT
+				(CASE WHEN (select top(1) roaId from rolafiliado join afiliado on roaAfiliado = afiId
+				join persona on afipersona = per.perId where roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' AND roaEstadoAfiliado = 'ACTIVO') IS NOT NULL THEN 1
+				ELSE 0 END) AS afiliadoComoDependiente,
+				(CASE WHEN (select top(1) roaId from rolafiliado join afiliado on roaAfiliado = afiId
+				join persona on afipersona = per.perId where roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE' AND roaEstadoAfiliado = 'ACTIVO') IS NOT NULL THEN 1
+				ELSE 0 END) AS afiliadoComoIndependiente,
+				(CASE WHEN (select top(1) roaId from rolafiliado join afiliado on roaAfiliado = afiId
+				join persona on afipersona = per.perId where roaTipoAfiliado = 'PENSIONADO' AND roaEstadoAfiliado = 'ACTIVO') IS NOT NULL THEN 1
+				ELSE 0 END) AS afiliadoComoPensionado,
+				(select top(1) ctaCategoria from categoriaAfiliado join afiliado on ctaAfiliado = afiId
+				join persona on afiPersona = per.perId where ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' order by ctaFechaCambioCategoria desc) as categoriaDependiente,
+				(select top(1) ctaCategoria from categoriaAfiliado join afiliado on ctaAfiliado = afiId
+				join persona on afiPersona = per.perId where ctaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE' order by ctaFechaCambioCategoria desc) as categoriaIndependiente,
+				(select top(1) ctaCategoria from categoriaAfiliado join afiliado on ctaAfiliado = afiId
+				join persona on afiPersona = per.perId where ctaTipoAfiliado = 'PENSIONADO' order by ctaFechaCambioCategoria desc) as categoriaPensionado
+			from Persona per where per.perNumeroIdentificacion = :numeroIdentificacion
+			and per.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query
+		name="Afiliados.transversal.consultarSucrsalesEmpleadorSrvTra">
+		<query>
+			SELECT 
+				sue.sueId AS idSucursal, 
+				empl.empId AS idEmpleador, 
+				emp.empId AS idEmpresa 
+			FROM empleador empl 
+				JOIN empresa emp ON empl.empEmpresa = emp.empId
+				JOIN sucursalEmpresa sue ON emp.empId = sue.sueEmpresa
+			WHERE empl.empId = :idEmpleador
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.buscarDatosAfiliadosSrvTra">
+		<query>
+			select
+				perAfi.perTipoIdentificacion as tipoIDAfiliado,
+				perAfi.perNumeroIdentificacion as numeroIdentificacionAfiliado,
+				perAfi.perPrimerNombre as primerNombreAfiliado,
+				perAfi.perSegundoNombre as segundoNombreAfiliado,
+				perAfi.perPrimerApellido as primerApellidoAfiliado,
+				perAfi.perSegundoApellido as segundoApellidoAfiliado,
+				(select top(1) eacEstadoAfiliacion from estadoAfiliacionPersonaCaja 
+					where eacPersona = perAfi.perId order by eacFechaCambioEstado desc) as estadoAfiliacionAfiliado,
+				(CASE WHEN (select TOP(1) benId from beneficiario 
+					where benAfiliado = afi.afiId and benTipoBeneficiario = 'CONYUGE' 
+					and benEstadoBeneficiarioAfiliado = 'ACTIVO') is not null then 1 else 0 end) as tieneConyuge,
+				perBen.perTipoIdentificacion as tipoIDBeneficiario,
+				perBen.perNumeroIdentificacion as numeroIdentificacionBeneficiario,
+				perBen.perPrimerNombre as primerNombreBeneficiario,
+				perBen.perSegundoNombre as segundoNombreBeneficiario,
+				perBen.perPrimerApellido as primerApellidoBeneficiario,
+				perBen.perSegundoApellido as segundoApellidoBeneficiario,
+				(select top(1) eacEstadoAfiliacion from estadoAfiliacionPersonaCaja 
+					where eacPersona = perBen.perId order by eacFechaCambioEstado desc) as estadoAfiliacionConyuge
+			from afiliado afi join persona perAfi on afi.afiPersona = perAfi.perId
+			left join beneficiario ben on (ben.benAfiliado = afi.afiId and ben.benTipoBeneficiario = 'CONYUGE' and ben.benEstadoBeneficiarioAfiliado = 'ACTIVO')
+			left join persona perBen on ben.benPersona = perBen.perId 
+			where perAfi.perNumeroIdentificacion = :numeroIdentificacion
+			and perAfi.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.BuscarCategoriasAfiliadoPrincipalSrvTra">
+		<query>
+			select 
+				ctaClasificacion,
+				ctaFechaCambioCategoria,
+				ctaCategoria,
+				ctaTipoAfiliado
+			from categoriaAfiliado 
+			join afiliado on ctaAfiliado = afiId
+			join persona on afiPersona = perId
+			where perTipoIdentificacion = :tipoIdentificacion
+			and perNumeroIdentificacion = :numeroIdentificacion
+			and ctaFechaCambioCategoria between dateadd(second, :fechaInicio / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time' and dateadd(second, :fechaFin / 1000, '19700101') AT TIME ZONE 'UTC' AT TIME ZONE 'SA Pacific Standard Time'
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.tansversal.obtenerInfoAfiliadosPrincipalesBeneficiarioSrvTra">
+		<query>
+			select 
+				perAfi.perTipoIdentificacion as tipoIDAfiliado,
+				perAfi.perNumeroidentificacion as numeroIdentificacionAfiliado,
+				perAfi.perPrimerNombre as primerNombreAfiliado,
+				perAfi.perSegundoNombre as segundoNombreAfiliado,
+				perAfi.perPrimerApellido as primerApellidoAfiliado,
+				perAfi.perSegundoApellido as segundoApellidoAfiliado,
+				(select top(1) eacEstadoAfiliacion from estadoAfiliacionPersonaCaja where eacPersona = perAfi.perId order by eacFechaCambioEstado desc) as estadoAfiliacionAfiliado
+			from Beneficiario ben 
+			join Afiliado afi on ben.benAfiliado = afi.afiId
+			join persona perBen on ben.benPersona = perBen.perId
+			join persona perAfi on afi.afiPersona = perAfi.perId
+			where 
+			perBen.perTipoIdentificacion = :tipoIdentificacion
+			and perBen.perNumeroIdentificacion = :NumeroIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.buscarInfoCiudadConDepartamentoSrvTra" result-set-mapping="InfoCiudadOutDTOMapping">
+		<query>
+			SELECT 
+				dep.depNombre AS nombreDepartamento,
+				mun.munNombre AS nombreCiudad,
+				dep.depCodigo AS codigoDepartamento,
+				mun.munCodigo AS codigoMunicipio
+			FROM municipio mun 
+			JOIN departamento dep ON mun.munDepartamento = dep.depId
+			WHERE mun.munCodigo = :codigoMunicipio
+			AND dep.depCodigo = :codigoDepartamento
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.buscarInfoCiudadSrvTra" result-set-mapping="InfoCiudadOutDTOMapping">
+		<query>
+			SELECT 
+				dep.depNombre AS nombreDepartamento,
+				mun.munNombre AS nombreCiudad,
+				dep.depCodigo AS codigoDepartamento,
+				mun.munCodigo AS codigoMunicipio
+			FROM municipio mun 
+			JOIN departamento dep ON mun.munDepartamento = dep.depId
+			WHERE mun.munCodigo = :codigoMunicipio
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliados.transversal.buscarUltimoSalarioAfiliadoSrvTra" result-set-mapping="UltimoSalarioAfiliadoOutDTOMapping">
+		<query>
+			SELECT top(1)
+				per.perTipoIdentificacion AS tipoId,
+				per.perNumeroIdentificacion AS identificacion,
+				apd.apdSalarioBasico AS periodo,
+				apg.apgFechaRecaudo AS fechaNovedad
+			FROM AporteDetallado apd 
+			JOIN AporteGeneral apg ON apd.apdAporteGeneral = apg.apgId
+			JOIN Persona per ON apd.apdPersona = per.perId
+			WHERE per.perNumeroIdentificacion = :numeroId
+			AND per.perTipoIdentificacion =:tipoId
+			AND (:periodo is null OR apgPeriodoAporte = :periodo)
+			order by fechaNovedad desc
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliados.Consultar.ObtenerPersonasEnRelacionHijos">
+		<query>
+			WITH HijosCompartidos AS (
+				SELECT DISTINCT 
+					hijo.perId as hijoId
+				FROM GrupoFamiliar gf
+				JOIN Afiliado a ON gf.grfAfiliado = a.afiId
+				JOIN Persona p ON p.perId = a.afiPersona
+				JOIN Beneficiario b ON b.benGrupoFamiliar = gf.grfId
+				JOIN Persona hijo ON hijo.perId = b.benPersona
+				WHERE p.perNumeroIdentificacion = :numeroIdentificacionAfiliado
+				AND p.perTipoIdentificacion = :tipoIdentificacionAfiliado
+				AND b.benTipoBeneficiario = 'HIJO_BIOLOGICO'
+			)
+				SELECT DISTINCT
+				pp.perId, 
+				null as benId,
+				pp.perTipoIdentificacion, 
+				pp.perNumeroIdentificacion, 
+				pp.perPrimerNombre, 
+				pp.perSegundoNombre, 
+				pp.perPrimerApellido, 
+				pp.perSegundoApellido,
+				b2.benEstadoBeneficiarioAfiliado
+			FROM HijosCompartidos hc
+			JOIN Beneficiario b2 ON b2.benPersona = hc.hijoId
+			JOIN GrupoFamiliar gf2 ON b2.benGrupoFamiliar = gf2.grfId
+			JOIN Afiliado a2 ON gf2.grfAfiliado = a2.afiId
+			JOIN Persona pp ON pp.perId = a2.afiPersona
+			WHERE b2.benTipoBeneficiario = 'HIJO_BIOLOGICO'
+			AND pp.perNumeroIdentificacion != :numeroIdentificacionAfiliado
+
+			UNION
+
+			SELECT DISTINCT
+				pp.perId, 
+				null as benId,
+				pp.perTipoIdentificacion, 
+				pp.perNumeroIdentificacion, 
+				pp.perPrimerNombre, 
+				pp.perSegundoNombre, 
+				pp.perPrimerApellido, 
+				pp.perSegundoApellido,
+				b.benEstadoBeneficiarioAfiliado
+			FROM GrupoFamiliar gf
+			JOIN Afiliado a ON gf.grfAfiliado = a.afiId
+			JOIN Persona p ON p.perId = a.afiPersona
+			JOIN Beneficiario b ON b.benGrupoFamiliar = gf.grfId
+			JOIN Persona pp ON pp.perId = b.benPersona
+			WHERE p.perNumeroIdentificacion = :numeroIdentificacionAfiliado
+			AND p.perTipoIdentificacion = :tipoIdentificacionAfiliado
+			AND b.benTipoBeneficiario = 'CONYUGE';
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliados.Consultar.ObtenerPersonasEnRelacionHijos2">
+		<query>
+		WITH HijosCompartidos AS (
+				SELECT DISTINCT 
+					hijo.perId as hijoId,
+					b.benId as hijoBenId,
+					hijo.perNumeroIdentificacion as hijoNumeroIdentificacion,
+					hijo.perTipoIdentificacion as hijoTipoIdentificacion,
+					hijo.perPrimerNombre as hijoPrimerNombre,
+					hijo.perSegundoNombre as hijoSegundoNombre,
+					hijo.perPrimerApellido as hijoPrimerApellido,
+					hijo.perSegundoApellido as hijoSegundoApellido
+				FROM GrupoFamiliar gf
+				JOIN Afiliado a ON gf.grfAfiliado = a.afiId
+				JOIN Persona p ON p.perId = a.afiPersona
+				JOIN Beneficiario b ON b.benGrupoFamiliar = gf.grfId
+				JOIN Persona hijo ON hijo.perId = b.benPersona
+				WHERE p.perNumeroIdentificacion = :numeroIdentificacionAfiliado
+				AND p.perTipoIdentificacion = :tipoIdentificacionAfiliado
+				AND b.benTipoBeneficiario = 'HIJO_BIOLOGICO'
+			)
+		SELECT DISTINCT
+				hc.hijoId as perId,
+				b2.benId as hijoBenId,
+				hc.hijoTipoIdentificacion as perTipoIdentificacion,
+				hc.hijoNumeroIdentificacion as perNumeroIdentificacion,
+				hc.hijoPrimerNombre as perPrimerNombre,
+				hc.hijoSegundoNombre as perSegundoNombre,
+				hc.hijoPrimerApellido as perPrimerApellido,
+				hc.hijoSegundoApellido as perSegundoApellido,
+				b2.benEstadoBeneficiarioAfiliado
+			FROM HijosCompartidos hc
+			JOIN Beneficiario b2 ON b2.benPersona = hc.hijoId
+			JOIN GrupoFamiliar gf2 ON b2.benGrupoFamiliar = gf2.grfId
+			JOIN Afiliado a2 ON gf2.grfAfiliado = a2.afiId
+			JOIN Persona p2 ON p2.perId = a2.afiPersona
+			JOIN PersonaDetalle pd ON pd.pedPersona = p2.perId
+			WHERE b2.benTipoBeneficiario = 'HIJO_BIOLOGICO'
+			AND p2.perNumeroIdentificacion != :numeroIdentificacionAfiliado
+<!-- 
+			UNION
+
+			SELECT DISTINCT
+				p2.perId as perId,
+				p2.perTipoIdentificacion as perTipoIdentificacion,
+				p2.perNumeroIdentificacion as perNumeroIdentificacion,
+				p2.perPrimerNombre as perPrimerNombre,
+				p2.perSegundoNombre as perSegundoNombre,
+				p2.perPrimerApellido as perPrimerApellido,
+				p2.perSegundoApellido as perSegundoApellido,
+				b.benEstadoBeneficiarioAfiliado as benEstadoBeneficiarioAfiliado
+			FROM GrupoFamiliar gf
+			JOIN Afiliado a ON gf.grfAfiliado = a.afiId
+			JOIN Persona p ON p.perId = a.afiPersona
+			JOIN Beneficiario b ON b.benGrupoFamiliar = gf.grfId
+			JOIN Persona p2 ON p2.perId = b.benPersona
+			JOIN PersonaDetalle pd ON pd.pedPersona = p2.perId
+			WHERE p.perNumeroIdentificacion = :numeroIdentificacionAfiliado
+			AND p.perTipoIdentificacion = :tipoIdentificacionAfiliado
+			AND b.benTipoBeneficiario = 'CONYUGE'
+			GROUP BY 
+				p2.perId,
+				p2.perTipoIdentificacion,
+				p2.perNumeroIdentificacion,
+				p2.perPrimerNombre,
+				p2.perSegundoNombre,
+				p2.perPrimerApellido,
+				p2.perSegundoApellido,
+				pd.pedGenero,
+				b.benEstadoBeneficiarioAfiliado -->
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliados.transversal.BuscarDatosPadreBiologico">
+		<query>
+			(SELECT top(1)
+				perAfi.perTipoIdentificacion AS tipoIdPadreBiologico,
+				perAfi.perNumeroIdentificacion AS identificacionPadreBiologico,
+				perAfi.perRazonSocial AS nombrePadreBiologico,
+				pess.pessFechaInicioExclusion as fechaInicioExclusionPadre,
+				pess.pessFechaFinExclusion as fechaFinExclusionPadre
+			FROM Beneficiario ben 
+			JOIN Persona perBen ON ben.benPersona = perBen.perId
+			JOIN Afiliado afi ON ben.benAfiliado = afi.afiId
+			JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			JOIN PersonaDetalle pedAfi ON pedAfi.pedPersona = perAfi.perId
+			LEFT JOIN PersonaExclusionSumatoriaSalario pess ON perAfi.perId = pess.pessPersona
+			WHERE perBen.perNumeroIdentificacion = :numeroId
+			AND perBen.perTipoIdentificacion = :tipoId
+			AND ben.benTipoBeneficiario = 'HIJO_BIOLOGICO'
+			AND pedAfi.pedGenero = 'MASCULINO')
+			UNION ALL
+			(
+			SELECT
+				top(1)
+				perPadre.perTipoIdentificacion AS tipoIdPadreBiologico,
+				perPadre.perNumeroIdentificacion AS identificacionPadreBiologico,
+				perPadre.perRazonSocial AS nombrePadreBiologico,
+				pess.pessFechaInicioExclusion as fechaInicioExclusionPadre,
+				pess.pessFechaFinExclusion as fechaFinExclusionPadre
+			FROM Persona perBen
+			JOIN PersonaDetalle ped ON ped.pedPersona = perBen.perId
+			JOIN Persona perPadre ON ped.pedPersonaPadre = perPadre.perId
+			LEFT JOIN PersonaExclusionSumatoriaSalario pess ON perPadre.perId = pess.pessPersona
+			WHERE perBen.perNumeroIdentificacion = :numeroId
+			AND perBen.perTipoIdentificacion = :tipoId
+			)
+			UNION ALL
+			(
+			SELECT
+				top(1)
+				perBen.perTipoIdentificacion AS tipoIdMadreBiologica,
+				perBen.perNumeroIdentificacion AS identificacionMadreBiologica,
+				perBen.perRazonSocial AS nombreMadreBiologica,
+				pess.pessFechaInicioExclusion as fechaInicioExclusionMadre,
+				pess.pessFechaFinExclusion as fechaFinExclusionMadre
+			FROM Beneficiario ben 
+			JOIN Persona perBen ON ben.benPersona = perBen.perId
+			JOIN Afiliado afi ON ben.benAfiliado = afi.afiId
+			JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			LEFT JOIN PersonaExclusionSumatoriaSalario pess ON perAfi.perId = pess.pessPersona
+			WHERE perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+			AND ben.benTipoBeneficiario = 'PADRE'
+			)
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.BuscarDatosMadreBiologica">
+		<query>
+			(SELECT
+				top(1)
+				perAfi.perTipoIdentificacion AS tipoIdMadreBiologica,
+				perAfi.perNumeroIdentificacion AS identificacionMadreBiologica,
+				perAfi.perRazonSocial AS nombreMadreBiologica,
+				pess.pessFechaInicioExclusion as fechaInicioExclusionMadre,
+				pess.pessFechaFinExclusion as fechaFinExclusionMadre
+			FROM Beneficiario ben 
+			JOIN Persona perBen ON ben.benPersona = perBen.perId
+			JOIN Afiliado afi ON ben.benAfiliado = afi.afiId
+			JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			JOIN PersonaDetalle pedAfi ON pedAfi.pedPersona = perAfi.perId
+			LEFT JOIN PersonaExclusionSumatoriaSalario pess ON perAfi.perId = pess.pessPersona
+			WHERE perBen.perNumeroIdentificacion = :numeroId
+			AND perBen.perTipoIdentificacion = :tipoId
+			AND ben.benTipoBeneficiario = 'HIJO_BIOLOGICO'
+			AND pedAfi.pedGenero = 'FEMENINO')
+			UNION
+			(SELECT
+				top(1)
+				perMadre.perTipoIdentificacion AS tipoIdMadreBiologica,
+				perMadre.perNumeroIdentificacion AS identificacionMadreBiologica,
+				perMadre.perRazonSocial AS nombreMadreBiologica,
+				pess.pessFechaInicioExclusion as fechaInicioExclusionMadre,
+				pess.pessFechaFinExclusion as fechaFinExclusionMadre
+			FROM Persona perBen
+			JOIN PersonaDetalle ped ON ped.pedPersona = perBen.perId
+			JOIN Persona perMadre ON ped.pedPersonaMadre = perMadre.perId
+			LEFT JOIN PersonaExclusionSumatoriaSalario pess ON perMadre.perId = pess.pessPersona
+			WHERE perBen.perNumeroIdentificacion = :numeroId
+			AND perBen.perTipoIdentificacion = :tipoId)
+			UNION ALL
+			(
+			SELECT
+				top(1)
+				perBen.perTipoIdentificacion AS tipoIdMadreBiologica,
+				perBen.perNumeroIdentificacion AS identificacionMadreBiologica,
+				perBen.perRazonSocial AS nombreMadreBiologica,
+				pess.pessFechaInicioExclusion as fechaInicioExclusionMadre,
+				pess.pessFechaFinExclusion as fechaFinExclusionMadre
+			FROM Beneficiario ben 
+			JOIN Persona perBen ON ben.benPersona = perBen.perId
+			JOIN Afiliado afi ON ben.benAfiliado = afi.afiId
+			JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			LEFT JOIN PersonaExclusionSumatoriaSalario pess ON perAfi.perId = pess.pessPersona
+			WHERE perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+			AND ben.benTipoBeneficiario = 'MADRE'
+			)
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.ConsultarDatosHistoricosAfiliado" result-set-mapping="DatoHistoricoAfiliadoOutDTOMapping">
+		<query>
+			SELECT 
+				roa.roaEstadoAfiliado AS estadoAfiliacion,
+				hra.hraTipoAfiliado AS tipoAfiliado,
+				roa.roaClaseIndependiente AS claseIndependiente,
+				roa.roaClaseTrabajador AS claseTrabajador,
+				hra.hraFechaIngreso AS fechaIngresoEmpresa,
+				roa.roaFechaAfiliacion AS fechaAfiliacionCCF,
+				sol.solFechaCreacion AS fechaCreacion,
+				roa.roaValorSalarioMesadaIngresos AS salario,
+				roa.roaHorasLaboradasMes AS horasLaboradasMes,
+				perEmp.perNumeroIdentificacion AS numeroIdentificacionEmpleador,
+				perEmp.perDigitoVerificacion AS digitoVerificacion,
+				perEmp.perRazonSocial AS nombreEmpleador,
+				sue.sueCodigo AS sucursalEmpleador,
+				sue.sueNombre AS nombreSucursalEmpleador,
+				sol.solTipoTransaccion AS tipoTransaccion
+			FROM HistoricoRolAfiliado hra
+			join Solicitud sol ON hra.hraSolicitud = sol.solId
+			JOIN SolicitudAfiliacionPersona sap ON sap.sapSolicitudGlobal = sol.solId
+			JOIN RolAfiliado roa ON sapRolAfiliado = roa.roaId
+			JOIN Afiliado afi ON hra.hraAfiliado = afi.afiId
+			LEFT JOIN Empleador empl ON hra.hraEmpleador = empl.empId
+			LEFT JOIN Empresa emp ON empl.empEmpresa = emp.empId
+			LEFT JOIN Persona perEmp ON emp.empPersona = perEmp.perId
+			LEFT JOIN SucursalEmpresa sue ON roa.roaSucursalEmpleador = sue.sueId
+			JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			WHERE perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.obtenerInfoEmpleadorParaContacto" result-set-mapping="ContactosEmpleadorOutDTOMapping">
+		<description>consulta y obtiene los datos generales de un empleador dado</description>
+		<query>
+			select
+				empl.empId AS idEmpleador,
+				per.perTipoIdentificacion AS tipoID,
+				per.perNumeroIdentificacion AS identificacion,
+				per.perRazonSocial AS razonSocial,
+				dep.depCodigo AS departamento,
+				(CASE WHEN mun.munCodigo IS NOT NULL THEN SUBSTRING(mun.munCodigo, 3, 5) ELSE NULL END) AS municipio,
+				(CASE WHEN ubi.ubiDescripcionIndicacion IS NOT NULL 
+				THEN CONCAT(ubi.ubiDireccionFisica, CONCAT(' - ', ubi.ubiDescripcionIndicacion)) 
+				ELSE ubi.ubiDireccionFisica END) AS direccionPrincipal,
+				CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubiTelefonoFijo) AS telefonoFijo,
+				ubi.ubiTelefonoCelular AS celular
+			from empleador empl 
+			left join empresa emp on empl.empEmpresa = emp.empId
+			left join persona per on emp.empPersona = per.perId
+			left join ubicacionEmpresa ube on ube.ubeEmpresa = emp.empId and ube.ubeTipoUbicacion = 'UBICACION_PRINCIPAL'
+			left join ubicacion ubi on ube.ubeUbicacion = ubi.ubiId
+			left join municipio mun on ubi.ubiMunicipio = mun.munId
+			left join departamento dep on mun.munDepartamento = dep.depId
+			where per.perTipoIdentificacion = :tipoIdEmpleador
+			and per.perNumeroIdentificacion = :numeroIdEmpleador
+			ORDER BY empl.empId DESC
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliados.transversal.obtenerInfoAfiliadoCSF" result-set-mapping="InfoAfiliadoOutDTOMapping">
+		<description>consulta la información de los grupos familiares de un afiliado para el método obtenerInfoAfiliado del servicio Cajas Sin Fronteras</description>
+		<query>
+			(
+			SELECT 
+				per.perTipoIdentificacion AS tipoID,
+				per.perNumeroIdentificacion AS identificacion,
+				per.perRazonSocial AS nombreCompleto,
+				ped.pedFechaNacimiento AS fechaNacimiento,
+				roa.roaEstadoAfiliado AS estadoAfiliacion,
+				roa.roaTipoAfiliado AS tipoAfiliado,
+				(SELECT TOP(1) ctaCategoria 
+					FROM CategoriaAfiliado 
+					WHERE ctaTipoAfiliado = :tipoAfiliado
+					AND ctaAfiliado = afi.afiId
+					ORDER BY ctaFechaCambioCategoria DESC
+				) AS categoria
+			FROM RolAfiliado roa 
+			JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+			JOIN Persona per ON afi.afiPersona = per.perId
+			JOIN PersonaDetalle ped ON ped.pedPersona = per.perId
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+			AND roa.roaTipoAfiliado = :tipoAfiliado)
+			UNION ALL
+			(
+			SELECT
+				perBen.perTipoIdentificacion AS tipoID,
+				perBen.perNumeroIdentificacion AS identificacion,
+				perBen.perRazonSocial AS nombreCompleto,
+				pedBen.pedFechaNacimiento AS fechaNacimiento,
+				ben.benEstadoBeneficiarioAfiliado AS estadoAfiliacion,
+				roaBen.roaTipoAfiliado AS tipoAfiliado,
+				(SELECT TOP(1) ctaCategoria 
+					FROM CategoriaAfiliado 
+					WHERE ctaTipoAfiliado = :tipoAfiliado
+					AND ctaAfiliado = afi.afiId
+					ORDER BY ctaFechaCambioCategoria DESC
+				) AS categoria
+			FROM GrupoFamiliar grf
+			JOIN afiliado afi on grf.grfAfiliado = afi.afiId
+			JOIN Persona perAfi on afi.afiPersona = perAfi.perId
+			JOIN Beneficiario ben on ben.benGrupoFamiliar = grf.grfId
+			JOIN Persona perBen on ben.benPersona = perBen.perId
+			JOIN PersonaDetalle pedBen on perBen.perId = pedBen.pedPersona 
+			LEFT join Afiliado afiBen on afiBen.afiPersona = perBen.perId 
+			LEFT join RolAfiliado roaBen on roaBen.roaAfiliado = afiBen.afiId
+			WHERE perAfi.perNumeroIdentificacion = :numeroIdentificacion
+			AND perAfi.perTipoIdentificacion = :tipoIdentificacion)
+		
+			<!-- SELECT 
+				per.perTipoIdentificacion AS tipoID,
+				per.perNumeroIdentificacion AS identificacion,
+				per.perRazonSocial AS nombreCompleto,
+				ped.pedFechaNacimiento AS fechaNacimiento,
+				roa.roaEstadoAfiliado AS estadoAfiliacion,
+				roa.roaTipoAfiliado AS tipoAfiliado,
+				(SELECT TOP(1) ctaCategoria 
+					FROM CategoriaAfiliado 
+					WHERE ctaTipoAfiliado = roa.roaTipoAfiliado
+					AND ctaAfiliado = afi.afiId
+					ORDER BY ctaFechaCambioCategoria DESC
+				) AS categoria
+			FROM
+			RolAfiliado roa 
+			JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+			JOIN Persona per ON afi.afiPersona = per.perId
+			JOIN PersonaDetalle ped ON ped.pedPersona = per.perId
+			WHERE per.perNumeroIdentificacion = :numeroIdentificacion
+			AND per.perTipoIdentificacion = :tipoIdentificacion
+			AND roa.roaTipoAfiliado = :tipoAfiliado -->
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliados.transversal.BuscarDatosPadreBiologico.Persona">
+		<query>
+			SELECT
+				top(1)
+				perPadre.perTipoIdentificacion AS tipoIdPadreBiologico,
+				perPadre.perNumeroIdentificacion AS identificacionPadreBiologico,
+				perPadre.perRazonSocial AS nombrePadreBiologico
+			FROM Persona perAfi
+			JOIN PersonaDetalle ped ON ped.pedPersona = perAfi.perId
+			JOIN Persona perPadre ON ped.pedPersonaPadre = perPadre.perId
+			WHERE perPadre.perNumeroIdentificacion = :numeroId
+			AND perPadre.perTipoIdentificacion = :tipoId
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliados.transversal.BuscarDatosMadreBiologica.Persona">
+		<query>
+			SELECT
+				top(1)
+				perMadre.perTipoIdentificacion AS tipoIdMadreBiologica,
+				perMadre.perNumeroIdentificacion AS identificacionMadreBiologica,
+				perMadre.perRazonSocial AS nombreMadreBiologica
+			FROM Persona perBen
+			JOIN PersonaDetalle ped ON ped.pedPersona = perBen.perId
+			JOIN Persona perMadre ON ped.pedPersonaMadre = perMadre.perId
+			WHERE perBen.perNumeroIdentificacion = :numeroId
+			AND perBen.perTipoIdentificacion = :tipoId
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliados.transversal.BuscarDatosHijoBiologico.Persona">
+		<query>
+			(SELECT
+				perBen.perTipoIdentificacion AS tipoIdHijoBiologico,
+				perBen.perNumeroIdentificacion AS identificacionHijoBiologico,
+				perBen.perRazonSocial AS nombreHijoBiologico
+			FROM Beneficiario ben 
+			JOIN Persona perBen ON ben.benPersona = perBen.perId
+			JOIN Afiliado afi ON ben.benAfiliado = afi.afiId
+			JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+			JOIN PersonaDetalle pedAfi ON pedAfi.pedPersona = perAfi.perId
+			WHERE perAfi.perNumeroIdentificacion = :numeroId
+			AND perAfi.perTipoIdentificacion = :tipoId
+			AND ben.benTipoBeneficiario = 'HIJO_BIOLOGICO')
+			UNION
+			(SELECT
+				perHijo.perTipoIdentificacion AS tipoIdHijoBiologico,
+				perHijo.perNumeroIdentificacion AS identificacionHijoBiologico,
+				perHijo.perRazonSocial AS nombreHijoBiologico
+			FROM Persona perHijo 
+			INNER JOIN PersonaDetalle pedHijo ON pedHijo.pedPersona = perHijo.perId
+			INNER JOIN Persona perPadre ON perPadre.perId = pedHijo.pedPersonaPadre OR perPadre.perId = pedHijo.pedPersonaMadre 
+			WHERE perPadre.perNumeroIdentificacion = :numeroId
+			AND perPadre.perTipoIdentificacion = :tipoId)
+			UNION
+			(SELECT
+				perHijo.perTipoIdentificacion AS tipoIdHijoBiologico,
+				perHijo.perNumeroIdentificacion AS identificacionHijoBiologico,
+				perHijo.perRazonSocial AS nombreHijoBiologico
+			FROM Persona perPadre
+			INNER JOIN Beneficiario benPadre ON perPadre.perId = benPadre.benPersona AND (benPadre.benTipoBeneficiario = 'PADRE' OR benPadre.benTipoBeneficiario = 'MADRE')
+			INNER JOIN Afiliado afi ON afi.afiId = benPadre.benAfiliado
+			INNER JOIN Persona perHijo ON perHijo.perId = afi.afiPersona
+			WHERE perPadre.perNumeroIdentificacion = :numeroId
+			AND perPadre.perTipoIdentificacion = :tipoId)
+			
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliados.Consultar.CertificadosEscolares">
+		<query>
+			SELECT
+				ceb.cebFechaRecepcion,
+				ceb.cebFechaVencimiento,
+				bed.bedCertificadoEscolaridad
+			FROM CertificadoEscolarBeneficiario ceb
+			JOIN BeneficiarioDetalle bed ON bed.bedId = ceb.cebBeneficiarioDetalle
+			JOIN PersonaDetalle ped ON ped.pedId = bed.bedPersonaDetalle
+			JOIN Persona per ON per.perId = pedPersona
+			WHERE per.perTipoIdentificacion = :tipoId
+			AND per.perNumeroIdentificacion = :numeroId
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Afiliaciones.Consultar.TrabajadoresActivosConEmpleadoresInactivos">
+		<query>
+			SELECT DISTINCT
+				perE.perTipoIdentificacion tipoIdEmpresa,
+				perE.perNumeroIdentificacion numeroIdEmpresa,
+				perAfi.perTipoIdentificacion tipoIdTrabajador,
+				perAfi.perNumeroIdentificacion numeroIdTrabajador,
+				roaId,
+				empFechaRetiro
+			FROM Persona perAfi
+			JOIN Afiliado ON perAfi.perId = afiPersona
+			JOIN RolAfiliado ON afiId = roaAfiliado
+			JOIN Empleador emp ON emp.empId = roaEmpleador
+			JOIN Empresa empr ON empr.empId = emp.empEmpresa
+			JOIN Persona perE ON perE.perId = empr.empPersona
+			WHERE 1=1
+			AND emp.empEstadoEmpleador = 'INACTIVO'
+			AND roaEstadoAfiliado = 'ACTIVO'
+			AND empMotivoDesafiliacion NOT IN ('CERO_TRABAJADORES_NOVEDAD_INTERNA', 'CERO_TRABAJADORES_SOLICITUD_EMPLEADOR')
+			ORDER BY roaId
+		</query>
+	</named-native-query>
+		<named-native-query name="Afiliaciones.Personas.Consultar.Archivos.Traslados">
+        <query>
+			SELECT c.ateId  FROM  Empresa em
+			JOIN persona p on p.perId = em.empPersona
+			JOIN Empleador e on e.empEmpresa = em.empId
+			JOIN ArchivosTrasladosEmpresasCCF c on c.ateIdEmpleador = e.empId
+		    JOIN ConsolaEstadoCargueMasivo m on m.cecCargueId = c.ateIdCargue
+			WHERE p.perNumeroIdentificacion = :numeroIdentificacion
+			AND p.perTipoIdentificacion =  :tipoIdentificacion
+			AND m.cecEstadoCargueMasivo = 'FIN_ERROR' 
+			AND m.cecTipoProcesoMasivo = 'CARGUE_TRASLADO_EMPRESAS_CCF' 
+        </query>
+    </named-native-query>
+
+	<named-native-query name="Afiliaciones.Personas.Cancelar.Archivos.Traslados.A.Cargo">
+		<query>
+			update m
+			set m.cecEstadoCargueMasivo = 'FINALIZADO'
+			FROM  Empresa em
+						JOIN persona p on p.perId = em.empPersona
+						JOIN Empleador e on e.empEmpresa = em.empId
+						JOIN ArchivosTrasladosEmpresasCCF c on c.ateIdEmpleador = e.empId
+						JOIN ConsolaEstadoCargueMasivo m on m.cecCargueId = c.ateIdCargue
+						WHERE m.cecTipoProcesoMasivo = 'CARGUE_TRASLADO_EMPRESAS_CCF' 
+						AND m.cecEstadoCargueMasivo IN ('FIN_ERROR', 'EN_PROCESO')
+						AND p.perNumeroIdentificacion = :numeroIdentificacion
+						AND p.perTipoIdentificacion =  :tipoIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliaciones.Consultar.Tarjeta.Afiliado">
+		<query>
+				SELECT mtrNumeroTarjeta
+								FROM (
+									SELECT 
+										per.perNumeroIdentificacion,
+										per.perTipoIdentificacion,
+										mpt.mtrNumeroTarjeta
+									FROM Persona per
+									INNER JOIN (
+										SELECT 
+											mpp.mppPersona AS personaId,
+											mpp.mppMedioPago AS medioPagoId
+										FROM MedioPagoPersona mpp
+										WHERE mpp.mppMedioActivo = 1
+
+										UNION ALL
+
+										SELECT 
+											asu.asuPersona AS personaId,
+											asg.asgMedioDePago AS medioPagoId
+										FROM AdministradorSubsidio asu
+										INNER JOIN AdminSubsidioGrupo asg ON asg.asgAdministradorSubsidio = asu.asuId
+										WHERE asg.asgMedioPagoActivo = 1
+									) AS origen ON origen.personaId = per.perId
+									INNER JOIN MedioDePago mdp ON mdp.mdpId = origen.medioPagoId
+									INNER JOIN MedioTarjeta mpt ON mpt.mdpId = mdp.mdpId
+									WHERE 
+										mdp.mdpTipo = 'TARJETA'
+										AND mpt.mtrEstadoTarjetaMultiservicios = 'ACTIVA'
+								) AS tarjetas
+								WHERE 
+									tarjetas.perNumeroIdentificacion = :numeroIdentificacion
+									AND tarjetas.perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliaciones.Personas.Cancelar.Archivos.Traslados">
+		<query>
+			update ConsolaEstadoCargueMasivo
+			set cecEstadoCargueMasivo = 'FINALIZADO'
+			FROM  ConsolaEstadoCargueMasivo
+			WHERE cecId in (:idCargues) 
+						
+		</query>
+	</named-native-query>
+
+	<named-native-query name="clasificacion.categoria.afiliado">
+        <query>
+		select top(1) sol.solClasificacion
+			from SolicitudAfiliacionPersona sap
+				join Solicitud sol on sap.sapSolicitudGlobal = sol.solId
+				join RolAfiliado roa ON sap.sapRolAfiliado = roa.roaId
+				join Afiliado afi on roa.roaAfiliado = afi.afiId
+				join Persona per on per.perId = afi.afiPersona
+			where sapRolAfiliado = roa.roaId
+			and perTipoIdentificacion = :tipoDocumento
+			and perNumeroIdentificacion = :numeroDocumento
+			order by solFechaRadicacion desc
+        </query>
+    </named-native-query>
+
+	<named-query
+            name="Afiliaciones.consultar.cargue.multiple.supervivencia.por.id">
+        <query>
+            SELECT cms FROM CargueMultipleSupervivencia cms WHERE
+            cms.idCargueMultipleSupervivencia=:idCargueSupervivencia
+        </query>
+    </named-query>
+		<named-native-query name="Afiliaciones.consultar.afiliado.enrolamiento.recaudos.recaudos.pagos">
+        <query>
+		select  CONCAT(p.perPrimerNombre,' ',p.perSegundoNombre,' ',p.perPrimerApellido,' ',p.perSegundoApellido),u.ubiEmail,u.ubiTelefonoCelular 
+		from Persona p 
+		inner join Ubicacion u on u.ubiId=p.perUbicacionPrincipal
+		where p.perTipoIdentificacion= :tipoIdentificacion 
+		AND p.perNumeroIdentificacion= :numeroIdentificacion
+        </query>
+    </named-native-query>
+	<named-native-query name="Afiliaciones.Consultar.Infototal.Afiliado">
+        <query>
+		SELECT TOP 1
+			per.perTipoIdentificacion AS tipoDto,
+			per.perNumeroIdentificacion AS numeroDoc,
+			per.perPrimerNombre AS primerNombre,
+			per.perSegundoNombre AS segundoNombre,
+			per.perPrimerApellido AS primerApellido,
+			per.perSegundoApellido AS segundoApellido,
+			CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubiTelefonoFijo) AS telefono,
+			ubi.ubiTelefonoCelular AS celular,
+			ubi.ubiDireccionFisica AS direccion,
+			DATEDIFF(YEAR, ped.pedFechaNacimiento, GETDATE()) AS edad,
+			ubi.ubiEmail AS email,
+			roa.roaFechaAfiliacion AS fechaAfiliacion,
+			roa.roaTipoAfiliado AS tipoAfiliado,
+			roa.roaFechaIngreso AS fechaIngreso,
+			ped.pedFechaNacimiento AS fechaNac,
+			ped.pedGenero AS genero,
+			ped.pedPaisResidencia AS codPais,
+			mun.munCodigo AS municipio,
+			perEmp.perNumeroIdentificacion AS nitEmpresa,
+			perEmp.perRazonSocial AS razonSocial,
+			roa.roaCargo AS cargo,
+			ped.pedGradoAcademico AS profesion,
+			COALESCE(roa.roaClaseTrabajador, roa.roaClaseIndependiente) AS vinculacion,
+			'TR' AS parentesco,
+			CASE 
+				WHEN roa.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' THEN
+					CASE
+						WHEN cta.ctaEstadoAfiliacion = 'INACTIVO' AND (
+							SELECT TOP 1
+								CASE 
+									WHEN a.afiFechaFinServicioSinAfiliacion IS NULL THEN 
+										DATEADD(
+											DAY,
+											CAST(p.prmValor AS INT),
+											CAST(c.ctaFechaCambioCategoria AS DATE)
+										)
+									ELSE a.afiFechaFinServicioSinAfiliacion
+								END
+							FROM Afiliado a
+							INNER JOIN CategoriaAfiliado c ON a.afiId = c.ctaAfiliado
+							CROSS APPLY (
+								SELECT prmValor FROM Parametro WHERE prmNombre = 'TIEMPO_ADICIONAL_SERVICIOS_CAJA'
+							) p
+							WHERE a.afiId = afi.afiId AND c.ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+							ORDER BY c.ctaFechaCambioCategoria DESC
+						) &lt; GETDATE()
+						THEN 'SIN_CATEGORIA'
+						ELSE (
+							SELECT TOP 1 ca.ctaCategoria 
+							FROM CategoriaAfiliado ca 
+							WHERE ca.ctaAfiliado = afi.afiId 
+							AND ca.ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+							AND ca.ctaCategoria &lt;&gt; 'SIN_CATEGORIA'
+							ORDER BY ca.ctaFechaCambioCategoria DESC
+						)
+					END
+
+				WHEN roa.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE' THEN
+					CASE
+						WHEN cta.ctaEstadoAfiliacion = 'INACTIVO' THEN 'SIN_CATEGORIA'
+						ELSE 'B'
+					END
+
+				WHEN roa.roaTipoAfiliado = 'PENSIONADO' THEN
+					CASE
+						WHEN cta.ctaEstadoAfiliacion = 'INACTIVO' THEN 'SIN_CATEGORIA'
+						ELSE (
+							SELECT TOP 1 ca.ctaCategoria 
+							FROM CategoriaAfiliado ca 
+							WHERE ca.ctaAfiliado = afi.afiId 
+							AND ca.ctaTipoAfiliado = 'PENSIONADO'
+							AND ca.ctaCategoria &lt;&gt; 'SIN_CATEGORIA'
+							ORDER BY ca.ctaFechaCambioCategoria DESC
+						)
+					END
+			END AS categoria,
+
+			ped.pedEstadoCivil AS estCivil,
+			ped.pedFactorVulnerabilidad AS factVulnera,
+			ped.pedNivelEducativo AS nivelEscol,
+			ped.pedOrientacionSexual AS orientSexual,
+			ped.pedPertenenciaEtnica AS pertEtnica,
+			ped.pedHabitaCasaPropia AS tienenVivi,
+			NULL AS tipoVivi
+
+		FROM RolAfiliado roa
+		LEFT JOIN Afiliado afi ON roa.roaAfiliado = afi.afiId
+		LEFT JOIN Persona per ON afi.afiPersona = per.perId
+		LEFT JOIN PersonaDetalle ped ON ped.pedPersona = per.perId
+		LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+		LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+		LEFT JOIN Departamento dep ON mun.munDepartamento = dep.depId
+		LEFT JOIN Empleador empl ON roa.roaEmpleador = empl.empId
+		LEFT JOIN Empresa emp ON empl.empEmpresa = emp.empId
+		LEFT JOIN Persona perEmp ON emp.empPersona = perEmp.perId
+		LEFT JOIN Ubicacion ubiEmp ON perEmp.perUbicacionPrincipal = ubiEmp.ubiId
+		LEFT JOIN Municipio munEmp ON ubiEmp.ubiMunicipio = munEmp.munId
+		LEFT JOIN Departamento depEmp ON munEmp.munDepartamento = depEmp.depId
+		LEFT JOIN SucursalEmpresa sue ON sue.sueEmpresa = roa.roaSucursalEmpleador
+		INNER JOIN CategoriaAfiliado cta ON afi.afiId = cta.ctaAfiliado
+
+		WHERE per.perTipoIdentificacion = :tipoIdentificacion
+		AND per.perNumeroIdentificacion = :identificacion
+
+		ORDER BY roa.roaFechaAfiliacion DESC
+        </query>
+    </named-native-query>
+	<named-native-query name="Afiliaciones.Consultar.Infototal.Beneficiario">
+        <query>
+		SELECT TOP 10
+			per.perTipoIdentificacion AS tipoDto,
+			per.perNumeroIdentificacion AS numeroDoc,
+			per.perPrimerNombre AS primerNombre,
+			per.perSegundoNombre AS segundoNombre,
+			per.perPrimerApellido AS primerApellido,
+			per.perSegundoApellido AS segundoApellido,
+			CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubiTelefonoFijo) AS telefono,
+			ubi.ubiTelefonoCelular AS celular,
+			ubi.ubiDireccionFisica AS direccion,
+			DATEDIFF(YEAR, ped.pedFechaNacimiento, GETDATE()) AS edad,
+			ubi.ubiEmail AS email,
+			ben.benFechaAfiliacion AS fechaAfiliacion,
+			NULL AS tipoAfiliado,
+			NULL AS fechaIngreso,
+			ped.pedFechaNacimiento AS fechaNac,
+			ped.pedGenero AS genero,
+			ped.pedPaisResidencia AS codPais,
+			mun.munCodigo AS municipio,
+			NULL AS nitEmpresa,
+			NULL AS razonSocial,
+			NULL AS cargo,
+			ped.pedGradoAcademico AS profesion,
+			NULL AS vinculacion,
+			ben.benTipoBeneficiario AS parentesco,
+			NULL AS categoria,
+			ped.pedEstadoCivil AS estCivil,
+			ped.pedFactorVulnerabilidad AS factVulnera,
+			ped.pedNivelEducativo AS nivelEscol,
+			ped.pedOrientacionSexual AS orientSexual,
+			ped.pedPertenenciaEtnica AS pertEtnica,
+			ped.pedHabitaCasaPropia AS tienenVivi,
+			NULL AS tipoVivi
+
+		FROM Beneficiario ben 
+		JOIN Persona per ON ben.benPersona = per.perId
+		LEFT JOIN PersonaDetalle ped ON ped.pedPersona = per.perId
+		LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+		LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+		JOIN Afiliado afi ON ben.benAfiliado = afi.afiId
+		JOIN Persona perAfi ON afi.afiPersona = perAfi.perId
+
+		WHERE perAfi.perTipoIdentificacion = :tipoIdentificacion
+		AND perAfi.perNumeroIdentificacion = :identificacion
+        </query>
+    </named-native-query>
+	<named-native-query name="Afiliados.transversal.obtener.informacion.empleador">
+		<description>consulta y obtiene la información total de un empleador determinado</description>
+		<query>
+			SELECT 
+			'' AS cargo,
+			'' AS categoria,
+			ubi.ubiTelefonoCelular AS celular,
+			'CO' AS codPais,
+			CASE 
+				WHEN ubi.ubiDescripcionIndicacion IS NOT NULL 
+					THEN CONCAT(ubi.ubiDireccionFisica, CONCAT(' - ', ubi.ubiDescripcionIndicacion)) 
+				ELSE ubi.ubiDireccionFisica 
+			END AS direccion,
+			0 AS edad,
+			ubi.ubiEmail AS email,
+			NULL AS estCivil,
+			0 AS factVulnera,
+			empl.empFechaCambioEstadoAfiliacion AS fecIngreso,
+			empl.empFechaCambioEstadoAfiliacion AS fechaAfiliacion,
+			NULL AS fechaNto,
+			'' AS genero,
+			empl.empNumeroTotalTrabajadores AS internoEmpresa,
+			mun.munCodigo AS municipio,
+			emp.empId AS nitEmpresa,
+			'' AS nivEscol,
+			per.perNumeroIdentificacion AS numeroDcto,
+			'' AS numeroDctoPrincipal,
+			'' AS oriSexual,
+			'' AS parentesco,
+			0 AS pertEtnica,
+			per.perRazonSocial AS primerApellido,
+			emp.empNombreComercial AS primerNombre,
+			'' AS profesion,
+			per.perRazonSocial AS razonSocial,
+			'' AS segundoApellido,
+			'' AS segundoNombre,
+			CONCAT(ubi.ubiIndicativoTelFijo, ubi.ubiTelefonoFijo) AS telefono,
+			0 AS tenenVivi,
+			'' AS tipVivi,
+			'' AS tipoAfiliado,
+			per.perTipoIdentificacion AS tipoDto,
+			NULL AS viculacion
+		FROM 
+			Empresa emp 
+	JOIN Persona per ON emp.empPersona = per.perId
+	LEFT JOIN Empleador empl ON empl.empEmpresa = emp.empId
+	LEFT JOIN Ubicacion ubi ON per.perUbicacionPrincipal = ubi.ubiId
+	LEFT JOIN Municipio mun ON ubi.ubiMunicipio = mun.munId
+	LEFT JOIN Departamento dep ON mun.munDepartamento = dep.depId
+	LEFT JOIN CodigoCIIU cii ON emp.empCodigoCIIU = cii.ciiId
+		WHERE 
+			per.perTipoIdentificacion = :tipoIdEmpleador
+			AND per.perNumeroIdentificacion = :numeroIdEmpleador
+		ORDER BY 
+			empl.empId DESC
+
+		</query>
+	</named-native-query>
+		<named-native-query name="Afiliaciones.Consultar.Informacion.Afiliado.Service">
+		<description>consulta y obtiene la información total de un trabajador determinado</description>
+		<query>
+			
+with PersonaDatosTem as (
+				SELECT
+				per.perNumeroIdentificacion AS identificacion,
+				per.perTipoIdentificacion AS tipoIdentificacion,
+				per.perPrimerNombre AS primerNombre,
+				per.perSegundoNombre AS segundoNombre,
+				per.perPrimerApellido AS primerApellido,
+				per.perSegundoApellido AS segundoApellido,
+				ped.pedFechaNacimiento AS fechaNacimiento,
+				ped.pedFechaDefuncion AS fechaDefuncion,
+				ped.pedEstadoCivil AS estadoCivil,
+				ped.pedGenero AS genero,
+				ped.pedAutorizaUsoDatosPersonales as autorizacionDatosPersonales,
+				ped.pedNivelEducativo as nivelEducativo,
+				ped.pedGradoAcademico as gradoAcademico,
+				ped.pedFechaExpedicionDocumento as fechaExpedicionDocumento,
+				ped.pedCabezaHogar AS cabezaHogar,
+				ped.pedHabitaCasaPropia as habitaCasaPropia,
+				ubi.ubiDireccionFisica AS direccionResidencia,
+				ubi.ubiTelefonoCelular AS celular,
+				ubi.ubiEmail AS correoElectronico,
+				ubi.ubiCodigoPostal AS codigoPostal,
+				ubi.ubiAutorizacionEnvioEmail as autorizacionEnvioEmail,
+				CASE WHEN ubi.ubiTelefonoFijo is not null then CONCAT(ubi.ubiIndicativoTelFijo,ubi.ubiTelefonoFijo) ELSE '' END AS telefonoFijo, 
+				mun.munCodigo AS municipioCodigo,
+				mun.munNombre AS municipioNombre,
+				dep.depCodigo AS departamentoCodigo,
+				dep.depNombre AS departamentoNombre,
+				per.perId,
+				a.afiId,
+				ped.pedOrientacionSexual,
+				ped.pedPertenenciaEtnica,
+				ped.pedOcupacionProfesion
+				FROM Persona per with (nolock)
+				inner join dbo.afiliado as a with (nolock) on per.perId = a.afiPersona
+				LEFT JOIN PersonaDetalle ped with (nolock) ON ped.pedPersona = per.perId
+				LEFT JOIN Ubicacion ubi with (nolock) ON ubi.ubiId = per.perUbicacionPrincipal
+				LEFT JOIN Municipio mun with (nolock) ON mun.munId = ubi.ubiMunicipio
+				LEFT JOIN Departamento dep with (nolock) ON dep.depId = mun.munDepartamento
+				WHERE  per.perTipoIdentificacion = :tipoIdentificacion
+				and per.perNumeroIdentificacion = :numeroIdentificacion
+			), result as (
+			select
+			r.roaTipoAfiliado AS tipoAfiliado,
+			r.roaClaseIndependiente AS claseIndependiente,
+			r.roaClaseTrabajador AS claseTrabajador,
+			p.tipoIdentificacion,
+			p.identificacion,
+			p.primerNombre,
+			p.segundoNombre,
+			p.primerApellido,
+			p.segundoApellido,
+			p.fechaNacimiento,
+			p.fechaDefuncion,
+			p.estadoCivil,
+			p.genero,
+			p.direccionResidencia,
+			p.habitaCasaPropia,
+			p.municipioCodigo,
+			p.municipioNombre,
+			p.departamentoCodigo,
+			p.departamentoNombre,
+			p.codigoPostal,
+			p.telefonoFijo,
+			p.celular,
+			p.correoElectronico,
+			p.autorizacionEnvioEmail,
+			p.autorizacionDatosPersonales,
+			isnull((select top 1 (CASE WHEN (convert(date,convert(varchar(17),g.apgPeriodoAporte+'-01'))>= dateadd(day, 1, eomonth(r.roaFechaAfiliacion, -1))) then a.apdSalarioBasico else r.roaValorSalarioMesadaIngresos end) as valorsa 
+			from aporteDetallado a with (nolock)
+			inner join aporteGeneral g with (nolock) on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE'  
+			and g.apgEmpresa = e.empId
+			order by apgPeriodoAporte desc),0) as salario,
+			(select top 1 isnull(a.apdTarifa,r.roaPorcentajePagoAportes) 
+			from aporteDetallado a with (nolock)
+			inner join aporteGeneral g with (nolock) on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE'  
+			order by apgPeriodoAporte desc) as porcentajeAporte,
+			r.roaCargo as cargo,
+			r.roaFechaIngreso as fechaIngresoEmpresa,
+			r.roaFechaAfiliacion as fechaAfiliacionCCF,
+			r.roaFechaRetiro as fechaRetiro,
+			(select case when r.roaFechaRetiro is null then null else r.roaMotivoDesafiliacion end) as motivoDesafiliacion,
+			r.roaHorasLaboradasMes as horasLaboradasMes,
+			r.roaEstadoAfiliado as estadoAfiliacion,
+			pe.perTipoIdentificacion as tipoIdentificacionEmpleador,
+			pe.perNumeroIdentificacion as numeroIdentificacionEmpleador,
+			pe.perDigitoVerificacion as digitoVerificacion,
+			pe.perRazonSocial as nombreEmpleador,
+			sue.sueCodigo as sucursalEmpleador,
+			sue.sueNombre as nombreSucursalEmpleador,
+			(case when (select top(1) coiId from condicionInvalidez
+				where coiPersona = p.perId
+				and coiInvalidez = 1) is not null then 1 else 0 end) as condicionInvalidez,
+			s.solUsuarioRadicacion as usuarioGestionRegistro,
+			s.solFechaCreacion as fechaCreacionRegistro,
+			s.solClasificacion as clasificacion,
+
+			(select top(1) dsaValorSubsidioMonetario from detalleSubsidioAsignado
+				where dsaAfiliadoPrincipal = afiId
+				order by dsaPeriodoLiquidado desc) as ultimoPagoCuotaMonetaria,
+			isnull((select top(1) apgPeriodoAporte from aporteDetallado join aporteGeneral on apdAporteGeneral = apgId
+				where apdPersona = p.perId
+				order by apgPeriodoAporte desc), '') as ultimoPeriodoPagoAportes,
+			(select top(1) mtr.mtrNumeroTarjeta from MedioPagoPersona
+						join MedioTarjeta mtr on mppMedioPago = mtr.mdpId
+						and mppPersona = p.perId) as numeroTarjeta,
+			nivelEducativo as nivelEducativo,
+			gradoAcademico as gradoAcademico,
+			fechaExpedicionDocumento as fechaExpedicionDocumento,
+			cabezaHogar AS cabezaHogar,
+			s.solid
+			, row_number() over (partition by roaId order by s.solFechaRadicacion desc) as idtab
+			, (select top (1) sum(apd.apdSalarioBasico)
+				from aporteDetallado apd with (nolock)
+				inner join aporteGeneral apg with (nolock) on apd.apdAporteGeneral = apg.apgId
+				where apd.apdTipoCotizante = 'TRABAJADOR_DEPENDIENTE' and apd.apdPersona = p.perId
+				group by apg.apgEmpresa, apg.apgPeriodoAporte, apd.apdPersona, apd.apdTipoCotizante
+				order by apg.apgPeriodoAporte desc) as cat, afiId,p.pedOrientacionSexual,p.pedPertenenciaEtnica,p.pedOcupacionProfesion
+			from PersonaDatosTem as p with (nolock)
+			inner join dbo.RolAfiliado as r with (nolock) on p.afiId = r.roaAfiliado
+			left join (select case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solId else null end as solId
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solUsuarioRadicacion else null end as solUsuarioRadicacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaCreacion else null end as solFechaCreacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solClasificacion else null end as solClasificacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then sap.sapRolAfiliado else null end as sapRolAfiliado
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaRadicacion else null end as solFechaRadicacion
+							from dbo.SolicitudAfiliacionPersona as sap with (nolock) 
+							inner join dbo.solicitud as s with (nolock) on sap.sapSolicitudGlobal = s.solId
+							where sap.sapEstadoSolicitud = 'CERRADA') as s on r.roaId = s.sapRolAfiliado
+			inner join dbo.empleador as em with (nolock) on r.roaEmpleador = em.empId
+			inner join dbo.empresa as e with (nolock) on e.empId = em.empEmpresa
+			inner join dbo.persona as pe with (nolock) on pe.perId = e.empPersona
+			left join dbo.SucursalEmpresa sue with (nolock) on sue.sueId = r.roaSucursalEmpleador
+			where r.roaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+
+			union all
+
+			select
+			r.roaTipoAfiliado AS tipoAfiliado,
+			r.roaClaseIndependiente AS claseIndependiente,
+			r.roaClaseTrabajador AS claseTrabajador,
+			p.tipoIdentificacion,
+			p.identificacion,
+			p.primerNombre,
+			p.segundoNombre,
+			p.primerApellido,
+			p.segundoApellido,
+			p.fechaNacimiento,
+			p.fechaDefuncion,
+			p.estadoCivil,
+			p.genero,
+			p.direccionResidencia,
+			p.habitaCasaPropia,
+			p.municipioCodigo,
+			p.municipioNombre,
+			p.departamentoCodigo,
+			p.departamentoNombre,
+			p.codigoPostal,
+			p.telefonoFijo,
+			p.celular,
+			p.correoElectronico,
+			p.autorizacionEnvioEmail,
+			p.autorizacionDatosPersonales,
+			ISNULL((select top 1 (CASE WHEN (convert(date,convert(varchar(17),g.apgPeriodoAporte+'-01'))>= r.roaFechaAfiliacion) then a.apdSalarioBasico else r.roaValorSalarioMesadaIngresos end) as valorsa 
+			from aporteDetallado a
+			inner join aporteGeneral g on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante like 'TRABAJADOR_INDEPENDIENTE'  
+			order by apgPeriodoAporte desc),
+			r.roaValorSalarioMesadaIngresos) as salario,
+			(select top 1 isnull(a.apdTarifa,r.roaPorcentajePagoAportes) 
+			from aporteDetallado a with (nolock)
+			inner join aporteGeneral g with (nolock) on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'TRABAJADOR_INDEPENDIENTE'  
+			order by apgPeriodoAporte desc) as porcentajeAporte,
+			r.roaCargo as cargo,
+			r.roaFechaIngreso as fechaIngresoEmpresa,
+			r.roaFechaAfiliacion as fechaAfiliacionCCF,
+			r.roaFechaRetiro as fechaRetiro,
+			(select case when r.roaFechaRetiro is null then null else r.roaMotivoDesafiliacion end) as motivoDesafiliacion,
+			r.roaHorasLaboradasMes as horasLaboradasMes,
+			r.roaEstadoAfiliado as estadoAfiliacion,
+			null as tipoIdentificacionEmpleador,
+			null as numeroIdentificacionEmpleador,
+			null as digitoVerificacion,
+			null as nombreEmpleador,
+			null as sucursalEmpleador,
+			null as nombreSucursalEmpleador,
+			(case when (select top(1) coiId from condicionInvalidez
+				where coiPersona = p.perId
+				and coiInvalidez = 1) is not null then 1 else 0 end) as condicionInvalidez,
+			s.solUsuarioRadicacion as usuarioGestionRegistro,
+			s.solFechaCreacion as fechaCreacionRegistro,
+			s.solClasificacion as clasificacion,
+
+			(select top(1) dsaValorSubsidioMonetario from detalleSubsidioAsignado
+				where dsaAfiliadoPrincipal = afiId
+				order by dsaPeriodoLiquidado desc) as ultimoPagoCuotaMonetaria,
+			isnull((select top(1) apgPeriodoAporte from aporteDetallado join aporteGeneral on apdAporteGeneral = apgId
+				where apdPersona = p.perId
+				order by apgPeriodoAporte desc), '') as ultimoPeriodoPagoAportes,
+			(select top(1) mtr.mtrNumeroTarjeta from MedioPagoPersona
+						join MedioTarjeta mtr on mppMedioPago = mtr.mdpId
+						and mppPersona = p.perId) as numeroTarjeta,
+			nivelEducativo as nivelEducativo,
+			gradoAcademico as gradoAcademico,
+			fechaExpedicionDocumento as fechaExpedicionDocumento,
+			cabezaHogar AS cabezaHogar,
+			s.solid
+			, row_number() over (partition by roaId order by s.solFechaRadicacion desc) as idtab
+			, (select top (1) sum(apd.apdSalarioBasico)
+				from aporteDetallado apd with (nolock)
+				inner join aporteGeneral apg with (nolock) on apd.apdAporteGeneral = apg.apgId
+				where apd.apdTipoCotizante = 'TRABAJADOR_INDEPENDIENTE' and apd.apdPersona = p.perId
+				group by apg.apgEmpresa, apg.apgPeriodoAporte, apd.apdPersona, apd.apdTipoCotizante
+				order by apg.apgPeriodoAporte desc) as cat,afiId,p.pedOrientacionSexual,p.pedPertenenciaEtnica,p.pedOcupacionProfesion
+			from PersonaDatosTem as p with (nolock)
+			inner join dbo.RolAfiliado as r with (nolock) on p.afiId = r.roaAfiliado
+			left join (select case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solId else null end as solId
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solUsuarioRadicacion else null end as solUsuarioRadicacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaCreacion else null end as solFechaCreacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solClasificacion else null end as solClasificacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then sap.sapRolAfiliado else null end as sapRolAfiliado
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaRadicacion else null end as solFechaRadicacion
+							from dbo.SolicitudAfiliacionPersona as sap with (nolock) 
+							inner join dbo.solicitud as s with (nolock) on sap.sapSolicitudGlobal = s.solId
+							where sap.sapEstadoSolicitud = 'CERRADA') as s on r.roaId = s.sapRolAfiliado
+			where r.roaTipoAfiliado = 'TRABAJADOR_INDEPENDIENTE'
+
+			union all
+
+			select
+			r.roaTipoAfiliado AS tipoAfiliado,
+			r.roaClaseIndependiente AS claseIndependiente,
+			r.roaClaseTrabajador AS claseTrabajador,
+			p.tipoIdentificacion,
+			p.identificacion,
+			p.primerNombre,
+			p.segundoNombre,
+			p.primerApellido,
+			p.segundoApellido,
+			p.fechaNacimiento,
+			p.fechaDefuncion,
+			p.estadoCivil,
+			p.genero,
+			p.direccionResidencia,
+			p.habitaCasaPropia,
+			p.municipioCodigo,
+			p.municipioNombre,
+			p.departamentoCodigo,
+			p.departamentoNombre,
+			p.codigoPostal,
+			p.telefonoFijo,
+			p.celular,
+			p.correoElectronico,
+			p.autorizacionEnvioEmail,
+			p.autorizacionDatosPersonales,
+			isnull((select top 1 (CASE WHEN (convert(date,convert(varchar(17),g.apgPeriodoAporte+'-01'))>= dateadd(day, 1, eomonth(r.roaFechaAfiliacion, -1))) then a.apdSalarioBasico else r.roaValorSalarioMesadaIngresos end) as valorsa 			from aporteDetallado a
+			inner join aporteGeneral g on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'PENSIONADO'  
+			order by apgPeriodoAporte desc),0) as salario,
+			(select top 1 isnull(a.apdTarifa,r.roaPorcentajePagoAportes) 
+			from aporteDetallado a with (nolock)
+			inner join aporteGeneral g with (nolock) on apdAporteGeneral = g.apgId
+			where apdPersona = p.perId
+			and a.apdTipoCotizante = 'PENSIONADO'  
+			order by apgPeriodoAporte desc) as porcentajeAporte,
+			r.roaCargo as cargo,
+			r.roaFechaIngreso as fechaIngresoEmpresa,
+			r.roaFechaAfiliacion as fechaAfiliacionCCF,
+			r.roaFechaRetiro as fechaRetiro,
+			(select case when r.roaFechaRetiro is null then null else r.roaMotivoDesafiliacion end) as motivoDesafiliacion,
+			r.roaHorasLaboradasMes as horasLaboradasMes,
+			r.roaEstadoAfiliado as estadoAfiliacion,
+			null as tipoIdentificacionEmpleador,
+			null as numeroIdentificacionEmpleador,
+			null as digitoVerificacion,
+			null as nombreEmpleador,
+			null as sucursalEmpleador,
+			null as nombreSucursalEmpleador,
+			(case when (select top(1) coiId from condicionInvalidez
+				where coiPersona = p.perId
+				and coiInvalidez = 1) is not null then 1 else 0 end) as condicionInvalidez,
+			s.solUsuarioRadicacion as usuarioGestionRegistro,
+			s.solFechaCreacion as fechaCreacionRegistro,
+			s.solClasificacion as clasificacion,
+
+			(select top(1) dsaValorSubsidioMonetario from detalleSubsidioAsignado
+				where dsaAfiliadoPrincipal = afiId
+				order by dsaPeriodoLiquidado desc) as ultimoPagoCuotaMonetaria,
+			isnull((select top(1) apgPeriodoAporte from aporteDetallado join aporteGeneral on apdAporteGeneral = apgId
+				where apdPersona = p.perId
+				order by apgPeriodoAporte desc), '') as ultimoPeriodoPagoAportes,
+			(select top(1) mtr.mtrNumeroTarjeta from MedioPagoPersona
+						join MedioTarjeta mtr on mppMedioPago = mtr.mdpId
+						and mppPersona = p.perId) as numeroTarjeta,
+			nivelEducativo as nivelEducativo,
+			gradoAcademico as gradoAcademico,
+			fechaExpedicionDocumento as fechaExpedicionDocumento,
+			cabezaHogar AS cabezaHogar,
+			s.solid
+			, row_number() over (partition by roaId order by s.solFechaRadicacion desc) as idtab
+			, (select top (1) sum(apd.apdSalarioBasico)
+				from aporteDetallado apd with (nolock)
+				inner join aporteGeneral apg with (nolock) on apd.apdAporteGeneral = apg.apgId
+				where apd.apdTipoCotizante = 'PENSIONADO' and apd.apdPersona = p.perId
+				group by apg.apgEmpresa, apg.apgPeriodoAporte, apd.apdPersona, apd.apdTipoCotizante
+				order by apg.apgPeriodoAporte desc) as cat,afiId,p.pedOrientacionSexual,p.pedPertenenciaEtnica,p.pedOcupacionProfesion
+			from PersonaDatosTem as p with (nolock)
+			inner join dbo.RolAfiliado as r with (nolock) on p.afiId = r.roaAfiliado
+			left join (select case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solId else null end as solId
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solUsuarioRadicacion else null end as solUsuarioRadicacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaCreacion else null end as solFechaCreacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solClasificacion else null end as solClasificacion
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then sap.sapRolAfiliado else null end as sapRolAfiliado
+							,case when solId = max(solId) over (partition by sap.sapRolAfiliado) then s.solFechaRadicacion else null end as solFechaRadicacion
+							from dbo.SolicitudAfiliacionPersona as sap with (nolock) 
+							inner join dbo.solicitud as s with (nolock) on sap.sapSolicitudGlobal = s.solId
+							where sap.sapEstadoSolicitud = 'CERRADA') as s on r.roaId = s.sapRolAfiliado
+			where r.roaTipoAfiliado = 'PENSIONADO')
+			select 
+			cargo
+			,CASE 
+					WHEN tipoAfiliado = 'TRABAJADOR_DEPENDIENTE' THEN
+						CASE  
+							WHEN estadoAfiliacion = 'INACTIVO' AND (
+								SELECT TOP 1
+									CASE 
+										WHEN a.afiFechaFinServicioSinAfiliacion IS NULL THEN 
+											DATEADD(
+												DAY, 
+												CAST(p.prmValor AS INT),
+												CAST(c.ctaFechaCambioCategoria AS DATE)
+											)
+										ELSE a.afiFechaFinServicioSinAfiliacion
+									END
+								FROM Afiliado a
+								INNER JOIN CategoriaAfiliado c ON a.afiId = c.ctaAfiliado
+								CROSS APPLY (
+									SELECT prmValor 
+									FROM Parametro 
+									WHERE prmNombre = 'TIEMPO_ADICIONAL_SERVICIOS_CAJA'
+								) p
+								WHERE a.afiId = result.afiId 
+								  AND c.ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE'
+								ORDER BY c.ctaFechaCambioCategoria DESC
+							) &lt; GETDATE()
+							THEN 'SIN_CATEGORIA'
+							ELSE (
+								SELECT TOP 1 ca.ctaCategoria 
+								FROM CategoriaAfiliado ca 
+								WHERE ca.ctaAfiliado = result.afiId 
+								  AND ca.ctaTipoAfiliado = 'TRABAJADOR_DEPENDIENTE' 
+								  AND ca.ctaCategoria != 'SIN_CATEGORIA'
+								ORDER BY ca.ctaFechaCambioCategoria DESC
+							)
+						END
+
+					WHEN tipoAfiliado = 'TRABAJADOR_INDEPENDIENTE' THEN 
+						CASE 
+							WHEN estadoAfiliacion = 'INACTIVO' THEN 'SIN_CATEGORIA'
+							ELSE 'B'
+						END
+
+					WHEN tipoAfiliado = 'PENSIONADO' THEN 
+						CASE 
+							WHEN estadoAfiliacion = 'INACTIVO' THEN 'SIN_CATEGORIA'
+							ELSE (
+								SELECT TOP 1 ca.ctaCategoria 
+								FROM CategoriaAfiliado ca 
+								WHERE ca.ctaAfiliado = result.afiId 
+								  AND ca.ctaTipoAfiliado = 'PENSIONADO' 
+								  AND ca.ctaCategoria != 'SIN_CATEGORIA'
+								ORDER BY ca.ctaFechaCambioCategoria DESC
+							)
+						END
+				END AS categoria
+			,celular
+			,'CO' AS codPais
+			,direccionResidencia AS direccion
+			,0 AS edad
+			,correoElectronico AS email
+			,estadoCivil AS estCivil
+			,0 AS factVulnera
+			,fechaIngresoEmpresa AS fecIngreso
+			,fechaAfiliacionCCF AS fechaAfiliacion
+			,fechaNacimiento AS  fechaNto
+			,genero AS genero
+			,0 AS internoEmpresa
+			,municipioNombre AS municipio
+			,numeroIdentificacionEmpleador AS nitEmpresa
+			,nivelEducativo AS nivEscol
+			,identificacion AS numeroDcto
+			,0 AS numeroDctoPrincipal
+			,pedOrientacionSexual AS oriSexual
+			,NULL AS parentesco
+            ,pedPertenenciaEtnica AS pertEtnica
+			,primerApellido AS primerApellido
+			,primerNombre AS primerNombre
+			,pedOcupacionProfesion AS profesion
+			,nombreEmpleador AS razonSocial
+			,segundoApellido AS segundoApellido
+			,segundoNombre AS segundoNombre
+			,telefonoFijo AS telefono
+			,convert(bit , habitaCasaPropia) AS tenenVivi
+			,'' AS tipVivi
+			,tipoAfiliado AS tipoAfiliado
+			,tipoIdentificacion AS tipoDto
+			,NULL AS viculacion
+
+		<!--	,claseIndependiente
+			,claseTrabajador
+			,fechaDefuncion
+			,municipioCodigo
+			,departamentoCodigo
+			,departamentoNombre
+			,codigoPostal
+			,autorizacionEnvioEmail
+			,autorizacionDatosPersonales
+			,salario,
+			porcentajeAporte
+			,fechaRetiro
+			,motivoDesafiliacion
+			,horasLaboradasMes
+			,case when idtab > 1 then 'INACTIVO' else estadoAfiliacion end as estadoAfiliacion
+			,tipoIdentificacionEmpleador
+			,digitoVerificacion
+			,nombreEmpleador
+			,sucursalEmpleador
+			,condicionInvalidez
+			,usuarioGestionRegistro
+			,fechaCreacionRegistro
+			,clasificacion
+			,ultimoPagoCuotaMonetaria
+			,ultimoPeriodoPagoAportes
+			,numeroTarjeta
+			,gradoAcademico
+			,fechaExpedicionDocumento
+			,cabezaHogar
+			,solid-->
+			from result
+
+
+
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliaciones.Consultar.Municipio.Departamento">
+		<query>
+				select mun.munCodigo, mun.munNombre
+				from Departamento dep
+				inner join Municipio mun on dep.depId = mun.munDepartamento
+				where dep.depCodigo = :codigoDepartamento
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.consultar.datos.aportante.empresa.periodo.ws">
+		<query>
+			SELECT apg.apgFechaRecaudo AS FechaConsignacion,
+				apg.apgPeriodoAporte AS PeriodoPago,
+				per.perNumeroIdentificacion AS NumeroIdentificacion,
+				CASE 
+					WHEN apg.apgModalidadRecaudoAporte = 'PILA' THEN apg.apgNumeroPlanillaManual
+					ELSE apg.apgRegistroGeneral
+				END AS nroConsignacion,
+				apg.apgValTotalApoObligatorio AS vrAporte,
+				apg.apgValorIntMora AS vrIntereses
+			FROM AporteGeneral apg
+			INNER JOIN empresa emp ON apg.apgEmpresa = emp.empId
+			INNER JOIN persona per ON emp.empPersona = per.perId
+			WHERE
+				per.perNumeroIdentificacion =:numeroIdentificacion
+				and apg.apgPeriodoAporte BETWEEN (:periodoInicial) AND (:periodoFinal) 
+			ORDER BY
+				apg.apgFechaRecaudo DESC,
+				apg.apgPeriodoAporte DESC
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Aportes.consultar.datos.cotizante.empresa.periodo.ws">
+		<query>
+			SELECT apg.apgFechaRecaudo AS FechaConsignacion,
+				apg.apgPeriodoAporte AS PeriodoPago,
+				per.perNumeroIdentificacion AS NumeroIdentificacion,
+				CASE 
+					WHEN apg.apgModalidadRecaudoAporte = 'PILA' THEN apg.apgNumeroPlanillaManual
+					ELSE apg.apgRegistroGeneral
+				END AS nroConsignacion,
+				apg.apgValTotalApoObligatorio AS vrAporte,
+				apg.apgValorIntMora AS vrIntereses
+			FROM AporteGeneral apg
+			INNER JOIN persona per ON apg.apgPersona = per.perId
+			WHERE
+				per.perNumeroIdentificacion =:numeroIdentificacion
+				and apg.apgPeriodoAporte BETWEEN (:periodoInicial) AND (:periodoFinal)
+			ORDER BY
+				apg.apgFechaRecaudo DESC,
+				apg.apgPeriodoAporte DESC
+		</query>
+	</named-native-query>
+	
+	<named-query name="Afiliaciones.Departamento.buscarDepartamentoPorCodigo">
+		<query>
+			select d from Departamento d, Municipio m 
+			where m.idMunicipio = :codigoMunicipio
+			and  d.idDepartamento = m.idDepartamento
+		</query>
+	</named-query>
+
+	<named-native-query name="Afiliaciones.Pagos.BuscarPagosPorPersona">
+		<query>
+			SELECT 
+				COUNT(DISTINCT cas.casId) AS cuotas,
+				mdp.mdpTipo AS medioPago,
+				CONCAT(benPersona.perPrimerNombre, ' ', benPersona.perSegundoNombre, ' ', 
+					benPersona.perPrimerApellido, ' ', benPersona.perSegundoApellido) AS personaCargo,
+				CONCAT(adminSubsidio.perPrimerNombre, ' ', adminSubsidio.perSegundoNombre, ' ', 
+					adminSubsidio.perPrimerApellido, ' ', adminSubsidio.perSegundoApellido) AS tercero,
+				(YEAR(dsa.dsaPeriodoLiquidado) * 100 + MONTH(dsa.dsaPeriodoLiquidado)) AS vigencia,
+				SUM(dsa.dsaValorSubsidioMonetario) AS vrCuota
+			FROM dbo.CuentaAdministradorSubsidio cas
+			INNER JOIN dbo.DetalleSubsidioAsignado dsa
+				ON cas.casId = dsa.dsaCuentaAdministradorSubsidio
+			INNER JOIN dbo.MedioDePago mdp
+				ON cas.casMedioDePago = mdp.mdpId
+			INNER JOIN dbo.AdministradorSubsidio asu
+				ON cas.casAdministradorSubsidio = asu.asuId
+			INNER JOIN dbo.Persona AS adminSubsidio
+				ON asu.asuPersona = adminSubsidio.perId
+			INNER JOIN dbo.Afiliado afi
+				ON dsa.dsaAfiliadoPrincipal = afi.afiId
+			INNER JOIN dbo.Persona AS afiPersona
+				ON afi.afiPersona = afiPersona.perId
+			INNER JOIN dbo.Beneficiario ben
+				ON dsa.dsaBeneficiarioDetalle = ben.benBeneficiarioDetalle
+			AND ben.benAfiliado = dsa.dsaAfiliadoPrincipal
+			INNER JOIN dbo.Persona AS benPersona
+				ON ben.benPersona = benPersona.perId
+			WHERE (:numeroIdentificacion IS NULL OR afiPersona.perNumeroIdentificacion = :numeroIdentificacion)
+			AND afiPersona.perTipoIdentificacion = :tipoDto
+			GROUP BY 
+				mdp.mdpTipo,
+				CONCAT(benPersona.perPrimerNombre, ' ', benPersona.perSegundoNombre, ' ', 
+					benPersona.perPrimerApellido, ' ', benPersona.perSegundoApellido),
+				CONCAT(adminSubsidio.perPrimerNombre, ' ', adminSubsidio.perSegundoNombre, ' ', 
+					adminSubsidio.perPrimerApellido, ' ', adminSubsidio.perSegundoApellido),
+				(YEAR(dsa.dsaPeriodoLiquidado) * 100 + MONTH(dsa.dsaPeriodoLiquidado))
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliaciones.Valida.Empresa">
+		<query>
+			SELECT 
+				CASE 
+					WHEN EXISTS (
+						SELECT 1
+						FROM Empresa  	
+						INNER JOIN Persona ON empPersona = perId
+						WHERE perNumeroIdentificacion = :numeroIdentificacion
+						AND perTipoIdentificacion = :tipoDto
+						AND empCodigoCIIU = :idActividadEconomica
+					)
+					THEN 'N'
+					ELSE 'S'
+				END AS resultado
+		</query>
+	</named-native-query>
+		<named-native-query name="Afiliaciones.Consultar.Digito.Verificacion.Empresa">
+		<query>
+			select perDigitoVerificacion,emp.empEstadoEmpleador
+			from persona p
+			inner join Empresa empr on p.perId = empr.empPersona
+			inner join Empleador emp on empr.empId = emp.empEmpresa
+			where perNumeroIdentificacion = :numeroIdentificacion and perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.Consultar.Url.Ambiente">
+		<query>
+			select cnsValor
+			from Constante
+			WHERE cnsNombre = 'URL_AMBIENTE'
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.Consultar.Datos.Persona.Novedad">
+		<query>
+			select DISTINCT
+				p.perTipoIdentificacion tipoDocumento, p.perNumeroIdentificacion numeroDocumento, 
+				p.perPrimerApellido pApellido, p.perSegundoApellido sApellido, p.perPrimerNombre pNombre, 
+				p.perSegundoNombre sNombre, pd.pedGenero genero, pd.pedFechaNacimiento fechaNacimiento, 
+				pd.pedNivelEducativo niveleducativo, u.ubiMunicipio municipio, m.munDepartamento departamento,
+				u.ubiDireccionFisica direccionResidencia, u.ubiTelefonoCelular telefonoCelular,coalesce(u.ubiEmail, u.ubiEmailSecundario, '') correoElectronico,
+				pd.pedPaisResidencia pais,pd.pedResguardo resguardo,pd.pedPuebloIndigena puebloIndigena,md.mdpTipo tipoMedioDepago,coalesce(me.mefSitioPago,'') sitiopago,
+				coalesce(mt.mtrEstadoTarjetaMultiservicios,'INACTIVA') estadoTarjetaMultiservicios ,
+				pa.perNumeroIdentificacion numeroIdentificacionAdmin, pa.perTipoIdentificacion tipoidentificacionAdmin,
+				pa.perPrimerApellido primerApellidoAdmin, pa.perPrimerNombre primerNombreAdmin,
+				(select top 1 max(gr2.grfNumero) from GrupoFamiliar gr2 where gr2.grfAfiliado = a.afiId group by gr2.grfId) numeroGrupo, a.afiid afiliadoId,
+				g.grfUbicacion ubicacionGrupo,
+				pd.pedOrientacionSexual orientacion,
+				pd.pedFactorVulnerabilidad factor,
+				pd.pedPertenenciaEtnica pertEtnica,
+				pd.pedNivelEducativo nivEducativo,
+				pd.pedOcupacionProfesion ocupacion,
+				pd.pedEstadoCivil estadoCivil,
+				u.ubiTelefonoFijo telefonoFijo
+				from Persona p 
+					join afiliado a on a.afipersona = p.perId 
+					join RolAfiliado r on r.roaafiliado = a.afiid 
+					join personaDetalle pd on pd.pedPersona = p.perid
+					join Ubicacion u on p.perUbicacionPrincipal = u.ubiId
+					join Municipio m on m.munId = u.ubiMunicipio
+					left join GrupoFamiliar g on g.grfAfiliado = a.afiId 
+					left join AdminSubsidioGrupo asg on asg.asgGrupoFamiliar = g.grfId
+					left join MedioDePago md on md.mdpId = asg.asgMedioDePago
+					left join MedioEfectivo me on me.mdpId = md.mdpId
+					left join MedioTarjeta mt on mt.mdpId = md.mdpId
+					left join AdministradorSubsidio aa on aa.asuId = asg.asgAdministradorSubsidio
+					left join Persona pa on pa.perId = aa.asuPersona
+				where p.perNumeroIdentificacion = :numeroIdentificacion and p.perTipoIdentificacion = :tipoIdentificacion
+					and r.roaEstadoAfiliado = 'ACTIVO'
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaicones.consulta.certificado.fosfec">
+		<query>
+		WITH Tempo AS (
+			SELECT 
+				per.perId,
+				roa.roaFechaRetiro,
+				ROW_NUMBER() OVER (
+					PARTITION BY per.perId
+					ORDER BY roa.roaFechaRetiro DESC
+				) AS col
+			FROM Persona per
+				INNER JOIN Afiliado afi ON afi.afiPersona = per.perId
+				INNER JOIN RolAfiliado roa ON roa.roaAfiliado = afi.afiId
+			WHERE 
+				per.perTipoIdentificacion = :tipoDto
+				AND per.perNumeroIdentificacion = :numeroIdentificacion
+				AND roa.roaEstadoAfiliado = 'INACTIVO'
+				AND per.perId NOT IN (
+					SELECT p2.perId
+					FROM Persona p2
+						INNER JOIN Afiliado a2 ON a2.afiPersona = p2.perId
+						INNER JOIN RolAfiliado r2 ON r2.roaAfiliado = a2.afiId
+					WHERE r2.roaEstadoAfiliado = 'ACTIVO'
+				)
+		),
+		Tempo1 AS (
+			SELECT *
+			FROM Tempo
+			WHERE col = 1
+		),
+		Tempo2 AS (
+			SELECT
+				per.perTipoIdentificacion,
+				per.perNumeroIdentificacion,
+				per.perRazonSocial,
+				apd.apdDiasCotizados,
+				t.roaFechaRetiro,
+				apg.apgPeriodoAporte,
+				MAX(apg.apgPeriodoAporte) OVER (PARTITION BY per.perId) AS maxPeriodoAporte
+			FROM Persona per
+				LEFT JOIN AporteDetallado apd ON apd.apdPersona = per.perid
+				LEFT JOIN AporteGeneral apg ON apd.apdAporteGeneral = apg.apgid
+				LEFT JOIN Tempo1 t ON t.perId = per.perId
+			WHERE CAST(apg.apgFechaProcesamiento AS DATE) 
+				BETWEEN CAST(DATEADD(yy, -3, GETDATE()) AS DATE) AND CAST(GETDATE() AS DATE)
+			AND per.perTipoIdentificacion = :tipoDto
+			AND per.perNumeroIdentificacion = :numeroIdentificacion
+		),
+		Tempo3 AS (
+			SELECT 
+				perTipoIdentificacion,
+				perNumeroIdentificacion,
+				perRazonSocial,
+				CASE 
+					WHEN SUM(apdDiasCotizados) &gt;= 30 THEN 30
+					ELSE SUM(apdDiasCotizados)
+				END AS apdDiasCotizados,
+				roaFechaRetiro,
+				apgPeriodoAporte,
+				maxPeriodoAporte
+			FROM Tempo2
+			GROUP BY 
+				perTipoIdentificacion,
+				perNumeroIdentificacion,
+				perRazonSocial,
+				roaFechaRetiro,
+				apgPeriodoAporte,
+				maxPeriodoAporte
+		)
+		SELECT 
+			perTipoIdentificacion,
+			perNumeroIdentificacion,
+			perRazonSocial,
+			SUM(apdDiasCotizados) AS apdDiasCotizados,
+			roaFechaRetiro,
+			maxPeriodoAporte
+		FROM Tempo3
+		GROUP BY 
+			perTipoIdentificacion,
+			perNumeroIdentificacion,
+			perRazonSocial,
+			roaFechaRetiro,
+			maxPeriodoAporte
+
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.Consultar.Existe.Persona">
+		<query>
+			select 
+				case 
+					when exists( select 1 from persona 
+						where pernumeroIdentificacion = :numeroIdentificacion 
+							and pertipoIdentificacion = :tipoIdentificacion
+						) 
+					then 1 
+					else 0 
+				end existe
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.Coinciden.datos.registrados">
+		<query>
+			select 
+				case 
+					when exists( select 1 from persona 
+							join ubicacion on perubicacionprincipal = ubiid 
+						where pernumeroIdentificacion = :numeroIdentificacion 
+							and pertipoIdentificacion = :tipoIdentificacion
+							and (ubiemail = :email or ubiemailsecundario = :email)
+						) 
+					then 1 
+					else 0 
+				end existe
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliaciones.Consulta.Datos.BasiocUsuario">
+		<query>
+			select perPrimerNombre, perSegundoNombre, perPrimerApellido, perSegundoApellido, perRazonSocial 
+				from persona 
+			where pernumeroIdentificacion = :numeroIdentificacion and perTipoIdentificacion = :tipoIdentificacion
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.Consultar.idEmpleador">
+		<query>
+			select ee.empId 
+				from persona p 
+					join Empresa e on p.perId = e.empPersona 
+					join Empleador ee on ee.empEmpresa = e.empId 
+				where p.perNumeroIdentificacion = :numeroDocumento 
+					and p.perTipoIdentificacion = :tipoDocumento 
+					and p.perRazonSocial like CONCAT('%', :razonSocial, '%')
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.Consutar.infoRolafiliado">
+		<query>
+			select r.roaId,r.roaFechaAfiliacion,r.roaValorSalarioMesadaIngresos 
+				from Solicitud s 
+					join SolicitudAfiliacionPersona sp on s.solId = sp.sapSolicitudGlobal 
+					join RolAfiliado r on r.roaid = sp.sapRolAfiliado 
+				where s.solNumeroRadicacion = :numeroRadicado
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.Consultar.datos.solicitudTemporal">
+		<query>
+			select p.perId,pd.pedId,a.afiId,r.roaAfiliado,
+				(select sipId 
+					from parametro 
+						join SitioPago on prmValor = sipNombre 
+					where prmNombre = 'SITIO_DE_PAGO_CONFIRMACIÓN_CARGUE_MASIVO'
+				) sitioPago, 
+				(select munId 
+					from Municipio 
+					where munNombre = :municipio
+				) muni, 
+				(select depId 
+					from Municipio 
+						join departamento on munDepartamento = depId 
+					where munNombre = :municipio
+				) depto 
+				from Solicitud s 
+					join SolicitudAfiliacionPersona sp on s.solId = sp.sapSolicitudGlobal 
+					join RolAfiliado r on r.roaid = sp.sapRolAfiliado 
+					join afiliado a on a.afiid = r.roaAfiliado 
+					join Persona p on p.perid = a.afiPersona 
+					join PersonaDetalle pd on pd.pedPersona = p.perId 
+				where s.solNumeroRadicacion = :numeroRadicado
+		</query>
+	</named-native-query>
+
+	<named-native-query name ="Afiliaciones.Consultar.datosSolicitud">
+		<query>
+			select solInstanciaProceso from solicitud where solId = :solid
+		</query>
+	</named-native-query>
+
+	<named-native-query name ="Afiliaciones.consultar.datosEmpleador">
+		<query>
+			select ee.empId as idEmpleador, max(s.sueId) as sucursalId, max(sol.solClasificacion) as clasificacion
+				from Persona p 
+					join Empresa e on e.empPersona = p.perId 
+					join Empleador ee on ee.empEmpresa = e.empId 
+					join SucursalEmpresa s on s.sueEmpresa = e.empId 
+					join RolAfiliado r on r.roaEmpleador = ee.empId
+					join SolicitudAfiliaciEmpleador sae on sae.saeEmpleador = ee.empId
+					join Solicitud sol on sol.solId = sae.saeSolicitudGlobal
+				where perTipoIdentificacion = :tipoIdentificacion
+				and perNumeroIdentificacion = :numeroIdentificacion
+				and p.perRazonSocial like CONCAT('%', :razonSocial, '%')
+				group by ee.empId
+		</query>
+	</named-native-query>
+
+	<named-native-query name ="Afiliaciones.consultar.estado.SolicitudEmpresa">
+		<query>
+			select saeEstadoSolicitud
+				from solicitud join SolicitudAfiliaciEmpleador on solid = saeSolicitudGlobal 
+			where solNumeroRadicacion = :numeroRadicado
+		</query>
+	</named-native-query>
+
+	<named-native-query name ="Afiliaciones.consultar.infoEmpleador">
+		<query>
+			SELECT 
+				ee.empId                         AS idEmpleador,
+				p.perTipoIdentificacion          AS tipoIdentificacion,
+				p.perNumeroIdentificacion        AS numeroIdentificacion,
+				p.perDigitoVerificacion          AS digitoVerificacion,
+				p.perTipoIdentificacion          AS tipoIdentificacionNuevo,
+				p.perNumeroIdentificacion        AS numeroIdentificacionNuevo,
+				p.perDigitoVerificacion          AS digitoVerificacionNuevo,
+				p.perRazonSocial                 AS razonSocial,
+				e.empNombreComercial                 AS nombreComercial,
+				p.perPrimerNombre                AS primerNombre,
+				p.perSegundoNombre               AS segundoNombre,
+				p.perPrimerApellido              AS primerApellido,
+				p.perSegundoApellido             AS segundoApellido,
+				e.empNaturalezaJuridica          AS naturalezaJuridica,
+				e.empFechaConstitucion           AS fechaConstitucion,
+				ciiu.ciiId                       AS idCodigoCIIU,
+				ciiu.ciiDescripcion              AS descripcionCIIU,
+				arl.arlId                        AS idARL,
+				e.empPaginaWeb                   AS paginaWeb,
+				ee.empNumeroTotalTrabajadores         AS numeroTotalTrabajadores,
+				ee.empValorTotalUltimaNomina          AS valorTotalUltimaNomina,
+				ee.empPeriodoUltimaNomina        AS periodoUltimaNomina,
+				e.empRepresentanteLegal AS REPRELEGAL,
+				rep.perTipoIdentificacion        AS tipoIdentificacionRepLegal,
+				up.ubiEmail                     AS emailRepLegal,
+				up.ubiTelefonoFijo              AS telefonoFijoRepLegal,
+				up.ubiIndicativoTelFijo         AS indicativoTelFijoRepLegal,
+				up.ubiTelefonoCelular           AS telefonoCelularRepLegal,
+				rep.perNumeroIdentificacion      AS numeroIdentificacionRepLegal,
+				rep.perPrimerNombre              AS primerNombreRepLegal,
+				rep.perSegundoNombre             AS segundoNombreRepLegal,
+				rep.perPrimerApellido            AS primerApellidoRepLegal,
+				rep.perSegundoApellido           AS segundoApellidoRepLegal,
+				s.sueId                          AS idSucursalEmpresa,
+				s.sueUbicacion                   AS idUbicacionSucursal,
+				s.sueCodigo                      AS codigoSucursal,
+				s.sueUbicacion                   AS direccionFisicaSucursal,
+				(select ubeUbicacion from UbicacionEmpresa where e.empId = ubeEmpresa
+				AND ubeTipoUbicacion = 'UBICACION_PRINCIPAL') AS idOficinaPrincipal,
+				(select ubeUbicacion from UbicacionEmpresa where e.empId = ubeEmpresa
+				AND ubeTipoUbicacion = 'ENVIO_CORRESPONDENCIA') AS idEnvioCorrespondencia,
+				(select ubeUbicacion from UbicacionEmpresa where e.empId = ubeEmpresa
+				AND ubeTipoUbicacion = 'NOTIFICACION_JUDICIAL') AS idNotiJudicial
+			FROM Persona p
+				JOIN Empresa e ON e.empPersona = p.perId
+				JOIN Empleador ee ON ee.empEmpresa = e.empId
+				LEFT JOIN SucursalEmpresa s ON s.sueEmpresa = e.empId
+				LEFT JOIN UbicacionEmpresa ue ON ue.ubeId = s.sueUbicacion
+				LEFT JOIN CodigoCIIU ciiu ON ciiu.ciiId = e.empCodigoCIIU
+				LEFT JOIN CodigoCIIU ciiuSue ON ciiuSue.ciiId = s.sueCodigoCIIU
+				LEFT JOIN ARL arl ON arl.arlId = e.empARL
+				LEFT JOIN Persona rep ON rep.perId = e.empRepresentanteLegal
+				INNER JOIN Ubicacion up on up.ubiId = rep.perUbicacionPrincipal
+			WHERE p.perTipoIdentificacion =:tipoIdentificacion
+			AND p.perNumeroIdentificacion =:numeroIdentificacion
+		</query>
+	</named-native-query>
+
+
+	<named-native-query name="Afiliaciones.consultar.hallazgos.cargue" result-set-mapping="mapping.consultar.log.consola.cargue.id">
+        <query>
+            SELECT *
+            FROM ResultadoHallazgoValidacionArchivo rhv
+            JOIN ConsolaEstadoCargueMasivo cec ON (rhv.rhvIdConsolaEstadoCargueMasivo = cec.cecId)
+            WHERE cec.cecCargueId = :idCargue
+        </query>
+        <hint name="tipoProceso" value="cecTipoProcesoMasivo"/>
+        <hint name="nombreArchivo" value="cecNombreArchivo"/>
+        <hint name="numeroLinea" value="rhvNumeroLinea"/>
+        <hint name="nombreCampo" value="rhvNombreCampo"/>
+        <hint name="error" value="rhvError"/>
+    </named-native-query>
+
+	<named-native-query name="Afiliaciones.consultar.codigo.pais">
+		<query>
+			SELECT paiId 
+			FROM Pais 
+			WHERE paiDescripcion LIKE CONCAT('%', :nombrePais, '%')
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliaciones.consultar.codigo.ocupacion">
+		<query>
+			SELECT ocuId 
+			FROM OcupacionProfesion 
+			WHERE ocuNombre LIKE CONCAT('%', :nombreOcupacion, '%')
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliaciones.consultar.codigo.resguardo">
+		<query>
+			SELECT resId 
+			FROM Resguardo 
+			WHERE resDescripcion LIKE CONCAT('%', :nombreResguardo, '%')
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliaciones.consultar.codigo.puebloIndigena">
+		<query>
+			SELECT puiId 
+			FROM PuebloIndigena 
+			WHERE puiDescripcion LIKE CONCAT('%', :nombrePuebloIndigena, '%')
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Afiliaciones.consultar.itemChequeo.documentoPrevio">
+		<query>
+			select top 1 ich.ichIdentificadorDocumento from itemchequeo ich 
+				inner join requisito req on ich.ichRequisito = req.reqId 
+				inner join persona per on ich.ichPersona = per.perId
+				where req.reqId =:idRequisito
+				and per.perTipoIdentificacion =:tipoIdentificacion 
+				and per.perNumeroIdentificacion =:numeroIdentificacion
+				order by ich.ichFechaRecepcionDocumento desc
+		</query>
+	</named-native-query>
+
+
+	<named-native-query name="Afiliaciones.consultar.idPagadorPension">
+		<query>
+			select ent.epaId
+			from EntidadPagadora ent
+			join RolAfiliado roa on roa.roaPagadorPension = ent.epaId 
+			join Empresa emp on emp.empId = ent.epaEmpresa
+			join Persona per on per.perId = emp.empPersona
+			where per.perRazonSocial = :razonSocial
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.consular.informacion.solicitudes">
+		<query>
+			select solNumeroRadicacion, solResultadoProceso,sapEstadoSolicitud,
+				coalesce(iafCausaIntentoFallido,'No registra intento fallido'),
+				perNumeroIdentificacion,perTipoIdentificacion 
+				from solicitud 
+					join solicitudAfiliacionPersona on solid = sapSolicitudGlobal 
+					left join IntentoAfiliacion on iafSolicitud = solId 
+					join RolAfiliado on roaId = sapRolAfiliado 
+					join Afiliado on afiId = roaAfiliado 
+					join persona on perId = afiPersona 
+				where (:idCargue  = '' or :idCargue = solCargaAfiliacionMultipleEmpleador) and
+					(:numeroRadicado = '' or :numeroRadicado = solNumeroRadicacion)
+			order by solNumeroRadicacion
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliaciones.consultar.informacion.items">
+		<query>
+			select distinct reqDescripcion from Solicitud 
+				join SolicitudAfiliacionPersona on solid = sapSolicitudGlobal 
+				join ItemChequeo on solId = ichSolicitud 
+				join Requisito on reqId = ichRequisito 
+				join RequisitoCajaClasificacion on rtsRequisito = reqId 
+					and rtsTipoTransaccion = solTipoTransaccion 
+					and rtsClasificacion = solClasificacion 
+			where solNumeroRadicacion = :numeroRadicado
+		</query>
+	</named-native-query>
+	<named-native-query name="Afiliciones.consultar.informacion.solicitudes.enCurso">
+		<query>
+			;with datos as ( select distinct solId,reqId,perId,rtsEstado from Solicitud 
+					join SolicitudAfiliacionPersona on solid = sapSolicitudGlobal 
+					join ItemChequeo on solId = ichSolicitud 
+					join Requisito on reqId = ichRequisito 
+					join RequisitoCajaClasificacion on rtsRequisito = reqId 
+						and rtsTipoTransaccion = solTipoTransaccion 
+						and rtsClasificacion = solClasificacion 
+					join RolAfiliado on roaId = sapRolAfiliado
+					join Afiliado on afiId = roaAfiliado
+					join Persona on perId = afiPersona
+				where solNumeroRadicacion = :numeroRadicado
+					and sapEstadoSolicitud not in ('CERRADA','REGISTRO_INTENTO_AFILIACION','CANCELADA','RECHAZADA') 
+					and reqDescripcion = :requisito
+					and solResultadoProceso is null 
+			)
+			select datos.*,dtsJsonPayload 
+				from datos 
+				join DatoTemporalSolicitud on solid = dtsSolicitud
+		</query>
+	</named-native-query>
+	<sql-result-set-mapping name="InfoAfiliadoOutDTOMapping">
+		<constructor-result target-class="com.asopagos.afiliaciones.dto.InfoAfiliadoOutDTO">
+			<column name="tipoID" class="java.lang.String" />
+			<column name="identificacion" class="java.lang.String" />
+			<column name="nombreCompleto" class="java.lang.String" />
+			<column name="fechaNacimiento" class="java.lang.String" />
+			<column name="categoria" class="java.lang.String" />
+			<column name="estadoAfiliacion" class="java.lang.String" />
+			<column name="tipoAfiliado" class="java.lang.String" />
+		</constructor-result>
+	</sql-result-set-mapping>
+	<sql-result-set-mapping name="ContactosEmpleadorOutDTOMapping">
+		<constructor-result target-class="com.asopagos.afiliaciones.dto.ContactosEmpleadorOutDTO">
+			<column name="idEmpleador" class="java.lang.Long"/>
+			<column name="tipoID" class="java.lang.String"/>
+			<column name="identificacion" class="java.lang.String"/>
+			<column name="razonSocial" class="java.lang.String"/>
+			<column name="departamento" class="java.lang.String"/>
+			<column name="municipio" class="java.lang.String"/>
+			<column name="direccionPrincipal" class="java.lang.String"/>
+			<column name="telefonoFijo" class="java.lang.String"/>
+			<column name="celular" class="java.lang.String"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	<sql-result-set-mapping name="DatoHistoricoAfiliadoOutDTOMapping">
+		<constructor-result target-class="com.asopagos.afiliaciones.dto.DatoHistoricoAfiliadoOutDTO">
+			<column name="estadoAfiliacion" class="java.lang.String"/>
+			<column name="tipoAfiliado" class="java.lang.String"/>
+			<column name="claseIndependiente" class="java.lang.String"/>
+			<column name="claseTrabajador" class="java.lang.String"/>
+			<column name="fechaIngresoEmpresa" class="java.lang.String"/>
+			<column name="fechaAfiliacionCCF" class="java.lang.String"/>
+			<column name="fechaCreacion" class="java.lang.String"/>
+			<column name="salario" class="java.lang.String"/>
+			<column name="horasLaboradasMes" class="java.lang.String"/>
+			<column name="numeroIdentificacionEmpleador" class="java.lang.String"/>
+			<column name="digitoVerificacion" class="java.lang.String"/>
+			<column name="nombreEmpleador" class="java.lang.String"/>
+			<column name="sucursalEmpleador" class="java.lang.String"/>
+			<column name="nombreSucursalEmpleador" class="java.lang.String"/>
+			<column name="tipoTransaccion" class="java.lang.String"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	<sql-result-set-mapping name="UltimoSalarioAfiliadoOutDTOMapping">
+		<constructor-result target-class="com.asopagos.afiliaciones.dto.UltimoSalarioAfiliadoOutDTO">
+			<column name="tipoId" class="java.lang.String"/>
+			<column name="identificacion" class="java.lang.String"/>
+			<column name="periodo" class="java.lang.String"/>
+			<column name="fechaNovedad" class="java.lang.String"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	<sql-result-set-mapping name="InfoCiudadOutDTOMapping">
+		<constructor-result target-class="com.asopagos.afiliaciones.dto.InfoCiudadOutDTO">
+			<column name="nombreDepartamento" class="java.lang.String"/>
+			<column name="nombreCiudad" class="java.lang.String"/>
+			<column name="codigoDepartamento" class="java.lang.String"/>
+			<column name="codigoMunicipio" class="java.lang.String"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	<sql-result-set-mapping name="GrupoFamiliarOutDTOMapping">
+		<constructor-result target-class="com.asopagos.afiliaciones.dto.GrupoFamiliarOutDTO">
+			<column name="tipoID" class="java.lang.String"/>
+			<column name="identificacion" class="java.lang.String"/>
+			<column name="primerNombre" class="java.lang.String"/>
+			<column name="segundoNombre" class="java.lang.String"/>
+			<column name="primerApellido" class="java.lang.String"/>
+			<column name="segundoApellido" class="java.lang.String"/>
+			<column name="estadoAfiliacion" class="java.lang.String"/>
+			<column name="fechaDesafiliacion" class="java.util.Date"/>			
+		</constructor-result>
+	</sql-result-set-mapping>
+    <!-- FIN ESPACIO PARA NAMED QUERIES Y NATIVE QUERIES RELACIONADOS AL CATALOGO DE SERVIVICIOS PARA AFILIACIONES Y CAJAS SIN FRONTERAS -->
+    	<!-- ESPACIO PARA NAMED STORED PROCEDURES -->
+        <named-stored-procedure-query
+            name="Afiliaciones.sp.consultar.informacion.completa.afiliado.confa"
+            procedure-name="USP_GET_Consultar_Estado_Afiliado_Consulta_En_Linea_Confa">
+        <parameter
+                class="java.lang.String"
+                mode="IN"
+                name="tipoDocumento"
+        />
+        <parameter
+                class="java.lang.String"
+                mode="IN"
+                name="numeroDocumento"
+        />
+      </named-stored-procedure-query>
+     <named-stored-procedure-query
+            name="Afiliaciones.sp.consultar.informacion.completa.beneficiario.confa"
+            procedure-name="USP_GET_Consultar_Estado_Beneficiario_Consulta_En_Linea_Confa">
+        <parameter
+                class="java.lang.String"
+                mode="IN"
+                name="tipoDocumento"
+        />
+        <parameter
+                class="java.lang.String"
+                mode="IN"
+                name="numeroDocumento"
+        />
+      </named-stored-procedure-query>
+
+	<named-stored-procedure-query
+		name="Afiliaciones.Personas.Desistir.Solicitud.Afiliacion"
+		procedure-name="dbo.SP_DesistirSolicitudesAfiliacion">
+	</named-stored-procedure-query>
+
+	<sql-result-set-mapping name="mapping.consultar.log.consola.cargue.id">
+        <constructor-result target-class="com.asopagos.dto.ResultadoHallazgosValidacionArchivoDTO">
+            <column name="rhvId" class="java.lang.Long"/>
+            <column name="rhvIdConsolaEstadoCargueMasivo" class="java.lang.Long"/>
+            <column name="rhvNumeroLinea" class="java.lang.Long"/>
+            <column name="rhvNombreCampo"/>
+            <column name="rhvError"/>
+            <column name="cecTipoProcesoMasivo"/>
+            <column name="cecNombreArchivo"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+</entity-mappings>
